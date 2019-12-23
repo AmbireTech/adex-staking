@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import logo from 'adex-brand/logos/adex-white.svg'
 import { Contract, getDefaultProvider } from 'ethers'
+import { hexPadZero } from 'ethers/utils'
 import { StakingABI } from './abi/Staking'
 import { ERC20ABI } from './abi/ERC20'
 
@@ -33,9 +34,9 @@ function NavBar() {
     )
 }
 
-function App() {
+export default function App() {
 	useEffect(() => {
-		Token.balanceOf(ADDR_STAKING)
+		loadStats()
 			.then(console.log)
 
 	})
@@ -55,4 +56,13 @@ function App() {
 		</MuiThemeProvider>
 	)
 }
-export default App
+
+async function loadStats() {
+	const [ totalStake, logsBond, logsUnbondReq, logsUnbonded ] = await Promise.all([
+		Token.balanceOf(ADDR_STAKING),
+		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogBond() }),
+		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogUnbondRequested() }),
+		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogUnbonded() }),
+	])
+	return { totalStake, logsBond }
+}
