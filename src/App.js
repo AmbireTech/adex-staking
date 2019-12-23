@@ -52,6 +52,8 @@ export default function App() {
 			.then(console.log)
 
 	}, [])
+
+	// @TODO Fab for "Stake your ADX"
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<NavBar />
@@ -75,6 +77,14 @@ export default function App() {
 			  </TableRow>
 		</TableHead>
 		<TableBody>
+			    <TableCell>10000.00 ADX</TableCell>
+			    <TableCell align="right">0.00 DAI</TableCell>
+			    <TableCell align="right">Validator Tom</TableCell>
+			    <TableCell align="right">-</TableCell>
+			    <TableCell align="right">
+				{ /*<Button>Withdraw Reward</Button> */ }
+				<Button color="primary" variant="contained">Request Unbond</Button>
+			</TableCell>
 		</TableBody>
       </Table>
 </TableContainer>
