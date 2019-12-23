@@ -6,10 +6,12 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import Grid from '@material-ui/core/Grid'
 import logo from 'adex-brand/logos/adex-white.svg'
 import { Contract, getDefaultProvider } from 'ethers'
 import { StakingABI } from './abi/Staking'
 import { ERC20ABI } from './abi/ERC20'
+
 
 const ADDR_ADX = '0x4470bb87d77b963a013db939be332f927f2b992e'
 const ADDR_STAKING = '0x4b06542aa382cd8f9863f1281e70a87ce1197930'
@@ -40,9 +42,16 @@ function App() {
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<NavBar />
-			<Card>
-				<CardContent>30,000 ADX</CardContent>
-			</Card>
+			<Grid container spacing={2}>
+			{[1,2,3,4].map(x => (
+				<Grid key={x} item xs={3}>
+					<Card>
+						<CardContent>30,000 ADX</CardContent>
+					</Card>
+				</Grid>
+			))
+			}
+			</Grid>
 		</MuiThemeProvider>
 	)
 }
