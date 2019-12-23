@@ -9,7 +9,6 @@ import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import logo from 'adex-brand/logos/adex-white.svg'
 import { Contract, getDefaultProvider } from 'ethers'
-import { hexPadZero } from 'ethers/utils'
 import { Web3Provider } from 'ethers/providers'
 import { StakingABI } from './abi/Staking'
 import { ERC20ABI } from './abi/ERC20'
@@ -59,14 +58,12 @@ export default function App() {
 }
 
 async function loadStats() {
+	let addr = null
 	if (window.web3) {
 		const provider = new Web3Provider(window.web3.currentProvider)
 		const signer = provider.getSigner()
-		console.log(await signer.getAddress())
+		addr = await signer.getAddress()
 	}
-
-	//const addr = hexPadZero(signer.getAddress(), 32)
-	const addr = null
 	const [ totalStake, logsBond, logsUnbondReq, logsUnbonded ] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogBond(addr) }),
