@@ -3,12 +3,11 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import { themeMUI } from './themeMUi'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import logo from 'adex-brand/logos/adex-white.svg'
+import logo from './adex-staking.svg'
 import { Contract, getDefaultProvider } from 'ethers'
 import { Web3Provider } from 'ethers/providers'
 import { StakingABI } from './abi/Staking'
@@ -26,10 +25,7 @@ function NavBar() {
     return (
         <AppBar position="static">
             <Toolbar>
-		<img width="100px" src={logo} alt="logo"></img>
-                <Typography variant="h4" color="inherit">
-			Staking
-	    	</Typography>
+		<img height="40vh" src={logo} alt="logo"></img>
             </Toolbar>
         </AppBar>
     )
