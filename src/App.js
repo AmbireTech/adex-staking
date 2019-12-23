@@ -7,6 +7,12 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 import logo from './adex-staking.svg'
 import { Contract, getDefaultProvider } from 'ethers'
 import { Web3Provider } from 'ethers/providers'
@@ -31,6 +37,14 @@ function NavBar() {
     )
 }
 
+function StatsCard() {
+	return (
+		<Card>
+			<CardContent>30,000 ADX</CardContent>
+		</Card>
+	)
+}
+
 export default function App() {
 	const [count, setCount] = useState(0)
 	useEffect(() => {
@@ -44,14 +58,27 @@ export default function App() {
 			<Button onClick={() => setCount(count+1)}>{count}</Button>
 			<Grid container spacing={2}>
 			{[1,2,3,4].map(x => (
-				<Grid key={x} item xs={3}>
-					<Card>
-						<CardContent>30,000 ADX</CardContent>
-					</Card>
-				</Grid>
-			))
+					<Grid key={x} item xs={3}>{StatsCard()}</Grid>
+				))
 			}
 			</Grid>
+<TableContainer>
+	<Table aria-label="simple table">
+		<TableHead>
+			<TableRow>
+			
+			    <TableCell>Bond amount</TableCell>
+			    <TableCell align="right">Reward to collect</TableCell>
+			    <TableCell align="right">Pool</TableCell>
+			    <TableCell align="right">Time to unbond</TableCell>
+			    <TableCell align="right">Actions</TableCell>
+			  </TableRow>
+		</TableHead>
+		<TableBody>
+		</TableBody>
+      </Table>
+</TableContainer>
+
 		</MuiThemeProvider>
 	)
 }
