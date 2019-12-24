@@ -13,6 +13,11 @@ import TableCell from "@material-ui/core/TableCell"
 import TableContainer from "@material-ui/core/TableContainer"
 import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
+import TextField from "@material-ui/core/TextField"
+import Select from "@material-ui/core/Select"
+import MenuItem from "@material-ui/core/MenuItem"
+import InputLabel from "@material-ui/core/InputLabel"
+import FormControl from "@material-ui/core/FormControl"
 import Modal from "@material-ui/core/Modal"
 import Backdrop from "@material-ui/core/Backdrop"
 import Fab from "@material-ui/core/Fab"
@@ -126,10 +131,20 @@ export default function App() {
 			>
 				<Fade in={open}>
 					<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
-						<h2 id="transition-modal-title">Transition modal</h2>
-						<p id="transition-modal-description">
-							react-transition-group animates me.
-						</p>
+						<h2>Create a bond</h2>
+						<FormControl required>
+							<TextField label="ADX amount" type="number"></TextField>
+						</FormControl>
+						<FormControl required>
+							<InputLabel>Pool</InputLabel>
+							<Select value={0}>
+								<MenuItem value={0}>
+									<em>None</em>
+								</MenuItem>
+								<MenuItem value={1}>Validator Tom</MenuItem>
+								<MenuItem value={2}>Validator Jerry</MenuItem>
+							</Select>
+						</FormControl>
 					</Paper>
 				</Fade>
 			</Modal>
