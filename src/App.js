@@ -133,9 +133,15 @@ export default function App() {
 		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
 		// @TODO: set allowance to 0 if needed
-		//const tx1 = await tokenWithSigner.approve(ADDR_STAKING, bond.amount)
-		const tx2 = await stakingWithSigner.addBond([bond.amount, bond.poolId, 0])
-		const receipts = await Promise.all([tx2.wait()])
+		// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on tx2 cause it depends on tx1...
+		// which isn't going to be mined at the time of signing
+		const tx1 = await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
+			gasLimit: 80000
+		})
+		const tx2 = await stakingWithSigner.addBond([bond.amount, bond.poolId, 0], {
+			gasLimit: 110000
+		})
+		const receipts = await Promise.all([tx1.wait(), tx2.wait()])
 		console.log(receipts)
 	}
 
