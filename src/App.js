@@ -26,7 +26,7 @@ import Fade from "@material-ui/core/Fade"
 import Paper from "@material-ui/core/Paper"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify } from "ethers/utils"
+import { bigNumberify, id } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import { StakingABI } from "./abi/Staking"
 import { ERC20ABI } from "./abi/ERC20"
@@ -38,41 +38,65 @@ const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 
-function StatsCard() {
+const POOLS = [
+	{
+		label: "Validator Tom",
+		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d")
+	},
+	{
+		label: "Validator Jerry",
+		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e")
+	}
+]
+const DEFAULT_BOND = {
+	poolId: "",
+	amount: bigNumberify(0)
+}
+
+function StatsCard({ title, subtitle }) {
 	return (
 		<Card>
-			<CardContent>30,000 ADX</CardContent>
+			<CardContent>{subtitle}</CardContent>
 		</Card>
 	)
 }
 
-function NewBondForm({ maxAmount, onNewBond }) {
+function NewBondForm({ maxAmount, onNewBond, pools }) {
 	// @TODO: should the button be in a FormControl?
+	const [bond, setBond] = useState(DEFAULT_BOND)
 	return (
 		<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
 			<h2>Create a bond</h2>
 			<FormControl required>
-				<TextField label="ADX amount" type="number"></TextField>
+				<TextField
+					label="ADX amount"
+					type="number"
+					onChange={ev =>
+						setBond({ ...bond, amount: bigNumberify(ev.target.value) })
+					}
+				></TextField>
 			</FormControl>
 			<FormControl required>
 				<InputLabel>Pool</InputLabel>
-				<Select value={0}>
-					<MenuItem value={0}>
+				<Select
+					value={bond.poolId}
+					onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
+				>
+					<MenuItem value={""}>
 						<em>None</em>
 					</MenuItem>
-					<MenuItem value={1}>Validator Tom</MenuItem>
-					<MenuItem value={2}>Validator Jerry</MenuItem>
+					{pools.map(({ label, id }) => (
+						<MenuItem key={id} value={id}>
+							{label}
+						</MenuItem>
+					))}
 				</Select>
 			</FormControl>
 			<FormControl>
 				<Button
 					color="primary"
 					variant="contained"
-					onClick={() =>
-						onNewBond({
-							/* TODO */
-						})
-					}
+					onClick={() => onNewBond(bond)}
 				>
 					Stake ADX
 				</Button>
@@ -84,6 +108,7 @@ function NewBondForm({ maxAmount, onNewBond }) {
 export default function App() {
 	const [count, setCount] = useState(0)
 	const open = count > 2
+
 	useEffect(() => {
 		loadStats().then(console.log)
 	}, [])
@@ -116,7 +141,7 @@ export default function App() {
 			>
 				{[1, 2, 3, 4].map(x => (
 					<Grid key={x} item xs={3}>
-						{StatsCard()}
+						{StatsCard({ subtitle: "30,000 ADX" })}
 					</Grid>
 				))}
 			</Grid>
@@ -166,6 +191,7 @@ export default function App() {
 			>
 				<Fade in={open}>
 					{NewBondForm({
+						pools: POOLS,
 						maxAmount: bigNumberify(0),
 						onNewBond: bond => console.log(bond)
 					})}
