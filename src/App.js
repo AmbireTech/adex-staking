@@ -33,6 +33,7 @@ import { ERC20ABI } from "./abi/ERC20"
 
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const ADDR_STAKING = "0x4b06542aa382cd8f9863f1281e70a87ce1197930"
+const ADX_MULTIPLIER = 10000
 
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
@@ -72,7 +73,10 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 					label="ADX amount"
 					type="number"
 					onChange={ev =>
-						setBond({ ...bond, amount: bigNumberify(ev.target.value) })
+						setBond({
+							...bond,
+							amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
+						})
 					}
 				></TextField>
 			</FormControl>
@@ -107,14 +111,33 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 
 export default function App() {
 	const [count, setCount] = useState(0)
-	const open = count > 2
+	const isNewBondOpen = count > 2
 
+	const [stats, setStats] = useState({})
 	useEffect(() => {
-		loadStats().then(console.log)
+		loadStats().then(setStats)
 	}, [])
 
 	// @TODO fix this
-	const openNewBond = () => setCount(3)
+	const openNewBondForm = () => setCount(3)
+
+	const onNewBond = async bond => {
+		// @TODO handle
+		if (!bond.poolId) return
+		if (!stats.userBalance) return
+		if (bond.amount.gt(stats.userBalance)) return
+		console.log(bond)
+		// @TODO: what if there's no window.web3
+		const provider = new Web3Provider(window.web3.currentProvider)
+		const signer = provider.getSigner()
+		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
+		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+		// @TODO: set allowance to 0 if needed
+		//const tx1 = await tokenWithSigner.approve(ADDR_STAKING, bond.amount)
+		const tx2 = await stakingWithSigner.addBond([bond.amount, bond.poolId, 0])
+		const receipts = await Promise.all([tx2.wait()])
+		console.log(receipts)
+	}
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -122,7 +145,7 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
-						onClick={openNewBond}
+						onClick={openNewBondForm}
 						variant="extended"
 						color="secondary"
 						style={{ position: "absolute", right: "5%", top: "50%" }}
@@ -141,7 +164,12 @@ export default function App() {
 			>
 				{[1, 2, 3, 4].map(x => (
 					<Grid key={x} item xs={3}>
-						{StatsCard({ subtitle: "30,000 ADX" })}
+						{StatsCard({
+							subtitle: stats.userBalance
+								? (stats.userBalance.toNumber(10) / ADX_MULTIPLIER).toFixed(2) +
+								  " ADX"
+								: ""
+						})}
 					</Grid>
 				))}
 			</Grid>
@@ -176,7 +204,7 @@ export default function App() {
 			<Modal
 				aria-labelledby="transition-modal-title"
 				aria-describedby="transition-modal-description"
-				open={open}
+				open={isNewBondOpen}
 				onClose={() => setCount(0)}
 				style={{
 					display: "flex",
@@ -186,14 +214,14 @@ export default function App() {
 				closeAfterTransition
 				BackdropComponent={Backdrop}
 				BackdropProps={{
-					timeout: 500
+					timeout: 300
 				}}
 			>
-				<Fade in={open}>
+				<Fade in={isNewBondOpen}>
 					{NewBondForm({
 						pools: POOLS,
 						maxAmount: bigNumberify(0),
-						onNewBond: bond => console.log(bond)
+						onNewBond
 					})}
 				</Fade>
 			</Modal>
@@ -232,8 +260,11 @@ async function loadUserStats() {
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogUnbonded(addr) })
 	])
+	// @TODO: this is very temp, fix it
+	const userBonds = logsBond.concat(logsUnbondReq).concat(logsUnbonded)
+	console.log(userBonds)
 	return {
-		userBonds: [],
+		userBonds,
 		userBalance: bal
 	}
 }
