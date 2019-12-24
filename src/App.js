@@ -13,6 +13,10 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Modal from '@material-ui/core/Modal'
+import Backdrop from '@material-ui/core/Backdrop'
+import Fade from '@material-ui/core/Fade'
+import Paper from '@material-ui/core/Paper'
 import logo from './adex-staking.svg'
 import { Contract, getDefaultProvider } from 'ethers'
 import { Web3Provider } from 'ethers/providers'
@@ -47,6 +51,7 @@ function StatsCard() {
 
 export default function App() {
 	const [count, setCount] = useState(0)
+	const open = count > 2
 	useEffect(() => {
 		loadStats()
 			.then(console.log)
@@ -88,6 +93,26 @@ export default function App() {
 		</TableBody>
       </Table>
 </TableContainer>
+
+<Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={() => setCount(0)}
+	style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
+            <h2 id="transition-modal-title">Transition modal</h2>
+            <p id="transition-modal-description">react-transition-group animates me.</p>
+          </Paper>
+        </Fade>
+      </Modal>
 
 		</MuiThemeProvider>
 	)
