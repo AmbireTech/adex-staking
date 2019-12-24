@@ -15,6 +15,8 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import Modal from "@material-ui/core/Modal"
 import Backdrop from "@material-ui/core/Backdrop"
+import Fab from "@material-ui/core/Fab"
+import AddIcon from "@material-ui/icons/Add"
 import Fade from "@material-ui/core/Fade"
 import Paper from "@material-ui/core/Paper"
 import logo from "./adex-staking.svg"
@@ -35,6 +37,10 @@ function NavBar() {
 		<AppBar position="static">
 			<Toolbar>
 				<img height="40vh" src={logo} alt="logo"></img>
+				<Fab variant="extended" color="secondary">
+					<AddIcon style={{ margin: themeMUI.spacing(1) }} />
+					Stake your ADX
+				</Fab>
 			</Toolbar>
 		</AppBar>
 	)
@@ -60,7 +66,11 @@ export default function App() {
 		<MuiThemeProvider theme={themeMUI}>
 			<NavBar />
 			<Button onClick={() => setCount(count + 1)}>{count}</Button>
-			<Grid container spacing={2}>
+			<Grid
+				container
+				spacing={2}
+				style={{ padding: themeMUI.spacing(2, 4, 3) }}
+			>
 				{[1, 2, 3, 4].map(x => (
 					<Grid key={x} item xs={3}>
 						{StatsCard()}
@@ -79,16 +89,18 @@ export default function App() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableCell>10000.00 ADX</TableCell>
-						<TableCell align="right">0.00 DAI</TableCell>
-						<TableCell align="right">Validator Tom</TableCell>
-						<TableCell align="right">-</TableCell>
-						<TableCell align="right">
-							{/*<Button>Withdraw Reward</Button> */}
-							<Button color="primary" variant="contained">
-								Request Unbond
-							</Button>
-						</TableCell>
+						<TableRow>
+							<TableCell>10000.00 ADX</TableCell>
+							<TableCell align="right">0.00 DAI</TableCell>
+							<TableCell align="right">Validator Tom</TableCell>
+							<TableCell align="right">-</TableCell>
+							<TableCell align="right">
+								{/*<Button>Withdraw Reward</Button> */}
+								<Button color="primary" variant="contained">
+									Unbond
+								</Button>
+							</TableCell>
+						</TableRow>
 					</TableBody>
 				</Table>
 			</TableContainer>
@@ -140,7 +152,6 @@ async function loadUserBonds() {
 	//const bondId = () =>
 
 	// @TODO: we can get all of them in one call to getLogs
-	// @TODO
 	const [logsBond, logsUnbondReq, logsUnbonded] = await Promise.all([
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogBond(addr) }),
 		provider.getLogs({
