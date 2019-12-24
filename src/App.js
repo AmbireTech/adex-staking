@@ -32,20 +32,6 @@ const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 
-function NavBar() {
-	return (
-		<AppBar position="static">
-			<Toolbar>
-				<img height="40vh" src={logo} alt="logo"></img>
-				<Fab variant="extended" color="secondary">
-					<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-					Stake your ADX
-				</Fab>
-			</Toolbar>
-		</AppBar>
-	)
-}
-
 function StatsCard() {
 	return (
 		<Card>
@@ -61,10 +47,26 @@ export default function App() {
 		loadStats().then(console.log)
 	}, [])
 
-	// @TODO Fab for "Stake your ADX"
+	// @TODO fix this
+	const openNewBond = () => setCount(3)
+
 	return (
 		<MuiThemeProvider theme={themeMUI}>
-			<NavBar />
+			<AppBar position="static">
+				<Toolbar>
+					<img height="40vh" src={logo} alt="logo"></img>
+					<Fab
+						onClick={openNewBond}
+						variant="extended"
+						color="secondary"
+						style={{ position: "absolute", right: "5%", top: "50%" }}
+					>
+						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
+						Stake your ADX
+					</Fab>
+				</Toolbar>
+			</AppBar>
+
 			<Button onClick={() => setCount(count + 1)}>{count}</Button>
 			<Grid
 				container
