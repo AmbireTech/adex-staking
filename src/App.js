@@ -21,6 +21,7 @@ import Fade from "@material-ui/core/Fade"
 import Paper from "@material-ui/core/Paper"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
+import { bigNumberify } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import { StakingABI } from "./abi/Staking"
 import { ERC20ABI } from "./abi/ERC20"
@@ -137,15 +138,19 @@ export default function App() {
 }
 
 async function loadStats() {
-	const [totalStake, userBonds] = await Promise.all([
+	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
-		loadUserBonds()
+		loadUserStats()
 	])
-	return { totalStake, userBonds }
+	return { totalStake, ...userStats }
 }
 
-async function loadUserBonds() {
-	if (!window.web3) return []
+async function loadUserStats() {
+	if (!window.web3)
+		return {
+			userBonds: [],
+			userBalance: bigNumberify(0)
+		}
 
 	const provider = new Web3Provider(window.web3.currentProvider)
 	const signer = provider.getSigner()
@@ -154,7 +159,8 @@ async function loadUserBonds() {
 	//const bondId = () =>
 
 	// @TODO: we can get all of them in one call to getLogs
-	const [logsBond, logsUnbondReq, logsUnbonded] = await Promise.all([
+	const [bal, logsBond, logsUnbondReq, logsUnbonded] = await Promise.all([
+		Token.balanceOf(addr),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogBond(addr) }),
 		provider.getLogs({
 			fromBlock: 0,
@@ -162,4 +168,8 @@ async function loadUserBonds() {
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogUnbonded(addr) })
 	])
+	return {
+		userBonds: [],
+		userBalance: bal
+	}
 }
