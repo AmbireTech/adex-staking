@@ -265,7 +265,14 @@ function Dashboard({ stats, onRequestUnbond }) {
 	}
 
 	return (
-		<Grid container style={{ padding: themeMUI.spacing(4) }}>
+		<Grid
+			container
+			style={{
+				padding: themeMUI.spacing(4),
+				maxWidth: "1200px",
+				margin: "auto"
+			}}
+		>
 			<Grid item xs={3}>
 				{StatsCard({
 					loaded: stats.loaded,
