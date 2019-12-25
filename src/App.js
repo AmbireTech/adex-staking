@@ -103,43 +103,51 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 	return (
 		<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
 			<h2>Create a bond</h2>
-			<FormControl required>
-				<TextField
-					label="ADX amount"
-					type="number"
-					onChange={ev =>
-						setBond({
-							...bond,
-							amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
-						})
-					}
-				></TextField>
-			</FormControl>
-			<FormControl required>
-				<InputLabel>Pool</InputLabel>
-				<Select
-					value={bond.poolId}
-					onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
-				>
-					<MenuItem value={""}>
-						<em>None</em>
-					</MenuItem>
-					{pools.map(({ label, id }) => (
-						<MenuItem key={id} value={id}>
-							{label}
-						</MenuItem>
-					))}
-				</Select>
-			</FormControl>
-			<FormControl>
-				<Button
-					color="primary"
-					variant="contained"
-					onClick={() => onNewBond(bond)}
-				>
-					Stake ADX
-				</Button>
-			</FormControl>
+			<Grid container spacing={2} style={{ padding: themeMUI.spacing(4) }}>
+				<Grid item xs={12}>
+					<FormControl required>
+						<TextField
+							label="ADX amount"
+							type="number"
+							onChange={ev =>
+								setBond({
+									...bond,
+									amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
+								})
+							}
+						></TextField>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12}>
+					<FormControl required>
+						<InputLabel>Pool</InputLabel>
+						<Select
+							value={bond.poolId}
+							onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
+						>
+							<MenuItem value={""}>
+								<em>None</em>
+							</MenuItem>
+							{pools.map(({ label, id }) => (
+								<MenuItem key={id} value={id}>
+									{label}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12}>
+					<FormControl>
+						<Button
+							color="primary"
+							variant="contained"
+							onClick={() => onNewBond(bond)}
+						>
+							Stake ADX
+						</Button>
+					</FormControl>
+				</Grid>
+			</Grid>
 		</Paper>
 	)
 }
@@ -183,7 +191,9 @@ export default function App() {
 			.then(r => r.json())
 			.then(setPrices)
 			.catch(console.error)
-	useEffect(() => refreshPrices(), [])
+	useEffect(() => {
+		refreshPrices()
+	}, [])
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
