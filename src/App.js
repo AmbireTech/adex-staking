@@ -25,7 +25,6 @@ import Paper from "@material-ui/core/Paper"
 import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import Checkbox from "@material-ui/core/Checkbox"
@@ -103,18 +102,18 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 }
 
 function NewBondForm({ maxAmount, onNewBond, pools }) {
-	// @TODO: should the button be in a FormControl?
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [confirmation, setConfirmation] = useState(false)
-	const minWidthStyle = { minWidth: "200px" }
+	const minWidthStyle = { minWidth: "180px" }
+	const minBN = (a, b) => (a.lt(b) ? a : b)
 	return (
 		<Paper
 			elevation={2}
-			style={{ maxWidth: "500px", padding: themeMUI.spacing(2, 4, 3) }}
+			style={{ width: "500px", padding: themeMUI.spacing(2, 4, 3) }}
 		>
 			<h2>Create a bond</h2>
 			<Grid container spacing={2}>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<TextField
 						required
 						label="ADX amount"
@@ -124,8 +123,11 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						onChange={ev =>
 							setBond({
 								...bond,
-								amount: bigNumberify(
-									Math.abs(Math.floor(ev.target.value * ADX_MULTIPLIER))
+								amount: minBN(
+									maxAmount,
+									bigNumberify(
+										Math.abs(Math.floor(ev.target.value * ADX_MULTIPLIER))
+									)
 								)
 							})
 						}
@@ -137,7 +139,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						</Button>
 					</Typography>
 				</Grid>
-				<Grid item xs={12}>
+				<Grid item xs={6}>
 					<FormControl required>
 						<InputLabel>Pool</InputLabel>
 						<Select
@@ -168,7 +170,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 					></FormControlLabel>
 				</Grid>
 				<Grid item xs={12}>
-					<FormControl>
+					<FormControl style={{ display: "flex" }}>
 						<Button
 							disabled={!(bond.poolId && confirmation && bond.amount.gt(ZERO))}
 							color="primary"
@@ -186,12 +188,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 
 function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 	return (
-		<Dialog
-			open={!!toUnbond}
-			onClose={onDeny}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
-		>
+		<Dialog open={!!toUnbond} onClose={onDeny}>
 			<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
 			<DialogContent>
 				Are you sure you want to request unbonding of{" "}
@@ -346,7 +343,10 @@ export default function App() {
 	}, [])
 
 	// @TODO trigger refreshStats after those
-	const onNewBond = bond => createNewBond(stats, bond)
+	const onNewBond = bond => {
+		setNewBondOpen(false)
+		createNewBond(stats, bond)
+	}
 	const onRequestUnbond = async ({ amount, poolId, nonce }) => {
 		const provider = new Web3Provider(window.web3.currentProvider)
 		const signer = provider.getSigner()
@@ -390,8 +390,6 @@ export default function App() {
 			})}
 
 			<Modal
-				aria-labelledby="transition-modal-title"
-				aria-describedby="transition-modal-description"
 				open={isNewBondOpen}
 				onClose={() => setNewBondOpen(false)}
 				style={{
