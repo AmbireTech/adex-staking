@@ -76,7 +76,7 @@ const EMPTY_STATS = {
 
 function StatsCard({ title, subtitle }) {
 	return (
-		<Card>
+		<Card style={{ margin: themeMUI.spacing(1) }}>
 			<CardContent>
 				<Typography variant="h6">{subtitle}</Typography>
 				<Typography color="textSecondary" variant="subtitle2">
@@ -185,7 +185,7 @@ export default function App() {
 					</Fab>
 				</Toolbar>
 			</AppBar>
-			<Grid container spacing={2} style={{ padding: themeMUI.spacing(4) }}>
+			<Grid container style={{ padding: themeMUI.spacing(4) }}>
 				<Grid item xs={3}>
 					{StatsCard({
 						title: "Total ADX staked",
