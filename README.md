@@ -1,5 +1,9 @@
 # AdEx Staking UI
 
+## Staking
+
+This is the UI for staking on the [AdEx Registry](https://github.com/adexnetwork/adex-protocol#registry).
+
 ## Available Scripts
 
 In the project directory, you can run:
