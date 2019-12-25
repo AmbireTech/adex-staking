@@ -29,6 +29,7 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
+import Typography from "@material-ui/core/Typography"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import {
@@ -66,11 +67,19 @@ const DEFAULT_BOND = {
 	poolId: "",
 	amount: ZERO
 }
+const EMPTY_STATS = {
+	userBonds: [],
+	userBalance: ZERO,
+	totalStake: ZERO
+}
 
 function StatsCard({ title, subtitle }) {
 	return (
 		<Card>
-			<CardContent>{subtitle}</CardContent>
+			<CardContent>
+				<Typography>{subtitle}</Typography>
+				<Typography color="textSecondary">{title}</Typography>
+			</CardContent>
 		</Card>
 	)
 }
@@ -125,7 +134,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 export default function App() {
 	const [count, setCount] = useState(0)
 
-	const [stats, setStats] = useState({})
+	const [stats, setStats] = useState(EMPTY_STATS)
 	const refreshStats = () => loadStats().then(setStats)
 	useEffect(() => {
 		refreshStats()
@@ -154,6 +163,11 @@ export default function App() {
 		console.log(await tx.wait())
 	}
 
+	const userTotalStake = stats.userBonds
+		.filter(x => x.status === "Active")
+		.map(x => x.amount)
+		.reduce((a, b) => a.add(b), ZERO)
+
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<AppBar position="static">
@@ -177,15 +191,36 @@ export default function App() {
 				spacing={2}
 				style={{ padding: themeMUI.spacing(2, 4, 3) }}
 			>
-				{[1, 2, 3, 4].map(x => (
-					<Grid key={x} item xs={3}>
-						{StatsCard({
-							subtitle: stats.userBalance
-								? formatADX(stats.userBalance) + " ADX"
-								: ""
-						})}
-					</Grid>
-				))}
+				<Grid item xs={3}>
+					{StatsCard({
+						title: "Total ADX staked",
+						subtitle: formatADX(stats.totalStake) + " ADX"
+					})}
+				</Grid>
+
+				<Grid item xs={3}>
+					{StatsCard({
+						title: "Your total active stake",
+						subtitle: formatADX(userTotalStake) + " ADX"
+					})}
+				</Grid>
+
+				<Grid item xs={3}>
+					{StatsCard({
+						// @TODO
+						title: "Your total reward",
+						subtitle: "0.00 DAI"
+					})}
+				</Grid>
+
+				<Grid item xs={3}>
+					{StatsCard({
+						title: "Your balance",
+						subtitle: stats.userBalance
+							? formatADX(stats.userBalance) + " ADX"
+							: ""
+					})}
+				</Grid>
 			</Grid>
 			<TableContainer>
 				<Table aria-label="simple table">
