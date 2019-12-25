@@ -132,8 +132,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 }
 
 export default function App() {
-	const [count, setCount] = useState(0)
-
+	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const refreshStats = () => loadStats().then(setStats)
 	useEffect(() => {
@@ -144,10 +143,6 @@ export default function App() {
 
 	// @TODO dirty
 	const formatADX = num => (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
-
-	// @TODO fix this
-	const isNewBondOpen = count > 2
-	const createNewBondForm = () => setCount(3)
 
 	// @TODO trigger refreshStats after those
 	const onNewBond = bond => createNewBond(stats, bond)
@@ -174,7 +169,7 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
-						onClick={createNewBondForm}
+						onClick={() => setNewBondOpen(true)}
 						variant="extended"
 						color="secondary"
 						style={{ position: "absolute", right: "5%", top: "50%" }}
@@ -184,8 +179,6 @@ export default function App() {
 					</Fab>
 				</Toolbar>
 			</AppBar>
-
-			<Button onClick={() => setCount(count + 1)}>{count}</Button>
 			<Grid
 				container
 				spacing={2}
@@ -223,7 +216,7 @@ export default function App() {
 				</Grid>
 			</Grid>
 			<TableContainer>
-				<Table aria-label="simple table">
+				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
 							<TableCell>Bond amount</TableCell>
@@ -264,7 +257,7 @@ export default function App() {
 				aria-labelledby="transition-modal-title"
 				aria-describedby="transition-modal-description"
 				open={isNewBondOpen}
-				onClose={() => setCount(0)}
+				onClose={() => setNewBondOpen(false)}
 				style={{
 					display: "flex",
 					alignItems: "center",
