@@ -134,8 +134,10 @@ export default function App() {
 	// @TODO fix this
 	const openNewBondForm = () => setCount(3)
 
+	// @TODO: split in a separate function
+	// @TODO handle exceptions
 	const onNewBond = async bond => {
-		// @TODO handle
+		// @TODO handle errors in some way
 		if (!bond.poolId) return
 		if (!stats.userBalance) return
 		if (bond.amount.gt(stats.userBalance)) return
@@ -149,18 +151,20 @@ export default function App() {
 			ADDR_STAKING
 		)
 		let txns = []
-		if (allowance.gt(ZERO) && !allowance.eq(bond.amount)) {
-			txns.push(
-				await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
-			)
-		}
 		// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
 		// which isn't going to be mined at the time of signing
-		txns.push(
-			await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
-				gasLimit: 80000
-			})
-		)
+		if (!allowance.eq(bond.amount)) {
+			if (allowance.gt(ZERO)) {
+				txns.push(
+					await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
+				)
+			}
+			txns.push(
+				await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
+					gasLimit: 80000
+				})
+			)
+		}
 		txns.push(
 			await stakingWithSigner.addBond([bond.amount, bond.poolId, 0], {
 				gasLimit: 110000
@@ -218,8 +222,10 @@ export default function App() {
 						{(stats.userBonds || []).map(bond => {
 							const pool = POOLS.find(x => x.id === bond.poolId)
 							const poolLabel = pool ? pool.label : bond.poolId
+							// @TODO bondId
+							const bondId = bond.amount.toString(10)
 							return (
-								<TableRow>
+								<TableRow key={bondId}>
 									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
 									<TableCell align="right">0.00 DAI</TableCell>
 									<TableCell align="right">{poolLabel}</TableCell>
