@@ -40,11 +40,11 @@ import {
 	defaultAbiCoder
 } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
-import { StakingABI } from "./abi/Staking"
-import { ERC20ABI } from "./abi/ERC20"
+import StakingABI from "./abi/Staking"
+import ERC20ABI from "./abi/ERC20"
 
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
-const ADDR_STAKING = "0xb2cdea5147f7d51f5f49f2bd91fec04b6999a0fe"
+const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
 const ADX_MULTIPLIER = 10000
 const REFRESH_INTVL = 30000
 
