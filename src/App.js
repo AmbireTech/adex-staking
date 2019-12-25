@@ -29,7 +29,7 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import LinearProgress from "@material-ui/core/LinearProgress"
 import Typography from "@material-ui/core/Typography"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
@@ -80,21 +80,6 @@ const EMPTY_STATS = {
 }
 
 function StatsCard({ title, subtitle, extra, loaded }) {
-	if (!loaded) {
-		return (
-			<Card style={{ margin: themeMUI.spacing(1) }}>
-				<CardContent
-					style={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center"
-					}}
-				>
-					<CircularProgress />
-				</CardContent>
-			</Card>
-		)
-	}
 	return (
 		<Card style={{ margin: themeMUI.spacing(1) }}>
 			<CardContent>
@@ -110,6 +95,7 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 					{title}
 				</Typography>
 			</CardContent>
+			{!loaded ? <LinearProgress /> : <></>}
 		</Card>
 	)
 }
