@@ -297,13 +297,13 @@ async function loadUserStats() {
 			const { owner, amount, poolId, nonce } = vals
 			const bond = { owner, amount, poolId, nonce }
 			bonds.push({ id: getBondId(bond), status: "Active", ...bond })
-		} else if (topic === evs.LogUnbondRequested) {
+		} else if (topic === evs.LogUnbondRequested.topic) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
 			// @TODO: set date of unbond requested
-			const { bondId } = Staking.interface.parseLog(log)
+			const { bondId } = Staking.interface.parseLog(log).values
 			bonds.find(({ id }) => id === bondId).status = "UnbondRequested"
-		} else if (topic === evs.LogUnbonded) {
-			const { bondId } = Staking.interface.parseLog(log)
+		} else if (topic === evs.LogUnbonded.topic) {
+			const { bondId } = Staking.interface.parseLog(log).values
 			bonds.find(({ id }) => id === bondId).status = "Unbonded"
 		}
 		return bonds
