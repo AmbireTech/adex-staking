@@ -168,21 +168,18 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 		>
 			<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
 			<DialogContent>
-				<DialogContentText id="alert-dialog-description">
-					Are you sure you want to request unbonding of{" "}
-					{formatADX(toUnbond ? toUnbond.amount : ZERO)} ADX?
-					<br />
-					Please be aware:
-					<ol>
-						<li>
-							It will take 30 days before you will be able to withdraw your ADX!
-						</li>
-						<li>
-							You will not receive staking rewards for this amount in this
-							period.
-						</li>
-					</ol>
-				</DialogContentText>
+				Are you sure you want to request unbonding of{" "}
+				{formatADX(toUnbond ? toUnbond.amount : ZERO)} ADX?
+				<br />
+				Please be aware:
+				<ol>
+					<li>
+						It will take 30 days before you will be able to withdraw your ADX!
+					</li>
+					<li>
+						You will not receive staking rewards for this amount in this period.
+					</li>
+				</ol>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onDeny} autoFocus color="primary">
@@ -331,8 +328,7 @@ export default function App() {
 			poolId,
 			nonce || ZERO
 		])
-		// @TODO remove
-		console.log(await tx.wait())
+		await tx.wait()
 	}
 
 	return (
@@ -459,7 +455,6 @@ async function loadUserStats() {
 	}
 }
 
-// @TODO: split in a separate function
 // @TODO handle exceptions
 async function createNewBond(stats, { amount, poolId, nonce }) {
 	// @TODO handle errors in some way
