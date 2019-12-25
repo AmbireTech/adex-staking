@@ -377,7 +377,9 @@ export default function App() {
 		setNewBondOpen(false)
 		createNewBond(stats, bond)
 	}
+	// @TODO: move to a separate method
 	const onRequestUnbond = async ({ amount, poolId, nonce }) => {
+		// @TODO: what if there's no window.web3
 		const provider = new Web3Provider(window.web3.currentProvider)
 		const signer = provider.getSigner()
 		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
@@ -414,7 +416,7 @@ export default function App() {
 				toUnbond,
 				onDeny: () => setToUnbond(null),
 				onConfirm: () => {
-					onRequestUnbond(toUnbond)
+					if (toUnbond) onRequestUnbond(toUnbond)
 					setToUnbond(null)
 				}
 			})}
