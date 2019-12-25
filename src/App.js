@@ -124,7 +124,6 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 
 export default function App() {
 	const [count, setCount] = useState(0)
-	const isNewBondOpen = count > 2
 
 	const [stats, setStats] = useState({})
 	const refreshStats = () => loadStats().then(setStats)
@@ -138,8 +137,22 @@ export default function App() {
 	const formatADX = num => (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
 
 	// @TODO fix this
+	const isNewBondOpen = count > 2
 	const createNewBondForm = () => setCount(3)
+
+	// @TODO trigger refreshStats after those
 	const onNewBond = bond => createNewBond(stats, bond)
+	const onRequestUnbond = async ({ amount, poolId, nonce }) => {
+		const provider = new Web3Provider(window.web3.currentProvider)
+		const signer = provider.getSigner()
+		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
+		const tx = await stakingWithSigner.requestUnbond([
+			amount,
+			poolId,
+			nonce || ZERO
+		])
+		console.log(await tx.wait())
+	}
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -197,7 +210,11 @@ export default function App() {
 									<TableCell align="right">{bond.status}</TableCell>
 									<TableCell align="right">
 										{/*<Button>Withdraw Reward</Button> */}
-										<Button color="primary" variant="contained">
+										<Button
+											color="primary"
+											variant="contained"
+											onClick={() => onRequestUnbond(bond)}
+										>
 											Unbond
 										</Button>
 									</TableCell>
