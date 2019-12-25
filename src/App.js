@@ -72,6 +72,7 @@ const DEFAULT_BOND = {
 	amount: ZERO
 }
 const EMPTY_STATS = {
+	loaded: false,
 	userBonds: [],
 	userBalance: ZERO,
 	totalStake: ZERO
@@ -155,6 +156,107 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 	)
 }
 
+function Dashboard({ stats, onRequestUnbond }) {
+	const userTotalStake = stats.userBonds
+		.filter(x => x.status === "Active")
+		.map(x => x.amount)
+		.reduce((a, b) => a.add(b), ZERO)
+
+	// USD values
+	const [prices, setPrices] = useState({})
+	const refreshPrices = () =>
+		fetch(PRICES_API_URL)
+			.then(r => r.json())
+			.then(setPrices)
+			.catch(console.error)
+	useEffect(() => {
+		refreshPrices()
+	}, [])
+	const inUSD = adxAmount => {
+		if (!adxAmount) return null
+		if (!prices.USD) return null
+		const usdAmount = (adxAmount.toNumber(10) / ADX_MULTIPLIER) * prices.USD
+		return `${usdAmount.toFixed(2)} USD`
+	}
+
+	return (
+		<Grid container style={{ padding: themeMUI.spacing(4) }}>
+			<Grid item xs={3}>
+				{StatsCard({
+					title: "Total ADX staked",
+					extra: inUSD(stats.totalStake),
+					subtitle: formatADX(stats.totalStake) + " ADX"
+				})}
+			</Grid>
+
+			<Grid item xs={3}>
+				{StatsCard({
+					title: "Your total active stake",
+					extra: inUSD(userTotalStake),
+					subtitle: formatADX(userTotalStake) + " ADX"
+				})}
+			</Grid>
+
+			<Grid item xs={3}>
+				{StatsCard({
+					title: "Your balance",
+					subtitle: stats.userBalance
+						? formatADX(stats.userBalance) + " ADX"
+						: "",
+					extra: inUSD(stats.userBalance)
+				})}
+			</Grid>
+
+			<Grid item xs={3}>
+				{StatsCard({
+					// @TODO
+					title: "Your total reward",
+					extra: "0.00 USD",
+					subtitle: "0.00 DAI"
+				})}
+			</Grid>
+
+			<TableContainer xs={12}>
+				<Table aria-label="Bonds table">
+					<TableHead>
+						<TableRow>
+							<TableCell>Bond amount</TableCell>
+							<TableCell align="right">Reward to collect</TableCell>
+							<TableCell align="right">Pool</TableCell>
+							<TableCell align="right">Status</TableCell>
+							<TableCell align="right">Actions</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{(stats.userBonds || []).map(bond => {
+							const pool = POOLS.find(x => x.id === bond.poolId)
+							const poolLabel = pool ? pool.label : bond.poolId
+							return (
+								<TableRow key={getBondId(bond)}>
+									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
+									<TableCell align="right">0.00 DAI</TableCell>
+									<TableCell align="right">{poolLabel}</TableCell>
+									<TableCell align="right">{bond.status}</TableCell>
+									<TableCell align="right">
+										{/*<Button>Withdraw Reward</Button> */}
+										<Button
+											color="primary"
+											variant="contained"
+											onClick={() => onRequestUnbond(bond)}
+										>
+											Unbond
+										</Button>
+									</TableCell>
+								</TableRow>
+							)
+						})}
+					</TableBody>
+				</Table>
+			</TableContainer>
+		</Grid>
+	)
+}
+
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [stats, setStats] = useState(EMPTY_STATS)
@@ -184,28 +286,6 @@ export default function App() {
 		console.log(await tx.wait())
 	}
 
-	// USD values
-	const [prices, setPrices] = useState({})
-	const refreshPrices = () =>
-		fetch(PRICES_API_URL)
-			.then(r => r.json())
-			.then(setPrices)
-			.catch(console.error)
-	useEffect(() => {
-		refreshPrices()
-	}, [])
-	const inUSD = adxAmount => {
-		if (!adxAmount) return null
-		if (!prices.USD) return null
-		const usdAmount = (adxAmount.toNumber(10) / ADX_MULTIPLIER) * prices.USD
-		return `${usdAmount.toFixed(2)} USD`
-	}
-
-	const userTotalStake = stats.userBonds
-		.filter(x => x.status === "Active")
-		.map(x => x.amount)
-		.reduce((a, b) => a.add(b), ZERO)
-
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<AppBar position="static">
@@ -222,80 +302,8 @@ export default function App() {
 					</Fab>
 				</Toolbar>
 			</AppBar>
-			<Grid container style={{ padding: themeMUI.spacing(4) }}>
-				<Grid item xs={3}>
-					{StatsCard({
-						title: "Total ADX staked",
-						extra: inUSD(stats.totalStake),
-						subtitle: formatADX(stats.totalStake) + " ADX"
-					})}
-				</Grid>
 
-				<Grid item xs={3}>
-					{StatsCard({
-						title: "Your total active stake",
-						extra: inUSD(userTotalStake),
-						subtitle: formatADX(userTotalStake) + " ADX"
-					})}
-				</Grid>
-
-				<Grid item xs={3}>
-					{StatsCard({
-						title: "Your balance",
-						subtitle: stats.userBalance
-							? formatADX(stats.userBalance) + " ADX"
-							: "",
-						extra: inUSD(stats.userBalance)
-					})}
-				</Grid>
-
-				<Grid item xs={3}>
-					{StatsCard({
-						// @TODO
-						title: "Your total reward",
-						extra: "0.00 USD",
-						subtitle: "0.00 DAI"
-					})}
-				</Grid>
-
-				<TableContainer xs={12}>
-					<Table aria-label="Bonds table">
-						<TableHead>
-							<TableRow>
-								<TableCell>Bond amount</TableCell>
-								<TableCell align="right">Reward to collect</TableCell>
-								<TableCell align="right">Pool</TableCell>
-								<TableCell align="right">Status</TableCell>
-								<TableCell align="right">Actions</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{(stats.userBonds || []).map(bond => {
-								const pool = POOLS.find(x => x.id === bond.poolId)
-								const poolLabel = pool ? pool.label : bond.poolId
-								return (
-									<TableRow key={getBondId(bond)}>
-										<TableCell>{formatADX(bond.amount)} ADX</TableCell>
-										<TableCell align="right">0.00 DAI</TableCell>
-										<TableCell align="right">{poolLabel}</TableCell>
-										<TableCell align="right">{bond.status}</TableCell>
-										<TableCell align="right">
-											{/*<Button>Withdraw Reward</Button> */}
-											<Button
-												color="primary"
-												variant="contained"
-												onClick={() => onRequestUnbond(bond)}
-											>
-												Unbond
-											</Button>
-										</TableCell>
-									</TableRow>
-								)
-							})}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Grid>
+			{Dashboard({ stats, onRequestUnbond })}
 
 			<Modal
 				aria-labelledby="transition-modal-title"
@@ -349,6 +357,7 @@ async function loadStats() {
 async function loadUserStats() {
 	if (!window.web3)
 		return {
+			loaded: true,
 			userBonds: [],
 			userBalance: ZERO
 		}
@@ -385,6 +394,7 @@ async function loadUserStats() {
 		return bonds
 	}, [])
 	return {
+		loaded: true,
 		userBonds,
 		userBalance: bal
 	}
