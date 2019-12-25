@@ -138,47 +138,8 @@ export default function App() {
 	const formatADX = num => (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
 
 	// @TODO fix this
-	const openNewBondForm = () => setCount(3)
-
-	// @TODO: split in a separate function
-	// @TODO handle exceptions
-	const onNewBond = async bond => {
-		// @TODO handle errors in some way
-		if (!bond.poolId) return
-		if (!stats.userBalance) return
-		if (bond.amount.gt(stats.userBalance)) return
-		// @TODO: what if there's no window.web3
-		const provider = new Web3Provider(window.web3.currentProvider)
-		const signer = provider.getSigner()
-		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
-		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		const allowance = await tokenWithSigner.allowance(
-			await signer.getAddress(),
-			ADDR_STAKING
-		)
-		let txns = []
-		// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
-		// which isn't going to be mined at the time of signing
-		if (!allowance.eq(bond.amount)) {
-			if (allowance.gt(ZERO)) {
-				txns.push(
-					await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
-				)
-			}
-			txns.push(
-				await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
-					gasLimit: 80000
-				})
-			)
-		}
-		txns.push(
-			await stakingWithSigner.addBond([bond.amount, bond.poolId, 0], {
-				gasLimit: 110000
-			})
-		)
-		const receipts = await Promise.all(txns.map(tx => tx.wait()))
-		console.log(receipts)
-	}
+	const createNewBondForm = () => setCount(3)
+	const onNewBond = bond => createNewBond(stats, bond)
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -186,7 +147,7 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
-						onClick={openNewBondForm}
+						onClick={createNewBondForm}
 						variant="extended"
 						color="secondary"
 						style={{ position: "absolute", right: "5%", top: "50%" }}
@@ -220,7 +181,7 @@ export default function App() {
 							<TableCell>Bond amount</TableCell>
 							<TableCell align="right">Reward to collect</TableCell>
 							<TableCell align="right">Pool</TableCell>
-							<TableCell align="right">Time to unbond</TableCell>
+							<TableCell align="right">Status</TableCell>
 							<TableCell align="right">Actions</TableCell>
 						</TableRow>
 					</TableHead>
@@ -233,7 +194,7 @@ export default function App() {
 									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
 									<TableCell align="right">0.00 DAI</TableCell>
 									<TableCell align="right">{poolLabel}</TableCell>
-									<TableCell align="right">-</TableCell>
+									<TableCell align="right">{bond.status}</TableCell>
 									<TableCell align="right">
 										{/*<Button>Withdraw Reward</Button> */}
 										<Button color="primary" variant="contained">
@@ -315,11 +276,10 @@ async function loadUserStats() {
 		const topic = log.topics[0]
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
-			const { owner, amount, poolId, nonce } = Staking.interface.parseLog(
-				log
-			).values
+			const vals = Staking.interface.parseLog(log).values
+			const { owner, amount, poolId, nonce } = vals
 			const bond = { owner, amount, poolId, nonce }
-			bonds.push({ id: getBondId(bond), status: "Bonded", ...bond })
+			bonds.push({ id: getBondId(bond), status: "Active", ...bond })
 		} else if (topic === evs.LogUnbondRequested) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
 			// @TODO: set date of unbond requested
@@ -335,4 +295,44 @@ async function loadUserStats() {
 		userBonds,
 		userBalance: bal
 	}
+}
+
+// @TODO: split in a separate function
+// @TODO handle exceptions
+async function createNewBond(stats, { amount, poolId, nonce }) {
+	// @TODO handle errors in some way
+	if (!poolId) return
+	if (!stats.userBalance) return
+	if (amount.gt(stats.userBalance)) return
+	// @TODO: what if there's no window.web3
+	const provider = new Web3Provider(window.web3.currentProvider)
+	const signer = provider.getSigner()
+	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
+	const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+	const allowance = await tokenWithSigner.allowance(
+		await signer.getAddress(),
+		ADDR_STAKING
+	)
+	let txns = []
+	// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
+	// which isn't going to be mined at the time of signing
+	if (!allowance.eq(amount)) {
+		if (allowance.gt(ZERO)) {
+			txns.push(
+				await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
+			)
+		}
+		txns.push(
+			await tokenWithSigner.approve(ADDR_STAKING, amount, {
+				gasLimit: 80000
+			})
+		)
+	}
+	txns.push(
+		await stakingWithSigner.addBond([amount, poolId, nonce || ZERO], {
+			gasLimit: 110000
+		})
+	)
+	const receipts = await Promise.all(txns.map(tx => tx.wait()))
+	console.log(receipts)
 }
