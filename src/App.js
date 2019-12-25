@@ -44,7 +44,7 @@ import { StakingABI } from "./abi/Staking"
 import { ERC20ABI } from "./abi/ERC20"
 
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
-const ADDR_STAKING = "0x4b06542aa382cd8f9863f1281e70a87ce1197930"
+const ADDR_STAKING = "0xb2cdea5147f7d51f5f49f2bd91fec04b6999a0fe"
 const ADX_MULTIPLIER = 10000
 const REFRESH_INTVL = 30000
 
@@ -221,7 +221,7 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 	)
 }
 
-function Dashboard({ stats, onRequestUnbond }) {
+function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
 		.map(x => x.amount)
@@ -246,7 +246,14 @@ function Dashboard({ stats, onRequestUnbond }) {
 
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
-			return `Can unbond in ${0} days`
+			const willUnlock = bond.willUnlock.getTime()
+			const now = Date.now()
+			if (willUnlock > now) {
+				const days = Math.ceil((willUnlock - now) / 86400000)
+				return `Can unbond in ${days} days`
+			} else {
+				return "Can unbond"
+			}
 		}
 		return bond.status
 	}
@@ -266,7 +273,11 @@ function Dashboard({ stats, onRequestUnbond }) {
 							Request Unbond
 						</Button>
 					) : (
-						<Button disabled color="secondary">
+						<Button
+							disabled={bond.willUnlock.getTime() > Date.now()}
+							onClick={() => onUnbond(bond)}
+							color="secondary"
+						>
 							Unbond
 						</Button>
 					)}
@@ -317,7 +328,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 			<Grid item xs={3}>
 				{StatsCard({
 					loaded: stats.loaded,
-					// @TODO
+					// @TODO rewards
 					title: "Your total reward",
 					extra: "0.00 USD",
 					subtitle: "0.00 DAI"
@@ -372,24 +383,24 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	// @TODO trigger refreshStats after those
 	const onNewBond = bond => {
 		setNewBondOpen(false)
 		createNewBond(stats, bond)
 	}
 	// @TODO: move to a separate method
-	const onRequestUnbond = async ({ amount, poolId, nonce }) => {
+	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
 		// @TODO: what if there's no window.web3
 		const provider = new Web3Provider(window.web3.currentProvider)
 		const signer = provider.getSigner()
-		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
-		const tx = await stakingWithSigner.requestUnbond([
-			amount,
-			poolId,
-			nonce || ZERO
-		])
+		const staking = new Contract(ADDR_STAKING, StakingABI, signer)
+		const fn = isUnbond
+			? staking.unbond.bind(staking)
+			: staking.requestUnbond.bind(staking)
+		const tx = await fn([amount, poolId, nonce || ZERO])
 		await tx.wait()
 	}
+	const onRequestUnbond = makeUnbondFn(false)
+	const onUnbond = makeUnbondFn(true)
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -410,7 +421,7 @@ export default function App() {
 			</AppBar>
 
 			{// if we set onRequestUnbond to setToUnbond, we will get the confirmation dialog
-			Dashboard({ stats, onRequestUnbond: setToUnbond })}
+			Dashboard({ stats, onRequestUnbond: setToUnbond, onUnbond })}
 
 			{UnbondConfirmationDialog({
 				toUnbond,
@@ -498,9 +509,10 @@ async function loadUserStats() {
 			bonds.push({ id: getBondId(bond), status: "Active", ...bond })
 		} else if (topic === evs.LogUnbondRequested.topic) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
-			// @TODO: set date of unbond requested
-			const { bondId } = Staking.interface.parseLog(log).values
-			bonds.find(({ id }) => id === bondId).status = "UnbondRequested"
+			const { bondId, willUnlock } = Staking.interface.parseLog(log).values
+			const bond = bonds.find(({ id }) => id === bondId)
+			bond.status = "UnbondRequested"
+			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === evs.LogUnbonded.topic) {
 			const { bondId } = Staking.interface.parseLog(log).values
 			bonds.find(({ id }) => id === bondId).status = "Unbonded"
@@ -549,6 +561,6 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 			gasLimit: 110000
 		})
 	)
-	const receipts = await Promise.all(txns.map(tx => tx.wait()))
-	console.log(receipts)
+	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
+	await Promise.all(txns.map(tx => tx.wait()))
 }
