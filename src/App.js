@@ -3,8 +3,6 @@ import { MuiThemeProvider } from "@material-ui/core/styles"
 import { themeMUI } from "./themeMUi"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
-import Card from "@material-ui/core/Card"
-import CardContent from "@material-ui/core/CardContent"
 import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import Table from "@material-ui/core/Table"
@@ -83,8 +81,8 @@ const EMPTY_STATS = {
 
 function StatsCard({ title, subtitle, extra, loaded }) {
 	return (
-		<Card style={{ margin: themeMUI.spacing(1) }}>
-			<CardContent>
+		<Paper elevation={3} style={{ margin: themeMUI.spacing(1) }}>
+			<div style={{ padding: themeMUI.spacing(2), minHeight: "75px" }}>
 				<Typography variant="h5">{subtitle}</Typography>
 				{extra ? (
 					<Typography color="primary" variant="h6">
@@ -96,9 +94,9 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 				<Typography color="textSecondary" variant="subtitle2">
 					{title}
 				</Typography>
-			</CardContent>
+			</div>
 			{!loaded ? <LinearProgress /> : <></>}
-		</Card>
+		</Paper>
 	)
 }
 
