@@ -121,8 +121,11 @@ export default function App() {
 	const isNewBondOpen = count > 2
 
 	const [stats, setStats] = useState({})
+	const refreshStats = () => loadStats().then(setStats)
 	useEffect(() => {
-		loadStats().then(setStats)
+		refreshStats()
+		const intvl = setInterval(refreshStats, 40 * 1000)
+		return () => clearInterval(intvl)
 	}, [])
 
 	// @TODO dirty
@@ -141,7 +144,7 @@ export default function App() {
 		const signer = provider.getSigner()
 		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		const allowance = tokenWithSigner.allowance(
+		const allowance = await tokenWithSigner.allowance(
 			await signer.getAddress(),
 			ADDR_STAKING
 		)
@@ -163,7 +166,6 @@ export default function App() {
 				gasLimit: 110000
 			})
 		)
-		console.log(txns)
 		const receipts = await Promise.all(txns.map(tx => tx.wait()))
 		console.log(receipts)
 	}
