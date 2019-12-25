@@ -77,8 +77,10 @@ function StatsCard({ title, subtitle }) {
 	return (
 		<Card>
 			<CardContent>
-				<Typography>{subtitle}</Typography>
-				<Typography color="textSecondary">{title}</Typography>
+				<Typography variant="h6">{subtitle}</Typography>
+				<Typography color="textSecondary" variant="subtitle2">
+					{title}
+				</Typography>
 			</CardContent>
 		</Card>
 	)
@@ -179,11 +181,7 @@ export default function App() {
 					</Fab>
 				</Toolbar>
 			</AppBar>
-			<Grid
-				container
-				spacing={2}
-				style={{ padding: themeMUI.spacing(2, 4, 3) }}
-			>
+			<Grid container spacing={2} style={{ padding: themeMUI.spacing(4) }}>
 				<Grid item xs={3}>
 					{StatsCard({
 						title: "Total ADX staked",
@@ -214,44 +212,44 @@ export default function App() {
 							: ""
 					})}
 				</Grid>
+				<TableContainer xs={12}>
+					<Table aria-label="Bonds table">
+						<TableHead>
+							<TableRow>
+								<TableCell>Bond amount</TableCell>
+								<TableCell align="right">Reward to collect</TableCell>
+								<TableCell align="right">Pool</TableCell>
+								<TableCell align="right">Status</TableCell>
+								<TableCell align="right">Actions</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{(stats.userBonds || []).map(bond => {
+								const pool = POOLS.find(x => x.id === bond.poolId)
+								const poolLabel = pool ? pool.label : bond.poolId
+								return (
+									<TableRow key={getBondId(bond)}>
+										<TableCell>{formatADX(bond.amount)} ADX</TableCell>
+										<TableCell align="right">0.00 DAI</TableCell>
+										<TableCell align="right">{poolLabel}</TableCell>
+										<TableCell align="right">{bond.status}</TableCell>
+										<TableCell align="right">
+											{/*<Button>Withdraw Reward</Button> */}
+											<Button
+												color="primary"
+												variant="contained"
+												onClick={() => onRequestUnbond(bond)}
+											>
+												Unbond
+											</Button>
+										</TableCell>
+									</TableRow>
+								)
+							})}
+						</TableBody>
+					</Table>
+				</TableContainer>
 			</Grid>
-			<TableContainer>
-				<Table aria-label="Bonds table">
-					<TableHead>
-						<TableRow>
-							<TableCell>Bond amount</TableCell>
-							<TableCell align="right">Reward to collect</TableCell>
-							<TableCell align="right">Pool</TableCell>
-							<TableCell align="right">Status</TableCell>
-							<TableCell align="right">Actions</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{(stats.userBonds || []).map(bond => {
-							const pool = POOLS.find(x => x.id === bond.poolId)
-							const poolLabel = pool ? pool.label : bond.poolId
-							return (
-								<TableRow key={getBondId(bond)}>
-									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
-									<TableCell align="right">0.00 DAI</TableCell>
-									<TableCell align="right">{poolLabel}</TableCell>
-									<TableCell align="right">{bond.status}</TableCell>
-									<TableCell align="right">
-										{/*<Button>Withdraw Reward</Button> */}
-										<Button
-											color="primary"
-											variant="contained"
-											onClick={() => onRequestUnbond(bond)}
-										>
-											Unbond
-										</Button>
-									</TableCell>
-								</TableRow>
-							)
-						})}
-					</TableBody>
-				</Table>
-			</TableContainer>
 
 			<Modal
 				aria-labelledby="transition-modal-title"
