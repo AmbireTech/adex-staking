@@ -24,6 +24,11 @@ import Fab from "@material-ui/core/Fab"
 import AddIcon from "@material-ui/icons/Add"
 import Fade from "@material-ui/core/Fade"
 import Paper from "@material-ui/core/Paper"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import DialogTitle from "@material-ui/core/DialogTitle"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, id, hexZeroPad } from "ethers/utils"
@@ -49,9 +54,11 @@ const POOLS = [
 		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e")
 	}
 ]
+
+const ZERO = bigNumberify(0)
 const DEFAULT_BOND = {
 	poolId: "",
-	amount: bigNumberify(0)
+	amount: ZERO
 }
 
 function StatsCard({ title, subtitle }) {
@@ -129,22 +136,35 @@ export default function App() {
 		if (!bond.poolId) return
 		if (!stats.userBalance) return
 		if (bond.amount.gt(stats.userBalance)) return
-		console.log(bond)
 		// @TODO: what if there's no window.web3
 		const provider = new Web3Provider(window.web3.currentProvider)
 		const signer = provider.getSigner()
 		const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		// @TODO: set allowance to 0 if needed
-		// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on tx2 cause it depends on tx1...
+		const allowance = tokenWithSigner.allowance(
+			await signer.getAddress(),
+			ADDR_STAKING
+		)
+		let txns = []
+		if (allowance.gt(ZERO) && !allowance.eq(bond.amount)) {
+			txns.push(
+				await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
+			)
+		}
+		// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
 		// which isn't going to be mined at the time of signing
-		const tx1 = await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
-			gasLimit: 80000
-		})
-		const tx2 = await stakingWithSigner.addBond([bond.amount, bond.poolId, 0], {
-			gasLimit: 110000
-		})
-		const receipts = await Promise.all([tx1.wait(), tx2.wait()])
+		txns.push(
+			await tokenWithSigner.approve(ADDR_STAKING, bond.amount, {
+				gasLimit: 80000
+			})
+		)
+		txns.push(
+			await stakingWithSigner.addBond([bond.amount, bond.poolId, 0], {
+				gasLimit: 110000
+			})
+		)
+		console.log(txns)
+		const receipts = await Promise.all(txns.map(tx => tx.wait()))
 		console.log(receipts)
 	}
 
@@ -234,7 +254,7 @@ export default function App() {
 				<Fade in={isNewBondOpen}>
 					{NewBondForm({
 						pools: POOLS,
-						maxAmount: bigNumberify(0),
+						maxAmount: ZERO,
 						onNewBond
 					})}
 				</Fade>
@@ -255,7 +275,7 @@ async function loadUserStats() {
 	if (!window.web3)
 		return {
 			userBonds: [],
-			userBalance: bigNumberify(0)
+			userBalance: ZERO
 		}
 
 	const provider = new Web3Provider(window.web3.currentProvider)
