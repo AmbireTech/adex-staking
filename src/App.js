@@ -52,6 +52,9 @@ const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 
+const PRICES_API_URL =
+	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+
 const POOLS = [
 	{
 		label: "Validator Tom",
@@ -175,16 +178,12 @@ export default function App() {
 
 	// USD values
 	const [prices, setPrices] = useState({})
-	useEffect(
-		() =>
-			fetch(
-				"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
-			)
-				.then(r => r.json())
-				.then(setPrices)
-				.catch(console.error),
-		[]
-	)
+	const refreshPrices = () =>
+		fetch(PRICES_API_URL)
+			.then(r => r.json())
+			.then(setPrices)
+			.catch(console.error)
+	useEffect(() => refreshPrices(), [])
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
