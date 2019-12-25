@@ -59,11 +59,13 @@ const PRICES_API_URL =
 const POOLS = [
 	{
 		label: "Validator Tom",
-		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d")
+		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
+		selectable: true
 	},
 	{
 		label: "Validator Jerry",
-		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e")
+		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
+		selectable: false
 	}
 ]
 
@@ -380,7 +382,7 @@ export default function App() {
 			>
 				<Fade in={isNewBondOpen}>
 					{NewBondForm({
-						pools: POOLS,
+						pools: POOLS.filter(x => x.selectable),
 						maxAmount: stats.userBalance,
 						onNewBond
 					})}
