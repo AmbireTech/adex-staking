@@ -341,6 +341,7 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
+						disabled={!stats.loaded}
 						onClick={() => setNewBondOpen(true)}
 						variant="extended"
 						color="secondary"
