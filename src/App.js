@@ -26,7 +26,7 @@ import Fade from "@material-ui/core/Fade"
 import Paper from "@material-ui/core/Paper"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify, id } from "ethers/utils"
+import { bigNumberify, id, hexZeroPad } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import { StakingABI } from "./abi/Staking"
 import { ERC20ABI } from "./abi/ERC20"
@@ -118,6 +118,9 @@ export default function App() {
 		loadStats().then(setStats)
 	}, [])
 
+	// @TODO dirty
+	const formatADX = num => (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
+
 	// @TODO fix this
 	const openNewBondForm = () => setCount(3)
 
@@ -172,8 +175,7 @@ export default function App() {
 					<Grid key={x} item xs={3}>
 						{StatsCard({
 							subtitle: stats.userBalance
-								? (stats.userBalance.toNumber(10) / ADX_MULTIPLIER).toFixed(2) +
-								  " ADX"
+								? formatADX(stats.userBalance) + " ADX"
 								: ""
 						})}
 					</Grid>
@@ -191,18 +193,24 @@ export default function App() {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell>10000.00 ADX</TableCell>
-							<TableCell align="right">0.00 DAI</TableCell>
-							<TableCell align="right">Validator Tom</TableCell>
-							<TableCell align="right">-</TableCell>
-							<TableCell align="right">
-								{/*<Button>Withdraw Reward</Button> */}
-								<Button color="primary" variant="contained">
-									Unbond
-								</Button>
-							</TableCell>
-						</TableRow>
+						{(stats.userBonds || []).map(bond => {
+							const pool = POOLS.find(x => x.id === bond.poolId)
+							const poolLabel = pool ? pool.label : bond.poolId
+							return (
+								<TableRow>
+									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
+									<TableCell align="right">0.00 DAI</TableCell>
+									<TableCell align="right">{poolLabel}</TableCell>
+									<TableCell align="right">-</TableCell>
+									<TableCell align="right">
+										{/*<Button>Withdraw Reward</Button> */}
+										<Button color="primary" variant="contained">
+											Unbond
+										</Button>
+									</TableCell>
+								</TableRow>
+							)
+						})}
 					</TableBody>
 				</Table>
 			</TableContainer>
@@ -256,19 +264,27 @@ async function loadUserStats() {
 	// @TODO calculate bond ID from the stuff in LogBond
 	//const bondId = () =>
 
-	// @TODO: we can get all of them in one call to getLogs
-	const [bal, logsBond, logsUnbondReq, logsUnbonded] = await Promise.all([
+	const [bal, logs] = await Promise.all([
 		Token.balanceOf(addr),
-		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogBond(addr) }),
 		provider.getLogs({
 			fromBlock: 0,
-			...Staking.filters.LogUnbondRequested(addr)
-		}),
-		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogUnbonded(addr) })
+			address: ADDR_STAKING,
+			topics: [null, hexZeroPad(addr, 32)]
+		})
 	])
-	// @TODO: this is very temp, fix it
-	const userBonds = logsBond.concat(logsUnbondReq).concat(logsUnbonded)
-	console.log(userBonds)
+	// @TODO: this is WIP, finish it
+	const userBonds = logs.reduce((bonds, log) => {
+		const topic = log.topics[0]
+		const evs = Staking.interface.events
+		if (topic === evs.LogBond.topic) {
+			bonds.push(Staking.interface.parseLog(log).values)
+		} else if (topic === evs.LogUnbondRequested) {
+			// @TODO: change it's status to unbond requested, set time
+		} else if (topic === evs.LogUnbonded) {
+			// @TODO: change it's status to unbonded
+		}
+		return bonds
+	}, [])
 	return {
 		userBonds,
 		userBalance: bal
