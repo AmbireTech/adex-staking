@@ -55,6 +55,8 @@ const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const PRICES_API_URL =
 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
 
+const UNBOND_DAYS = 30
+
 const POOLS = [
 	{
 		label: "Validator Tom",
@@ -161,7 +163,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 				<Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}
-						label="I understand I am locking up my ADX for at least 30 days and I am familiar with the staking terms."
+						label={`I understand I am locking up my ADX for at least ${UNBOND_DAYS} days and I am familiar with the staking terms.`}
 						control={
 							<Checkbox
 								checked={confirmation}
@@ -199,7 +201,8 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 				Please be aware:
 				<ol>
 					<li>
-						It will take 30 days before you will be able to withdraw your ADX!
+						It will take {UNBOND_DAYS} days before you will be able to withdraw
+						your ADX!
 					</li>
 					<li>
 						You will not receive staking rewards for this amount in this period.
@@ -241,6 +244,13 @@ function Dashboard({ stats, onRequestUnbond }) {
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
+	const bondStatus = bond => {
+		if (bond.status === "UnbondRequested") {
+			return `Can unbond in ${0} days`
+		}
+		return bond.status
+	}
+
 	const renderBondRow = bond => {
 		const pool = POOLS.find(x => x.id === bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
@@ -249,15 +259,15 @@ function Dashboard({ stats, onRequestUnbond }) {
 				<TableCell>{formatADX(bond.amount)} ADX</TableCell>
 				<TableCell align="right">0.00 DAI</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
-				<TableCell align="right">{bond.status}</TableCell>
+				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
 						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
-							Unbond
+							Request Unbond
 						</Button>
 					) : (
 						<Button disabled color="secondary">
-							Withdraw
+							Unbond
 						</Button>
 					)}
 				</TableCell>
