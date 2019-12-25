@@ -103,25 +103,28 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 	return (
 		<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
 			<h2>Create a bond</h2>
-			<Grid container spacing={2} style={{ padding: themeMUI.spacing(4) }}>
+			<Grid container spacing={2}>
 				<Grid item xs={12}>
-					<FormControl required>
-						<TextField
-							label="ADX amount"
-							type="number"
-							onChange={ev =>
-								setBond({
-									...bond,
-									amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
-								})
-							}
-						></TextField>
-					</FormControl>
+					<TextField
+						required
+						label="ADX amount"
+						type="number"
+						onChange={ev =>
+							setBond({
+								...bond,
+								amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
+							})
+						}
+					></TextField>
+					<Typography variant="subtitle2">
+						Max amount: {formatADX(maxAmount)} ADX
+					</Typography>
 				</Grid>
 				<Grid item xs={12}>
 					<FormControl required>
 						<InputLabel>Pool</InputLabel>
 						<Select
+							style={{ minWidth: "180px" }}
 							value={bond.poolId}
 							onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
 						>
@@ -165,9 +168,6 @@ export default function App() {
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
 	}, [])
-
-	// @TODO dirty
-	const formatADX = num => (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
 
 	// @TODO trigger refreshStats after those
 	const onNewBond = bond => createNewBond(stats, bond)
@@ -316,13 +316,17 @@ export default function App() {
 				<Fade in={isNewBondOpen}>
 					{NewBondForm({
 						pools: POOLS,
-						maxAmount: ZERO,
+						maxAmount: stats.userBalance,
 						onNewBond
 					})}
 				</Fade>
 			</Modal>
 		</MuiThemeProvider>
 	)
+}
+
+function formatADX(num) {
+	return (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
 }
 
 function getBondId({ owner, amount, poolId, nonce }) {
