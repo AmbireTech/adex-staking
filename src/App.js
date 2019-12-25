@@ -28,6 +28,8 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import LinearProgress from "@material-ui/core/LinearProgress"
+import Checkbox from "@material-ui/core/Checkbox"
+import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Typography from "@material-ui/core/Typography"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
@@ -103,9 +105,13 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	// @TODO: should the button be in a FormControl?
 	const [bond, setBond] = useState(DEFAULT_BOND)
-
+	const [confirmation, setConfirmation] = useState(false)
+	const minWidthStyle = { minWidth: "200px" }
 	return (
-		<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
+		<Paper
+			elevation={2}
+			style={{ maxWidth: "500px", padding: themeMUI.spacing(2, 4, 3) }}
+		>
 			<h2>Create a bond</h2>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
@@ -113,6 +119,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						required
 						label="ADX amount"
 						type="number"
+						style={minWidthStyle}
 						value={bond.amount.toNumber() / ADX_MULTIPLIER}
 						onChange={ev =>
 							setBond({
@@ -124,7 +131,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						}
 					></TextField>
 					<Typography variant="subtitle2">
-						Max amount:{" "}
+						Max amount:
 						<Button onClick={ev => setBond({ ...bond, amount: maxAmount })}>
 							{formatADX(maxAmount)} ADX
 						</Button>
@@ -134,7 +141,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 					<FormControl required>
 						<InputLabel>Pool</InputLabel>
 						<Select
-							style={{ minWidth: "180px" }}
+							style={minWidthStyle}
 							value={bond.poolId}
 							onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
 						>
@@ -150,8 +157,20 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 					</FormControl>
 				</Grid>
 				<Grid item xs={12}>
+					<FormControlLabel
+						label="I understand I am locking up my ADX for at least 30 days and I am familiar with the staking terms."
+						control={
+							<Checkbox
+								checked={confirmation}
+								onChange={ev => setConfirmation(ev.target.checked)}
+							/>
+						}
+					></FormControlLabel>
+				</Grid>
+				<Grid item xs={12}>
 					<FormControl>
 						<Button
+							disabled={!(bond.poolId && confirmation && bond.amount.gt(ZERO))}
 							color="primary"
 							variant="contained"
 							onClick={() => onNewBond(bond)}
