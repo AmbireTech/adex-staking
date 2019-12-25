@@ -296,7 +296,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				margin: "auto"
 			}}
 		>
-			<Grid item xs={3}>
+			<Grid item sm={3} xs={6}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
@@ -305,7 +305,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				})}
 			</Grid>
 
-			<Grid item xs={3}>
+			<Grid item sm={3} xs={6}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your total active stake",
@@ -314,7 +314,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				})}
 			</Grid>
 
-			<Grid item xs={3}>
+			<Grid item sm={3} xs={6}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your balance",
@@ -325,7 +325,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				})}
 			</Grid>
 
-			<Grid item xs={3}>
+			<Grid item sm={3} xs={6}>
 				{StatsCard({
 					loaded: stats.loaded,
 					// @TODO rewards
