@@ -74,11 +74,18 @@ const EMPTY_STATS = {
 	totalStake: ZERO
 }
 
-function StatsCard({ title, subtitle }) {
+function StatsCard({ title, subtitle, extra }) {
 	return (
 		<Card style={{ margin: themeMUI.spacing(1) }}>
 			<CardContent>
-				<Typography variant="h6">{subtitle}</Typography>
+				<Typography variant="h5">{subtitle}</Typography>
+				{extra ? (
+					<Typography color="primary" variant="h6">
+						{extra}
+					</Typography>
+				) : (
+					<></>
+				)}
 				<Typography color="textSecondary" variant="subtitle2">
 					{title}
 				</Typography>
@@ -137,6 +144,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [stats, setStats] = useState(EMPTY_STATS)
+
 	const refreshStats = () =>
 		loadStats()
 			.then(setStats)
@@ -161,7 +169,27 @@ export default function App() {
 			poolId,
 			nonce || ZERO
 		])
+		// @TODO remove
 		console.log(await tx.wait())
+	}
+
+	// USD values
+	const [prices, setPrices] = useState({})
+	useEffect(
+		() =>
+			fetch(
+				"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+			)
+				.then(r => r.json())
+				.then(setPrices)
+				.catch(console.error),
+		[]
+	)
+	const inUSD = adxAmount => {
+		if (!adxAmount) return null
+		if (!prices.USD) return null
+		const usdAmount = (adxAmount.toNumber(10) / ADX_MULTIPLIER) * prices.USD
+		return `${usdAmount.toFixed(2)} USD`
 	}
 
 	const userTotalStake = stats.userBonds
@@ -189,6 +217,7 @@ export default function App() {
 				<Grid item xs={3}>
 					{StatsCard({
 						title: "Total ADX staked",
+						extra: inUSD(stats.totalStake),
 						subtitle: formatADX(stats.totalStake) + " ADX"
 					})}
 				</Grid>
@@ -196,15 +225,8 @@ export default function App() {
 				<Grid item xs={3}>
 					{StatsCard({
 						title: "Your total active stake",
+						extra: inUSD(userTotalStake),
 						subtitle: formatADX(userTotalStake) + " ADX"
-					})}
-				</Grid>
-
-				<Grid item xs={3}>
-					{StatsCard({
-						// @TODO
-						title: "Your total reward",
-						subtitle: "0.00 DAI"
 					})}
 				</Grid>
 
@@ -213,9 +235,20 @@ export default function App() {
 						title: "Your balance",
 						subtitle: stats.userBalance
 							? formatADX(stats.userBalance) + " ADX"
-							: ""
+							: "",
+						extra: inUSD(stats.userBalance)
 					})}
 				</Grid>
+
+				<Grid item xs={3}>
+					{StatsCard({
+						// @TODO
+						title: "Your total reward",
+						extra: "0.00 USD",
+						subtitle: "0.00 DAI"
+					})}
+				</Grid>
+
 				<TableContainer xs={12}>
 					<Table aria-label="Bonds table">
 						<TableHead>
