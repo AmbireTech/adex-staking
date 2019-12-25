@@ -269,6 +269,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
+	const [toUnbond, setToUnbond] = React.useState(null)
 	const [stats, setStats] = useState(EMPTY_STATS)
 
 	const refreshStats = () =>
@@ -313,7 +314,49 @@ export default function App() {
 				</Toolbar>
 			</AppBar>
 
-			{Dashboard({ stats, onRequestUnbond })}
+			{// if we set onRequestUnbond to setToUnbond, we will get the confirmation dialog
+			Dashboard({ stats, onRequestUnbond: setToUnbond })}
+
+			<Dialog
+				open={!!toUnbond}
+				onClose={() => setToUnbond(null)}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						Are you sure you want to request unbonding of{" "}
+						{formatADX(toUnbond ? toUnbond.amount : ZERO)} ADX?
+						<br />
+						Please be aware:
+						<ol>
+							<li>
+								It will take 30 days before you will be able to withdraw your
+								ADX!
+							</li>
+							<li>
+								You will not receive staking rewards for this amount in this
+								period.
+							</li>
+						</ol>
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setToUnbond(null)} autoFocus color="primary">
+						Cancel
+					</Button>
+					<Button
+						onClick={() => {
+							onRequestUnbond(toUnbond)
+							setToUnbond(null)
+						}}
+						color="primary"
+					>
+						Unbond
+					</Button>
+				</DialogActions>
+			</Dialog>
 
 			<Modal
 				aria-labelledby="transition-modal-title"
