@@ -160,6 +160,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 				</Grid>
 				<Grid item xs={12}>
 					<FormControlLabel
+						style={{ userSelect: "none" }}
 						label="I understand I am locking up my ADX for at least 30 days and I am familiar with the staking terms."
 						control={
 							<Checkbox
@@ -264,6 +265,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 		)
 	}
 
+	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Grid
 			container
@@ -317,14 +319,25 @@ function Dashboard({ stats, onRequestUnbond }) {
 			</Grid>*/}
 
 			<TableContainer xs={12}>
-				<Table aria-label="Bonds table">
+				<Table
+					aria-label="Bonds table"
+					style={{ marginTop: themeMUI.spacing(2) }}
+				>
 					<TableHead>
 						<TableRow>
-							<TableCell>Bond amount</TableCell>
-							<TableCell align="right">Reward to collect</TableCell>
-							<TableCell align="right">Pool</TableCell>
-							<TableCell align="right">Status</TableCell>
-							<TableCell align="right">Actions</TableCell>
+							<TableCell style={headerCellStyle}>Bond amount</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Reward to collect
+							</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Pool
+							</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Status
+							</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Actions
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>{(stats.userBonds || []).map(renderBondRow)}</TableBody>
