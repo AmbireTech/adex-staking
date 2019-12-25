@@ -137,7 +137,10 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [stats, setStats] = useState(EMPTY_STATS)
-	const refreshStats = () => loadStats().then(setStats)
+	const refreshStats = () =>
+		loadStats()
+			.then(setStats)
+			.catch(e => console.error("loadStats", e))
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
