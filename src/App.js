@@ -472,7 +472,7 @@ function getBondId({ owner, amount, poolId, nonce }) {
 }
 
 async function getSigner() {
-	if (typeof window.ethereum !== undefined) {
+	if (typeof window.ethereum !== "undefined") {
 		await window.ethereum.enable()
 	}
 
