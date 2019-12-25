@@ -31,7 +31,13 @@ import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify, id, hexZeroPad } from "ethers/utils"
+import {
+	bigNumberify,
+	id,
+	hexZeroPad,
+	keccak256,
+	defaultAbiCoder
+} from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import { StakingABI } from "./abi/Staking"
 import { ERC20ABI } from "./abi/ERC20"
@@ -222,10 +228,8 @@ export default function App() {
 						{(stats.userBonds || []).map(bond => {
 							const pool = POOLS.find(x => x.id === bond.poolId)
 							const poolLabel = pool ? pool.label : bond.poolId
-							// @TODO bondId
-							const bondId = bond.amount.toString(10)
 							return (
-								<TableRow key={bondId}>
+								<TableRow key={getBondId(bond)}>
 									<TableCell>{formatADX(bond.amount)} ADX</TableCell>
 									<TableCell align="right">0.00 DAI</TableCell>
 									<TableCell align="right">{poolLabel}</TableCell>
@@ -271,6 +275,15 @@ export default function App() {
 	)
 }
 
+function getBondId({ owner, amount, poolId, nonce }) {
+	return keccak256(
+		defaultAbiCoder.encode(
+			["address", "address", "uint", "bytes32", "uint"],
+			[ADDR_STAKING, owner, amount, poolId, nonce]
+		)
+	)
+}
+
 async function loadStats() {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
@@ -289,8 +302,6 @@ async function loadUserStats() {
 	const provider = new Web3Provider(window.web3.currentProvider)
 	const signer = provider.getSigner()
 	const addr = await signer.getAddress()
-	// @TODO calculate bond ID from the stuff in LogBond
-	//const bondId = () =>
 
 	const [bal, logs] = await Promise.all([
 		Token.balanceOf(addr),
