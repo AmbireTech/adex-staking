@@ -311,16 +311,23 @@ async function loadUserStats() {
 			topics: [null, hexZeroPad(addr, 32)]
 		})
 	])
-	// @TODO: this is WIP, finish it
 	const userBonds = logs.reduce((bonds, log) => {
 		const topic = log.topics[0]
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
-			bonds.push(Staking.interface.parseLog(log).values)
+			const { owner, amount, poolId, nonce } = Staking.interface.parseLog(
+				log
+			).values
+			const bond = { owner, amount, poolId, nonce }
+			bonds.push({ id: getBondId(bond), status: "Bonded", ...bond })
 		} else if (topic === evs.LogUnbondRequested) {
-			// @TODO: change it's status to unbond requested, set time
+			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
+			// @TODO: set date of unbond requested
+			const { bondId } = Staking.interface.parseLog(log)
+			bonds.find(({ id }) => id === bondId).status = "UnbondRequested"
 		} else if (topic === evs.LogUnbonded) {
-			// @TODO: change it's status to unbonded
+			const { bondId } = Staking.interface.parseLog(log)
+			bonds.find(({ id }) => id === bondId).status = "Unbonded"
 		}
 		return bonds
 	}, [])
