@@ -46,6 +46,7 @@ import { ERC20ABI } from "./abi/ERC20"
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const ADDR_STAKING = "0x4b06542aa382cd8f9863f1281e70a87ce1197930"
 const ADX_MULTIPLIER = 10000
+const REFRESH_INTVL = 30000
 
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
@@ -139,7 +140,7 @@ export default function App() {
 	const refreshStats = () => loadStats().then(setStats)
 	useEffect(() => {
 		refreshStats()
-		const intvl = setInterval(refreshStats, 40 * 1000)
+		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
 	}, [])
 
