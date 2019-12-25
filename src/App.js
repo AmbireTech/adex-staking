@@ -29,6 +29,7 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
+import CircularProgress from "@material-ui/core/CircularProgress"
 import Typography from "@material-ui/core/Typography"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
@@ -78,7 +79,22 @@ const EMPTY_STATS = {
 	totalStake: ZERO
 }
 
-function StatsCard({ title, subtitle, extra }) {
+function StatsCard({ title, subtitle, extra, loaded }) {
+	if (!loaded) {
+		return (
+			<Card style={{ margin: themeMUI.spacing(1) }}>
+				<CardContent
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center"
+					}}
+				>
+					<CircularProgress />
+				</CardContent>
+			</Card>
+		)
+	}
 	return (
 		<Card style={{ margin: themeMUI.spacing(1) }}>
 			<CardContent>
@@ -183,6 +199,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 		<Grid container style={{ padding: themeMUI.spacing(4) }}>
 			<Grid item xs={3}>
 				{StatsCard({
+					loaded: stats.loaded,
 					title: "Total ADX staked",
 					extra: inUSD(stats.totalStake),
 					subtitle: formatADX(stats.totalStake) + " ADX"
@@ -191,6 +208,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 
 			<Grid item xs={3}>
 				{StatsCard({
+					loaded: stats.loaded,
 					title: "Your total active stake",
 					extra: inUSD(userTotalStake),
 					subtitle: formatADX(userTotalStake) + " ADX"
@@ -199,6 +217,7 @@ function Dashboard({ stats, onRequestUnbond }) {
 
 			<Grid item xs={3}>
 				{StatsCard({
+					loaded: stats.loaded,
 					title: "Your balance",
 					subtitle: stats.userBalance
 						? formatADX(stats.userBalance) + " ADX"
@@ -209,12 +228,17 @@ function Dashboard({ stats, onRequestUnbond }) {
 
 			<Grid item xs={3}>
 				{StatsCard({
+					loaded: stats.loaded,
 					// @TODO
 					title: "Your total reward",
 					extra: "0.00 USD",
 					subtitle: "0.00 DAI"
 				})}
 			</Grid>
+
+			{/*<Grid item xs={12}>
+			// TODO information about "reward are not launched yet blabla"
+			</Grid>*/}
 
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
