@@ -103,6 +103,7 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	// @TODO: should the button be in a FormControl?
 	const [bond, setBond] = useState(DEFAULT_BOND)
+
 	return (
 		<Paper elevation={2} style={{ padding: themeMUI.spacing(2, 4, 3) }}>
 			<h2>Create a bond</h2>
@@ -112,15 +113,21 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						required
 						label="ADX amount"
 						type="number"
+						value={bond.amount.toNumber() / ADX_MULTIPLIER}
 						onChange={ev =>
 							setBond({
 								...bond,
-								amount: bigNumberify(ev.target.value * ADX_MULTIPLIER)
+								amount: bigNumberify(
+									Math.abs(Math.floor(ev.target.value * ADX_MULTIPLIER))
+								)
 							})
 						}
 					></TextField>
 					<Typography variant="subtitle2">
-						Max amount: {formatADX(maxAmount)} ADX
+						Max amount:{" "}
+						<Button onClick={ev => setBond({ ...bond, amount: maxAmount })}>
+							{formatADX(maxAmount)} ADX
+						</Button>
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
