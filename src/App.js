@@ -388,10 +388,10 @@ export default function App() {
 		createNewBond(stats, bond)
 	}
 	// @TODO: move to a separate method
+	// @TODO handle the case if there is no signer
 	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
-		// @TODO: what if there's no window.web3
-		const provider = new Web3Provider(window.web3.currentProvider)
-		const signer = provider.getSigner()
+		const signer = await getSigner()
+		if (!signer) return
 		const staking = new Contract(ADDR_STAKING, StakingABI, signer)
 		const fn = isUnbond
 			? staking.unbond.bind(staking)
@@ -471,6 +471,18 @@ function getBondId({ owner, amount, poolId, nonce }) {
 	)
 }
 
+async function getSigner() {
+	if (typeof window.ethereum !== undefined) {
+		await window.ethereum.enable()
+	}
+
+	if (!window.web3) return null
+
+	const provider = new Web3Provider(window.web3.currentProvider)
+	const signer = provider.getSigner()
+	return signer
+}
+
 async function loadStats() {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
@@ -480,15 +492,14 @@ async function loadStats() {
 }
 
 async function loadUserStats() {
-	if (!window.web3)
+	const signer = await getSigner()
+	if (!signer)
 		return {
 			loaded: true,
 			userBonds: [],
 			userBalance: ZERO
 		}
 
-	const provider = new Web3Provider(window.web3.currentProvider)
-	const signer = provider.getSigner()
 	const addr = await signer.getAddress()
 
 	const [bal, logs] = await Promise.all([
@@ -532,9 +543,8 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	if (!poolId) return
 	if (!stats.userBalance) return
 	if (amount.gt(stats.userBalance)) return
-	// @TODO: what if there's no window.web3
-	const provider = new Web3Provider(window.web3.currentProvider)
-	const signer = provider.getSigner()
+	const signer = await getSigner()
+	if (!signer) return
 	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
 	const allowance = await tokenWithSigner.allowance(
