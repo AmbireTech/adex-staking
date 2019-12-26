@@ -428,6 +428,8 @@ export default function App() {
 	const [toUnbond, setToUnbond] = React.useState(null)
 	const [stats, setStats] = useState(EMPTY_STATS)
 
+	// @TODO handle err.code === 4001, which is the metamask error for "user denied authorization"
+	// it will come on the .catch of loadStats
 	const refreshStats = () =>
 		loadStats()
 			.then(setStats)
