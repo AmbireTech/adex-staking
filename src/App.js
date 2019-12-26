@@ -109,6 +109,12 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [confirmation, setConfirmation] = useState(false)
 	const minWidthStyle = { minWidth: "180px" }
 	const minBN = (a, b) => (a.lt(b) ? a : b)
+
+	const onAction = () => {
+		setConfirmation(false)
+		onNewBond(bond)
+	}
+
 	const stakingRulesFrag = STAKING_RULES_URL ? (
 		<>
 			&nbsp;and{" "}
@@ -199,7 +205,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 							disabled={!(bond.poolId && confirmation && bond.amount.gt(ZERO))}
 							color="primary"
 							variant="contained"
-							onClick={() => onNewBond(bond)}
+							onClick={onAction}
 						>
 							Stake ADX
 						</Button>
@@ -404,10 +410,6 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	const onNewBond = bond => {
-		setNewBondOpen(false)
-		createNewBond(stats, bond)
-	}
 	// @TODO: move to a separate method
 	// @TODO handle the case if there is no signer
 	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
@@ -471,7 +473,10 @@ export default function App() {
 					{NewBondForm({
 						pools: POOLS.filter(x => x.selectable),
 						maxAmount: stats.userBalance,
-						onNewBond
+						onNewBond: bond => {
+							setNewBondOpen(false)
+							createNewBond(stats, bond)
+						}
 					})}
 				</Fade>
 			</Modal>
