@@ -74,6 +74,7 @@ const POOLS = [
 ]
 
 const ZERO = bigNumberify(0)
+const MAX_SLASH = bigNumberify("1000000000000000000")
 const DEFAULT_BOND = {
 	poolId: "",
 	amount: ZERO
@@ -234,7 +235,8 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 						your ADX!
 					</li>
 					<li>
-						You will not receive staking rewards for this amount in this period.
+						You will not receive staking rewards for this amount in this{" "}
+						{UNBOND_DAYS} day period.
 					</li>
 				</ol>
 			</DialogContent>
@@ -292,7 +294,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		const poolLabel = pool ? pool.label : bond.poolId
 		return (
 			<TableRow key={getBondId(bond)}>
-				<TableCell>{formatADX(bond.amount)} ADX</TableCell>
+				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
 				<TableCell align="right">0.00 DAI</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
@@ -554,22 +556,37 @@ async function loadUserStats() {
 
 	const addr = await signer.getAddress()
 
-	const [bal, logs] = await Promise.all([
+	const [bal, logs, slashLogs] = await Promise.all([
 		Token.balanceOf(addr),
 		provider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
 			topics: [null, hexZeroPad(addr, 32)]
-		})
+		}),
+		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
+
+	const slashedByPool = slashLogs.reduce((pools, log) => {
+		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
+		pools[poolId] = newSlashPts
+		return pools
+	}, {})
+
 	const userBonds = logs.reduce((bonds, log) => {
 		const topic = log.topics[0]
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
 			const vals = Staking.interface.parseLog(log).values
-			const { owner, amount, poolId, nonce } = vals
-			const bond = { owner, amount, poolId, nonce }
-			bonds.push({ id: getBondId(bond), status: "Active", ...bond })
+			const { owner, amount, poolId, nonce, slashedAtStart } = vals
+			const bond = { owner, amount, poolId, nonce, slashedAtStart }
+			bonds.push({
+				id: getBondId(bond),
+				status: "Active",
+				currentAmount: bond.amount
+					.mul(MAX_SLASH.sub(slashedByPool[poolId] || ZERO))
+					.div(MAX_SLASH.sub(slashedAtStart)),
+				...bond
+			})
 		} else if (topic === evs.LogUnbondRequested.topic) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
 			const { bondId, willUnlock } = Staking.interface.parseLog(log).values
