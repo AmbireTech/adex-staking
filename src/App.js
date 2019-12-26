@@ -52,6 +52,7 @@ const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 
+const STAKING_RULES_URL = null
 const PRICES_API_URL =
 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
 
@@ -108,6 +109,26 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [confirmation, setConfirmation] = useState(false)
 	const minWidthStyle = { minWidth: "180px" }
 	const minBN = (a, b) => (a.lt(b) ? a : b)
+	const stakingRulesFrag = STAKING_RULES_URL ? (
+		<>
+			&nbsp;and{" "}
+			<a target="_blank" href={STAKING_RULES_URL}>
+				staking conditions
+			</a>
+		</>
+	) : (
+		<></>
+	)
+	const confirmationLabel = (
+		<>
+			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
+			am familiar with the&nbsp;
+			<a href="https://www.adex.network/tos/" target="_blank">
+				Terms and conditions
+			</a>
+			{stakingRulesFrag}.
+		</>
+	)
 	return (
 		<Paper
 			elevation={2}
@@ -163,7 +184,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 				<Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}
-						label={`I understand I am locking up my ADX for at least ${UNBOND_DAYS} days and I am familiar with the staking terms.`}
+						label={confirmationLabel}
 						control={
 							<Checkbox
 								checked={confirmation}
