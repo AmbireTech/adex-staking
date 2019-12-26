@@ -30,6 +30,8 @@ import LinearProgress from "@material-ui/core/LinearProgress"
 import Checkbox from "@material-ui/core/Checkbox"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Typography from "@material-ui/core/Typography"
+import SnackbarContent from "@material-ui/core/SnackbarContent"
+import InfoIcon from "@material-ui/icons/Info"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import {
@@ -313,6 +315,32 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		)
 	}
 
+	const bondExplanationMsg = (
+		<div style={{ display: "flex", alignItems: "center" }}>
+			<InfoIcon style={{ marginRight: themeMUI.spacing(2) }} />
+			<p>
+				This table will show all your individual ADX deposits (bonds), along
+				with information as status, amount and earned reward. By using the
+				action buttons, you will be able to request unbonding and withdraw your
+				ADX after the {UNBOND_DAYS} day lock-up period.
+			</p>
+		</div>
+	)
+	const bondExplanationFrag =
+		!stats.loaded || stats.userBonds.length ? (
+			<></>
+		) : (
+			<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+				<SnackbarContent
+					style={{
+						fontSize: "15px",
+						backgroundColor: themeMUI.palette.primary.main
+					}}
+					message={bondExplanationMsg}
+				></SnackbarContent>
+			</Grid>
+		)
+
 	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Grid
@@ -362,10 +390,6 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				})}
 			</Grid>
 
-			{/*<Grid item xs={12}>
-			// TODO information about "reward are not launched yet blabla"
-			</Grid>*/}
-
 			<TableContainer xs={12}>
 				<Table
 					aria-label="Bonds table"
@@ -391,6 +415,8 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 					<TableBody>{(stats.userBonds || []).map(renderBondRow)}</TableBody>
 				</Table>
 			</TableContainer>
+
+			{bondExplanationFrag}
 		</Grid>
 	)
 }
