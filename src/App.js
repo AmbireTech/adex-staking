@@ -225,7 +225,7 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 			<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
 			<DialogContent>
 				Are you sure you want to request unbonding of{" "}
-				{formatADX(toUnbond ? toUnbond.amount : ZERO)} ADX?
+				{formatADX(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
 				<br />
 				<br />
 				Please be aware:
