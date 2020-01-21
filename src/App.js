@@ -109,9 +109,10 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
+	const [textfieldValue, setTextfieldValue] = useState(0)
+	const [textfieldError, setTextfieldError] = useState(false)
 	const [confirmation, setConfirmation] = useState(false)
 	const minWidthStyle = { minWidth: "180px" }
-	const minBN = (a, b) => (a.lt(b) ? a : b)
 
 	const onAction = () => {
 		setConfirmation(false)
@@ -138,6 +139,26 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 			{stakingRulesFrag}.
 		</>
 	)
+
+	const updateValue = value => {
+		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
+		const newValue = value < 0 ? 0 : value
+		setTextfieldValue(newValue)
+		const valueBN = bigNumberify(
+			Math.abs(Math.floor(newValue * ADX_MULTIPLIER))
+		)
+
+		if (valueBN.gt(maxAmount)) {
+			setTextfieldError(true)
+			return
+		}
+		setTextfieldError(false)
+		setBond({
+			...bond,
+			amount: valueBN
+		})
+	}
+
 	return (
 		<Paper
 			elevation={2}
@@ -151,18 +172,10 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						label="ADX amount"
 						type="number"
 						style={minWidthStyle}
-						value={bond.amount.toNumber() / ADX_MULTIPLIER}
-						onChange={ev =>
-							setBond({
-								...bond,
-								amount: minBN(
-									maxAmount,
-									bigNumberify(
-										Math.abs(Math.floor(ev.target.value * ADX_MULTIPLIER))
-									)
-								)
-							})
-						}
+						value={textfieldValue}
+						error={textfieldError}
+						onChange={ev => updateValue(ev.target.value)}
+						helperText={textfieldError ? "Insufficient ADX amount!" : null}
 					></TextField>
 					<Typography variant="subtitle2">
 						Max amount:
