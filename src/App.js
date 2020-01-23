@@ -64,12 +64,19 @@ const POOLS = [
 	{
 		label: "Validator Tom",
 		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
-		selectable: true
+		selectable: true,
+		minStakingAmount: 0,
+		rewardPolicy:
+			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 5% of the total volume, which you can track on our Explorer.',
+		slashPolicy: "No slashing."
 	},
 	{
 		label: "Validator Jerry",
 		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
-		selectable: false
+		selectable: false,
+		minStakingAmount: 0,
+		rewardPolicy: "",
+		slashPolicy: ""
 	}
 ]
 
@@ -86,6 +93,7 @@ const EMPTY_STATS = {
 	totalStake: ZERO
 }
 
+const getPool = poolId => POOLS.find(x => x.id === poolId)
 function StatsCard({ title, subtitle, extra, loaded }) {
 	return (
 		<Paper elevation={3} style={{ margin: themeMUI.spacing(1) }}>
@@ -109,10 +117,13 @@ function StatsCard({ title, subtitle, extra, loaded }) {
 
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
-	const [textfieldValue, setTextfieldValue] = useState(0)
-	const [textfieldError, setTextfieldError] = useState(false)
+	const [stakingAmount, setStakingAmount] = useState(0)
+	const [amountErr, setAmountErr] = useState(false)
+	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
+	const [pool, setPool] = useState("")
 	const minWidthStyle = { minWidth: "180px" }
+	const activePool = getPool(pool)
 
 	const onAction = () => {
 		setConfirmation(false)
@@ -140,23 +151,53 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 		</>
 	)
 
-	const updateValue = value => {
+	const updateStakingAmount = value => {
 		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
 		const newValue = value < 0 ? 0 : value
-		setTextfieldValue(newValue)
+		setStakingAmount(newValue)
 		const valueBN = bigNumberify(
 			Math.abs(Math.floor(newValue * ADX_MULTIPLIER))
 		)
+		const minStakingAmountBN = pool
+			? bigNumberify(activePool.minStakingAmount * ADX_MULTIPLIER)
+			: ZERO
 
 		if (valueBN.gt(maxAmount)) {
-			setTextfieldError(true)
+			setAmountErr(true)
+			setAmountErrText("Insufficient ADX amount!")
 			return
 		}
-		setTextfieldError(false)
+		if (activePool && valueBN.lt(minStakingAmountBN)) {
+			setAmountErr(true)
+			setAmountErrText(
+				"ADX amount less than minimum required for selected pool!"
+			)
+			return
+		}
+
+		setAmountErr(false)
 		setBond({
 			...bond,
 			amount: valueBN
 		})
+	}
+
+	const updatePool = value => {
+		const amountBN = bigNumberify(stakingAmount * ADX_MULTIPLIER)
+		const pool = getPool(value)
+		const minStakingAmountBN = pool
+			? bigNumberify(pool.minStakingAmount * ADX_MULTIPLIER)
+			: ZERO
+		setPool(value)
+		if (pool && amountBN.lt(minStakingAmountBN)) {
+			setAmountErr(true)
+			setAmountErrText(
+				"ADX amount less than minimum required for selected pool!"
+			)
+			return
+		}
+		setAmountErr(false)
+		setBond({ ...bond, poolId: value })
 	}
 
 	return (
@@ -172,10 +213,10 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						label="ADX amount"
 						type="number"
 						style={minWidthStyle}
-						value={textfieldValue}
-						error={textfieldError}
-						onChange={ev => updateValue(ev.target.value)}
-						helperText={textfieldError ? "Insufficient ADX amount!" : null}
+						value={stakingAmount}
+						error={amountErr}
+						onChange={ev => updateStakingAmount(ev.target.value)}
+						helperText={amountErr ? amountErrText : null}
 					></TextField>
 					<Typography variant="subtitle2">
 						Max amount:
@@ -189,8 +230,8 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						<InputLabel>Pool</InputLabel>
 						<Select
 							style={minWidthStyle}
-							value={bond.poolId}
-							onChange={ev => setBond({ ...bond, poolId: ev.target.value })}
+							value={pool}
+							onChange={ev => updatePool(ev.target.value)}
 						>
 							<MenuItem value={""}>
 								<em>None</em>
@@ -203,6 +244,21 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 						</Select>
 					</FormControl>
 				</Grid>
+				{activePool ? (
+					<Grid item xs={12}>
+						<Grid item xs={6}>
+							<Typography variant="h6">Pool reward policy:</Typography>
+							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
+						</Grid>
+
+						<Grid item xs={6}>
+							<Typography variant="h6">Pool slashing policy:</Typography>
+							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+						</Grid>
+					</Grid>
+				) : (
+					""
+				)}
 				<Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}
@@ -303,7 +359,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	}
 
 	const renderBondRow = bond => {
-		const pool = POOLS.find(x => x.id === bond.poolId)
+		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
 		return (
 			<TableRow key={getBondId(bond)}>
