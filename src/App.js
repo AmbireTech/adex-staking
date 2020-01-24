@@ -31,6 +31,8 @@ import Checkbox from "@material-ui/core/Checkbox"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Typography from "@material-ui/core/Typography"
 import SnackbarContent from "@material-ui/core/SnackbarContent"
+import Snackbar from "@material-ui/core/Snackbar"
+import MuiAlert from "@material-ui/lab/Alert"
 import InfoIcon from "@material-ui/icons/Info"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
@@ -91,6 +93,10 @@ const EMPTY_STATS = {
 	userBonds: [],
 	userBalance: ZERO,
 	totalStake: ZERO
+}
+
+function Alert(props) {
+	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 const getPool = poolId => POOLS.find(x => x.id === poolId)
@@ -495,14 +501,22 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = React.useState(null)
+	const [openErr, setOpenErr] = useState(false)
+	const [snackbarErr, setSnackbarErr] = useState(
+		"Error! Unspecified error occured."
+	)
 	const [stats, setStats] = useState(EMPTY_STATS)
 
-	// @TODO handle err.code === 4001, which is the metamask error for "user denied authorization"
-	// it will come on the .catch of loadStats
 	const refreshStats = () =>
 		loadStats()
 			.then(setStats)
-			.catch(e => console.error("loadStats", e))
+			.catch(e => {
+				console.error("loadStats", e)
+				setOpenErr(true)
+				if (e.code === 4001) {
+					setSnackbarErr("Error! User denied authorization!")
+				}
+			})
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
@@ -523,7 +537,22 @@ export default function App() {
 	}
 	const onRequestUnbond = makeUnbondFn(false)
 	const onUnbond = makeUnbondFn(true)
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return
+		}
+		setOpenErr(false)
+	}
 
+	const checkNewBond = async bond => {
+		setNewBondOpen(false)
+		try {
+			await createNewBond(stats, bond)
+		} catch (e) {
+			setOpenErr(true)
+			setSnackbarErr(e)
+		}
+	}
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<AppBar position="static">
@@ -553,7 +582,11 @@ export default function App() {
 					setToUnbond(null)
 				}
 			})}
-
+			<Snackbar open={openErr} autoHideDuration={6000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="error">
+					{snackbarErr}
+				</Alert>
+			</Snackbar>
 			<Modal
 				open={isNewBondOpen}
 				onClose={() => setNewBondOpen(false)}
@@ -572,10 +605,7 @@ export default function App() {
 					{NewBondForm({
 						pools: POOLS.filter(x => x.selectable),
 						maxAmount: stats.userBalance,
-						onNewBond: bond => {
-							setNewBondOpen(false)
-							createNewBond(stats, bond)
-						}
+						onNewBond: checkNewBond
 					})}
 				</Fade>
 			</Modal>
@@ -613,6 +643,7 @@ async function loadStats() {
 		Token.balanceOf(ADDR_STAKING),
 		loadUserStats()
 	])
+
 	return { totalStake, ...userStats }
 }
 
@@ -679,7 +710,6 @@ async function loadUserStats() {
 
 // @TODO handle exceptions
 async function createNewBond(stats, { amount, poolId, nonce }) {
-	// @TODO handle errors in some way
 	if (!poolId) return
 	if (!stats.userBalance) return
 	if (amount.gt(stats.userBalance)) return
