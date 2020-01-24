@@ -157,52 +157,45 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 		</>
 	)
 
-	const updateStakingAmount = value => {
-		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
-		const newValue = value < 0 ? 0 : value
-		setStakingAmount(newValue)
-		const valueBN = bigNumberify(
-			Math.abs(Math.floor(newValue * ADX_MULTIPLIER))
-		)
-		const minStakingAmountBN = pool
-			? bigNumberify(activePool.minStakingAmount * ADX_MULTIPLIER)
+	const validateFields = params => {
+		const { amountBN, poolToValidate } = params
+		const minStakingAmountBN = poolToValidate
+			? bigNumberify(poolToValidate.minStakingAmount * ADX_MULTIPLIER)
 			: ZERO
 
-		if (valueBN.gt(maxAmount)) {
+		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
 			setAmountErrText("Insufficient ADX amount!")
 			return
 		}
-		if (activePool && valueBN.lt(minStakingAmountBN)) {
+		if (poolToValidate && amountBN.lt(minStakingAmountBN)) {
 			setAmountErr(true)
 			setAmountErrText(
 				"ADX amount less than minimum required for selected pool!"
 			)
 			return
 		}
-
 		setAmountErr(false)
+		return
+	}
+
+	const updateStakingAmount = value => {
+		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
+		const amount = value < 0 ? 0 : value
+		const amountBN = bigNumberify(Math.abs(Math.floor(amount * ADX_MULTIPLIER)))
+		validateFields({ amountBN, poolToValidate: activePool })
+		setStakingAmount(amount)
 		setBond({
 			...bond,
-			amount: valueBN
+			amount: amountBN
 		})
 	}
 
 	const updatePool = value => {
 		const amountBN = bigNumberify(stakingAmount * ADX_MULTIPLIER)
-		const pool = getPool(value)
-		const minStakingAmountBN = pool
-			? bigNumberify(pool.minStakingAmount * ADX_MULTIPLIER)
-			: ZERO
+		const poolToValidate = getPool(value)
+		validateFields({ amountBN, poolToValidate })
 		setPool(value)
-		if (pool && amountBN.lt(minStakingAmountBN)) {
-			setAmountErr(true)
-			setAmountErrText(
-				"ADX amount less than minimum required for selected pool!"
-			)
-			return
-		}
-		setAmountErr(false)
 		setBond({ ...bond, poolId: value })
 	}
 
@@ -252,12 +245,11 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 				</Grid>
 				{activePool ? (
 					<Grid item xs={12}>
-						<Grid item xs={6}>
+						<Grid item xs={12}>
 							<Typography variant="h6">Pool reward policy:</Typography>
 							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
 						</Grid>
-
-						<Grid item xs={6}>
+						<Grid item xs={12}>
 							<Typography variant="h6">Pool slashing policy:</Typography>
 							<Typography variant="body1">{activePool.slashPolicy}</Typography>
 						</Grid>
