@@ -156,12 +156,6 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 		const minStakingAmountBN = poolToValidate
 			? bigNumberify(poolToValidate.minStakingAmount * ADX_MULTIPLIER)
 			: ZERO
-		console.log(
-			poolToValidate,
-			amountBN,
-			minStakingAmountBN,
-			amountBN.lt(minStakingAmountBN)
-		)
 
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
