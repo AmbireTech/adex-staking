@@ -538,8 +538,13 @@ export default function App() {
 		const fn = isUnbond
 			? staking.unbond.bind(staking)
 			: staking.requestUnbond.bind(staking)
-		const tx = await fn([amount, poolId, nonce || ZERO])
-		await tx.wait()
+		try {
+			const tx = await fn([amount, poolId, nonce || ZERO])
+			await tx.wait()
+		} catch (e) {
+			setOpenErr(true)
+			setSnackbarErr(e.message || "Unknown error")
+		}
 	}
 	const onRequestUnbond = makeUnbondFn(false)
 	const onUnbond = makeUnbondFn(true)
@@ -556,7 +561,7 @@ export default function App() {
 			await createNewBond(stats, bond)
 		} catch (e) {
 			setOpenErr(true)
-			setSnackbarErr(e)
+			setSnackbarErr(e.message || "Unknown error")
 		}
 	}
 	return (
