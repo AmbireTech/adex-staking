@@ -219,7 +219,14 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 					></TextField>
 					<Typography variant="subtitle2">
 						Max amount:
-						<Button onClick={ev => setBond({ ...bond, amount: maxAmount })}>
+						<Button
+							onClick={ev => {
+								setStakingAmount(
+									(maxAmount.toNumber() / ADX_MULTIPLIER).toFixed(2)
+								)
+								setBond({ ...bond, amount: maxAmount })
+							}}
+						>
 							{formatADX(maxAmount)} ADX
 						</Button>
 					</Typography>
@@ -249,7 +256,7 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 							<Typography variant="h6">Pool reward policy:</Typography>
 							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
 						</Grid>
-						<Grid item xs={12}>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">Pool slashing policy:</Typography>
 							<Typography variant="body1">{activePool.slashPolicy}</Typography>
 						</Grid>
