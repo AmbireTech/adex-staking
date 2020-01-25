@@ -272,7 +272,14 @@ function NewBondForm({ maxAmount, onNewBond, pools }) {
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
-							disabled={!(bond.poolId && confirmation && bond.amount.gt(ZERO))}
+							disabled={
+								!(
+									bond.poolId &&
+									confirmation &&
+									bond.amount.gt(ZERO) &&
+									!amountErr
+								)
+							}
 							color="primary"
 							variant="contained"
 							onClick={onAction}
