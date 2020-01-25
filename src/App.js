@@ -540,6 +540,7 @@ export default function App() {
 		const fn = isUnbond
 			? staking.unbond.bind(staking)
 			: staking.requestUnbond.bind(staking)
+		// @TODO: refactor into some fn which wraps into a try/catch
 		try {
 			const tx = await fn([amount, poolId, nonce || ZERO])
 			await tx.wait()
@@ -721,7 +722,6 @@ async function loadUserStats() {
 	}
 }
 
-// @TODO handle exceptions
 async function createNewBond(stats, { amount, poolId, nonce }) {
 	if (!poolId) return
 	if (!stats.userBalance) return
