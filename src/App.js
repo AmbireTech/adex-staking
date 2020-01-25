@@ -495,7 +495,9 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 							</TableCell>
 						</TableRow>
 					</TableHead>
-					<TableBody>{(stats.userBonds || []).map(renderBondRow)}</TableBody>
+					<TableBody>
+						{(stats.userBonds || []).reverse().map(renderBondRow)}
+					</TableBody>
 				</Table>
 			</TableContainer>
 
