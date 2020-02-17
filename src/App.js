@@ -576,7 +576,6 @@ export default function App() {
 	const openHelpMenu = ev => {
 		setMenuEl(ev.currentTarget)
 	}
-
 	const closeHelpMenu = () => {
 		setMenuEl(null)
 	}
@@ -612,16 +611,25 @@ export default function App() {
 						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 						transformOrigin={{ vertical: "top", horizontal: "center" }}
 					>
-						<Link href="https://www.adex.network/tos">
+						<Link href="https://www.adex.network/tos" target="_blank">
 							<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
 						</Link>
-						<Link href="https://www.adex.network/blog/adx-staking-is-here/">
+						<Link
+							href="https://www.adex.network/blog/adx-staking-is-here/"
+							target="_blank"
+						>
 							<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
 						</Link>
-						<Link href="https://github.com/adexnetwork/adex-protocol-eth">
+						<Link
+							href="https://github.com/adexnetwork/adex-protocol-eth"
+							target="_blank"
+						>
 							<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
 						</Link>
-						<Link href="https://coinmarketcap.com/currencies/adx-net/markets/">
+						<Link
+							href="https://coinmarketcap.com/currencies/adx-net/markets/"
+							target="_blank"
+						>
 							<MenuItem onClick={closeHelpMenu}>Where to buy ADX</MenuItem>
 						</Link>
 					</Menu>
