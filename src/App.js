@@ -47,7 +47,9 @@ import {
 import { Web3Provider } from "ethers/providers"
 import StakingABI from "./abi/Staking"
 import ERC20ABI from "./abi/ERC20"
+import CoreABI from "./abi/Core"
 
+const CORE_ADDR = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
 const ADX_MULTIPLIER = 10000
@@ -56,6 +58,7 @@ const REFRESH_INTVL = 30000
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
+const Core = new Contract(CORE_ADDR, CoreABI, provider)
 
 const STAKING_RULES_URL = null
 const PRICES_API_URL =
@@ -314,9 +317,9 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 	)
 }
 
-function RewardCard({ addr, rewardChannels }) {
+function RewardCard({ rewardChannels }) {
 	const title = "Your total unclaimed reward"
-	const loaded = rewardChannels != null && addr
+	const loaded = rewardChannels != null
 	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
 	if (!loaded) {
 		return StatsCard({
@@ -327,7 +330,7 @@ function RewardCard({ addr, rewardChannels }) {
 		})
 	}
 	const totalReward = rewardChannels
-		.map(x => bigNumberify(x.balances[addr] || 0))
+		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b), ZERO)
 	const rewardActions = (
 		<Button
@@ -372,12 +375,10 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 
 	// Rewards
 	const [rewardChannels, setRewardChannels] = useState(null)
-	const rewardPool = POOLS[0]
 	useEffect(() => {
-		fetch(`${rewardPool.url}/fee-rewards`)
-			.then(r => r.json())
-			.then(setRewardChannels)
-	}, [])
+		if (!stats.addr) return
+		getRewards(stats.addr).then(setRewardChannels)
+	}, [stats.addr])
 
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
@@ -782,4 +783,24 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	)
 	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
 	await Promise.all(txns.map(tx => tx.wait()))
+}
+
+async function getRewards(addr) {
+	const rewardPool = POOLS[0]
+	const rewardChannels = await fetch(`${rewardPool.url}/fee-rewards`).then(r =>
+		r.json()
+	)
+	return Promise.all(
+		rewardChannels.map(async rewardChannel => {
+			const outstandingReward = rewardChannel.balances[addr]
+				? bigNumberify(rewardChannel.balances[addr]).sub(
+						await Core.withdrawnPerUser(rewardChannel.channelId, addr)
+				  )
+				: ZERO
+			return {
+				...rewardChannel,
+				outstandingReward
+			}
+		})
+	)
 }
