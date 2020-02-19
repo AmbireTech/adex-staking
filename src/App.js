@@ -417,16 +417,15 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 
 	// @TODO: separate component for this
 	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
-	const zero = bigNumberify(0)
 	const totalReward = rewardChannels
 		.map(x => bigNumberify(x.balances[stats.addr] || 0))
-		.reduce((a, b) => a.add(b), zero)
+		.reduce((a, b) => a.add(b), ZERO)
 	const rewardActions = (
 		<Button
 			size="small"
 			variant="contained"
 			color="secondary"
-			disabled={totalReward.eq(zero)}
+			disabled={totalReward.eq(ZERO)}
 		>
 			claim reward
 		</Button>
