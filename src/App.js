@@ -373,13 +373,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
-	// Rewards
-	const [rewardChannels, setRewardChannels] = useState(null)
-	useEffect(() => {
-		if (!stats.addr) return
-		getRewards(stats.addr).then(setRewardChannels)
-	}, [stats.addr])
-
+	// Render all stats cards + bond table
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
 			const willUnlock = bond.willUnlock.getTime()
@@ -459,7 +453,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			}}
 		>
 			<Grid item sm={3} xs={6}>
-				{RewardCard({ addr: stats.addr, rewardChannels })}
+				{RewardCard({ rewardChannels: stats.rewardChannels })}
 			</Grid>
 
 			<Grid item sm={3} xs={6}>
@@ -693,12 +687,20 @@ async function loadUserStats() {
 		return {
 			loaded: true,
 			userBonds: [],
-			userBalance: ZERO
+			userBalance: ZERO,
+			rewardChannels: []
 		}
-
 	const addr = await signer.getAddress()
 
-	const [bal, logs, slashLogs] = await Promise.all([
+	const [bondStats, rewardChannels] = await Promise.all([
+		loadBondStats(addr),
+		getRewards(addr)
+	])
+	return { ...bondStats, loaded: true, rewardChannels }
+}
+
+async function loadBondStats(addr) {
+	const [userBalance, logs, slashLogs] = await Promise.all([
 		Token.balanceOf(addr),
 		provider.getLogs({
 			fromBlock: 0,
@@ -741,12 +743,28 @@ async function loadUserStats() {
 		}
 		return bonds
 	}, [])
-	return {
-		loaded: true,
-		userBonds,
-		userBalance: bal,
-		addr
-	}
+
+	return { userBonds, userBalance }
+}
+
+async function getRewards(addr) {
+	const rewardPool = POOLS[0]
+	const rewardChannels = await fetch(`${rewardPool.url}/fee-rewards`).then(r =>
+		r.json()
+	)
+	return Promise.all(
+		rewardChannels.map(async rewardChannel => {
+			const outstandingReward = rewardChannel.balances[addr]
+				? bigNumberify(rewardChannel.balances[addr]).sub(
+						await Core.withdrawnPerUser(rewardChannel.channelId, addr)
+				  )
+				: ZERO
+			return {
+				...rewardChannel,
+				outstandingReward
+			}
+		})
+	)
 }
 
 async function createNewBond(stats, { amount, poolId, nonce }) {
@@ -783,24 +801,4 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	)
 	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
 	await Promise.all(txns.map(tx => tx.wait()))
-}
-
-async function getRewards(addr) {
-	const rewardPool = POOLS[0]
-	const rewardChannels = await fetch(`${rewardPool.url}/fee-rewards`).then(r =>
-		r.json()
-	)
-	return Promise.all(
-		rewardChannels.map(async rewardChannel => {
-			const outstandingReward = rewardChannel.balances[addr]
-				? bigNumberify(rewardChannel.balances[addr]).sub(
-						await Core.withdrawnPerUser(rewardChannel.channelId, addr)
-				  )
-				: ZERO
-			return {
-				...rewardChannel,
-				outstandingReward
-			}
-		})
-	)
 }
