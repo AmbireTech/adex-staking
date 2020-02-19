@@ -101,21 +101,24 @@ function Alert(props) {
 }
 
 const getPool = poolId => POOLS.find(x => x.id === poolId)
-function StatsCard({ title, subtitle, extra, loaded }) {
+function StatsCard({ title, subtitle, extra, loaded, actions }) {
+	const extraElem =
+		typeof extra === "string" ? (
+			<Typography color="primary" variant="h6">
+				{extra}
+			</Typography>
+		) : (
+			extra || <></>
+		)
 	return (
 		<Paper elevation={3} style={{ margin: themeMUI.spacing(1) }}>
 			<div style={{ padding: themeMUI.spacing(2), minHeight: "75px" }}>
 				<Typography variant="h5">{subtitle}</Typography>
-				{extra ? (
-					<Typography color="primary" variant="h6">
-						{extra}
-					</Typography>
-				) : (
-					<></>
-				)}
+				{extraElem}
 				<Typography color="textSecondary" variant="subtitle2">
 					{title}
 				</Typography>
+				{actions || <></>}
 			</div>
 			{!loaded ? <LinearProgress /> : <></>}
 		</Paper>
@@ -426,6 +429,11 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		)
 
 	const headerCellStyle = { fontWeight: "bold" }
+	const rewardActions = (
+		<Button size="small" variant="contained" color="secondary">
+			claim
+		</Button>
+	)
 	return (
 		<Grid
 			container
@@ -435,6 +443,15 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				margin: "auto"
 			}}
 		>
+			<Grid item sm={3} xs={6}>
+				{StatsCard({
+					loaded: stats.loaded,
+					title: "Your total unclaimed reward",
+					actions: rewardActions,
+					subtitle: "0.00 DAI"
+				})}
+			</Grid>
+
 			<Grid item sm={3} xs={6}>
 				{StatsCard({
 					loaded: stats.loaded,
@@ -461,16 +478,6 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 						? formatADX(stats.userBalance) + " ADX"
 						: "",
 					extra: inUSD(stats.userBalance)
-				})}
-			</Grid>
-
-			<Grid item sm={3} xs={6}>
-				{StatsCard({
-					loaded: stats.loaded,
-					// @TODO rewards
-					title: "Your total reward",
-					extra: "0.00 USD",
-					subtitle: "0.00 DAI"
 				})}
 			</Grid>
 
