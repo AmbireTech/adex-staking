@@ -584,7 +584,6 @@ export default function App() {
 	const onClaimRewards = async rewardChannels => {
 		try {
 			await claimRewards(rewardChannels)
-			window.location.reload()
 		} catch (e) {
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
