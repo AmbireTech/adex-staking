@@ -34,8 +34,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import InfoIcon from "@material-ui/icons/Info"
-import IconButton from "@material-ui/core/IconButton"
-import Menu from "@material-ui/core/Menu"
+import HelperMenu from "./components/HelperMenu"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import {
@@ -48,8 +47,6 @@ import {
 import { Web3Provider } from "ethers/providers"
 import StakingABI from "./abi/Staking"
 import ERC20ABI from "./abi/ERC20"
-import HelpIcon from "@material-ui/icons/HelpOutline"
-import Link from "@material-ui/core/Link"
 
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
@@ -518,7 +515,6 @@ export default function App() {
 		"Error! Unspecified error occured."
 	)
 	const [stats, setStats] = useState(EMPTY_STATS)
-	const [menuEl, setMenuEl] = React.useState(null)
 
 	const refreshStats = () =>
 		loadStats()
@@ -573,13 +569,6 @@ export default function App() {
 		}
 	}
 
-	const openHelpMenu = ev => {
-		setMenuEl(ev.currentTarget)
-	}
-	const closeHelpMenu = () => {
-		setMenuEl(null)
-	}
-
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<AppBar position="static">
@@ -595,44 +584,7 @@ export default function App() {
 						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
 						Stake your ADX
 					</Fab>
-					<IconButton
-						style={{ position: "absolute", right: "1.25%", top: "10%" }}
-						onClick={openHelpMenu}
-					>
-						<HelpIcon style={{ fontSize: "1.5em", color: "white" }} />
-					</IconButton>
-					<Menu
-						id="simple-menu"
-						anchorEl={menuEl}
-						open={Boolean(menuEl)}
-						keepMounted
-						onClose={closeHelpMenu}
-						getContentAnchorEl={null}
-						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-						transformOrigin={{ vertical: "top", horizontal: "center" }}
-					>
-						<Link href="https://www.adex.network/tos" target="_blank">
-							<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
-						</Link>
-						<Link
-							href="https://www.adex.network/blog/adx-staking-is-here/"
-							target="_blank"
-						>
-							<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
-						</Link>
-						<Link
-							href="https://github.com/adexnetwork/adex-protocol-eth"
-							target="_blank"
-						>
-							<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
-						</Link>
-						<Link
-							href="https://coinmarketcap.com/currencies/adx-net/markets/"
-							target="_blank"
-						>
-							<MenuItem onClick={closeHelpMenu}>Where to buy ADX</MenuItem>
-						</Link>
-					</Menu>
+					{HelperMenu()}
 				</Toolbar>
 			</AppBar>
 
