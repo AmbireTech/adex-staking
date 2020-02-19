@@ -26,7 +26,6 @@ import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import LinearProgress from "@material-ui/core/LinearProgress"
 import Checkbox from "@material-ui/core/Checkbox"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Typography from "@material-ui/core/Typography"
@@ -35,6 +34,7 @@ import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import InfoIcon from "@material-ui/icons/Info"
 import HelperMenu from "./components/HelperMenu"
+import StatsCard from "./components/StatsCard"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import {
@@ -101,29 +101,6 @@ function Alert(props) {
 }
 
 const getPool = poolId => POOLS.find(x => x.id === poolId)
-function StatsCard({ title, subtitle, extra, loaded, actions }) {
-	const extraElem =
-		typeof extra === "string" ? (
-			<Typography color="primary" variant="h6">
-				{extra}
-			</Typography>
-		) : (
-			extra || <></>
-		)
-	return (
-		<Paper elevation={3} style={{ margin: themeMUI.spacing(1) }}>
-			<div style={{ padding: themeMUI.spacing(2), minHeight: "75px" }}>
-				<Typography variant="h5">{subtitle}</Typography>
-				{extraElem}
-				<Typography color="textSecondary" variant="subtitle2">
-					{title}
-				</Typography>
-				{actions || <></>}
-			</div>
-			{!loaded ? <LinearProgress /> : <></>}
-		</Paper>
-	)
-}
 
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
@@ -431,7 +408,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	const headerCellStyle = { fontWeight: "bold" }
 	const rewardActions = (
 		<Button size="small" variant="contained" color="secondary">
-			claim
+			claim reward
 		</Button>
 	)
 	return (
