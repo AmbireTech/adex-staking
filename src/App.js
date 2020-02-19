@@ -826,11 +826,11 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 async function claimRewards(rewardChannels) {
 	const signer = await getSigner()
 	if (!signer) return
-	const core = new Contract(ADDR_CORE, CoreABI, signer)
+	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	let txns = []
 	for (const rewardChannel of rewardChannels) {
 		const args = rewardChannel.channelArgs
-		const tuple = [
+		const channelTuple = [
 			args.creator,
 			args.tokenAddr,
 			args.tokenAmount,
@@ -839,8 +839,8 @@ async function claimRewards(rewardChannels) {
 			args.spec
 		]
 		txns.push(
-			await core.channelWithdraw(
-				tuple,
+			await coreWithSigner.channelWithdraw(
+				channelTuple,
 				rewardChannel.stateRoot,
 				rewardChannel.signatures,
 				rewardChannel.proof,
