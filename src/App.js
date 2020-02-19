@@ -96,12 +96,11 @@ const EMPTY_STATS = {
 	userBalance: ZERO,
 	totalStake: ZERO
 }
+const getPool = poolId => POOLS.find(x => x.id === poolId)
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-
-const getPool = poolId => POOLS.find(x => x.id === poolId)
 
 function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
@@ -315,6 +314,39 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 	)
 }
 
+function RewardCard({ addr, rewardChannels }) {
+	const title = "Your total unclaimed reward"
+	const loaded = rewardChannels != null && addr
+	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
+	if (!loaded) {
+		return StatsCard({
+			loaded,
+			title,
+			extra: "0.00 USD",
+			subtitle: "0.00 DAI"
+		})
+	}
+	const totalReward = rewardChannels
+		.map(x => bigNumberify(x.balances[addr] || 0))
+		.reduce((a, b) => a.add(b), ZERO)
+	const rewardActions = (
+		<Button
+			size="small"
+			variant="contained"
+			color="secondary"
+			disabled={totalReward.eq(ZERO)}
+		>
+			claim reward
+		</Button>
+	)
+	return StatsCard({
+		loaded: true,
+		title,
+		actions: rewardActions,
+		subtitle: formatDAI(totalReward) + " DAI"
+	})
+}
+
 function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
@@ -339,7 +371,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	}
 
 	// Rewards
-	const [rewardChannels, setRewardChannels] = useState([])
+	const [rewardChannels, setRewardChannels] = useState(null)
 	const rewardPool = POOLS[0]
 	useEffect(() => {
 		fetch(`${rewardPool.url}/fee-rewards`)
@@ -415,22 +447,6 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</Grid>
 		)
 
-	// @TODO: separate component for this
-	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
-	const totalReward = rewardChannels
-		.map(x => bigNumberify(x.balances[stats.addr] || 0))
-		.reduce((a, b) => a.add(b), ZERO)
-	const rewardActions = (
-		<Button
-			size="small"
-			variant="contained"
-			color="secondary"
-			disabled={totalReward.eq(ZERO)}
-		>
-			claim reward
-		</Button>
-	)
-
 	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Grid
@@ -442,12 +458,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			}}
 		>
 			<Grid item sm={3} xs={6}>
-				{StatsCard({
-					loaded: stats.loaded,
-					title: "Your total unclaimed reward",
-					actions: rewardActions,
-					subtitle: formatDAI(totalReward) + " DAI"
-				})}
+				{RewardCard({ addr: stats.addr, rewardChannels })}
 			</Grid>
 
 			<Grid item sm={3} xs={6}>
@@ -733,7 +744,6 @@ async function loadUserStats() {
 		loaded: true,
 		userBonds,
 		userBalance: bal,
-		// @TODO: consider preparing all rewards data here, rather than exporting addr
 		addr
 	}
 }
