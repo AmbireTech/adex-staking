@@ -582,32 +582,8 @@ export default function App() {
 	}
 
 	const onClaimRewards = async rewardChannels => {
-		const signer = await getSigner()
-		if (!signer) return
-		const core = new Contract(ADDR_CORE, CoreABI, signer)
 		try {
-			let txns = []
-			for (const rewardChannel of rewardChannels) {
-				const args = rewardChannel.channelArgs
-				const tuple = [
-					args.creator,
-					args.tokenAddr,
-					args.tokenAmount,
-					args.validUntil,
-					args.validators,
-					args.spec
-				]
-				txns.push(
-					await core.channelWithdraw(
-						tuple,
-						rewardChannel.stateRoot,
-						rewardChannel.signatures,
-						rewardChannel.proof,
-						rewardChannel.amount
-					)
-				)
-			}
-			await Promise.all(txns.map(tx => tx.wait()))
+			await claimRewards(rewardChannels)
 		} catch (e) {
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
@@ -845,4 +821,32 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	)
 	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
 	await Promise.all(txns.map(tx => tx.wait()))
+}
+
+async function claimRewards(rewardChannels) {
+	const signer = await getSigner()
+	if (!signer) return
+	const core = new Contract(ADDR_CORE, CoreABI, signer)
+	let txns = []
+	for (const rewardChannel of rewardChannels) {
+		const args = rewardChannel.channelArgs
+		const tuple = [
+			args.creator,
+			args.tokenAddr,
+			args.tokenAmount,
+			args.validUntil,
+			args.validators,
+			args.spec
+		]
+		txns.push(
+			await core.channelWithdraw(
+				tuple,
+				rewardChannel.stateRoot,
+				rewardChannel.signatures,
+				rewardChannel.proof,
+				rewardChannel.amount
+			)
+		)
+	}
+	return Promise.all(txns.map(tx => tx.wait()))
 }
