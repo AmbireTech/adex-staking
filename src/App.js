@@ -749,8 +749,10 @@ async function loadBondStats(addr) {
 
 async function getRewards(addr) {
 	const rewardPool = POOLS[0]
-	const rewardChannels = await fetch(`${rewardPool.url}/fee-rewards`).then(r =>
-		r.json()
+	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
+	const validUntil = Math.floor(Date.now() / 1000)
+	const rewardChannels = (await resp.json()).filter(
+		x => x.channelArgs.validUntil > validUntil
 	)
 	return Promise.all(
 		rewardChannels.map(async rewardChannel => {
