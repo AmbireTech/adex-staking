@@ -10,6 +10,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "adex-brand": "^1.0.0",
+    "adex-protocol-eth": "^4.1.3",
     "ethers": "^4.0.41",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",

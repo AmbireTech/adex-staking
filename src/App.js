@@ -45,11 +45,12 @@ import {
 	defaultAbiCoder
 } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
-import StakingABI from "./abi/Staking"
+import BalanceTree from "adex-protocol-eth/js/BalanceTree"
+import StakingABI from "adex-protocol-eth/abi/Staking"
+import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import ERC20ABI from "./abi/ERC20"
-import CoreABI from "./abi/Core"
 
-const CORE_ADDR = "0x333420fc6a897356e69b62417cd17ff012177d2b"
+const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
 const ADX_MULTIPLIER = 10000
@@ -58,7 +59,7 @@ const REFRESH_INTVL = 30000
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
-const Core = new Contract(CORE_ADDR, CoreABI, provider)
+const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
 const STAKING_RULES_URL = null
 const PRICES_API_URL =
@@ -317,10 +318,9 @@ function UnbondConfirmationDialog({ toUnbond, onDeny, onConfirm }) {
 	)
 }
 
-function RewardCard({ rewardChannels }) {
+function RewardCard({ rewardChannels, onClaimRewards }) {
 	const title = "Your total unclaimed reward"
 	const loaded = rewardChannels != null
-	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
 	if (!loaded) {
 		return StatsCard({
 			loaded,
@@ -338,6 +338,7 @@ function RewardCard({ rewardChannels }) {
 			variant="contained"
 			color="secondary"
 			disabled={totalReward.eq(ZERO)}
+			onClick={() => onClaimRewards(rewardChannels)}
 		>
 			claim reward
 		</Button>
@@ -350,7 +351,7 @@ function RewardCard({ rewardChannels }) {
 	})
 }
 
-function Dashboard({ stats, onRequestUnbond, onUnbond }) {
+function Dashboard({ stats, onRequestUnbond, onUnbond, onClaimRewards }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
 		.map(x => x.amount)
@@ -453,7 +454,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			}}
 		>
 			<Grid item sm={3} xs={6}>
-				{RewardCard({ rewardChannels: stats.rewardChannels })}
+				{RewardCard({ rewardChannels: stats.rewardChannels, onClaimRewards })}
 			</Grid>
 
 			<Grid item sm={3} xs={6}>
@@ -580,6 +581,39 @@ export default function App() {
 		}
 	}
 
+	const onClaimRewards = async rewardChannels => {
+		const signer = await getSigner()
+		if (!signer) return
+		const core = new Contract(ADDR_CORE, CoreABI, signer)
+		try {
+			let txns = []
+			for (const rewardChannel of rewardChannels) {
+				const args = rewardChannel.channelArgs
+				const tuple = [
+					args.creator,
+					args.tokenAddr,
+					args.tokenAmount,
+					args.validUntil,
+					args.validators,
+					args.spec
+				]
+				txns.push(
+					await core.channelWithdraw(
+						tuple,
+						rewardChannel.stateRoot,
+						rewardChannel.signatures,
+						rewardChannel.proof,
+						rewardChannel.amount
+					)
+				)
+			}
+			await Promise.all(txns.map(tx => tx.wait()))
+		} catch (e) {
+			setOpenErr(true)
+			setSnackbarErr(e.message || "Unknown error")
+		}
+	}
+
 	return (
 		<MuiThemeProvider theme={themeMUI}>
 			<AppBar position="static">
@@ -600,7 +634,12 @@ export default function App() {
 			</AppBar>
 
 			{// if we set onRequestUnbond to setToUnbond, we will get the confirmation dialog
-			Dashboard({ stats, onRequestUnbond: setToUnbond, onUnbond })}
+			Dashboard({
+				stats,
+				onRequestUnbond: setToUnbond,
+				onUnbond,
+				onClaimRewards
+			})}
 
 			{UnbondConfirmationDialog({
 				toUnbond,
@@ -750,23 +789,26 @@ async function loadBondStats(addr) {
 async function getRewards(addr) {
 	const rewardPool = POOLS[0]
 	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
+	const rewardChannels = await resp.json()
 	const validUntil = Math.floor(Date.now() / 1000)
-	const rewardChannels = (await resp.json()).filter(
-		x => x.channelArgs.validUntil > validUntil
-	)
-	return Promise.all(
+	const forUser = await Promise.all(
 		rewardChannels.map(async rewardChannel => {
-			const outstandingReward = rewardChannel.balances[addr]
-				? bigNumberify(rewardChannel.balances[addr]).sub(
-						await Core.withdrawnPerUser(rewardChannel.channelId, addr)
-				  )
-				: ZERO
+			if (rewardChannel.channelArgs.validUntil < validUntil) return null
+			if (!rewardChannel.balances[addr]) return null
+			const balanceTree = new BalanceTree(rewardChannel.balances)
+			const outstandingReward = bigNumberify(rewardChannel.balances[addr]).sub(
+				await Core.withdrawnPerUser(rewardChannel.channelId, addr)
+			)
 			return {
 				...rewardChannel,
-				outstandingReward
+				outstandingReward,
+				proof: balanceTree.getProof(addr),
+				stateRoot: balanceTree.mTree.getRoot(),
+				amount: rewardChannel.balances[addr]
 			}
 		})
 	)
+	return forUser.filter(x => x)
 }
 
 async function createNewBond(stats, { amount, poolId, nonce }) {
