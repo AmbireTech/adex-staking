@@ -71,7 +71,8 @@ const POOLS = [
 		minStakingAmount: 0,
 		rewardPolicy:
 			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 5% of the total volume, which you can track on our Explorer.',
-		slashPolicy: "No slashing."
+		slashPolicy: "No slashing.",
+		url: "https://tom.adex.network"
 	},
 	{
 		label: "Validator Jerry",
@@ -337,6 +338,15 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
+	// Rewards
+	const [rewardChannels, setRewardChannels] = useState([])
+	const rewardPool = POOLS[0]
+	useEffect(() => {
+		fetch(`${rewardPool.url}/fee-rewards`)
+			.then(r => r.json())
+			.then(setRewardChannels)
+	}, [])
+
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
 			const willUnlock = bond.willUnlock.getTime()
@@ -405,12 +415,24 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</Grid>
 		)
 
-	const headerCellStyle = { fontWeight: "bold" }
+	// @TODO: separate component for this
+	// @TODO pre-calc reward numbers, so that we can deduct the oens we've already taken and remove the ones past validUntil
+	const zero = bigNumberify(0)
+	const totalReward = rewardChannels
+		.map(x => bigNumberify(x.balances[stats.addr] || 0))
+		.reduce((a, b) => a.add(b), zero)
 	const rewardActions = (
-		<Button size="small" variant="contained" color="secondary">
+		<Button
+			size="small"
+			variant="contained"
+			color="secondary"
+			disabled={totalReward.eq(zero)}
+		>
 			claim reward
 		</Button>
 	)
+
+	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Grid
 			container
@@ -425,7 +447,7 @@ function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 					loaded: stats.loaded,
 					title: "Your total unclaimed reward",
 					actions: rewardActions,
-					subtitle: "0.00 DAI"
+					subtitle: formatDAI(totalReward) + " DAI"
 				})}
 			</Grid>
 
@@ -614,6 +636,12 @@ export default function App() {
 	)
 }
 
+function formatDAI(num) {
+	return (
+		num.div(bigNumberify("10000000000000000")).toNumber(10) / 100
+	).toFixed(2)
+}
+
 function formatADX(num) {
 	return (num.toNumber(10) / ADX_MULTIPLIER).toFixed(2)
 }
@@ -705,7 +733,9 @@ async function loadUserStats() {
 	return {
 		loaded: true,
 		userBonds,
-		userBalance: bal
+		userBalance: bal,
+		// @TODO: consider preparing all rewards data here, rather than exporting addr
+		addr
 	}
 }
 
