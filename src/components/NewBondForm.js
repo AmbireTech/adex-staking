@@ -94,7 +94,7 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 	}
 
 	const updatePool = value => {
-		const amountBN = bigNumberify(stakingAmount * ADX_MULTIPLIER)
+		const amountBN = bigNumberify(Math.floor(stakingAmount * ADX_MULTIPLIER))
 		const poolToValidate = getPool(value)
 		validateFields({ amountBN, poolToValidate })
 		setPool(value)
