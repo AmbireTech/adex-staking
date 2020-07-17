@@ -124,7 +124,7 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 						<Button
 							onClick={ev => {
 								setStakingAmount(
-									(maxAmount.toNumber() / ADX_MULTIPLIER).toFixed(2)
+									(maxAmount.toNumber() / ADX_MULTIPLIER).toFixed(4)
 								)
 								setBond({ ...bond, amount: maxAmount })
 							}}
