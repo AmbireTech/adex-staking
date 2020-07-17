@@ -84,7 +84,7 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const updateStakingAmount = value => {
 		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
 		const amount = value < 0 ? 0 : value
-		const amountBN = bigNumberify(Math.abs(Math.floor(amount * ADX_MULTIPLIER)))
+		const amountBN = bigNumberify(Math.floor(amount * ADX_MULTIPLIER))
 		validateFields({ amountBN, poolToValidate: activePool })
 		setStakingAmount(amount)
 		setBond({
