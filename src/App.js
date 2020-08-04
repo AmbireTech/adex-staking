@@ -17,6 +17,7 @@ import { bigNumberify, hexZeroPad } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import StakingABI from "adex-protocol-eth/abi/Staking"
+import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
@@ -29,7 +30,7 @@ import {
 	TOKEN_OLD_TO_NEW_MULTIPLIER
 } from "./helpers/constants"
 import { getBondId } from "./helpers/utils"
-import { getUserIdentity } from "./helpers/identity"
+import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
@@ -85,15 +86,46 @@ export default function App() {
 	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
 		const signer = await getSigner()
 		if (!signer) return
-		const staking = new Contract(ADDR_STAKING, StakingABI, signer)
-		const fn = isUnbond
-			? staking.unbond.bind(staking)
-			: staking.requestUnbond.bind(staking)
-		// @TODO: refactor into some fn which wraps into a try/catch
+		const walletAddr = await signer.getAddress()
+		const { addr } = getUserIdentity(walletAddr)
+		const identity = new Contract(addr, IdentityABI, signer)
+		const idNonce = await identity.nonce()
+		const bond = [amount, poolId, nonce || ZERO]
 		try {
-			const tx = await fn([amount, poolId, nonce || ZERO])
+			const txns = []
+			if (isUnbond) {
+				txns.push(
+					zeroFeeTx(
+						identity.address,
+						idNonce,
+						Staking.address,
+						Staking.interface.functions.unbond.encode([bond])
+					)
+				)
+				txns.push(
+					zeroFeeTx(
+						identity.address,
+						idNonce.add(1),
+						Token.address,
+						Token.interface.functions.transfer.encode([walletAddr, amount])
+					)
+				)
+			} else {
+				txns.push(
+					zeroFeeTx(
+						identity.address,
+						idNonce,
+						Staking.address,
+						Staking.interface.functions.requestUnbond.encode([bond])
+					)
+				)
+			}
+			const tx = await identity.executeBySender(
+				txns.map(x => x.toSolidityTuple())
+			)
 			await tx.wait()
 		} catch (e) {
+			console.error(e)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}

@@ -1,5 +1,6 @@
 import { generateAddress2 } from "ethereumjs-util"
 import { getAddress } from "ethers/utils"
+import { Transaction } from "adex-protocol-eth/js"
 
 const IDENTITY_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
 
@@ -19,4 +20,15 @@ export function getUserIdentity(walletAddr) {
 		).toString("hex")}`
 	)
 	return { bytecode, addr }
+}
+
+export function zeroFeeTx(idAddr, nonce, to, data) {
+	return new Transaction({
+		identityContract: idAddr,
+		nonce: nonce.toString(10),
+		feeTokenAddr: "0x6b175474e89094c44da98b954eedeac495271d0f",
+		feeAmount: 0,
+		to,
+		data
+	})
 }
