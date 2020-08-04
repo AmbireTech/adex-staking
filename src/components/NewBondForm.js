@@ -177,6 +177,11 @@ export default function NewBondForm({
 								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% 🌾
 							</Typography>
 						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="body1">
+								<b>Please sign BOTH Metamask transactions.</b>
+							</Typography>
+						</Grid>
 					</Grid>
 				) : (
 					""
