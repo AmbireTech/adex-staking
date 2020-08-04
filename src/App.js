@@ -26,11 +26,13 @@ import { ADDR_STAKING, ZERO, POOLS } from "./helpers/constants"
 import { getBondId } from "./helpers/utils"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
-const ADDR_ADX = "0x4470bb87d77b963a013db939be332f927f2b992e"
+const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
+const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const REFRESH_INTVL = 30000
 
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
+const OldToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
@@ -200,7 +202,7 @@ async function loadStats() {
 	const [totalStake, userStats] = await Promise.all([
 		// TEMP value during migration; @TODO
 		Promise.resolve(bigNumberify("55880770055")),
-		//Token.balanceOf(ADDR_STAKING),
+		//OldToken.balanceOf(ADDR_STAKING),
 		loadUserStats()
 	])
 
@@ -226,7 +228,8 @@ async function loadUserStats() {
 }
 
 async function loadBondStats(addr) {
-	const [userBalance, logs, slashLogs] = await Promise.all([
+	const [userBalanceOld, userBalanceNew, logs, slashLogs] = await Promise.all([
+		OldToken.balanceOf(addr),
 		Token.balanceOf(addr),
 		provider.getLogs({
 			fromBlock: 0,
@@ -235,6 +238,11 @@ async function loadBondStats(addr) {
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
+
+	// @TODO denominate in 10**18
+	const userBalance = userBalanceOld.add(
+		userBalanceNew.div(bigNumberify(100000000000000))
+	)
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
@@ -305,7 +313,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	const signer = await getSigner()
 	if (!signer) return
 	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
-	const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
 	const allowance = await tokenWithSigner.allowance(
 		await signer.getAddress(),
 		ADDR_STAKING
