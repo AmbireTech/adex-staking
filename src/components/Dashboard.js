@@ -137,6 +137,29 @@ export default function Dashboard({
 			}}
 			spacing={2}
 		>
+			<Grid item xs={12}>
+				<Box mb={2}>
+					<Alert elevation={6} variant="filled" severity="info" color="error">
+						<div>
+							<span>
+								The staking portal is currently undergoing maintenance due to{" "}
+							</span>
+							<span>
+								<Link
+									href="https://www.adex.network/blog/token-upgrade-defi-features/"
+									target="_blank"
+								>
+									our token upgrade
+								</Link>
+								.{" "}
+							</span>
+							<span>
+								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
+							</span>
+						</div>
+					</Alert>
+				</Box>
+			</Grid>
 			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({ rewardChannels: stats.rewardChannels, onClaimRewards })}
 			</Grid>
@@ -168,30 +191,6 @@ export default function Dashboard({
 						: "",
 					extra: inUSD(stats.userBalance)
 				})}
-			</Grid>
-
-			<Grid item xs={12}>
-				<Box mt={8}>
-					<Alert elevation={6} variant="filled" severity="info">
-						<div>
-							<span>
-								The staking portal is currently undergoing maintenance due to{" "}
-							</span>
-							<span>
-								<Link
-									href="https://www.adex.network/blog/token-upgrade-defi-features/"
-									target="_blank"
-								>
-									our token upgrade
-								</Link>
-								.{" "}
-							</span>
-							<span>
-								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
-							</span>
-						</div>
-					</Alert>
-				</Box>
 			</Grid>
 
 			<TableContainer xs={12}>
