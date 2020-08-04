@@ -30,7 +30,7 @@ export default function Dashboard({
 }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
-		.map(x => x.amount)
+		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
 	// USD values
