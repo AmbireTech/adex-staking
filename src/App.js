@@ -215,6 +215,7 @@ export default function App() {
 				<Fade in={isNewBondOpen}>
 					{NewBondForm({
 						pools: POOLS.filter(x => x.selectable),
+						totalStake: stats.totalStake,
 						maxAmount: stats.userBalance,
 						onNewBond: checkNewBond
 					})}

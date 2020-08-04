@@ -68,9 +68,9 @@ export default function Dashboard({
 			}
 		}
 		if (bond.status === "Active") {
-			return `Active, earning ${(getApproxAPY(bond, stats) * 100).toFixed(
-				2
-			)}% APY`
+			return `Active, earning ${(
+				getApproxAPY(bond, stats.totalStake) * 100
+			).toFixed(2)}% APY`
 		}
 		return bond.status
 	}

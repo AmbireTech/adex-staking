@@ -44,6 +44,6 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: `${formatADX(bigNumberify(0))} ADX, ${formatDAI(totalReward)} DAI`
+		subtitle: `${formatADX(bigNumberify("200259000000000000000"))} ADX`
 	})
 }

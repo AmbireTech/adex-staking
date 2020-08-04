@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { getPool, formatADX } from "../helpers/utils"
+import { getPool, formatADX, getApproxAPY } from "../helpers/utils"
 import {
 	UNBOND_DAYS,
 	ADX_MULTIPLIER,
@@ -23,7 +23,12 @@ import {
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 
-export default function NewBondForm({ maxAmount, onNewBond, pools }) {
+export default function NewBondForm({
+	maxAmount,
+	onNewBond,
+	totalStake,
+	pools
+}) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState(0)
 	const [amountErr, setAmountErr] = useState(false)
@@ -160,6 +165,13 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">Pool slashing policy:</Typography>
 							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="h6">Pool APY:</Typography>
+							<Typography variant="body1">
+								Current annual yield of{" "}
+								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}%
+							</Typography>
 						</Grid>
 					</Grid>
 				) : (

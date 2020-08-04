@@ -20,7 +20,7 @@ export const POOLS = [
 		selectable: true,
 		minStakingAmount: 0,
 		rewardPolicy:
-			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer.',
+			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.',
 		slashPolicy: "No slashing.",
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
