@@ -1,5 +1,5 @@
 import React from "react"
-import Paper from "@material-ui/core/Paper"
+import { Paper } from "@material-ui/core"
 import LinearProgress from "@material-ui/core/LinearProgress"
 import Typography from "@material-ui/core/Typography"
 import { themeMUI } from "../themeMUi"
@@ -14,7 +14,7 @@ export default function StatsCard({ title, subtitle, extra, loaded, actions }) {
 			extra || <></>
 		)
 	return (
-		<Paper elevation={3} style={{ margin: themeMUI.spacing(1) }}>
+		<Paper elevation={3} style={{ height: "100%" }}>
 			<div style={{ padding: themeMUI.spacing(2), minHeight: "75px" }}>
 				<Typography variant="h5">{subtitle}</Typography>
 				{extraElem}

@@ -114,17 +114,19 @@ export default function Dashboard({
 	return (
 		<Grid
 			container
+			alignItems="stretch"
 			style={{
 				padding: themeMUI.spacing(4),
 				maxWidth: "1200px",
 				margin: "auto"
 			}}
+			spacing={2}
 		>
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({ rewardChannels: stats.rewardChannels, onClaimRewards })}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
@@ -133,7 +135,7 @@ export default function Dashboard({
 				})}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your total active stake",
@@ -142,7 +144,7 @@ export default function Dashboard({
 				})}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your balance",
@@ -153,7 +155,7 @@ export default function Dashboard({
 				})}
 			</Grid>
 
-			<Grid item sm={12}>
+			<Grid item xs={12}>
 				<Box mt={8}>
 					<Alert elevation={6} variant="filled" severity="info">
 						<div>
