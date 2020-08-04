@@ -290,11 +290,13 @@ async function loadBondStats(addr) {
 	const identity = getUserIdentity(addr)
 	const [balances, logs, slashLogs] = await Promise.all([
 		Promise.all([
-			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER))
+			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)),
 			// @TODO: those are disabled cause of the assumption in createNewBond
 			// re-enable them
 			//Token.balanceOf(addr),
-			//OldToken.balanceOf(identity.addr),
+			OldToken.balanceOf(identity.addr).then(x =>
+				x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)
+			)
 			//Token.balanceOf(identity.addr)
 		]),
 		provider.getLogs({
@@ -395,18 +397,20 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	)
 
 	let txns = []
+	const balanceOnIdentity = await OldToken.balanceOf(identity.address)
+	// Eg bond amount is 10 but we only have 6, we need another 4
+	const needed = amount.sub(balanceOnIdentity)
 	if ((await provider.getCode(identity.address)) !== "0x") {
-		// @TODO: TEMP: WARNING: assumption here that all of the balance is on old token in the metamask addr
-		// this is why using anything other than `OldToken.balanceOf(wallet)` is disabled now
 		console.log("Contract exists: " + identity.address)
 		let identityTxns = []
 		const idNonce = await identity.nonce()
 
-		txns.push(
-			await tokenWithSigner.transfer(identity.address, amount, {
-				gasLimit: 80000
-			})
-		)
+		if (needed.gt(ZERO))
+			txns.push(
+				await tokenWithSigner.transfer(identity.address, needed, {
+					gasLimit: 80000
+				})
+			)
 		identityTxns.push(
 			zeroFeeTx(
 				identity.address,
@@ -450,11 +454,12 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		)
 	} else {
 		console.log("Contract does not exist: " + identity.address)
-		txns.push(
-			await tokenWithSigner.transfer(identity.address, amount, {
-				gasLimit: 80000
-			})
-		)
+		if (needed.gt(ZERO))
+			txns.push(
+				await tokenWithSigner.transfer(identity.address, needed, {
+					gasLimit: 80000
+				})
+			)
 		// Contract will open the bond on deploy
 		// technically it needs around 450000
 		txns.push(await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 450000 }))

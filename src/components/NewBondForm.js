@@ -179,7 +179,7 @@ export default function NewBondForm({
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
-								<b>Please sign BOTH Metamask transactions.</b>
+								<b>Please sign ALL Metamask transactions that pop up.</b>
 							</Typography>
 						</Grid>
 					</Grid>
