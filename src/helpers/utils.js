@@ -30,6 +30,7 @@ export function getApproxAPY(bond, stats) {
 		bondCreatedSeconds < 1597006800 && Date.now() < earlyDistributionEnds
 	// @TODO use ADX multiplier
 	// this reward is distributed over that many days, hence * (365/145)
+	// @TODO take constants from pool constants
 	const base =
 		(6000000 /
 			stats.totalStake.div(bigNumberify("1000000000000000000")).toNumber()) *

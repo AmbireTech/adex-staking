@@ -210,6 +210,12 @@ export default function Dashboard({
 						? formatADX(stats.userBalance) + " ADX"
 						: "",
 					extra: inUSD(stats.userBalance)
+					/*actions: (<Button
+							size="small"
+							variant="contained"
+							color="secondary"
+							disabled={true}
+						>upgrade</Button>)*/
 				})}
 			</Grid>
 
