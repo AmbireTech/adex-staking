@@ -1,7 +1,7 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO } from "../helpers/constants"
-import { Button } from "@material-ui/core"
+import { Button, Tooltip, Link } from "@material-ui/core"
 import { formatDAI } from "../helpers/utils"
 
 export default function RewardCard({ rewardChannels, onClaimRewards }) {
@@ -19,15 +19,35 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b), ZERO)
 	const rewardActions = (
-		<Button
-			size="small"
-			variant="contained"
-			color="secondary"
-			disabled={totalReward.eq(ZERO)}
-			onClick={() => onClaimRewards(rewardChannels)}
+		<Tooltip
+			interactive
+			placement="top"
+			open={true}
+			arrow={true}
+			title={
+				<div>
+					{"The staking portal is currently undergoing maintenance due to "}
+					<Link
+						href="https://www.adex.network/blog/token-upgrade-defi-features/"
+						target="_blank"
+					>
+						{"our token upgrade"}
+					</Link>
+					{". Unbonding and rewards withdraw will be disabled until 6 August."}
+				</div>
+			}
 		>
-			claim reward
-		</Button>
+			<Button
+				size="small"
+				variant="contained"
+				color="secondary"
+				// disabled={totalReward.eq(ZERO)}
+				disabled={true}
+				onClick={() => onClaimRewards(rewardChannels)}
+			>
+				claim reward
+			</Button>
+		</Tooltip>
 	)
 	return StatsCard({
 		loaded: true,
