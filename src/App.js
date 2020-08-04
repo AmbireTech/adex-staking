@@ -22,8 +22,14 @@ import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
 import UnbondConfirmationDialog from "./components/UnbondConfirmationDialog"
-import { ADDR_STAKING, ZERO, POOLS } from "./helpers/constants"
+import {
+	ADDR_STAKING,
+	ZERO,
+	POOLS,
+	TOKEN_OLD_TO_NEW_MULTIPLIER
+} from "./helpers/constants"
 import { getBondId } from "./helpers/utils"
+import { getUserIdentity } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
@@ -227,9 +233,14 @@ async function loadUserStats() {
 }
 
 async function loadBondStats(addr) {
-	const [userBalanceOld, userBalanceNew, logs, slashLogs] = await Promise.all([
-		OldToken.balanceOf(addr),
-		Token.balanceOf(addr),
+	const identity = getUserIdentity(addr)
+	const [balances, logs, slashLogs] = await Promise.all([
+		Promise.all([
+			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)),
+			Token.balanceOf(addr),
+			OldToken.balanceOf(identity.addr),
+			Token.balanceOf(identity.addr)
+		]),
 		provider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
@@ -238,10 +249,7 @@ async function loadBondStats(addr) {
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
 
-	// @TODO denominate in 10**18
-	const userBalance = userBalanceOld.add(
-		userBalanceNew.div(bigNumberify(100000000000000))
-	)
+	const userBalance = balances.reduce((a, b) => a.add(b))
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values

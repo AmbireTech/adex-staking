@@ -11,7 +11,8 @@ export function getBondId({ owner, amount, poolId, nonce }) {
 	)
 }
 export function formatADX(num) {
-	return (num.toNumber(10) / ADX_MULTIPLIER).toFixed(4)
+	// @TODO fix this dirty hack?
+	return (num.div(100000000000000).toNumber(10) / ADX_MULTIPLIER).toFixed(4)
 }
 
 export function formatDAI(num) {

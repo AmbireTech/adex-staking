@@ -48,7 +48,10 @@ export default function Dashboard({
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
-		const usdAmount = (adxAmount.toNumber(10) / ADX_MULTIPLIER) * prices.USD
+		// @TODO fix this dirty hack?
+		const usdAmount =
+			(adxAmount.div(100000000000000).toNumber(10) / ADX_MULTIPLIER) *
+			prices.USD
 		return `${usdAmount.toFixed(2)} USD`
 	}
 

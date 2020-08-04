@@ -1,6 +1,6 @@
 import { bigNumberify, id } from "ethers/utils"
 
-export const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
+export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
 export const PRICES_API_URL =
 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
@@ -36,3 +36,5 @@ export const POOLS = [
 		slashPolicy: ""
 	}
 ]
+
+export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")
