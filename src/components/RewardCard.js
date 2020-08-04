@@ -2,7 +2,8 @@ import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO } from "../helpers/constants"
 import { Button } from "@material-ui/core"
-import { formatDAI } from "../helpers/utils"
+import { formatDAI, formatADX } from "../helpers/utils"
+import { bigNumberify } from "ethers/utils"
 
 export default function RewardCard({ rewardChannels, onClaimRewards }) {
 	const title = "Your total unclaimed reward"
@@ -33,6 +34,6 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: formatDAI(totalReward) + " DAI"
+		subtitle: `${formatADX(bigNumberify(0))} ADX, ${formatDAI(totalReward)} DAI`
 	})
 }
