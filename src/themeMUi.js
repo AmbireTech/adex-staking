@@ -57,10 +57,9 @@ const theme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: palette.grey.main,
-				opacity: 0.9
+				backgroundColor: `rgba(0,0,0, 0.8)`
 			},
-			arrow: { color: palette.grey.main }
+			arrow: { color: `rgba(0,0,0, 0.8)` }
 		}
 	}
 })
