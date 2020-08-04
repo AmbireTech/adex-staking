@@ -9,7 +9,8 @@ import {
 	TableHead,
 	Link,
 	TableBody,
-	Box
+	Box,
+	Tooltip
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
@@ -76,19 +77,33 @@ export default function Dashboard({
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					{bond.status === "Active" ? (
-						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
-							Request Unbond
-						</Button>
-					) : (
-						<Button
-							disabled={bond.willUnlock.getTime() > Date.now()}
-							onClick={() => onUnbond(bond)}
-							color="secondary"
-						>
-							Unbond
-						</Button>
-					)}
+					<Tooltip
+						arrow={true}
+						title={
+							"Coming soon! Unbond requests will be available when the ADX token migration is completed."
+						}
+					>
+						<div>
+							{bond.status === "Active" ? (
+								<Button
+									disabled={true}
+									color="primary"
+									onClick={() => onRequestUnbond(bond)}
+								>
+									Request Unbond
+								</Button>
+							) : (
+								<Button
+									disabled={true}
+									// disabled={bond.willUnlock.getTime() > Date.now()}
+									onClick={() => onUnbond(bond)}
+									color="secondary"
+								>
+									Unbond
+								</Button>
+							)}
+						</div>
+					</Tooltip>
 				</TableCell>
 			</TableRow>
 		)
