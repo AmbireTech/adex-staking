@@ -4,13 +4,14 @@ import {
 	TableCell,
 	Button,
 	Grid,
-	SnackbarContent,
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	Link,
+	TableBody,
+	Box
 } from "@material-ui/core"
-import InfoIcon from "@material-ui/icons/Info"
+import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
@@ -93,29 +94,19 @@ export default function Dashboard({
 		)
 	}
 
-	const bondExplanationMsg = (
-		<div style={{ display: "flex", alignItems: "center" }}>
-			<InfoIcon style={{ marginRight: themeMUI.spacing(2) }} />
-			<p>
-				This table will show all your individual ADX deposits (bonds), along
-				with information as status, amount and earned reward. By using the
-				action buttons, you will be able to request unbonding and withdraw your
-				ADX after the {UNBOND_DAYS} day lock-up period.
-			</p>
-		</div>
-	)
+	const bondExplanationMsg = `This table will show all your individual ADX deposits (bonds), along
+		with information as status, amount and earned reward. By using the
+		action buttons, you will be able to request unbonding and withdraw your
+		ADX after the ${UNBOND_DAYS} day lock-up period.`
+
 	const bondExplanationFrag =
 		!stats.loaded || stats.userBonds.length ? (
 			<></>
 		) : (
 			<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-				<SnackbarContent
-					style={{
-						fontSize: "15px",
-						backgroundColor: themeMUI.palette.primary.main
-					}}
-					message={bondExplanationMsg}
-				></SnackbarContent>
+				<Alert square elevation={6} variant="filled" severity="info">
+					{bondExplanationMsg}
+				</Alert>
 			</Grid>
 		)
 
@@ -160,6 +151,30 @@ export default function Dashboard({
 						: "",
 					extra: inUSD(stats.userBalance)
 				})}
+			</Grid>
+
+			<Grid item sm={12}>
+				<Box mt={8}>
+					<Alert elevation={6} variant="filled" severity="info">
+						<div>
+							<span>
+								The staking portal is currently undergoing maintenance due to{" "}
+							</span>
+							<span>
+								<Link
+									href="https://www.adex.network/blog/token-upgrade-defi-features/"
+									target="_blank"
+								>
+									our token upgrade
+								</Link>
+								.{" "}
+							</span>
+							<span>
+								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
+							</span>
+						</div>
+					</Alert>
+				</Box>
 			</Grid>
 
 			<TableContainer xs={12}>
