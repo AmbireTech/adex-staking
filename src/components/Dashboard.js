@@ -82,7 +82,20 @@ export default function Dashboard({
 					<Tooltip
 						arrow={true}
 						title={
-							"Coming soon! Unbond requests will be available when the ADX token migration is completed."
+							"Coming soon! Adding more ADX will be available after 8th of August."
+						}
+					>
+						<div>
+							<Button disabled={true} color="primary">
+								Add more ADX
+							</Button>
+						</div>
+					</Tooltip>
+
+					<Tooltip
+						arrow={true}
+						title={
+							"Coming soon! Unbond requests will be available after 8th of August."
 						}
 					>
 						<div>
