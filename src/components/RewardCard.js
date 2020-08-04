@@ -21,20 +21,11 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 	const rewardActions = (
 		<Tooltip
 			interactive
-			placement="top"
+			placement="bottom"
 			open={true}
 			arrow={true}
 			title={
-				<div>
-					{"The staking portal is currently undergoing maintenance due to "}
-					<Link
-						href="https://www.adex.network/blog/token-upgrade-defi-features/"
-						target="_blank"
-					>
-						{"our token upgrade"}
-					</Link>
-					{". Unbonding and rewards withdraw will be disabled until 6 August."}
-				</div>
+				"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
 			}
 		>
 			<Button
