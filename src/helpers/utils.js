@@ -16,6 +16,11 @@ export function formatADX(num) {
 	return (num.div(100000000000000).toNumber(10) / ADX_MULTIPLIER).toFixed(4)
 }
 
+// @TODO fix this dirty hack?
+export function formatADXLegacy(num) {
+	return (num.toNumber(10) / ADX_MULTIPLIER).toFixed(4)
+}
+
 export function formatDAI(num) {
 	return (
 		num.div(bigNumberify("10000000000000000")).toNumber(10) / 100

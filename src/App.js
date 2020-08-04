@@ -216,7 +216,7 @@ export default function App() {
 					{NewBondForm({
 						pools: POOLS.filter(x => x.selectable),
 						totalStake: stats.totalStake,
-						maxAmount: stats.userBalance,
+						maxAmount: stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER),
 						onNewBond: checkNewBond
 					})}
 				</Fade>
@@ -364,7 +364,9 @@ async function getRewards(addr) {
 async function createNewBond(stats, { amount, poolId, nonce }) {
 	if (!poolId) return
 	if (!stats.userBalance) return
-	if (amount.gt(stats.userBalance)) return
+	// @TODO: TEMP: amount here will be in the old token amount
+	if (amount.gt(stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER)))
+		throw new Error("amount too large")
 	const signer = await getSigner()
 	if (!signer) return
 	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
