@@ -3,7 +3,6 @@ import StatsCard from "./StatsCard"
 import { ZERO } from "../helpers/constants"
 import { Button, Tooltip, Link } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/utils"
-import { bigNumberify } from "ethers/utils"
 
 export default function RewardCard({
 	rewardChannels,
