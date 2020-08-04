@@ -173,8 +173,8 @@ export default function NewBondForm({
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">Pool APY:</Typography>
 							<Typography variant="body1">
-								Current annual yield of{" "}
-								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}%
+								🌾 Current annual yield of{" "}
+								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% 🌾
 							</Typography>
 						</Grid>
 					</Grid>

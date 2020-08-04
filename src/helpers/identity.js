@@ -1,8 +1,7 @@
 import { generateAddress2 } from "ethereumjs-util"
 import { getAddress } from "ethers/utils"
 import { Transaction } from "adex-protocol-eth/js"
-
-const IDENTITY_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
+import { ADDR_FACTORY } from "./constants"
 
 function getBytecode(addr) {
 	const addrHex = addr.slice(2).toLowerCase()
@@ -13,11 +12,9 @@ function getBytecode(addr) {
 export function getUserIdentity(walletAddr) {
 	const bytecode = getBytecode(walletAddr)
 	const addr = getAddress(
-		`0x${generateAddress2(
-			IDENTITY_FACTORY,
-			Buffer.alloc(32),
-			bytecode
-		).toString("hex")}`
+		`0x${generateAddress2(ADDR_FACTORY, Buffer.alloc(32), bytecode).toString(
+			"hex"
+		)}`
 	)
 	return { bytecode, addr }
 }

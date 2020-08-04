@@ -13,18 +13,20 @@ import MuiAlert from "@material-ui/lab/Alert"
 import HelperMenu from "./components/HelperMenu"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify, hexZeroPad } from "ethers/utils"
+import { bigNumberify, hexZeroPad, Interface } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
+import IdentityFactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
 import UnbondConfirmationDialog from "./components/UnbondConfirmationDialog"
 import {
 	ADDR_STAKING,
+	ADDR_FACTORY,
 	ZERO,
 	POOLS,
 	TOKEN_OLD_TO_NEW_MULTIPLIER
@@ -89,6 +91,7 @@ export default function App() {
 		const walletAddr = await signer.getAddress()
 		const { addr } = getUserIdentity(walletAddr)
 		const identity = new Contract(addr, IdentityABI, signer)
+		// @TODO handle when the contract is not deployed
 		const idNonce = await identity.nonce()
 		const bond = [amount, poolId, nonce || ZERO]
 		try {
@@ -144,6 +147,7 @@ export default function App() {
 		try {
 			await createNewBond(stats, bond)
 		} catch (e) {
+			console.error(e)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}
@@ -153,6 +157,7 @@ export default function App() {
 		try {
 			await claimRewards(rewardChannels)
 		} catch (e) {
+			console.error(e)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}
@@ -243,8 +248,8 @@ async function loadStats() {
 		loadUserStats()
 	])
 
-	// @TODO replace this with a more accurate algo
-	// everyone is early at the time of building this
+	// @TODO replace this with a more accurate algo when reward distribution is enabled after 8 August
+	// everyone is an early staker at the time of building this
 	const elapsedSeconds = Math.floor((Date.now() - 1596499200000) / 1000)
 	const fromEarly = (1000000 / 2678400) * elapsedSeconds
 	const fromRegular = (6000000 / 12528000) * elapsedSeconds
@@ -281,13 +286,16 @@ async function loadUserStats() {
 }
 
 async function loadBondStats(addr) {
+	// @TODO: rename this not to be named `identity` cause it's confusing with the SC that's named `identity`
 	const identity = getUserIdentity(addr)
 	const [balances, logs, slashLogs] = await Promise.all([
 		Promise.all([
-			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)),
-			Token.balanceOf(addr),
-			OldToken.balanceOf(identity.addr),
-			Token.balanceOf(identity.addr)
+			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER))
+			// @TODO: those are disabled cause of the assumption in createNewBond
+			// re-enable them
+			//Token.balanceOf(addr),
+			//OldToken.balanceOf(identity.addr),
+			//Token.balanceOf(identity.addr)
 		]),
 		provider.getLogs({
 			fromBlock: 0,
@@ -367,38 +375,91 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	// @TODO: TEMP: amount here will be in the old token amount
 	if (amount.gt(stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER)))
 		throw new Error("amount too large")
+
+	// @TODO handle case with no signer
 	const signer = await getSigner()
 	if (!signer) return
-	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
+
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+
+	// @TODO: TEMP: amount here will be in the old token amount
+	const bond = [amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER), poolId, nonce || ZERO]
+
+	const identity = new Contract(addr, IdentityABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
-	const allowance = await tokenWithSigner.allowance(
-		await signer.getAddress(),
-		ADDR_STAKING
+	const factoryWithSigner = new Contract(
+		ADDR_FACTORY,
+		IdentityFactoryABI,
+		signer
 	)
+
 	let txns = []
-	// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
-	// which isn't going to be mined at the time of signing
-	if (!allowance.eq(amount)) {
-		if (allowance.gt(ZERO)) {
-			txns.push(
-				await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
-			)
-		}
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		// @TODO: TEMP: WARNING: assumption here that all of the balance is on old token in the metamask addr
+		// this is why using anything other than `OldToken.balanceOf(wallet)` is disabled now
+		console.log("Contract exists: " + identity.address)
+		let identityTxns = []
+		const idNonce = await identity.nonce()
+
 		txns.push(
-			await tokenWithSigner.approve(ADDR_STAKING, amount, {
+			await tokenWithSigner.transfer(identity.address, amount, {
 				gasLimit: 80000
 			})
 		)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce,
+				OldToken.address,
+				OldToken.interface.functions.approve.encode([Token.address, amount])
+			)
+		)
+		const ADXToken = new Interface([
+			"function swap(uint prevTokenAmount) external"
+		])
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(1),
+				Token.address,
+				ADXToken.functions.swap.encode([amount])
+			)
+		)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(2),
+				Token.address,
+				Token.interface.functions.approve.encode([Staking.address, bond[0]])
+			)
+		)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(3),
+				Staking.address,
+				Staking.interface.functions.addBond.encode([bond])
+			)
+		)
+		txns.push(
+			await identity.executeBySender(identityTxns.map(x => x.toSolidityTuple()))
+		)
+	} else {
+		console.log("Contract does not exist: " + identity.address)
+		txns.push(
+			await tokenWithSigner.transfer(identity.address, amount, {
+				gasLimit: 80000
+			})
+		)
+		// Contract will open the bond on deploy
+		txns.push(await factoryWithSigner.deploy(bytecode, 0))
 	}
-	txns.push(
-		await stakingWithSigner.addBond([amount, poolId, nonce || ZERO], {
-			gasLimit: 110000
-		})
-	)
-	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
+
 	await Promise.all(txns.map(tx => tx.wait()))
 }
 
+// @TODO reimplement
 async function claimRewards(rewardChannels) {
 	const signer = await getSigner()
 	if (!signer) return

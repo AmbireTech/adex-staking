@@ -8,6 +8,8 @@ export const ADX_MULTIPLIER = 10000
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 
+export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
+
 export const DEFAULT_BOND = {
 	poolId: "",
 	amount: ZERO
