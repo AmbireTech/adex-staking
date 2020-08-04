@@ -36,7 +36,7 @@ export default function RewardCard({
 					color="secondary"
 					// disabled={totalReward.eq(ZERO)}
 					disabled={true}
-					onClick={() => onClaimRewards(rewardChannels)}
+					// onClick={() => onClaimRewards(rewardChannels)}
 				>
 					claim reward
 				</Button>
@@ -47,6 +47,6 @@ export default function RewardCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: `${formatADX(earnedADX)} ADX, ${formatDAI(totalReward)} DAI`
+		subtitle: `${formatADX(earnedADX)} ADX` /*, ${formatDAI(totalReward)} DAI`*/
 	})
 }
