@@ -443,7 +443,10 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 			)
 		)
 		txns.push(
-			await identity.executeBySender(identityTxns.map(x => x.toSolidityTuple()))
+			await identity.executeBySender(
+				identityTxns.map(x => x.toSolidityTuple()),
+				{ gasLimit: 260000 }
+			)
 		)
 	} else {
 		console.log("Contract does not exist: " + identity.address)
@@ -453,7 +456,8 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 			})
 		)
 		// Contract will open the bond on deploy
-		txns.push(await factoryWithSigner.deploy(bytecode, 0))
+		// technically it needs around 450000
+		txns.push(await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 450000 }))
 	}
 
 	await Promise.all(txns.map(tx => tx.wait()))
