@@ -20,9 +20,12 @@ export const POOLS = [
 		selectable: true,
 		minStakingAmount: 0,
 		rewardPolicy:
-			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. The APY percentage is calculated as follows: 100*(0.07 * annualVolumeInUSD / totalStakedInPoolInUSD)',
+			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer.',
 		slashPolicy: "No slashing.",
-		url: "https://tom.adex.network"
+		url: "https://tom.adex.network",
+		estimatedAnnualFeeYield: 182500,
+		estimatedAnnualADXYield: 15103448.2758,
+		estimatedAnnualADXEarlyYield: 12166666.6666
 	},
 	{
 		label: "Validator Jerry",
