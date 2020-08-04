@@ -73,7 +73,6 @@ export default function Dashboard({
 		return (
 			<TableRow key={getBondId(bond)}>
 				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
-				<TableCell align="right">0.00 DAI</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
@@ -201,9 +200,6 @@ export default function Dashboard({
 					<TableHead>
 						<TableRow>
 							<TableCell style={headerCellStyle}>Bond amount</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Reward to collect
-							</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Pool
 							</TableCell>
