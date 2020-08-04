@@ -1,8 +1,9 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO } from "../helpers/constants"
-import { Button } from "@material-ui/core"
-import { formatDAI } from "../helpers/utils"
+import { Button, Tooltip, Link } from "@material-ui/core"
+import { formatDAI, formatADX } from "../helpers/utils"
+import { bigNumberify } from "ethers/utils"
 
 export default function RewardCard({ rewardChannels, onClaimRewards }) {
 	const title = "Your total unclaimed reward"
@@ -19,20 +20,30 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b), ZERO)
 	const rewardActions = (
-		<Button
-			size="small"
-			variant="contained"
-			color="secondary"
-			disabled={totalReward.eq(ZERO)}
-			onClick={() => onClaimRewards(rewardChannels)}
+		<Tooltip
+			arrow={true}
+			title={
+				"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
+			}
 		>
-			claim reward
-		</Button>
+			<div>
+				<Button
+					size="small"
+					variant="contained"
+					color="secondary"
+					// disabled={totalReward.eq(ZERO)}
+					disabled={true}
+					onClick={() => onClaimRewards(rewardChannels)}
+				>
+					claim reward
+				</Button>
+			</div>
+		</Tooltip>
 	)
 	return StatsCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: formatDAI(totalReward) + " DAI"
+		subtitle: `${formatADX(bigNumberify(0))} ADX, ${formatDAI(totalReward)} DAI`
 	})
 }

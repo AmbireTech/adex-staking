@@ -4,13 +4,15 @@ import {
 	TableCell,
 	Button,
 	Grid,
-	SnackbarContent,
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	Link,
+	TableBody,
+	Box,
+	Tooltip
 } from "@material-ui/core"
-import InfoIcon from "@material-ui/icons/Info"
+import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
@@ -30,7 +32,7 @@ export default function Dashboard({
 }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
-		.map(x => x.amount)
+		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
 	// USD values
@@ -75,47 +77,51 @@ export default function Dashboard({
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					{bond.status === "Active" ? (
-						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
-							Request Unbond
-						</Button>
-					) : (
-						<Button
-							disabled={bond.willUnlock.getTime() > Date.now()}
-							onClick={() => onUnbond(bond)}
-							color="secondary"
-						>
-							Unbond
-						</Button>
-					)}
+					<Tooltip
+						arrow={true}
+						title={
+							"Coming soon! Unbond requests will be available when the ADX token migration is completed."
+						}
+					>
+						<div>
+							{bond.status === "Active" ? (
+								<Button
+									disabled={true}
+									color="primary"
+									onClick={() => onRequestUnbond(bond)}
+								>
+									Request Unbond
+								</Button>
+							) : (
+								<Button
+									disabled={true}
+									// disabled={bond.willUnlock.getTime() > Date.now()}
+									onClick={() => onUnbond(bond)}
+									color="secondary"
+								>
+									Unbond
+								</Button>
+							)}
+						</div>
+					</Tooltip>
 				</TableCell>
 			</TableRow>
 		)
 	}
 
-	const bondExplanationMsg = (
-		<div style={{ display: "flex", alignItems: "center" }}>
-			<InfoIcon style={{ marginRight: themeMUI.spacing(2) }} />
-			<p>
-				This table will show all your individual ADX deposits (bonds), along
-				with information as status, amount and earned reward. By using the
-				action buttons, you will be able to request unbonding and withdraw your
-				ADX after the {UNBOND_DAYS} day lock-up period.
-			</p>
-		</div>
-	)
+	const bondExplanationMsg = `This table will show all your individual ADX deposits (bonds), along
+		with information as status, amount and earned reward. By using the
+		action buttons, you will be able to request unbonding and withdraw your
+		ADX after the ${UNBOND_DAYS} day lock-up period.`
+
 	const bondExplanationFrag =
 		!stats.loaded || stats.userBonds.length ? (
 			<></>
 		) : (
 			<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-				<SnackbarContent
-					style={{
-						fontSize: "15px",
-						backgroundColor: themeMUI.palette.primary.main
-					}}
-					message={bondExplanationMsg}
-				></SnackbarContent>
+				<Alert square elevation={6} variant="filled" severity="info">
+					{bondExplanationMsg}
+				</Alert>
 			</Grid>
 		)
 
@@ -123,17 +129,42 @@ export default function Dashboard({
 	return (
 		<Grid
 			container
+			alignItems="stretch"
 			style={{
 				padding: themeMUI.spacing(4),
 				maxWidth: "1200px",
 				margin: "auto"
 			}}
+			spacing={2}
 		>
-			<Grid item sm={3} xs={6}>
+			<Grid item xs={12}>
+				<Box mb={2}>
+					<Alert elevation={6} variant="filled" severity="info" color="error">
+						<div>
+							<span>
+								The staking portal is currently undergoing maintenance due to{" "}
+							</span>
+							<span>
+								<Link
+									href="https://www.adex.network/blog/token-upgrade-defi-features/"
+									target="_blank"
+								>
+									our token upgrade
+								</Link>
+								.{" "}
+							</span>
+							<span>
+								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
+							</span>
+						</div>
+					</Alert>
+				</Box>
+			</Grid>
+			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({ rewardChannels: stats.rewardChannels, onClaimRewards })}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
@@ -142,7 +173,7 @@ export default function Dashboard({
 				})}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your total active stake",
@@ -151,7 +182,7 @@ export default function Dashboard({
 				})}
 			</Grid>
 
-			<Grid item sm={3} xs={6}>
+			<Grid item md={3} sm={6} xs={12}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Your balance",

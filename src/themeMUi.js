@@ -28,7 +28,7 @@ const palette = {
 const theme = createMuiTheme({
 	typography: {
 		fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-		fontSize: 13
+		fontSize: 14
 	},
 	palette: { ...palette },
 	overrides: {
@@ -54,7 +54,12 @@ const theme = createMuiTheme({
 			}
 		},
 		MuiTooltip: {
-			tooltip: { borderRadius: 0 }
+			tooltip: {
+				borderRadius: 0,
+				fontSize: "0.9em",
+				backgroundColor: `rgba(0,0,0, 0.69)`
+			},
+			arrow: { color: `rgba(0,0,0, 0.69)` }
 		}
 	}
 })
