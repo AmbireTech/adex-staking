@@ -294,8 +294,8 @@ async function loadBondStats(addr) {
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
 			const vals = Staking.interface.parseLog(log).values
-			const { owner, amount, poolId, nonce, slashedAtStart } = vals
-			const bond = { owner, amount, poolId, nonce, slashedAtStart }
+			const { owner, amount, poolId, nonce, slashedAtStart, created } = vals
+			const bond = { owner, amount, poolId, nonce, slashedAtStart, created }
 			bonds.push({
 				id: getBondId(bond),
 				status: "Active",

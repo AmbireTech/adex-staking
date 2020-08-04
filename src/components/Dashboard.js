@@ -22,7 +22,7 @@ import {
 	ZERO,
 	PRICES_API_URL
 } from "../helpers/constants"
-import { getPool, getBondId, formatADX } from "../helpers/utils"
+import { getPool, getBondId, formatADX, getApproxAPY } from "../helpers/utils"
 
 export default function Dashboard({
 	stats,
@@ -66,6 +66,11 @@ export default function Dashboard({
 			} else {
 				return "Can unbond"
 			}
+		}
+		if (bond.status === "Active") {
+			return `Active, earning ${(getApproxAPY(bond, stats) * 100).toFixed(
+				2
+			)}% APY`
 		}
 		return bond.status
 	}
