@@ -198,7 +198,9 @@ async function getSigner() {
 
 async function loadStats() {
 	const [totalStake, userStats] = await Promise.all([
-		Token.balanceOf(ADDR_STAKING),
+		// TEMP value during migration; @TODO
+		Promise.resolve(bigNumberify("55880770055")),
+		//Token.balanceOf(ADDR_STAKING),
 		loadUserStats()
 	])
 
