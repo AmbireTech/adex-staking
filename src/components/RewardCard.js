@@ -5,7 +5,11 @@ import { Button, Tooltip, Link } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/utils"
 import { bigNumberify } from "ethers/utils"
 
-export default function RewardCard({ rewardChannels, onClaimRewards }) {
+export default function RewardCard({
+	rewardChannels,
+	earnedADX,
+	onClaimRewards
+}) {
 	const title = "Your total unclaimed reward"
 	const loaded = rewardChannels != null
 	if (!loaded) {
@@ -44,6 +48,6 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: `${formatADX(bigNumberify("200259000000000000000"))} ADX`
+		subtitle: `${formatADX(earnedADX)} ADX, ${formatDAI(totalReward)} DAI`
 	})
 }
