@@ -154,7 +154,8 @@ export default function Dashboard({
 								.{" "}
 							</span>
 							<span>
-								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
+								Staking, unbonding and rewards withdraw will be disabled until 6
+								August.{" "}
 							</span>
 						</div>
 					</Alert>

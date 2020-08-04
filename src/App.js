@@ -126,14 +126,15 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
-						disabled={!stats.loaded}
+						disabled={true}
+						// disabled={!stats.loaded}
 						onClick={() => setNewBondOpen(true)}
 						variant="extended"
 						color="secondary"
 						style={{ position: "absolute", right: "5%", top: "50%" }}
 					>
 						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-						Stake your ADX
+						{"Stake your ADX"}
 					</Fab>
 					{HelperMenu()}
 				</Toolbar>
