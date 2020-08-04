@@ -244,7 +244,7 @@ async function loadBondStats(addr) {
 		provider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
-			topics: [null, hexZeroPad(addr, 32)]
+			topics: [null, hexZeroPad(identity.addr, 32)]
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
