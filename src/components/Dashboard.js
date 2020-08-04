@@ -32,7 +32,8 @@ export default function Dashboard({
 }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
-		.map(x => x.currentAmount)
+		// @TODO temp needs to use currentAmount
+		.map(x => x.amount)
 		.reduce((a, b) => a.add(b), ZERO)
 
 	// USD values
@@ -70,9 +71,10 @@ export default function Dashboard({
 	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
+		// @TODO temp needs to use currentAmount
 		return (
 			<TableRow key={getBondId(bond)}>
-				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
+				<TableCell>{formatADX(bond.amount)} ADX</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
