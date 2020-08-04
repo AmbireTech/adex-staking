@@ -20,24 +20,23 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 		.reduce((a, b) => a.add(b), ZERO)
 	const rewardActions = (
 		<Tooltip
-			interactive
-			placement="bottom"
-			open={true}
 			arrow={true}
 			title={
 				"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
 			}
 		>
-			<Button
-				size="small"
-				variant="contained"
-				color="secondary"
-				// disabled={totalReward.eq(ZERO)}
-				disabled={true}
-				onClick={() => onClaimRewards(rewardChannels)}
-			>
-				claim reward
-			</Button>
+			<div>
+				<Button
+					size="small"
+					variant="contained"
+					color="secondary"
+					// disabled={totalReward.eq(ZERO)}
+					disabled={true}
+					onClick={() => onClaimRewards(rewardChannels)}
+				>
+					claim reward
+				</Button>
+			</div>
 		</Tooltip>
 	)
 	return StatsCard({
