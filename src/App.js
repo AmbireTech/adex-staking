@@ -301,6 +301,7 @@ async function getRewards(addr) {
 			const outstandingReward = bigNumberify(rewardChannel.balances[addr]).sub(
 				await Core.withdrawnPerUser(rewardChannel.channelId, addr)
 			)
+			// @TODO remove channels if there's no outstanding reward for them
 			return {
 				...rewardChannel,
 				outstandingReward,
@@ -320,9 +321,8 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	if (amount.gt(stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER)))
 		throw new Error("amount too large")
 
-	// @TODO handle case with no signer
 	const signer = await getSigner()
-	if (!signer) return
+	if (!signer) throw new Error("failed to get signer")
 
 	const walletAddr = await signer.getAddress()
 	const { addr, bytecode } = getUserIdentity(walletAddr)
@@ -412,7 +412,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 
 async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 	const signer = await getSigner()
-	if (!signer) return
+	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
 	const { addr } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
@@ -454,7 +454,7 @@ async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 // @TODO reimplement
 async function claimRewards(rewardChannels) {
 	const signer = await getSigner()
-	if (!signer) return
+	if (!signer) throw new Error("failed to get signer")
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	let txns = []
 	for (const rewardChannel of rewardChannels) {
