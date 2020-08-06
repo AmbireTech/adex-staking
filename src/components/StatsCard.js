@@ -15,7 +15,7 @@ export default function StatsCard({ title, subtitle, extra, loaded, actions }) {
 		)
 	return (
 		<Paper elevation={3} style={{ height: "100%" }}>
-			<div style={{ padding: themeMUI.spacing(2), minHeight: "75px" }}>
+			<div style={{ padding: themeMUI.spacing(2), minHeight: "85px" }}>
 				<Typography variant="h5">{subtitle}</Typography>
 				{extraElem}
 				<Typography color="textSecondary" variant="subtitle2">
