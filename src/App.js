@@ -83,85 +83,24 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	// @TODO: move to a separate method
-	// @TODO handle the case if there is no signer
-	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
-		const signer = await getSigner()
-		if (!signer) return
-		const walletAddr = await signer.getAddress()
-		const { addr } = getUserIdentity(walletAddr)
-		const identity = new Contract(addr, IdentityABI, signer)
-		// @TODO handle when the contract is not deployed
-		const idNonce = await identity.nonce()
-		const bond = [amount, poolId, nonce || ZERO]
+	const wrapError = fn => async () => {
 		try {
-			const txns = []
-			if (isUnbond) {
-				txns.push(
-					zeroFeeTx(
-						identity.address,
-						idNonce,
-						Staking.address,
-						Staking.interface.functions.unbond.encode([bond])
-					)
-				)
-				txns.push(
-					zeroFeeTx(
-						identity.address,
-						idNonce.add(1),
-						Token.address,
-						Token.interface.functions.transfer.encode([walletAddr, amount])
-					)
-				)
-			} else {
-				txns.push(
-					zeroFeeTx(
-						identity.address,
-						idNonce,
-						Staking.address,
-						Staking.interface.functions.requestUnbond.encode([bond])
-					)
-				)
-			}
-			const tx = await identity.executeBySender(
-				txns.map(x => x.toSolidityTuple())
-			)
-			await tx.wait()
+			await fn.apply(null, arguments)
 		} catch (e) {
 			console.error(e)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}
 	}
-	const onRequestUnbond = makeUnbondFn(false)
-	const onUnbond = makeUnbondFn(true)
+	const onRequestUnbond = wrapError(onUnbondOrRequest.bind(null, false))
+	const onUnbond = wrapError(onUnbondOrRequest.bind(null, true))
 	const handleClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
 		}
 		setOpenErr(false)
 	}
-
-	const checkNewBond = async bond => {
-		setNewBondOpen(false)
-		try {
-			await createNewBond(stats, bond)
-		} catch (e) {
-			console.error(e)
-			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
-		}
-	}
-
-	const onClaimRewards = async rewardChannels => {
-		try {
-			await claimRewards(rewardChannels)
-		} catch (e) {
-			console.error(e)
-			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
-		}
-	}
+	const onClaimRewards = wrapError(claimRewards)
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -222,7 +161,10 @@ export default function App() {
 						pools: POOLS.filter(x => x.selectable),
 						totalStake: stats.totalStake,
 						maxAmount: stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER),
-						onNewBond: checkNewBond
+						onNewBond: async bond => {
+							setNewBondOpen(false)
+							await wrapError(createNewBond.bind(null, stats, bond))
+						}
 					})}
 				</Fade>
 			</Modal>
@@ -466,6 +408,47 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	}
 
 	await Promise.all(txns.map(tx => tx.wait()))
+}
+
+async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
+	const signer = await getSigner()
+	if (!signer) return
+	const walletAddr = await signer.getAddress()
+	const { addr } = getUserIdentity(walletAddr)
+	const identity = new Contract(addr, IdentityABI, signer)
+	// @TODO handle when the contract is not deployed
+	const idNonce = await identity.nonce()
+	const bond = [amount, poolId, nonce || ZERO]
+	const txns = []
+	if (isUnbond) {
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce,
+				Staking.address,
+				Staking.interface.functions.unbond.encode([bond])
+			)
+		)
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(1),
+				Token.address,
+				Token.interface.functions.transfer.encode([walletAddr, amount])
+			)
+		)
+	} else {
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce,
+				Staking.address,
+				Staking.interface.functions.requestUnbond.encode([bond])
+			)
+		)
+	}
+	const tx = await identity.executeBySender(txns.map(x => x.toSolidityTuple()))
+	await tx.wait()
 }
 
 // @TODO reimplement
