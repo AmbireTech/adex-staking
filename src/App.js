@@ -121,8 +121,7 @@ export default function App() {
 				</Toolbar>
 			</AppBar>
 
-			{// if we set onRequestUnbond to setToUnbond, we will get the confirmation dialog
-			Dashboard({
+			{Dashboard({
 				stats,
 				onRequestUnbond: setToUnbond,
 				onUnbond,
