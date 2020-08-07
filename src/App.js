@@ -327,7 +327,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 
 	// @TODO: TEMP: amount here will be in the old token amount
-	const bond = [amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER), poolId, nonce || ZERO]
+	const bond = [amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER), poolId, nonce || bigNumberify(Math.floor(Date.now() / 1000))]
 
 	const identity = new Contract(addr, IdentityABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
