@@ -211,23 +211,22 @@ async function loadUserStats() {
 }
 
 async function loadBondStats(addr) {
-	// @TODO: rename this not to be named `identity` cause it's confusing with the SC that's named `identity`
-	const identity = getUserIdentity(addr)
+	const identityAddr = getUserIdentity(addr).addr
 	const [balances, logs, slashLogs] = await Promise.all([
 		Promise.all([
 			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)),
 			// @TODO: those are disabled cause of the assumption in createNewBond
 			// re-enable them
 			//Token.balanceOf(addr),
-			OldToken.balanceOf(identity.addr).then(x =>
+			OldToken.balanceOf(identityAddr).then(x =>
 				x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)
 			)
-			//Token.balanceOf(identity.addr)
+			//Token.balanceOf(identityAddr)
 		]),
 		provider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
-			topics: [null, hexZeroPad(identity.addr, 32)]
+			topics: [null, hexZeroPad(identityAddr, 32)]
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
