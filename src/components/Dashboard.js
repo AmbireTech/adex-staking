@@ -105,17 +105,12 @@ export default function Dashboard({
 					>
 						<div>
 							{bond.status === "Active" ? (
-								<Button
-									disabled={true}
-									color="primary"
-									onClick={() => onRequestUnbond(bond)}
-								>
+								<Button color="primary" onClick={() => onRequestUnbond(bond)}>
 									Request Unbond
 								</Button>
 							) : (
 								<Button
-									disabled={true}
-									// disabled={bond.willUnlock.getTime() > Date.now()}
+									disabled={bond.willUnlock.getTime() > Date.now()}
 									onClick={() => onUnbond(bond)}
 									color="secondary"
 								>
