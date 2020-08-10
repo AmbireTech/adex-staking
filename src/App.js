@@ -28,6 +28,7 @@ import {
 	ADDR_STAKING,
 	ADDR_FACTORY,
 	ADDR_ADX,
+	MAX_UINT,
 	ZERO,
 	POOLS,
 	TOKEN_OLD_TO_NEW_MULTIPLIER
@@ -334,18 +335,41 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	if ((await provider.getCode(identity.address)) !== "0x") {
 		console.log("Contract exists: " + identity.address)
 		let identityTxns = []
-		const idNonce = await identity.nonce()
-
-		if (needed.gt(ZERO))
+		const [idNonce, allowance] = await Promise.all([
+			identity.nonce(),
+			tokenWithSigner.allowance(walletAddr, identity.address)
+		])
+		if (!allowance.gt(amount)) {
+			if (allowance.gt(ZERO)) {
+				txns.push(
+					await tokenWithSigner.approve(identity.address, ZERO, {
+						gasLimit: 80000
+					})
+				)
+			}
 			txns.push(
-				await tokenWithSigner.transfer(identity.address, needed, {
+				await tokenWithSigner.approve(identity.address, MAX_UINT, {
 					gasLimit: 80000
 				})
+			)
+		}
+		if (needed.gt(ZERO))
+			identityTxns.push(
+				zeroFeeTx(
+					identity.address,
+					idNonce,
+					OldToken.address,
+					OldToken.interface.functions.transferFrom.encode([
+						walletAddr,
+						identity.address,
+						amount
+					])
+				)
 			)
 		identityTxns.push(
 			zeroFeeTx(
 				identity.address,
-				idNonce,
+				idNonce.add(identityTxns.length),
 				OldToken.address,
 				OldToken.interface.functions.approve.encode([Token.address, amount])
 			)
@@ -356,7 +380,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		identityTxns.push(
 			zeroFeeTx(
 				identity.address,
-				idNonce.add(1),
+				idNonce.add(identityTxns.length),
 				Token.address,
 				ADXToken.functions.swap.encode([amount])
 			)
@@ -364,7 +388,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		identityTxns.push(
 			zeroFeeTx(
 				identity.address,
-				idNonce.add(2),
+				idNonce.add(identityTxns.length),
 				Token.address,
 				Token.interface.functions.approve.encode([Staking.address, bond[0]])
 			)
@@ -372,7 +396,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		identityTxns.push(
 			zeroFeeTx(
 				identity.address,
-				idNonce.add(3),
+				idNonce.add(identityTxns.length),
 				Staking.address,
 				Staking.interface.functions.addBond.encode([bond])
 			)
@@ -380,7 +404,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		txns.push(
 			await identity.executeBySender(
 				identityTxns.map(x => x.toSolidityTuple()),
-				{ gasLimit: 260000 }
+				{ gasLimit: 310000 }
 			)
 		)
 	} else {
