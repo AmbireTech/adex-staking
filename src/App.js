@@ -271,6 +271,7 @@ async function loadBondStats(addr) {
 }
 
 async function getRewards(addr) {
+	const identityAddr = getUserIdentity(addr).addr
 	const rewardPool = POOLS[0]
 	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
 	const rewardChannels = await resp.json()
@@ -278,18 +279,20 @@ async function getRewards(addr) {
 	const forUser = await Promise.all(
 		rewardChannels.map(async rewardChannel => {
 			if (rewardChannel.channelArgs.validUntil < validUntil) return null
-			if (!rewardChannel.balances[addr]) return null
+			const claimFrom = rewardChannel.balances[addr] ? addr : identityAddr
+			if (!rewardChannel.balances[claimFrom]) return null
 			const balanceTree = new BalanceTree(rewardChannel.balances)
-			const outstandingReward = bigNumberify(rewardChannel.balances[addr]).sub(
-				await Core.withdrawnPerUser(rewardChannel.channelId, addr)
-			)
+			const outstandingReward = bigNumberify(
+				rewardChannel.balances[claimFrom]
+			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
 			if (outstandingReward.eq(ZERO)) return null
 			return {
 				...rewardChannel,
 				outstandingReward,
-				proof: balanceTree.getProof(addr),
+				claimFrom,
+				proof: balanceTree.getProof(claimFrom),
 				stateRoot: balanceTree.mTree.getRoot(),
-				amount: rewardChannel.balances[addr]
+				amount: rewardChannel.balances[claimFrom]
 			}
 		})
 	)
