@@ -97,28 +97,19 @@ export default function Dashboard({
 						</div>
 					</Tooltip>
 
-					<Tooltip
-						arrow={true}
-						title={
-							"Coming soon! Unbond requests will be available after 8th of August."
-						}
-					>
-						<div>
-							{bond.status === "Active" ? (
-								<Button color="primary" onClick={() => onRequestUnbond(bond)}>
-									Request Unbond
-								</Button>
-							) : (
-								<Button
-									disabled={bond.willUnlock.getTime() > Date.now()}
-									onClick={() => onUnbond(bond)}
-									color="secondary"
-								>
-									Unbond
-								</Button>
-							)}
-						</div>
-					</Tooltip>
+					{bond.status === "Active" ? (
+						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
+							Request Unbond
+						</Button>
+					) : (
+						<Button
+							disabled={bond.willUnlock.getTime() > Date.now()}
+							onClick={() => onUnbond(bond)}
+							color="secondary"
+						>
+							Unbond
+						</Button>
+					)}
 				</TableCell>
 			</TableRow>
 		)
