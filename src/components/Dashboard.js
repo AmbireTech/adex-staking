@@ -86,9 +86,7 @@ export default function Dashboard({
 				<TableCell align="right">
 					<Tooltip
 						arrow={true}
-						title={
-							"Coming soon! Adding more ADX will be available after 8th of August."
-						}
+						title={"Adding more ADX will be available soon."}
 					>
 						<div>
 							<Button disabled={true} color="primary">
