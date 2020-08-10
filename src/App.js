@@ -37,7 +37,7 @@ import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
-const REFRESH_INTVL = 30000
+const REFRESH_INTVL = 20000
 
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
