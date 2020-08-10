@@ -339,7 +339,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 			identity.nonce(),
 			tokenWithSigner.allowance(walletAddr, identity.address)
 		])
-		if (!allowance.gt(amount)) {
+		if (needed.gt(ZERO) && !allowance.gt(amount)) {
 			if (allowance.gt(ZERO)) {
 				txns.push(
 					await tokenWithSigner.approve(identity.address, ZERO, {
