@@ -160,7 +160,6 @@ export default function Dashboard({
 			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({
 					rewardChannels: stats.rewardChannels,
-					earnedADX: stats.earnedADX,
 					onClaimRewards
 				})}
 			</Grid>
