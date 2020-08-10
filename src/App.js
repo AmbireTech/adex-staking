@@ -84,9 +84,9 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	const wrapError = fn => async () => {
+	const wrapError = fn => async (...args) => {
 		try {
-			await fn.apply(null, arguments)
+			await fn.apply(null, args)
 		} catch (e) {
 			console.error(e)
 			setOpenErr(true)
@@ -427,10 +427,25 @@ async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 	const signer = await getSigner()
 	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
-	const { addr } = getUserIdentity(walletAddr)
+	const { addr, bytecode } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
 	// @TODO handle when the contract is not deployed
-	const idNonce = await identity.nonce()
+	// Contract will open the bond on deploy
+	// technically it needs around 450000
+	let idNonce
+	let gasLimit
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		idNonce = await identity.nonce()
+	} else {
+		idNonce = ZERO
+		const factoryWithSigner = new Contract(
+			ADDR_FACTORY,
+			IdentityFactoryABI,
+			signer
+		)
+		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
+		gasLimit = isUnbond ? 140000 : 70000
+	}
 	const bond = [amount, poolId, nonce || ZERO]
 	const txns = []
 	if (isUnbond) {
@@ -460,7 +475,10 @@ async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 			)
 		)
 	}
-	const tx = await identity.executeBySender(txns.map(x => x.toSolidityTuple()))
+	const tx = await identity.executeBySender(
+		txns.map(x => x.toSolidityTuple()),
+		{ gasLimit }
+	)
 	await tx.wait()
 }
 
