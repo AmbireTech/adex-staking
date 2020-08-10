@@ -261,8 +261,8 @@ async function loadBondStats(addr) {
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
 			const vals = Staking.interface.parseLog(log).values
-			const { owner, amount, poolId, nonce, slashedAtStart, created } = vals
-			const bond = { owner, amount, poolId, nonce, slashedAtStart, created }
+			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals
+			const bond = { owner, amount, poolId, nonce, slashedAtStart, time }
 			bonds.push({
 				id: getBondId(bond),
 				status: "Active",
@@ -327,7 +327,11 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 
 	// @TODO: TEMP: amount here will be in the old token amount
-	const bond = [amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER), poolId, nonce || bigNumberify(Math.floor(Date.now() / 1000))]
+	const bond = [
+		amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER),
+		poolId,
+		nonce || bigNumberify(Math.floor(Date.now() / 1000))
+	]
 
 	const identity = new Contract(addr, IdentityABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
