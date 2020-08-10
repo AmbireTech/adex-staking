@@ -47,6 +47,7 @@ export default function RewardCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: `${formatADX(earnedADX)} ADX` /*, ${formatDAI(totalReward)} DAI`*/
+		//subtitle: `${formatADX(earnedADX)} ADX` /*, ${formatDAI(totalReward)} DAI`*/
+		subtitle: `${formatDAI(totalReward)} DAI`
 	})
 }

@@ -189,23 +189,7 @@ async function loadStats() {
 		loadUserStats()
 	])
 
-	// @TODO replace this with a more accurate algo when reward distribution is enabled after 8 August
-	// everyone is an early staker at the time of building this
-	const elapsedSeconds = Math.floor((Date.now() - 1596499200000) / 1000)
-	const fromEarly = (1000000 / 2678400) * elapsedSeconds
-	const fromRegular = (6000000 / 12528000) * elapsedSeconds
-	const userTotalStake = userStats.userBonds
-		.filter(x => x.status === "Active")
-		.map(x => x.currentAmount)
-		.reduce((a, b) => a.add(b), ZERO)
-	const stringifiedBig = Math.floor(
-		(fromEarly + fromRegular) * 10 ** 18
-	).toLocaleString("fullwide", { useGrouping: false })
-	const earnedADX = bigNumberify(stringifiedBig)
-		.mul(userTotalStake)
-		.div(totalStake)
-
-	return { totalStake, earnedADX, ...userStats }
+	return { totalStake, ...userStats }
 }
 
 async function loadUserStats() {
