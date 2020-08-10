@@ -283,7 +283,7 @@ async function getRewards(addr) {
 			const outstandingReward = bigNumberify(rewardChannel.balances[addr]).sub(
 				await Core.withdrawnPerUser(rewardChannel.channelId, addr)
 			)
-			// @TODO remove channels if there's no outstanding reward for them
+			if (outstandingReward.eq(ZERO)) return null
 			return {
 				...rewardChannel,
 				outstandingReward,
