@@ -162,7 +162,7 @@ export default function App() {
 						maxAmount: stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER),
 						onNewBond: async bond => {
 							setNewBondOpen(false)
-							await wrapError(createNewBond.bind(null, stats, bond))
+							await wrapError(createNewBond.bind(null, stats, bond))()
 						}
 					})}
 				</Fade>
