@@ -1,6 +1,6 @@
 import React from "react"
 import StatsCard from "./StatsCard"
-import { ZERO } from "../helpers/constants"
+import { ZERO, ADDR_ADX } from "../helpers/constants"
 import { Button, Tooltip, Link } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/utils"
 
@@ -19,9 +19,14 @@ export default function RewardCard({
 			subtitle: "0.00 DAI"
 		})
 	}
-	const totalReward = rewardChannels
-		.map(x => x.outstandingReward)
-		.reduce((a, b) => a.add(b), ZERO)
+	const sumRewards = all =>
+		all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
+	const totalRewardADX = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
+	)
+	const totalRewardDAI = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
+	)
 	const rewardActions = (
 		<Tooltip
 			arrow={true}
@@ -47,7 +52,8 @@ export default function RewardCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		//subtitle: `${formatADX(earnedADX)} ADX` /*, ${formatDAI(totalReward)} DAI`*/
-		subtitle: `${formatDAI(totalReward)} DAI`
+		subtitle: totalRewardDAI.gt(ZERO)
+			? `${formatADX(totalRewardADX)} ADX, ${formatDAI(totalRewardDAI)} DAI`
+			: `${formatADX(totalRewardADX)} ADX`
 	})
 }

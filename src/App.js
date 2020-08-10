@@ -27,6 +27,7 @@ import UnbondConfirmationDialog from "./components/UnbondConfirmationDialog"
 import {
 	ADDR_STAKING,
 	ADDR_FACTORY,
+	ADDR_ADX,
 	ZERO,
 	POOLS,
 	TOKEN_OLD_TO_NEW_MULTIPLIER
@@ -35,7 +36,6 @@ import { getBondId } from "./helpers/utils"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
-const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 const REFRESH_INTVL = 30000
 
