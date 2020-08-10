@@ -146,7 +146,10 @@ export default function Dashboard({
 					<Alert elevation={6} variant="filled" severity="info">
 						<span>
 							We have revised the rewards calculation. You can read more on{" "}
-							<a href="">our blog</a>.
+							<a href="https://www.adex.network/blog/token-upgrade-progress/">
+								our blog
+							</a>
+							.
 						</span>
 					</Alert>
 				</Box>
