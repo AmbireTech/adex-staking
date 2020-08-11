@@ -6,6 +6,7 @@ import { formatDAI, formatADX } from "../helpers/utils"
 
 export default function RewardCard({
 	rewardChannels,
+	userBonds,
 	onClaimRewards,
 	onRestake
 }) {
@@ -27,6 +28,8 @@ export default function RewardCard({
 	const totalRewardDAI = sumRewards(
 		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
 	)
+	const restakeEnabled =
+		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
 		<div>
 			<Tooltip
@@ -56,7 +59,7 @@ export default function RewardCard({
 				color="secondary"
 				// @TODO use a grid instead of float
 				style={{ float: "left", margin: 5 }}
-				disabled={totalRewardADX.eq(ZERO)}
+				disabled={!restakeEnabled}
 				onClick={() => onRestake(totalRewardADX)}
 			>
 				re-stake

@@ -8,7 +8,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableBody,
-	Box,
 	Tooltip
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
@@ -148,6 +147,7 @@ export default function Dashboard({
 			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({
 					rewardChannels: stats.rewardChannels,
+					userBonds: stats.userBonds,
 					onClaimRewards,
 					onRestake
 				})}
