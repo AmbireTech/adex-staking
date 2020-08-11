@@ -141,20 +141,6 @@ export default function Dashboard({
 			}}
 			spacing={2}
 		>
-			<Grid item sm={12}>
-				<Box mb={2}>
-					<Alert elevation={6} variant="filled" severity="info">
-						<span>
-							We have revised the rewards calculation. You can read more on{" "}
-							<a href="https://www.adex.network/blog/token-upgrade-progress/">
-								our blog
-							</a>
-							.
-						</span>
-					</Alert>
-				</Box>
-			</Grid>
-
 			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({
 					rewardChannels: stats.rewardChannels,
