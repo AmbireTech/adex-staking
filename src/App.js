@@ -48,6 +48,9 @@ const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
 const MAX_SLASH = bigNumberify("1000000000000000000")
 
+// 0.2 DAI or ADX
+const OUTSTANDING_REWARD_THRESHOLD = bigNumberify("200000000000000000")
+
 const EMPTY_STATS = {
 	loaded: false,
 	userBonds: [],
@@ -286,7 +289,7 @@ async function getRewards(addr) {
 			const outstandingReward = bigNumberify(
 				rewardChannel.balances[claimFrom]
 			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
-			if (outstandingReward.eq(ZERO)) return null
+			if (outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD)) return null
 			return {
 				...rewardChannel,
 				outstandingReward,
