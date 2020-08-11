@@ -46,7 +46,7 @@ export default function NewBondForm({
 	const stakingRulesFrag = STAKING_RULES_URL ? (
 		<>
 			&nbsp;and{" "}
-			<a target="_blank" href={STAKING_RULES_URL}>
+			<a target="_blank" rel="noopener noreferrer" href={STAKING_RULES_URL}>
 				staking conditions
 			</a>
 		</>
@@ -57,7 +57,11 @@ export default function NewBondForm({
 		<>
 			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
 			am familiar with the&nbsp;
-			<a href="https://www.adex.network/tos/" target="_blank">
+			<a
+				href="https://www.adex.network/tos/"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				Terms and conditions
 			</a>
 			{stakingRulesFrag}.
