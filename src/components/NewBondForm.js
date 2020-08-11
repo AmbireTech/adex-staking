@@ -109,6 +109,12 @@ export default function NewBondForm({
 		setBond({ ...bond, poolId: value })
 	}
 
+	const farmer = (
+		<span role="img" aria-label="farmer">
+			🌾
+		</span>
+	)
+
 	return (
 		<Paper
 			elevation={2}
@@ -172,8 +178,8 @@ export default function NewBondForm({
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">Pool APY:</Typography>
 							<Typography variant="body1">
-								🌾 Current annual yield of{" "}
-								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% 🌾
+								{farmer} Current annual yield of{" "}
+								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% {farmer}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
