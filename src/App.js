@@ -572,10 +572,15 @@ async function restake({ rewardChannels, userBonds }) {
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
 	if (!channels.length) throw new Error("no channels to earn from")
+
 	const collected = channels
 		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b))
-	const { amount, poolId, nonce } = userBonds[0]
+	const userBond =
+		userBonds.find(x => x.status == "Active") ||
+		userBonds.find(x => x.status == "UnbondRequested")
+	if (!userBond) throw new Error("You have no active bonds")
+	const { amount, poolId, nonce } = userBond
 	const bond = [amount, poolId, nonce]
 	const newBond = [amount.add(collected), poolId, nonce]
 	for (const rewardChannel of channels) {
