@@ -27,7 +27,8 @@ export default function Dashboard({
 	stats,
 	onRequestUnbond,
 	onUnbond,
-	onClaimRewards
+	onClaimRewards,
+	onRestake
 }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
@@ -157,7 +158,8 @@ export default function Dashboard({
 			<Grid item md={3} sm={6} xs={12}>
 				{RewardCard({
 					rewardChannels: stats.rewardChannels,
-					onClaimRewards
+					onClaimRewards,
+					onRestake
 				})}
 			</Grid>
 

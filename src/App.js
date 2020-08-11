@@ -66,6 +66,7 @@ function Alert(props) {
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = React.useState(null)
+	const [toRestake, setToRestake] = React.useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState(
 		"Error! Unspecified error occured."
@@ -99,13 +100,14 @@ export default function App() {
 	}
 	const onRequestUnbond = wrapError(onUnbondOrRequest.bind(null, false))
 	const onUnbond = wrapError(onUnbondOrRequest.bind(null, true))
-	const handleClose = (event, reason) => {
+	const onClaimRewards = wrapError(claimRewards)
+	const onRestake = wrapError(restake)
+	const handleErrClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
 		}
 		setOpenErr(false)
 	}
-	const onClaimRewards = wrapError(claimRewards)
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
@@ -130,7 +132,8 @@ export default function App() {
 				stats,
 				onRequestUnbond: setToUnbond,
 				onUnbond,
-				onClaimRewards
+				onClaimRewards,
+				onRestake: setToRestake
 			})}
 
 			{ConfirmationDialog({
@@ -161,11 +164,37 @@ export default function App() {
 					</>
 				)
 			})}
-			<Snackbar open={openErr} autoHideDuration={6000} onClose={handleClose}>
-				<Alert onClose={handleClose} severity="error">
+
+			{ConfirmationDialog({
+				isOpen: !!toRestake,
+				onDeny: () => setToRestake(null),
+				onConfirm: () => {
+					if (toRestake) onRestake()
+					setToRestake(null)
+				},
+				confirmActionName: "Re-stake",
+				content: (
+					<>
+						Are you sure you want to stake your earnings of{" "}
+						{formatADX(toRestake ? toRestake : ZERO)} ADX?
+						<br />
+						<br />
+						Please be aware that this means that this amount will be locked up
+						for at least {UNBOND_DAYS}.
+					</>
+				)
+			})}
+
+			<Snackbar
+				open={openErr}
+				autoHideDuration={10000}
+				onClose={handleErrClose}
+			>
+				<Alert onClose={handleErrClose} severity="error">
 					{snackbarErr}
 				</Alert>
 			</Snackbar>
+
 			<Modal
 				open={isNewBondOpen}
 				onClose={() => setNewBondOpen(false)}
@@ -533,4 +562,10 @@ async function claimRewards(rewardChannels) {
 		)
 	}
 	return Promise.all(txns.map(tx => tx.wait()))
+}
+
+async function restake(rewardChannels) {
+	const signer = await getSigner()
+	if (!signer) throw new Error("failed to get signer")
+	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 }

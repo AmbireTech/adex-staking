@@ -6,8 +6,8 @@ import { formatDAI, formatADX } from "../helpers/utils"
 
 export default function RewardCard({
 	rewardChannels,
-	earnedADX,
-	onClaimRewards
+	onClaimRewards,
+	onRestake
 }) {
 	const title = "Your total unclaimed reward"
 	const loaded = rewardChannels != null
@@ -56,8 +56,8 @@ export default function RewardCard({
 				color="secondary"
 				// @TODO use a grid instead of float
 				style={{ float: "left", margin: 5 }}
-				// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
-				// onClick={() => onClaimRewards(rewardChannels)}
+				disabled={totalRewardADX.add(totalRewardADX).eq(ZERO)}
+				onClick={() => onRestake(totalRewardADX)}
 			>
 				re-stake
 			</Button>
