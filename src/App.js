@@ -180,7 +180,11 @@ export default function App() {
 						<br />
 						<br />
 						Please be aware that this means that this amount will be locked up
-						for at least {UNBOND_DAYS}.
+						for at least {UNBOND_DAYS} days.
+						<br />
+						{!stats.userBonds.find(x => x.status === "Active")
+							? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+							: ""}
 					</>
 				)
 			})}
@@ -566,8 +570,6 @@ async function restake({ rewardChannels, userBonds }) {
 		gasLimit = 310000
 	}
 
-	let identityTxns = []
-
 	const channels = rewardChannels.filter(
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
@@ -577,12 +579,14 @@ async function restake({ rewardChannels, userBonds }) {
 		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b))
 	const userBond =
-		userBonds.find(x => x.status == "Active") ||
-		userBonds.find(x => x.status == "UnbondRequested")
+		userBonds.find(x => x.status === "Active") ||
+		userBonds.find(x => x.status === "UnbondRequested")
 	if (!userBond) throw new Error("You have no active bonds")
 	const { amount, poolId, nonce } = userBond
 	const bond = [amount, poolId, nonce]
 	const newBond = [amount.add(collected), poolId, nonce]
+
+	let identityTxns = []
 	for (const rewardChannel of channels) {
 		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
 		identityTxns.push(
