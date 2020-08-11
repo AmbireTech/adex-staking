@@ -23,17 +23,18 @@ import IdentityFactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
-import UnbondConfirmationDialog from "./components/UnbondConfirmationDialog"
+import ConfirmationDialog from "./components/ConfirmationDialog"
 import {
 	ADDR_STAKING,
 	ADDR_FACTORY,
 	ADDR_ADX,
 	MAX_UINT,
 	ZERO,
+	UNBOND_DAYS,
 	POOLS,
 	TOKEN_OLD_TO_NEW_MULTIPLIER
 } from "./helpers/constants"
-import { getBondId } from "./helpers/utils"
+import { getBondId, formatADX } from "./helpers/utils"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
@@ -132,13 +133,33 @@ export default function App() {
 				onClaimRewards
 			})}
 
-			{UnbondConfirmationDialog({
-				toUnbond,
+			{ConfirmationDialog({
+				isOpen: !!toUnbond,
 				onDeny: () => setToUnbond(null),
 				onConfirm: () => {
 					if (toUnbond) onRequestUnbond(toUnbond)
 					setToUnbond(null)
-				}
+				},
+				confirmActionName: "Unbond",
+				content: (
+					<>
+						Are you sure you want to request unbonding of{" "}
+						{formatADX(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
+						<br />
+						<br />
+						Please be aware:
+						<ol>
+							<li>
+								It will take {UNBOND_DAYS} days before you will be able to
+								withdraw your ADX!
+							</li>
+							<li>
+								You will not receive staking rewards for this amount in this{" "}
+								{UNBOND_DAYS} day period.
+							</li>
+						</ol>
+					</>
+				)
 			})}
 			<Snackbar open={openErr} autoHideDuration={6000} onClose={handleClose}>
 				<Alert onClose={handleClose} severity="error">
