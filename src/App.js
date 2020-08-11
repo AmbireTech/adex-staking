@@ -19,7 +19,7 @@ import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
-import IdentityFactoryABI from "adex-protocol-eth/abi/IdentityFactory"
+import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
@@ -375,11 +375,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 
 	const identity = new Contract(addr, IdentityABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
-	const factoryWithSigner = new Contract(
-		ADDR_FACTORY,
-		IdentityFactoryABI,
-		signer
-	)
+	const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
 
 	let txns = []
 	const balanceOnIdentity = await OldToken.balanceOf(identity.address)
@@ -491,11 +487,7 @@ async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 		idNonce = await identity.nonce()
 	} else {
 		idNonce = ZERO
-		const factoryWithSigner = new Contract(
-			ADDR_FACTORY,
-			IdentityFactoryABI,
-			signer
-		)
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
 		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
 		gasLimit = isUnbond ? 140000 : 70000
 	}
@@ -563,7 +555,17 @@ async function restake({ rewardChannels, userBonds }) {
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
 
-	const idNonce = await identity.nonce()
+	let idNonce
+	let gasLimit
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		idNonce = await identity.nonce()
+	} else {
+		idNonce = ZERO
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
+		gasLimit = 310000
+	}
+
 	let identityTxns = []
 
 	const channels = rewardChannels.filter(
@@ -611,7 +613,10 @@ async function restake({ rewardChannels, userBonds }) {
 	)
 
 	await (
-		await identity.executeBySender(identityTxns.map(x => x.toSolidityTuple()))
+		await identity.executeBySender(
+			identityTxns.map(x => x.toSolidityTuple()),
+			{ gasLimit }
+		)
 	).wait()
 
 	// @TODO case w/o an identity
