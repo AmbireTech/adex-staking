@@ -66,18 +66,14 @@ export default function NewBondForm({
 
 	const validateFields = params => {
 		const { amountBN, poolToValidate } = params
-		/*
-		// @TODO re-enable minStakingAmount
 		const minStakingAmountBN = poolToValidate
 			? bigNumberify(poolToValidate.minStakingAmount * ADX_MULTIPLIER)
 			: ZERO
-		*/
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
 			setAmountErrText("Insufficient ADX amount!")
 			return
 		}
-		/*
 		if (poolToValidate && amountBN.lt(minStakingAmountBN)) {
 			setAmountErr(true)
 			setAmountErrText(
@@ -85,7 +81,6 @@ export default function NewBondForm({
 			)
 			return
 		}
-		*/
 		setAmountErr(false)
 		return
 	}

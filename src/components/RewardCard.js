@@ -1,7 +1,7 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
-import { Button, Tooltip, Link } from "@material-ui/core"
+import { Button, Tooltip } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/utils"
 
 export default function RewardCard({
