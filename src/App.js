@@ -101,7 +101,7 @@ export default function App() {
 	const onRequestUnbond = wrapError(onUnbondOrRequest.bind(null, false))
 	const onUnbond = wrapError(onUnbondOrRequest.bind(null, true))
 	const onClaimRewards = wrapError(claimRewards)
-	const onRestake = wrapError(restake)
+	const onRestake = wrapError(restake.bind(null, stats))
 	const handleErrClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
@@ -542,15 +542,7 @@ async function claimRewards(rewardChannels) {
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	let txns = []
 	for (const rewardChannel of rewardChannels) {
-		const args = rewardChannel.channelArgs
-		const channelTuple = [
-			args.creator,
-			args.tokenAddr,
-			args.tokenAmount,
-			args.validUntil,
-			args.validators,
-			args.spec
-		]
+		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
 		txns.push(
 			await coreWithSigner.channelWithdraw(
 				channelTuple,
@@ -564,8 +556,74 @@ async function claimRewards(rewardChannels) {
 	return Promise.all(txns.map(tx => tx.wait()))
 }
 
-async function restake(rewardChannels) {
+async function restake({ rewardChannels, userBonds }) {
 	const signer = await getSigner()
 	if (!signer) throw new Error("failed to get signer")
-	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+	const identity = new Contract(addr, IdentityABI, signer)
+
+	const idNonce = await identity.nonce()
+	let identityTxns = []
+
+	const channels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr === ADDR_ADX
+	)
+	if (!channels.length) throw new Error("no channels to earn from")
+	const collected = channels
+		.map(x => x.outstandingReward)
+		.reduce((a, b) => a.add(b))
+	const { amount, poolId, nonce } = userBonds[0]
+	const bond = [amount, poolId, nonce]
+	const newBond = [amount.add(collected), poolId, nonce]
+	for (const rewardChannel of channels) {
+		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				Core.address,
+				Core.interface.functions.channelWithdraw.encode([
+					channelTuple,
+					rewardChannel.stateRoot,
+					rewardChannel.signatures,
+					rewardChannel.proof,
+					rewardChannel.amount
+				])
+			)
+		)
+	}
+	identityTxns.push(
+		zeroFeeTx(
+			identity.address,
+			idNonce.add(identityTxns.length),
+			Token.address,
+			Token.interface.functions.approve.encode([Staking.address, newBond[0]])
+		)
+	)
+	identityTxns.push(
+		zeroFeeTx(
+			identity.address,
+			idNonce.add(identityTxns.length),
+			Staking.address,
+			Staking.interface.functions.replaceBond.encode([bond, newBond])
+		)
+	)
+
+	await (
+		await identity.executeBySender(identityTxns.map(x => x.toSolidityTuple()))
+	).wait()
+
+	// @TODO case w/o an identity
+}
+
+function toChannelTuple(args) {
+	return [
+		args.creator,
+		args.tokenAddr,
+		args.tokenAmount,
+		args.validUntil,
+		args.validators,
+		args.spec
+	]
 }
