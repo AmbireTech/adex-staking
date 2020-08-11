@@ -56,7 +56,7 @@ export default function RewardCard({
 				color="secondary"
 				// @TODO use a grid instead of float
 				style={{ float: "left", margin: 5 }}
-				disabled={totalRewardADX.add(totalRewardADX).eq(ZERO)}
+				disabled={totalRewardADX.eq(ZERO)}
 				onClick={() => onRestake(totalRewardADX)}
 			>
 				re-stake
