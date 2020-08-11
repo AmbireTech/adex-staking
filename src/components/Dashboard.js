@@ -208,7 +208,10 @@ export default function Dashboard({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{[...(stats.userBonds || [])].reverse().map(renderBondRow)}
+						{[...(stats.userBonds || [])]
+							.filter(x => x.status !== "Unbonded")
+							.reverse()
+							.map(renderBondRow)}
 					</TableBody>
 				</Table>
 			</TableContainer>
