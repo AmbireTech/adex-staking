@@ -28,25 +28,40 @@ export default function RewardCard({
 		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
 	)
 	const rewardActions = (
-		<Tooltip
-			arrow={true}
-			title={
-				"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
-			}
-		>
-			<div>
-				<Button
-					size="small"
-					variant="contained"
-					color="secondary"
-					// disabled={totalReward.eq(ZERO)}
-					disabled={true}
-					// onClick={() => onClaimRewards(rewardChannels)}
-				>
-					claim reward
-				</Button>
-			</div>
-		</Tooltip>
+		<div>
+			<Tooltip
+				arrow={true}
+				// @TODO use a grid instead of float
+				style={{ float: "left", margin: 5 }}
+				title={
+					"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
+				}
+			>
+				<div>
+					<Button
+						size="small"
+						variant="contained"
+						color="secondary"
+						// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+						disabled={true}
+						// onClick={() => onClaimRewards(rewardChannels)}
+					>
+						claim
+					</Button>
+				</div>
+			</Tooltip>
+			<Button
+				size="small"
+				variant="contained"
+				color="secondary"
+				// @TODO use a grid instead of float
+				style={{ float: "left", margin: 5 }}
+				// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+				// onClick={() => onClaimRewards(rewardChannels)}
+			>
+				re-stake
+			</Button>
+		</div>
 	)
 	return StatsCard({
 		loaded: true,
