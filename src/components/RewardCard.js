@@ -37,7 +37,7 @@ export default function RewardCard({
 				// @TODO use a grid instead of float
 				style={{ float: "left", margin: 5 }}
 				title={
-					"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
+					"Coming soon! Rewards withdraw will be available when the ADX token upgrade is completed."
 				}
 			>
 				<div>
