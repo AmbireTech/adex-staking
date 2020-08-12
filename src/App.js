@@ -575,6 +575,7 @@ async function restake({ rewardChannels, userBonds }) {
 	)
 	if (!channels.length) throw new Error("no channels to earn from")
 
+	// @TODO how does the user determine the pool here? For now there's only one, but after?
 	const collected = channels
 		.map(x => x.outstandingReward)
 		.reduce((a, b) => a.add(b))
