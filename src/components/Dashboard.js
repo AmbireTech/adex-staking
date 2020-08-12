@@ -20,7 +20,8 @@ import {
 	ZERO,
 	PRICES_API_URL
 } from "../helpers/constants"
-import { getPool, getBondId, formatADX, getApproxAPY } from "../helpers/utils"
+import { formatADX, getApproxAPY } from "../helpers/formatting"
+import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
 	stats,

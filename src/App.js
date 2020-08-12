@@ -34,7 +34,8 @@ import {
 	POOLS,
 	TOKEN_OLD_TO_NEW_MULTIPLIER
 } from "./helpers/constants"
-import { getBondId, formatADX } from "./helpers/utils"
+import { formatADX } from "./helpers/formatting"
+import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"

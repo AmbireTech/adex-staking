@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { getPool, formatADXLegacy, getApproxAPY } from "../helpers/utils"
+import { getPool } from "../helpers/bonds"
+import { formatADXLegacy, getApproxAPY } from "../helpers/formatting"
 import {
 	UNBOND_DAYS,
 	ADX_MULTIPLIER,

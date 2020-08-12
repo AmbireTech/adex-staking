@@ -2,7 +2,7 @@ import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import { Button, Tooltip } from "@material-ui/core"
-import { formatDAI, formatADX } from "../helpers/utils"
+import { formatDAI, formatADX } from "../helpers/formatting"
 
 export default function RewardCard({
 	rewardChannels,
