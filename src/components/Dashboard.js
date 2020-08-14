@@ -7,9 +7,7 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	Link,
 	TableBody,
-	Box,
 	Tooltip
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
@@ -22,13 +20,15 @@ import {
 	ZERO,
 	PRICES_API_URL
 } from "../helpers/constants"
-import { getPool, getBondId, formatADX } from "../helpers/utils"
+import { formatADX, getApproxAPY } from "../helpers/formatting"
+import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
 	stats,
 	onRequestUnbond,
 	onUnbond,
-	onClaimRewards
+	onClaimRewards,
+	onRestake
 }) {
 	const userTotalStake = stats.userBonds
 		.filter(x => x.status === "Active")
@@ -48,7 +48,10 @@ export default function Dashboard({
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
-		const usdAmount = (adxAmount.toNumber(10) / ADX_MULTIPLIER) * prices.USD
+		// @TODO fix this dirty hack?
+		const usdAmount =
+			(adxAmount.div(100000000000000).toNumber(10) / ADX_MULTIPLIER) *
+			prices.USD
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
@@ -64,6 +67,11 @@ export default function Dashboard({
 				return "Can unbond"
 			}
 		}
+		if (bond.status === "Active") {
+			return `Active, earning ${(
+				getApproxAPY(bond, stats.totalStake) * 100
+			).toFixed(2)}% APY`
+		}
 		return bond.status
 	}
 
@@ -73,37 +81,37 @@ export default function Dashboard({
 		return (
 			<TableRow key={getBondId(bond)}>
 				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
-				<TableCell align="right">0.00 DAI</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					<Tooltip
 						arrow={true}
-						title={
-							"Coming soon! Unbond requests will be available when the ADX token migration is completed."
-						}
+						title={"Adding more ADX will be available soon."}
 					>
 						<div>
-							{bond.status === "Active" ? (
-								<Button
-									disabled={true}
-									color="primary"
-									onClick={() => onRequestUnbond(bond)}
-								>
-									Request Unbond
-								</Button>
-							) : (
-								<Button
-									disabled={true}
-									// disabled={bond.willUnlock.getTime() > Date.now()}
-									onClick={() => onUnbond(bond)}
-									color="secondary"
-								>
-									Unbond
-								</Button>
-							)}
+							<Button disabled={true} color="primary">
+								Add more ADX
+							</Button>
 						</div>
 					</Tooltip>
+
+					{bond.status === "Active" ? (
+						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
+							Request Unbond
+						</Button>
+					) : (
+						<Button
+							disabled={
+								bond.status === "Unbonded" ||
+								!bond.willUnlock ||
+								bond.willUnlock.getTime() > Date.now()
+							}
+							onClick={() => onUnbond(bond)}
+							color="secondary"
+						>
+							Unbond
+						</Button>
+					)}
 				</TableCell>
 			</TableRow>
 		)
@@ -137,31 +145,13 @@ export default function Dashboard({
 			}}
 			spacing={2}
 		>
-			<Grid item xs={12}>
-				<Box mb={2}>
-					<Alert elevation={6} variant="filled" severity="info" color="error">
-						<div>
-							<span>
-								The staking portal is currently undergoing maintenance due to{" "}
-							</span>
-							<span>
-								<Link
-									href="https://www.adex.network/blog/token-upgrade-defi-features/"
-									target="_blank"
-								>
-									our token upgrade
-								</Link>
-								.{" "}
-							</span>
-							<span>
-								Unbonding and rewards withdraw will be disabled until 6 August.{" "}
-							</span>
-						</div>
-					</Alert>
-				</Box>
-			</Grid>
 			<Grid item md={3} sm={6} xs={12}>
-				{RewardCard({ rewardChannels: stats.rewardChannels, onClaimRewards })}
+				{RewardCard({
+					rewardChannels: stats.rewardChannels,
+					userBonds: stats.userBonds,
+					onClaimRewards,
+					onRestake
+				})}
 			</Grid>
 
 			<Grid item md={3} sm={6} xs={12}>
@@ -190,6 +180,12 @@ export default function Dashboard({
 						? formatADX(stats.userBalance) + " ADX"
 						: "",
 					extra: inUSD(stats.userBalance)
+					/*actions: (<Button
+							size="small"
+							variant="contained"
+							color="secondary"
+							disabled={true}
+						>upgrade</Button>)*/
 				})}
 			</Grid>
 
@@ -202,9 +198,6 @@ export default function Dashboard({
 						<TableRow>
 							<TableCell style={headerCellStyle}>Bond amount</TableCell>
 							<TableCell style={headerCellStyle} align="right">
-								Reward to collect
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
 								Pool
 							</TableCell>
 							<TableCell style={headerCellStyle} align="right">
@@ -216,7 +209,10 @@ export default function Dashboard({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{[...(stats.userBonds || [])].reverse().map(renderBondRow)}
+						{[...(stats.userBonds || [])]
+							.filter(x => x.status !== "Unbonded")
+							.reverse()
+							.map(renderBondRow)}
 					</TableBody>
 				</Table>
 			</TableContainer>

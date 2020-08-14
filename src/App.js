@@ -13,22 +13,34 @@ import MuiAlert from "@material-ui/lab/Alert"
 import HelperMenu from "./components/HelperMenu"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify, hexZeroPad } from "ethers/utils"
+import { bigNumberify, hexZeroPad, Interface } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import StakingABI from "adex-protocol-eth/abi/Staking"
+import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
+import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
-import UnbondConfirmationDialog from "./components/UnbondConfirmationDialog"
-import { ADDR_STAKING, ZERO, POOLS } from "./helpers/constants"
-import { getBondId } from "./helpers/utils"
+import ConfirmationDialog from "./components/ConfirmationDialog"
+import {
+	ADDR_STAKING,
+	ADDR_FACTORY,
+	ADDR_ADX,
+	MAX_UINT,
+	ZERO,
+	UNBOND_DAYS,
+	POOLS,
+	TOKEN_OLD_TO_NEW_MULTIPLIER
+} from "./helpers/constants"
+import { formatADX } from "./helpers/formatting"
+import { getBondId } from "./helpers/bonds"
+import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
-const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
-const REFRESH_INTVL = 30000
+const REFRESH_INTVL = 20000
 
 const provider = getDefaultProvider()
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
@@ -37,6 +49,9 @@ const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
 const MAX_SLASH = bigNumberify("1000000000000000000")
+
+// 0.2 DAI or ADX
+const OUTSTANDING_REWARD_THRESHOLD = bigNumberify("200000000000000000")
 
 const EMPTY_STATS = {
 	loaded: false,
@@ -52,6 +67,7 @@ function Alert(props) {
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = React.useState(null)
+	const [toRestake, setToRestake] = React.useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState(
 		"Error! Unspecified error occured."
@@ -74,50 +90,24 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	// @TODO: move to a separate method
-	// @TODO handle the case if there is no signer
-	const makeUnbondFn = isUnbond => async ({ amount, poolId, nonce }) => {
-		const signer = await getSigner()
-		if (!signer) return
-		const staking = new Contract(ADDR_STAKING, StakingABI, signer)
-		const fn = isUnbond
-			? staking.unbond.bind(staking)
-			: staking.requestUnbond.bind(staking)
-		// @TODO: refactor into some fn which wraps into a try/catch
+	const wrapError = fn => async (...args) => {
 		try {
-			const tx = await fn([amount, poolId, nonce || ZERO])
-			await tx.wait()
+			await fn.apply(null, args)
 		} catch (e) {
+			console.error(e)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}
 	}
-	const onRequestUnbond = makeUnbondFn(false)
-	const onUnbond = makeUnbondFn(true)
-	const handleClose = (event, reason) => {
+	const onRequestUnbond = wrapError(onUnbondOrRequest.bind(null, false))
+	const onUnbond = wrapError(onUnbondOrRequest.bind(null, true))
+	const onClaimRewards = wrapError(claimRewards)
+	const onRestake = wrapError(restake.bind(null, stats))
+	const handleErrClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
 		}
 		setOpenErr(false)
-	}
-
-	const checkNewBond = async bond => {
-		setNewBondOpen(false)
-		try {
-			await createNewBond(stats, bond)
-		} catch (e) {
-			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
-		}
-	}
-
-	const onClaimRewards = async rewardChannels => {
-		try {
-			await claimRewards(rewardChannels)
-		} catch (e) {
-			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
-		}
 	}
 
 	return (
@@ -126,8 +116,7 @@ export default function App() {
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
 					<Fab
-						disabled={true}
-						// disabled={!stats.loaded}
+						disabled={!stats.loaded}
 						onClick={() => setNewBondOpen(true)}
 						variant="extended"
 						color="secondary"
@@ -140,27 +129,77 @@ export default function App() {
 				</Toolbar>
 			</AppBar>
 
-			{// if we set onRequestUnbond to setToUnbond, we will get the confirmation dialog
-			Dashboard({
+			{Dashboard({
 				stats,
 				onRequestUnbond: setToUnbond,
 				onUnbond,
-				onClaimRewards
+				onClaimRewards,
+				onRestake: setToRestake
 			})}
 
-			{UnbondConfirmationDialog({
-				toUnbond,
+			{ConfirmationDialog({
+				isOpen: !!toUnbond,
 				onDeny: () => setToUnbond(null),
 				onConfirm: () => {
 					if (toUnbond) onRequestUnbond(toUnbond)
 					setToUnbond(null)
-				}
+				},
+				confirmActionName: "Unbond",
+				content: (
+					<>
+						Are you sure you want to request unbonding of{" "}
+						{formatADX(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
+						<br />
+						<br />
+						Please be aware:
+						<ol>
+							<li>
+								It will take {UNBOND_DAYS} days before you will be able to
+								withdraw your ADX!
+							</li>
+							<li>
+								You will not receive staking rewards for this amount in this{" "}
+								{UNBOND_DAYS} day period.
+							</li>
+						</ol>
+					</>
+				)
 			})}
-			<Snackbar open={openErr} autoHideDuration={6000} onClose={handleClose}>
-				<Alert onClose={handleClose} severity="error">
+
+			{ConfirmationDialog({
+				isOpen: !!toRestake,
+				onDeny: () => setToRestake(null),
+				onConfirm: () => {
+					if (toRestake) onRestake()
+					setToRestake(null)
+				},
+				confirmActionName: "Re-stake",
+				content: (
+					<>
+						Are you sure you want to stake your earnings of{" "}
+						{formatADX(toRestake ? toRestake : ZERO)} ADX?
+						<br />
+						<br />
+						Please be aware that this means that this amount will be locked up
+						for at least {UNBOND_DAYS} days.
+						<br />
+						{!stats.userBonds.find(x => x.status === "Active")
+							? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+							: ""}
+					</>
+				)
+			})}
+
+			<Snackbar
+				open={openErr}
+				autoHideDuration={10000}
+				onClose={handleErrClose}
+			>
+				<Alert onClose={handleErrClose} severity="error">
 					{snackbarErr}
 				</Alert>
 			</Snackbar>
+
 			<Modal
 				open={isNewBondOpen}
 				onClose={() => setNewBondOpen(false)}
@@ -178,8 +217,12 @@ export default function App() {
 				<Fade in={isNewBondOpen}>
 					{NewBondForm({
 						pools: POOLS.filter(x => x.selectable),
-						maxAmount: stats.userBalance,
-						onNewBond: checkNewBond
+						totalStake: stats.totalStake,
+						maxAmount: stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER),
+						onNewBond: async bond => {
+							setNewBondOpen(false)
+							await wrapError(createNewBond.bind(null, stats, bond))()
+						}
 					})}
 				</Fade>
 			</Modal>
@@ -201,9 +244,7 @@ async function getSigner() {
 
 async function loadStats() {
 	const [totalStake, userStats] = await Promise.all([
-		// TEMP value during migration; @TODO
-		Promise.resolve(bigNumberify("55880770055")),
-		//OldToken.balanceOf(ADDR_STAKING),
+		Token.balanceOf(ADDR_STAKING),
 		loadUserStats()
 	])
 
@@ -229,21 +270,27 @@ async function loadUserStats() {
 }
 
 async function loadBondStats(addr) {
-	const [userBalanceOld, userBalanceNew, logs, slashLogs] = await Promise.all([
-		OldToken.balanceOf(addr),
-		Token.balanceOf(addr),
+	const identityAddr = getUserIdentity(addr).addr
+	const [balances, logs, slashLogs] = await Promise.all([
+		Promise.all([
+			OldToken.balanceOf(addr).then(x => x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)),
+			// @TODO: those are disabled cause of the assumption in createNewBond
+			// re-enable them
+			//Token.balanceOf(addr),
+			OldToken.balanceOf(identityAddr).then(x =>
+				x.mul(TOKEN_OLD_TO_NEW_MULTIPLIER)
+			)
+			//Token.balanceOf(identityAddr)
+		]),
 		provider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
-			topics: [null, hexZeroPad(addr, 32)]
+			topics: [null, hexZeroPad(identityAddr, 32)]
 		}),
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
 
-	// @TODO denominate in 10**18
-	const userBalance = userBalanceOld.add(
-		userBalanceNew.div(bigNumberify(100000000000000))
-	)
+	const userBalance = balances.reduce((a, b) => a.add(b))
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
@@ -256,8 +303,8 @@ async function loadBondStats(addr) {
 		const evs = Staking.interface.events
 		if (topic === evs.LogBond.topic) {
 			const vals = Staking.interface.parseLog(log).values
-			const { owner, amount, poolId, nonce, slashedAtStart } = vals
-			const bond = { owner, amount, poolId, nonce, slashedAtStart }
+			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals
+			const bond = { owner, amount, poolId, nonce, slashedAtStart, time }
 			bonds.push({
 				id: getBondId(bond),
 				status: "Active",
@@ -283,6 +330,7 @@ async function loadBondStats(addr) {
 }
 
 async function getRewards(addr) {
+	const identityAddr = getUserIdentity(addr).addr
 	const rewardPool = POOLS[0]
 	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
 	const rewardChannels = await resp.json()
@@ -290,17 +338,20 @@ async function getRewards(addr) {
 	const forUser = await Promise.all(
 		rewardChannels.map(async rewardChannel => {
 			if (rewardChannel.channelArgs.validUntil < validUntil) return null
-			if (!rewardChannel.balances[addr]) return null
+			const claimFrom = rewardChannel.balances[addr] ? addr : identityAddr
+			if (!rewardChannel.balances[claimFrom]) return null
 			const balanceTree = new BalanceTree(rewardChannel.balances)
-			const outstandingReward = bigNumberify(rewardChannel.balances[addr]).sub(
-				await Core.withdrawnPerUser(rewardChannel.channelId, addr)
-			)
+			const outstandingReward = bigNumberify(
+				rewardChannel.balances[claimFrom]
+			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
+			if (outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD)) return null
 			return {
 				...rewardChannel,
 				outstandingReward,
-				proof: balanceTree.getProof(addr),
+				claimFrom,
+				proof: balanceTree.getProof(claimFrom),
 				stateRoot: balanceTree.mTree.getRoot(),
-				amount: rewardChannel.balances[addr]
+				amount: rewardChannel.balances[claimFrom]
 			}
 		})
 	)
@@ -310,54 +361,185 @@ async function getRewards(addr) {
 async function createNewBond(stats, { amount, poolId, nonce }) {
 	if (!poolId) return
 	if (!stats.userBalance) return
-	if (amount.gt(stats.userBalance)) return
+	// @TODO: TEMP: amount here will be in the old token amount
+	if (amount.gt(stats.userBalance.div(TOKEN_OLD_TO_NEW_MULTIPLIER)))
+		throw new Error("amount too large")
+
 	const signer = await getSigner()
-	if (!signer) return
-	const stakingWithSigner = new Contract(ADDR_STAKING, StakingABI, signer)
+	if (!signer) throw new Error("failed to get signer")
+
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+
+	// @TODO: TEMP: amount here will be in the old token amount
+	const bond = [
+		amount.mul(TOKEN_OLD_TO_NEW_MULTIPLIER),
+		poolId,
+		nonce || bigNumberify(Math.floor(Date.now() / 1000))
+	]
+
+	const identity = new Contract(addr, IdentityABI, signer)
 	const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
-	const allowance = await tokenWithSigner.allowance(
-		await signer.getAddress(),
-		ADDR_STAKING
-	)
+	const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+
 	let txns = []
-	// Hardcoded gas limit to avoid doing estimateGas - if we do gasEstimate, it will fail on txns[1] cause it depends on txns[0].
-	// which isn't going to be mined at the time of signing
-	if (!allowance.eq(amount)) {
-		if (allowance.gt(ZERO)) {
+	const balanceOnIdentity = await OldToken.balanceOf(identity.address)
+	// Eg bond amount is 10 but we only have 6, we need another 4
+	const needed = amount.sub(balanceOnIdentity)
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		console.log("Contract exists: " + identity.address)
+		let identityTxns = []
+		const [idNonce, allowance] = await Promise.all([
+			identity.nonce(),
+			tokenWithSigner.allowance(walletAddr, identity.address)
+		])
+		if (needed.gt(ZERO) && !allowance.gt(amount)) {
+			if (allowance.gt(ZERO)) {
+				txns.push(
+					await tokenWithSigner.approve(identity.address, ZERO, {
+						gasLimit: 80000
+					})
+				)
+			}
 			txns.push(
-				await tokenWithSigner.approve(ADDR_STAKING, ZERO, { gasLimit: 80000 })
+				await tokenWithSigner.approve(identity.address, MAX_UINT, {
+					gasLimit: 80000
+				})
 			)
 		}
-		txns.push(
-			await tokenWithSigner.approve(ADDR_STAKING, amount, {
-				gasLimit: 80000
-			})
+		if (needed.gt(ZERO))
+			identityTxns.push(
+				zeroFeeTx(
+					identity.address,
+					idNonce,
+					OldToken.address,
+					OldToken.interface.functions.transferFrom.encode([
+						walletAddr,
+						identity.address,
+						amount
+					])
+				)
+			)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				OldToken.address,
+				OldToken.interface.functions.approve.encode([Token.address, amount])
+			)
 		)
+		const ADXToken = new Interface([
+			"function swap(uint prevTokenAmount) external"
+		])
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				Token.address,
+				ADXToken.functions.swap.encode([amount])
+			)
+		)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				Token.address,
+				Token.interface.functions.approve.encode([Staking.address, bond[0]])
+			)
+		)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				Staking.address,
+				Staking.interface.functions.addBond.encode([bond])
+			)
+		)
+		txns.push(
+			await identity.executeBySender(
+				identityTxns.map(x => x.toSolidityTuple()),
+				{ gasLimit: 310000 }
+			)
+		)
+	} else {
+		console.log("Contract does not exist: " + identity.address)
+		if (needed.gt(ZERO))
+			txns.push(
+				await tokenWithSigner.transfer(identity.address, needed, {
+					gasLimit: 80000
+				})
+			)
+		// Contract will open the bond on deploy
+		// technically it needs around 450000
+		txns.push(await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 450000 }))
 	}
-	txns.push(
-		await stakingWithSigner.addBond([amount, poolId, nonce || ZERO], {
-			gasLimit: 110000
-		})
-	)
-	// const receipts = await Promise.all(txns.map(tx => tx.wait()))
+
 	await Promise.all(txns.map(tx => tx.wait()))
 }
 
+async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
+	const signer = await getSigner()
+	if (!signer) throw new Error("failed to get signer")
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+	const identity = new Contract(addr, IdentityABI, signer)
+	// @TODO handle when the contract is not deployed
+	// Contract will open the bond on deploy
+	// technically it needs around 450000
+	let idNonce
+	let gasLimit
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		idNonce = await identity.nonce()
+	} else {
+		idNonce = ZERO
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
+		gasLimit = isUnbond ? 140000 : 70000
+	}
+	const bond = [amount, poolId, nonce || ZERO]
+	const txns = []
+	if (isUnbond) {
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce,
+				Staking.address,
+				Staking.interface.functions.unbond.encode([bond])
+			)
+		)
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(1),
+				Token.address,
+				Token.interface.functions.transfer.encode([walletAddr, amount])
+			)
+		)
+	} else {
+		txns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce,
+				Staking.address,
+				Staking.interface.functions.requestUnbond.encode([bond])
+			)
+		)
+	}
+	const tx = await identity.executeBySender(
+		txns.map(x => x.toSolidityTuple()),
+		{ gasLimit }
+	)
+	await tx.wait()
+}
+
+// @TODO reimplement
 async function claimRewards(rewardChannels) {
 	const signer = await getSigner()
-	if (!signer) return
+	if (!signer) throw new Error("failed to get signer")
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	let txns = []
 	for (const rewardChannel of rewardChannels) {
-		const args = rewardChannel.channelArgs
-		const channelTuple = [
-			args.creator,
-			args.tokenAddr,
-			args.tokenAmount,
-			args.validUntil,
-			args.validators,
-			args.spec
-		]
+		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
 		txns.push(
 			await coreWithSigner.channelWithdraw(
 				channelTuple,
@@ -369,4 +551,95 @@ async function claimRewards(rewardChannels) {
 		)
 	}
 	return Promise.all(txns.map(tx => tx.wait()))
+}
+
+async function restake({ rewardChannels, userBonds }) {
+	const signer = await getSigner()
+	if (!signer) throw new Error("failed to get signer")
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+	const identity = new Contract(addr, IdentityABI, signer)
+
+	let idNonce
+	let gasLimit
+	if ((await provider.getCode(identity.address)) !== "0x") {
+		idNonce = await identity.nonce()
+	} else {
+		idNonce = ZERO
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
+		gasLimit = 310000
+	}
+
+	const channels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr === ADDR_ADX
+	)
+	if (!channels.length) throw new Error("no channels to earn from")
+
+	// @TODO how does the user determine the pool here? For now there's only one, but after?
+	const collected = channels
+		.map(x => x.outstandingReward)
+		.reduce((a, b) => a.add(b))
+	const userBond =
+		userBonds.find(x => x.status === "Active") ||
+		userBonds.find(x => x.status === "UnbondRequested")
+	if (!userBond) throw new Error("You have no active bonds")
+	const { amount, poolId, nonce } = userBond
+	const bond = [amount, poolId, nonce]
+	const newBond = [amount.add(collected), poolId, nonce]
+
+	let identityTxns = []
+	for (const rewardChannel of channels) {
+		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
+		identityTxns.push(
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(identityTxns.length),
+				Core.address,
+				Core.interface.functions.channelWithdraw.encode([
+					channelTuple,
+					rewardChannel.stateRoot,
+					rewardChannel.signatures,
+					rewardChannel.proof,
+					rewardChannel.amount
+				])
+			)
+		)
+	}
+	identityTxns.push(
+		zeroFeeTx(
+			identity.address,
+			idNonce.add(identityTxns.length),
+			Token.address,
+			Token.interface.functions.approve.encode([Staking.address, newBond[0]])
+		)
+	)
+	identityTxns.push(
+		zeroFeeTx(
+			identity.address,
+			idNonce.add(identityTxns.length),
+			Staking.address,
+			Staking.interface.functions.replaceBond.encode([bond, newBond])
+		)
+	)
+
+	await (
+		await identity.executeBySender(
+			identityTxns.map(x => x.toSolidityTuple()),
+			{ gasLimit }
+		)
+	).wait()
+
+	// @TODO case w/o an identity
+}
+
+function toChannelTuple(args) {
+	return [
+		args.creator,
+		args.tokenAddr,
+		args.tokenAmount,
+		args.validUntil,
+		args.validators,
+		args.spec
+	]
 }

@@ -1,11 +1,15 @@
 import React from "react"
 import StatsCard from "./StatsCard"
-import { ZERO } from "../helpers/constants"
-import { Button, Tooltip, Link } from "@material-ui/core"
-import { formatDAI, formatADX } from "../helpers/utils"
-import { bigNumberify } from "ethers/utils"
+import { ZERO, ADDR_ADX } from "../helpers/constants"
+import { Button, Tooltip } from "@material-ui/core"
+import { formatDAI, formatADX } from "../helpers/formatting"
 
-export default function RewardCard({ rewardChannels, onClaimRewards }) {
+export default function RewardCard({
+	rewardChannels,
+	userBonds,
+	onClaimRewards,
+	onRestake
+}) {
 	const title = "Your total unclaimed reward"
 	const loaded = rewardChannels != null
 	if (!loaded) {
@@ -16,34 +20,58 @@ export default function RewardCard({ rewardChannels, onClaimRewards }) {
 			subtitle: "0.00 DAI"
 		})
 	}
-	const totalReward = rewardChannels
-		.map(x => x.outstandingReward)
-		.reduce((a, b) => a.add(b), ZERO)
+	const sumRewards = all =>
+		all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
+	const totalRewardADX = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
+	)
+	const totalRewardDAI = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
+	)
+	const restakeEnabled =
+		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
-		<Tooltip
-			arrow={true}
-			title={
-				"Coming soon! Rewards withdraw will be available when the ADX token migration is completed."
-			}
-		>
-			<div>
-				<Button
-					size="small"
-					variant="contained"
-					color="secondary"
-					// disabled={totalReward.eq(ZERO)}
-					disabled={true}
-					onClick={() => onClaimRewards(rewardChannels)}
-				>
-					claim reward
-				</Button>
-			</div>
-		</Tooltip>
+		<div>
+			<Tooltip
+				arrow={true}
+				// @TODO use a grid instead of float
+				style={{ float: "left", margin: 5 }}
+				title={
+					"Coming soon! Rewards withdraw will be available when the ADX token upgrade is completed."
+				}
+			>
+				<div>
+					<Button
+						size="small"
+						variant="contained"
+						color="secondary"
+						// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+						disabled={true}
+						// onClick={() => onClaimRewards(rewardChannels)}
+					>
+						claim
+					</Button>
+				</div>
+			</Tooltip>
+			<Button
+				size="small"
+				variant="contained"
+				color="secondary"
+				// @TODO use a grid instead of float
+				style={{ float: "left", margin: 5 }}
+				disabled={!restakeEnabled}
+				onClick={() => onRestake(totalRewardADX)}
+			>
+				re-stake
+			</Button>
+		</div>
 	)
 	return StatsCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: `${formatADX(bigNumberify(0))} ADX, ${formatDAI(totalReward)} DAI`
+		subtitle: totalRewardDAI.gt(ZERO)
+			? `${formatADX(totalRewardADX)} ADX, ${formatDAI(totalRewardDAI)} DAI`
+			: `${formatADX(totalRewardADX)} ADX`
 	})
 }

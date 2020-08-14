@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { getPool, formatADX } from "../helpers/utils"
+import { getPool } from "../helpers/bonds"
+import { formatADXLegacy, getApproxAPY } from "../helpers/formatting"
 import {
 	UNBOND_DAYS,
 	ADX_MULTIPLIER,
@@ -23,7 +24,12 @@ import {
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 
-export default function NewBondForm({ maxAmount, onNewBond, pools }) {
+export default function NewBondForm({
+	maxAmount,
+	onNewBond,
+	totalStake,
+	pools
+}) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState(0)
 	const [amountErr, setAmountErr] = useState(false)
@@ -41,7 +47,7 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 	const stakingRulesFrag = STAKING_RULES_URL ? (
 		<>
 			&nbsp;and{" "}
-			<a target="_blank" href={STAKING_RULES_URL}>
+			<a target="_blank" rel="noopener noreferrer" href={STAKING_RULES_URL}>
 				staking conditions
 			</a>
 		</>
@@ -52,7 +58,11 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 		<>
 			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
 			am familiar with the&nbsp;
-			<a href="https://www.adex.network/tos/" target="_blank">
+			<a
+				href="https://www.adex.network/tos/"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				Terms and conditions
 			</a>
 			{stakingRulesFrag}.
@@ -64,7 +74,6 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 		const minStakingAmountBN = poolToValidate
 			? bigNumberify(poolToValidate.minStakingAmount * ADX_MULTIPLIER)
 			: ZERO
-
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
 			setAmountErrText("Insufficient ADX amount!")
@@ -101,6 +110,12 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 		setBond({ ...bond, poolId: value })
 	}
 
+	const farmer = (
+		<span role="img" aria-label="farmer">
+			🌾
+		</span>
+	)
+
 	return (
 		<Paper
 			elevation={2}
@@ -128,7 +143,7 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 								)
 							}}
 						>
-							{formatADX(maxAmount)} ADX
+							{formatADXLegacy(maxAmount)} ADX
 						</Button>
 					</Typography>
 				</Grid>
@@ -160,6 +175,18 @@ export default function NewBondForm({ maxAmount, onNewBond, pools }) {
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">Pool slashing policy:</Typography>
 							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="h6">Pool APY:</Typography>
+							<Typography variant="body1">
+								{farmer} Current annual yield of{" "}
+								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% {farmer}
+							</Typography>
+						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="body1">
+								<b>Please sign ALL Metamask transactions that pop up.</b>
+							</Typography>
 						</Grid>
 					</Grid>
 				) : (

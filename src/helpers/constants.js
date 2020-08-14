@@ -1,12 +1,19 @@
 import { bigNumberify, id } from "ethers/utils"
 
-export const ADDR_STAKING = "0x46ad2d37ceaee1e82b70b867e674b903a4b4ca32"
+export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
 export const PRICES_API_URL =
 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
 export const ADX_MULTIPLIER = 10000
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
+
+export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
+export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
+
+export const MAX_UINT = bigNumberify(
+	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
+)
 
 export const DEFAULT_BOND = {
 	poolId: "",
@@ -20,7 +27,7 @@ export const POOLS = [
 		selectable: true,
 		minStakingAmount: 0,
 		rewardPolicy:
-			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer.',
+			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.',
 		slashPolicy: "No slashing.",
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
@@ -36,3 +43,5 @@ export const POOLS = [
 		slashPolicy: ""
 	}
 ]
+
+export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")
