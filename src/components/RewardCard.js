@@ -1,7 +1,7 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
-import { Button, Tooltip } from "@material-ui/core"
+import { Button, Tooltip, Box } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/formatting"
 
 export default function RewardCard({
@@ -31,11 +31,9 @@ export default function RewardCard({
 	const restakeEnabled =
 		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
-		<div>
+		<Box display="flex" flexDirection="row" paddingTop={1}>
 			<Tooltip
 				arrow={true}
-				// @TODO use a grid instead of float
-				style={{ float: "left", margin: 5 }}
 				title={
 					"Coming soon! Rewards withdraw will be available when the ADX token upgrade is completed."
 				}
@@ -53,18 +51,18 @@ export default function RewardCard({
 					</Button>
 				</div>
 			</Tooltip>
-			<Button
-				size="small"
-				variant="contained"
-				color="secondary"
-				// @TODO use a grid instead of float
-				style={{ float: "left", margin: 5 }}
-				disabled={!restakeEnabled}
-				onClick={() => onRestake(totalRewardADX)}
-			>
-				re-stake
-			</Button>
-		</div>
+			<Box ml={1}>
+				<Button
+					size="small"
+					variant="contained"
+					color="secondary"
+					disabled={!restakeEnabled}
+					onClick={() => onRestake(totalRewardADX)}
+				>
+					re-stake
+				</Button>
+			</Box>
+		</Box>
 	)
 	return StatsCard({
 		loaded: true,
