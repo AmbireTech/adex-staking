@@ -1,7 +1,7 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
-import { Button, Tooltip, Box } from "@material-ui/core"
+import { Button, Box } from "@material-ui/core"
 import { formatDAI, formatADX } from "../helpers/formatting"
 
 export default function RewardCard({
@@ -32,25 +32,15 @@ export default function RewardCard({
 		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
 		<Box display="flex" flexDirection="row" paddingTop={1}>
-			<Tooltip
-				arrow={true}
-				title={
-					"Coming soon! Rewards withdraw will be available when the ADX token upgrade is completed."
-				}
+			<Button
+				size="small"
+				variant="contained"
+				color="secondary"
+				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+				onClick={() => onClaimRewards(rewardChannels)}
 			>
-				<div>
-					<Button
-						size="small"
-						variant="contained"
-						color="secondary"
-						// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
-						disabled={true}
-						// onClick={() => onClaimRewards(rewardChannels)}
-					>
-						claim
-					</Button>
-				</div>
-			</Tooltip>
+				claim
+			</Button>
 			<Box ml={1}>
 				<Button
 					size="small"
