@@ -479,58 +479,26 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 }
 
 async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
-	const signer = await getSigner()
-	if (!signer) throw new Error("failed to get signer")
-	const walletAddr = await signer.getAddress()
-	const { addr, bytecode } = getUserIdentity(walletAddr)
-	const identity = new Contract(addr, IdentityABI, signer)
-	// @TODO handle when the contract is not deployed
-	// Contract will open the bond on deploy
-	// technically it needs around 450000
-	let idNonce
-	let gasLimit
-	if ((await provider.getCode(identity.address)) !== "0x") {
-		idNonce = await identity.nonce()
-	} else {
-		idNonce = ZERO
-		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
-		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
-		gasLimit = isUnbond ? 140000 : 70000
-	}
 	const bond = [amount, poolId, nonce || ZERO]
-	const txns = []
 	if (isUnbond) {
-		txns.push(
-			zeroFeeTx(
-				identity.address,
-				idNonce,
-				Staking.address,
-				Staking.interface.functions.unbond.encode([bond])
-			)
-		)
-		txns.push(
-			zeroFeeTx(
-				identity.address,
-				idNonce.add(1),
+		const signer = await getSigner()
+		if (!signer) throw new Error("failed to get signer")
+		const walletAddr = await signer.getAddress()
+		await executeOnIdentity([
+			[Staking.address, Staking.interface.functions.unbond.encode([bond])],
+			[
 				Token.address,
 				Token.interface.functions.transfer.encode([walletAddr, amount])
-			)
-		)
+			]
+		])
 	} else {
-		txns.push(
-			zeroFeeTx(
-				identity.address,
-				idNonce,
+		await executeOnIdentity([
+			[
 				Staking.address,
 				Staking.interface.functions.requestUnbond.encode([bond])
-			)
-		)
+			]
+		])
 	}
-	const tx = await identity.executeBySender(
-		txns.map(x => x.toSolidityTuple()),
-		{ gasLimit }
-	)
-	await tx.wait()
 }
 
 // @TODO reimplement
