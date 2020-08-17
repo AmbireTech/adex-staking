@@ -501,25 +501,58 @@ async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
 	}
 }
 
-// @TODO reimplement
 async function claimRewards(rewardChannels) {
 	const signer = await getSigner()
 	if (!signer) throw new Error("failed to get signer")
+	const walletAddr = await signer.getAddress()
+
+	// @TODO: this is obsolete, it should be removed at some point (when no more DAI rewards on wallets are left)
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
-	let txns = []
-	for (const rewardChannel of rewardChannels) {
-		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
-		txns.push(
-			await coreWithSigner.channelWithdraw(
-				channelTuple,
-				rewardChannel.stateRoot,
-				rewardChannel.signatures,
-				rewardChannel.proof,
-				rewardChannel.amount
-			)
+	const legacyChannels = rewardChannels.filter(
+		channel => channel.claimFrom === walletAddr
+	)
+	for (const channel of legacyChannels) {
+		const channelTuple = toChannelTuple(channel.channelArgs)
+		await coreWithSigner.channelWithdraw(
+			channelTuple,
+			channel.stateRoot,
+			channel.signatures,
+			channel.proof,
+			channel.amount
 		)
 	}
-	return Promise.all(txns.map(tx => tx.wait()))
+
+	const toTransfer = {}
+	rewardChannels.forEach(channel => {
+		const { tokenAddr } = channel.channelArgs
+		const amnt = toTransfer[tokenAddr] || ZERO
+		toTransfer[tokenAddr] = amnt.add(channel.outstandingReward)
+	})
+	const identityTxns = rewardChannels
+		.filter(channel => channel.claimFrom !== walletAddr)
+		.map(channel => {
+			const channelTuple = toChannelTuple(channel.channelArgs)
+			return [
+				Core.address,
+				Core.interface.functions.channelWithdraw.encode([
+					channelTuple,
+					channel.stateRoot,
+					channel.signatures,
+					channel.proof,
+					channel.amount
+				])
+			]
+		})
+		.concat(
+			Object.entries(toTransfer).map(([tokenAddr, amount]) => [
+				tokenAddr,
+				Token.interface.functions.transfer.encode([walletAddr, amount])
+			])
+		)
+
+	if (identityTxns.length) {
+		await executeOnIdentity(identityTxns)
+	}
 }
 
 async function restake({ rewardChannels, userBonds }) {
