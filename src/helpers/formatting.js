@@ -21,7 +21,7 @@ export function formatDAI(num) {
 export function getApproxAPY(bond, totalStake) {
 	const earlyDistributionEnds = 1609372800000
 	const bondCreatedSeconds =
-		bond && bond.time ? bond.time.toNumber() : Date.now() / 1000
+		bond && bond.nonce ? bond.nonce.toNumber() : Date.now() / 1000
 	const isEarly =
 		bondCreatedSeconds < 1597276800 && Date.now() < earlyDistributionEnds
 	// @TODO use ADX multiplier
