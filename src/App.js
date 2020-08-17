@@ -621,22 +621,21 @@ async function executeOnIdentity(txns) {
 	const needsToDeploy = (await provider.getCode(identity.address)) === "0x"
 	const idNonce = needsToDeploy ? ZERO : await identity.nonce()
 
-	let tx
+	const toTuples = offset => ([to, data], i) =>
+		zeroFeeTx(
+			identity.address,
+			idNonce.add(i + offset),
+			to,
+			data
+		).toSolidityTuple()
 	if (!needsToDeploy) {
-		const txnTuples = txns.map(([to, data], i) =>
-			zeroFeeTx(identity.address, idNonce.add(i), to, data).toSolidityTuple()
-		)
-		tx = await identity.executeBySender(txnTuples)
+		const txnTuples = txns.map(toTuples(0))
+		const tx = await identity.executeBySender(txnTuples)
+		await tx.wait()
 	} else {
 		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
-		const txnTuples = txns.map(([to, data], i) =>
-			zeroFeeTx(
-				identity.address,
-				idNonce.add(i + 1),
-				to,
-				data
-			).toSolidityTuple()
-		)
+		// Has offset because the execute() takes the first nonce
+		const txnTuples = txns.map(toTuples(1))
 		const executeTx = zeroFeeTx(
 			identity.address,
 			idNonce,
@@ -644,12 +643,12 @@ async function executeOnIdentity(txns) {
 			identity.interface.functions.executeBySender.encode([txnTuples])
 		)
 		const sig = await signer.signMessage(executeTx.hash())
-		tx = await factoryWithSigner.deployAndExecute(
+		const tx = await factoryWithSigner.deployAndExecute(
 			bytecode,
 			0,
 			[executeTx.toSolidityTuple()],
 			[splitSig(sig)]
 		)
+		await tx.wait()
 	}
-	await tx.wait()
 }
