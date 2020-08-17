@@ -16,6 +16,7 @@ import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, hexZeroPad, Interface } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
+import { splitSig } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
@@ -554,23 +555,6 @@ async function claimRewards(rewardChannels) {
 }
 
 async function restake({ rewardChannels, userBonds }) {
-	const signer = await getSigner()
-	if (!signer) throw new Error("failed to get signer")
-	const walletAddr = await signer.getAddress()
-	const { addr, bytecode } = getUserIdentity(walletAddr)
-	const identity = new Contract(addr, IdentityABI, signer)
-
-	let idNonce
-	let gasLimit
-	if ((await provider.getCode(identity.address)) !== "0x") {
-		idNonce = await identity.nonce()
-	} else {
-		idNonce = ZERO
-		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
-		await factoryWithSigner.deploy(bytecode, 0, { gasLimit: 400000 })
-		gasLimit = 310000
-	}
-
 	const channels = rewardChannels.filter(
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
@@ -588,13 +572,10 @@ async function restake({ rewardChannels, userBonds }) {
 	const bond = [amount, poolId, nonce]
 	const newBond = [amount.add(collected), poolId, nonce]
 
-	let identityTxns = []
-	for (const rewardChannel of channels) {
-		const channelTuple = toChannelTuple(rewardChannel.channelArgs)
-		identityTxns.push(
-			zeroFeeTx(
-				identity.address,
-				idNonce.add(identityTxns.length),
+	const identityTxns = channels
+		.map(rewardChannel => {
+			const channelTuple = toChannelTuple(rewardChannel.channelArgs)
+			return [
 				Core.address,
 				Core.interface.functions.channelWithdraw.encode([
 					channelTuple,
@@ -603,34 +584,20 @@ async function restake({ rewardChannels, userBonds }) {
 					rewardChannel.proof,
 					rewardChannel.amount
 				])
-			)
-		)
-	}
-	identityTxns.push(
-		zeroFeeTx(
-			identity.address,
-			idNonce.add(identityTxns.length),
-			Token.address,
-			Token.interface.functions.approve.encode([Staking.address, newBond[0]])
-		)
-	)
-	identityTxns.push(
-		zeroFeeTx(
-			identity.address,
-			idNonce.add(identityTxns.length),
-			Staking.address,
-			Staking.interface.functions.replaceBond.encode([bond, newBond])
-		)
-	)
+			]
+		})
+		.concat([
+			[
+				Token.address,
+				Token.interface.functions.approve.encode([Staking.address, newBond[0]])
+			],
+			[
+				Staking.address,
+				Staking.interface.functions.replaceBond.encode([bond, newBond])
+			]
+		])
 
-	await (
-		await identity.executeBySender(
-			identityTxns.map(x => x.toSolidityTuple()),
-			{ gasLimit }
-		)
-	).wait()
-
-	// @TODO case w/o an identity
+	await executeOnIdentity(identityTxns)
 }
 
 function toChannelTuple(args) {
@@ -642,4 +609,47 @@ function toChannelTuple(args) {
 		args.validators,
 		args.spec
 	]
+}
+
+async function executeOnIdentity(txns) {
+	const signer = await getSigner()
+	if (!signer) throw new Error("failed to get signer")
+	const walletAddr = await signer.getAddress()
+	const { addr, bytecode } = getUserIdentity(walletAddr)
+	const identity = new Contract(addr, IdentityABI, signer)
+
+	const needsToDeploy = (await provider.getCode(identity.address)) === "0x"
+	const idNonce = needsToDeploy ? ZERO : await identity.nonce()
+
+	let tx
+	if (!needsToDeploy) {
+		const txnTuples = txns.map(([to, data], i) =>
+			zeroFeeTx(identity.address, idNonce.add(i), to, data).toSolidityTuple()
+		)
+		tx = await identity.executeBySender(txnTuples)
+	} else {
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+		const txnTuples = txns.map(([to, data], i) =>
+			zeroFeeTx(
+				identity.address,
+				idNonce.add(i + 1),
+				to,
+				data
+			).toSolidityTuple()
+		)
+		const executeTx = zeroFeeTx(
+			identity.address,
+			idNonce,
+			identity.address,
+			identity.interface.functions.executeBySender.encode([txnTuples])
+		)
+		const sig = await signer.signMessage(executeTx.hash())
+		tx = await factoryWithSigner.deployAndExecute(
+			bytecode,
+			0,
+			[executeTx.toSolidityTuple()],
+			[splitSig(sig)]
+		)
+	}
+	await tx.wait()
 }
