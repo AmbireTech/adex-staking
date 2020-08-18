@@ -568,8 +568,7 @@ async function executeOnIdentity(txns, opts = {}) {
 		).toSolidityTuple()
 	if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
-		const tx = await identity.executeBySender(txnTuples, opts)
-		await tx.wait()
+		await identity.executeBySender(txnTuples, opts)
 	} else {
 		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
 		// Has offset because the execute() takes the first nonce
@@ -581,13 +580,12 @@ async function executeOnIdentity(txns, opts = {}) {
 			identity.interface.functions.executeBySender.encode([txnTuples])
 		)
 		const sig = await signer.signMessage(executeTx.hash())
-		const tx = await factoryWithSigner.deployAndExecute(
+		await factoryWithSigner.deployAndExecute(
 			bytecode,
 			0,
 			[executeTx.toSolidityTuple()],
 			[splitSig(sig)],
 			opts
 		)
-		await tx.wait()
 	}
 }
