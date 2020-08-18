@@ -7,8 +7,7 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody,
-	Tooltip
+	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
@@ -76,17 +75,6 @@ export default function Dashboard({
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					<Tooltip
-						arrow={true}
-						title={"Adding more ADX will be available soon."}
-					>
-						<div>
-							<Button disabled={true} color="primary">
-								Add more ADX
-							</Button>
-						</div>
-					</Tooltip>
-
 					{bond.status === "Active" ? (
 						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
 							Request Unbond
