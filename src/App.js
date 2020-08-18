@@ -68,6 +68,7 @@ export default function App() {
 	const [toUnbond, setToUnbond] = React.useState(null)
 	const [toRestake, setToRestake] = React.useState(null)
 	const [openErr, setOpenErr] = useState(false)
+	const [openDoingTx, setOpenDoingTx] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState(
 		"Error! Unspecified error occured."
 	)
@@ -89,19 +90,23 @@ export default function App() {
 		return () => clearInterval(intvl)
 	}, [])
 
-	const wrapError = fn => async (...args) => {
+	const wrapDoingTxns = fn => async (...args) => {
 		try {
+			setOpenDoingTx(true)
+			setOpenErr(false)
 			await fn.apply(null, args)
+			setOpenDoingTx(false)
 		} catch (e) {
 			console.error(e)
+			setOpenDoingTx(false)
 			setOpenErr(true)
 			setSnackbarErr(e.message || "Unknown error")
 		}
 	}
-	const onRequestUnbond = wrapError(onUnbondOrRequest.bind(null, false))
-	const onUnbond = wrapError(onUnbondOrRequest.bind(null, true))
-	const onClaimRewards = wrapError(claimRewards)
-	const onRestake = wrapError(restake.bind(null, stats))
+	const onRequestUnbond = wrapDoingTxns(onUnbondOrRequest.bind(null, false))
+	const onUnbond = wrapDoingTxns(onUnbondOrRequest.bind(null, true))
+	const onClaimRewards = wrapDoingTxns(claimRewards)
+	const onRestake = wrapDoingTxns(restake.bind(null, stats))
 	const handleErrClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
@@ -189,6 +194,11 @@ export default function App() {
 				)
 			})}
 
+			<Snackbar open={openDoingTx}>
+				<Alert severity="warning">
+					Please sign all pending MetaMask actions!
+				</Alert>
+			</Snackbar>
 			<Snackbar
 				open={openErr}
 				autoHideDuration={10000}
@@ -220,7 +230,7 @@ export default function App() {
 						maxAmount: stats.userBalance,
 						onNewBond: async bond => {
 							setNewBondOpen(false)
-							await wrapError(createNewBond.bind(null, stats, bond))()
+							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
 						}
 					})}
 				</Fade>
