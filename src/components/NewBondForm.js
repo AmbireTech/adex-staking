@@ -143,7 +143,7 @@ export default function NewBondForm({
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
-							onClick={ev => {
+							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}
 						>
