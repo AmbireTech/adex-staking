@@ -25,7 +25,7 @@ export const POOLS = [
 		label: "Validator Tom",
 		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
 		selectable: true,
-		minStakingAmount: 0,
+		minStakingAmount: "0.0",
 		rewardPolicy:
 			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.',
 		slashPolicy: "No slashing.",

@@ -1,20 +1,15 @@
-import { ADX_MULTIPLIER } from "./constants"
-import { bigNumberify } from "ethers/utils"
+import { formatUnits, parseUnits, bigNumberify } from "ethers/utils"
 
 export function formatADX(num) {
-	// @TODO fix this dirty hack?
-	return (num.div(100000000000000).toNumber(10) / ADX_MULTIPLIER).toFixed(4)
-}
-
-// @TODO fix this dirty hack?
-export function formatADXLegacy(num) {
-	return (num.toNumber(10) / ADX_MULTIPLIER).toFixed(4)
+	return formatUnits(num, 18)
 }
 
 export function formatDAI(num) {
-	return (
-		num.div(bigNumberify("10000000000000000")).toNumber(10) / 100
-	).toFixed(2)
+	return formatUnits(num, 18)
+}
+
+export function parseADX(n) {
+	return parseUnits(n, 18)
 }
 
 // @TODO refactor to take pool arguments and use pool constants
