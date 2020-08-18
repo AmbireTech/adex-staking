@@ -93,12 +93,9 @@ export default function NewBondForm({
 		return
 	}
 
-	const updateStakingAmount = value => {
-		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
-		const amount = Math.max(0, value)
-		const amountBN = parseADX(amount.toString(10))
+	const updateStakingAmountBN = amountBN => {
 		validateFields({ amountBN, poolToValidate: activePool })
-		setStakingAmount(amount.toString(10))
+		setStakingAmount(formatADX(amountBN))
 		setBond({
 			...bond,
 			amount: amountBN
@@ -134,14 +131,20 @@ export default function NewBondForm({
 						style={minWidthStyle}
 						value={stakingAmount}
 						error={amountErr}
-						onChange={ev => updateStakingAmount(ev.target.value)}
+						onChange={ev => {
+							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
+							const amount = Math.max(0, ev.target.value)
+							const amountBN = parseADX(amount.toString(10))
+							updateStakingAmountBN(amountBN)
+							setStakingAmount(amount.toString(10))
+						}}
 						helperText={amountErr ? amountErrText : null}
 					></TextField>
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
 							onClick={ev => {
-								updateStakingAmount(formatADX(maxAmount))
+								updateStakingAmountBN(maxAmount)
 							}}
 						>
 							{formatADXPretty(maxAmount)} ADX
