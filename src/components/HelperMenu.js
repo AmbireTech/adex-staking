@@ -46,6 +46,12 @@ export default () => {
 					<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
 				</Link>
 				<Link
+					href="https://github.com/adexnetwork/adex-protocol-eth#audits"
+					target="_blank"
+				>
+					<MenuItem onClick={closeHelpMenu}>Audits</MenuItem>
+				</Link>
+				<Link
 					href="https://coinmarketcap.com/currencies/adx-net/markets/"
 					target="_blank"
 				>
