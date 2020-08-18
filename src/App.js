@@ -373,7 +373,8 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 
 	// Eg bond amount is 10 but we only have 60, we need another 40
 	const needed = amount.sub(balanceOnIdentity)
-	if (needed.gt(ZERO) && !allowance.gte(amount)) {
+	const setAllowance = needed.gt(ZERO) && !allowance.gte(amount)
+	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
 		await tokenWithSigner.approve(addr, MAX_UINT)
 	}
@@ -391,13 +392,15 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		])
 
 	// @TODO: replaceBond if active bond
-	console.log(bond)
 	identityTxns.push([
 		Staking.address,
 		Staking.interface.functions.addBond.encode([bond])
 	])
 
-	await executeOnIdentity(identityTxns, { gasLimit: 500000 })
+	await executeOnIdentity(
+		identityTxns,
+		setAllowance ? { gasLimit: 350000 } : {}
+	)
 }
 
 async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
