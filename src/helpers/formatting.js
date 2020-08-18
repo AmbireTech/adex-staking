@@ -27,14 +27,9 @@ export function getApproxAPY(bond, totalStake) {
 		bond && bond.nonce ? bond.nonce.toNumber() : Date.now() / 1000
 	const isEarly =
 		bondCreatedSeconds < 1597276800 && Date.now() < earlyDistributionEnds
-	// @TODO use ADX multiplier
 	// this reward is distributed over that many days, hence * (365/145)
-	const base =
-		(6000000 / totalStake.div(bigNumberify("1000000000000000000")).toNumber()) *
-		(365 / 145)
-	const early =
-		(1000000 / totalStake.div(bigNumberify("1000000000000000000")).toNumber()) *
-		(365 / 30)
+	const base = (6000000 / parseFloat(formatADX(totalStake), 10)) * (365 / 145)
+	const early = (1000000 / parseFloat(formatADX(totalStake), 10)) * (365 / 30)
 	return base + (isEarly ? early : 0)
 	// @TODO DAI rewards
 }
