@@ -391,21 +391,16 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 			Token.interface.functions.approve.encode([Staking.address, MAX_UINT])
 		])
 
-	const activeBond = stats.userBonds.find(
+	const active = stats.userBonds.find(
 		x => x.status === "Active" && x.poolId === poolId
 	)
-	if (activeBond) {
-		const newBond = [activeBond.amount.add(amount), poolId, activeBond.nonce]
-		identityTxns.push([
-			Staking.address,
-			Staking.interface.functions.replaceBond.encode([activeBond, newBond])
-		])
-	} else {
-		identityTxns.push([
-			Staking.address,
-			Staking.interface.functions.addBond.encode([bond])
-		])
-	}
+	const stakingData = active
+		? Staking.interface.functions.replaceBond.encode([
+				active,
+				[active.amount.add(amount), poolId, active.nonce]
+		  ])
+		: Staking.interface.functions.addBond.encode([bond])
+	identityTxns.push([Staking.address, stakingData])
 
 	await executeOnIdentity(
 		identityTxns,
