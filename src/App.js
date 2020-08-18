@@ -397,9 +397,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 		Staking.interface.functions.addBond.encode([bond])
 	])
 
-	// @TODO problem executeOnIdentity takes no gasLimit
-	// can be temporarily solved by passing it in...
-	await executeOnIdentity(identityTxns)
+	await executeOnIdentity(identityTxns, { gasLimit: 500000 })
 }
 
 async function onUnbondOrRequest(isUnbond, { amount, poolId, nonce }) {
@@ -536,7 +534,7 @@ function toChannelTuple(args) {
 	]
 }
 
-async function executeOnIdentity(txns) {
+async function executeOnIdentity(txns, opts = {}) {
 	const signer = await getSigner()
 	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
@@ -554,7 +552,7 @@ async function executeOnIdentity(txns) {
 		).toSolidityTuple()
 	if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
-		const tx = await identity.executeBySender(txnTuples)
+		const tx = await identity.executeBySender(txnTuples, opts)
 		await tx.wait()
 	} else {
 		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
@@ -571,7 +569,8 @@ async function executeOnIdentity(txns) {
 			bytecode,
 			0,
 			[executeTx.toSolidityTuple()],
-			[splitSig(sig)]
+			[splitSig(sig)],
+			opts
 		)
 		await tx.wait()
 	}
