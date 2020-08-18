@@ -1,6 +1,11 @@
 import React, { useState } from "react"
 import { getPool } from "../helpers/bonds"
-import { parseADX, formatADX, getApproxAPY } from "../helpers/formatting"
+import {
+	parseADX,
+	formatADX,
+	formatADXPretty,
+	getApproxAPY
+} from "../helpers/formatting"
 import {
 	UNBOND_DAYS,
 	ZERO,
@@ -139,7 +144,7 @@ export default function NewBondForm({
 								updateStakingAmount(formatADX(maxAmount))
 							}}
 						>
-							{formatADX(maxAmount)} ADX
+							{formatADXPretty(maxAmount)} ADX
 						</Button>
 					</Typography>
 				</Grid>
