@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits, bigNumberify } from "ethers/utils"
+import { formatUnits, parseUnits } from "ethers/utils"
 
 export function formatADX(num) {
 	return formatUnits(num, 18)
