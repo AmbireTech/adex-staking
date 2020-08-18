@@ -4,7 +4,6 @@ export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
 export const PRICES_API_URL =
 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
-export const ADX_MULTIPLIER = 10000
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 

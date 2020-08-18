@@ -14,13 +14,8 @@ import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
-import {
-	ADX_MULTIPLIER,
-	UNBOND_DAYS,
-	ZERO,
-	PRICES_API_URL
-} from "../helpers/constants"
-import { formatADXPretty, getApproxAPY } from "../helpers/formatting"
+import { UNBOND_DAYS, ZERO, PRICES_API_URL } from "../helpers/constants"
+import { formatADXPretty, formatADX, getApproxAPY } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
@@ -48,10 +43,7 @@ export default function Dashboard({
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
-		// @TODO fix this dirty hack?
-		const usdAmount =
-			(adxAmount.div(100000000000000).toNumber(10) / ADX_MULTIPLIER) *
-			prices.USD
+		const usdAmount = parseFloat(formatADX(adxAmount), 10) * prices.USD
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
