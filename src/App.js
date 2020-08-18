@@ -195,9 +195,7 @@ export default function App() {
 			})}
 
 			<Snackbar open={openDoingTx}>
-				<Alert severity="warning">
-					Please sign all pending MetaMask actions!
-				</Alert>
+				<Alert severity="info">Please sign all pending MetaMask actions!</Alert>
 			</Snackbar>
 			<Snackbar
 				open={openErr}
