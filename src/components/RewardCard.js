@@ -2,7 +2,7 @@ import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import { Button, Box } from "@material-ui/core"
-import { formatDAI, formatADX } from "../helpers/formatting"
+import { formatDAIPretty, formatADXPretty } from "../helpers/formatting"
 
 export default function RewardCard({
 	rewardChannels,
@@ -59,7 +59,9 @@ export default function RewardCard({
 		title,
 		actions: rewardActions,
 		subtitle: totalRewardDAI.gt(ZERO)
-			? `${formatADX(totalRewardADX)} ADX, ${formatDAI(totalRewardDAI)} DAI`
-			: `${formatADX(totalRewardADX)} ADX`
+			? `${formatADXPretty(totalRewardADX)} ADX, ${formatDAIPretty(
+					totalRewardDAI
+			  )} DAI`
+			: `${formatADXPretty(totalRewardADX)} ADX`
 	})
 }

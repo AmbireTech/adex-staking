@@ -34,7 +34,7 @@ import {
 	UNBOND_DAYS,
 	POOLS
 } from "./helpers/constants"
-import { formatADX } from "./helpers/formatting"
+import { formatADXPretty } from "./helpers/formatting"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 
@@ -147,7 +147,7 @@ export default function App() {
 				content: (
 					<>
 						Are you sure you want to request unbonding of{" "}
-						{formatADX(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
+						{formatADXPretty(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
 						<br />
 						<br />
 						Please be aware:
@@ -176,7 +176,7 @@ export default function App() {
 				content: (
 					<>
 						Are you sure you want to stake your earnings of{" "}
-						{formatADX(toRestake ? toRestake : ZERO)} ADX?
+						{formatADXPretty(toRestake ? toRestake : ZERO)} ADX?
 						<br />
 						<br />
 						Please be aware that this means that this amount will be locked up

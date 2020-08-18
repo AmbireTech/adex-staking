@@ -20,7 +20,7 @@ import {
 	ZERO,
 	PRICES_API_URL
 } from "../helpers/constants"
-import { formatADX, getApproxAPY } from "../helpers/formatting"
+import { formatADXPretty, getApproxAPY } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
@@ -80,7 +80,7 @@ export default function Dashboard({
 		const poolLabel = pool ? pool.label : bond.poolId
 		return (
 			<TableRow key={getBondId(bond)}>
-				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
+				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
@@ -159,7 +159,7 @@ export default function Dashboard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
 					extra: inUSD(stats.totalStake),
-					subtitle: formatADX(stats.totalStake) + " ADX"
+					subtitle: formatADXPretty(stats.totalStake) + " ADX"
 				})}
 			</Grid>
 
@@ -168,7 +168,7 @@ export default function Dashboard({
 					loaded: stats.loaded,
 					title: "Your total active stake",
 					extra: inUSD(userTotalStake),
-					subtitle: formatADX(userTotalStake) + " ADX"
+					subtitle: formatADXPretty(userTotalStake) + " ADX"
 				})}
 			</Grid>
 
@@ -177,7 +177,7 @@ export default function Dashboard({
 					loaded: stats.loaded,
 					title: "Your balance",
 					subtitle: stats.userBalance
-						? formatADX(stats.userBalance) + " ADX"
+						? formatADXPretty(stats.userBalance) + " ADX"
 						: "",
 					extra: inUSD(stats.userBalance)
 					/*actions: (<Button

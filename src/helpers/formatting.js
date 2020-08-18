@@ -4,8 +4,16 @@ export function formatADX(num) {
 	return formatUnits(num, 18)
 }
 
+export function formatADXPretty(num) {
+	return formatUnits(num.div("100000000000000"), 4)
+}
+
 export function formatDAI(num) {
 	return formatUnits(num, 18)
+}
+
+export function formatDAIPretty(num) {
+	return formatUnits(num.div("10000000000000000"), 2)
 }
 
 export function parseADX(n) {
