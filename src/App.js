@@ -24,6 +24,7 @@ import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
+import LegacyADXSwapDialog from "./components/LegacyADXSwapDialog"
 import ConfirmationDialog from "./components/ConfirmationDialog"
 import {
 	ADDR_STAKING,
@@ -65,8 +66,8 @@ function Alert(props) {
 
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
-	const [toUnbond, setToUnbond] = React.useState(null)
-	const [toRestake, setToRestake] = React.useState(null)
+	const [toUnbond, setToUnbond] = useState(null)
+	const [toRestake, setToRestake] = useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [openDoingTx, setOpenDoingTx] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState(
@@ -140,6 +141,8 @@ export default function App() {
 				onClaimRewards,
 				onRestake: setToRestake
 			})}
+
+			{LegacyADXSwapDialog(getSigner)}
 
 			{ConfirmationDialog({
 				isOpen: !!toUnbond,
