@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Contract, getDefaultProvider } from "ethers"
+import Snackbar from "@material-ui/core/Snackbar"
+import MuiAlert from "@material-ui/lab/Alert"
 import { formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
@@ -13,6 +15,7 @@ const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
+	const [isSwapInPrg, setSwapInPrg] = useState(false)
 
 	useEffect(() => {
 		if (!getSigner) return
@@ -56,16 +59,33 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 			</p>
 		</div>
 	)
-	return ConfirmationDialog({
+	const onSwap = wrapDoingTxns(
+		swapTokens.bind(null, setAmount, amount, getSigner)
+	)
+	const dialog = ConfirmationDialog({
 		isOpen: amount.gt(ZERO),
 		onDeny: () => setAmount(ZERO),
-		onConfirm: wrapDoingTxns(
-			swapTokens.bind(null, setAmount, amount, getSigner)
-		),
+		onConfirm: async () => {
+			const txns = await onSwap()
+			setSwapInPrg(true)
+			await Promise.all(txns.map(x => x.wait()))
+			setSwapInPrg(false)
+		},
 		confirmActionName: "Swap now",
 		title: "ADX Token ugprade",
 		content
 	})
+	return (
+		<>
+			{dialog}
+			<Snackbar open={isSwapInPrg}>
+				<MuiAlert elevation={6} variant="filled" severity="success">
+					Token swap is in progress! It will be completed once all your pending
+					transactions have been confirmed.
+				</MuiAlert>
+			</Snackbar>
+		</>
+	)
 }
 
 async function swapTokens(setAmount, amount, getSigner) {
@@ -79,6 +99,8 @@ async function swapTokens(setAmount, amount, getSigner) {
 		signer
 	)
 	const allowance = await legacyTokenWithSigner.allowance(walletAddr, ADDR_ADX)
+
+	let txns = []
 	// this mechanism is used so that we auto-calculate gas on the first tx, but hard-set on the next txns since they depend
 	// on the state of the previous
 	let hasAutocalculatedGas = false
@@ -89,17 +111,22 @@ async function swapTokens(setAmount, amount, getSigner) {
 	}
 	if (allowance.lt(amount)) {
 		if (allowance.gt(ZERO)) {
-			await legacyTokenWithSigner.approve(
-				ADDR_ADX,
-				ZERO,
-				firstTimeGasLimit(60000)
+			txns.push(
+				await legacyTokenWithSigner.approve(
+					ADDR_ADX,
+					ZERO,
+					firstTimeGasLimit(60000)
+				)
 			)
 		}
-		await legacyTokenWithSigner.approve(
-			ADDR_ADX,
-			amount,
-			firstTimeGasLimit(60000)
+		txns.push(
+			await legacyTokenWithSigner.approve(
+				ADDR_ADX,
+				amount,
+				firstTimeGasLimit(60000)
+			)
 		)
 	}
-	await newTokenWithSigner.swap(amount, firstTimeGasLimit(80000))
+	txns.push(await newTokenWithSigner.swap(amount, firstTimeGasLimit(80000)))
+	return txns
 }

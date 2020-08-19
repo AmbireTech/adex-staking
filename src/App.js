@@ -95,8 +95,9 @@ export default function App() {
 		try {
 			setOpenDoingTx(true)
 			setOpenErr(false)
-			await fn.apply(null, args)
+			const res = await fn.apply(null, args)
 			setOpenDoingTx(false)
+			return res
 		} catch (e) {
 			console.error(e)
 			setOpenDoingTx(false)
