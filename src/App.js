@@ -142,7 +142,8 @@ export default function App() {
 				onRestake: setToRestake
 			})}
 
-			{LegacyADXSwapDialog(getSigner)}
+			{// Load stats first to prevent simultanious calls to getSigner
+			LegacyADXSwapDialog(stats.loaded ? getSigner : null, wrapDoingTxns)}
 
 			{ConfirmationDialog({
 				isOpen: !!toUnbond,

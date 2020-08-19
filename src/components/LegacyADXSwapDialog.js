@@ -10,11 +10,12 @@ const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 const provider = getDefaultProvider()
 const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 
-export default function LegacyADXSwapDialog(getSigner) {
+export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
 
 	useEffect(() => {
+		if (!getSigner) return
 		const refreshAmount = async () => {
 			const signer = await getSigner()
 			if (!signer) return
@@ -58,49 +59,47 @@ export default function LegacyADXSwapDialog(getSigner) {
 	return ConfirmationDialog({
 		isOpen: amount.gt(ZERO),
 		onDeny: () => setAmount(ZERO),
-		onConfirm: async () => {
-			// @TODO simultanious getSigner fails
-			// @TODO error handling
-			// @TODO snackbar to show the progress
-			setAmount(ZERO)
-			const signer = await getSigner()
-			const walletAddr = await signer.getAddress()
-			const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
-			const newTokenWithSigner = new Contract(
-				ADDR_ADX,
-				["function swap(uint prevTokenAmount) external"],
-				signer
-			)
-			const allowance = await legacyTokenWithSigner.allowance(
-				walletAddr,
-				ADDR_ADX
-			)
-			// this mechanism is used so that we auto-calculate gas on the first tx, but hard-set on the next txns since they depend
-			// on the state of the previous
-			let hasAutocalculatedGas = false
-			const firstTimeGasLimit = gasLimit => {
-				if (hasAutocalculatedGas) return { gasLimit }
-				hasAutocalculatedGas = true
-				return {}
-			}
-			if (allowance.lt(amount)) {
-				if (allowance.gt(ZERO)) {
-					await legacyTokenWithSigner.approve(
-						ADDR_ADX,
-						ZERO,
-						firstTimeGasLimit(60000)
-					)
-				}
-				await legacyTokenWithSigner.approve(
-					ADDR_ADX,
-					amount,
-					firstTimeGasLimit(60000)
-				)
-			}
-			await newTokenWithSigner.swap(amount, firstTimeGasLimit(80000))
-		},
+		onConfirm: wrapDoingTxns(
+			swapTokens.bind(null, setAmount, amount, getSigner)
+		),
 		confirmActionName: "Swap now",
 		title: "ADX Token ugprade",
 		content
 	})
+}
+
+async function swapTokens(setAmount, amount, getSigner) {
+	setAmount(ZERO)
+	const signer = await getSigner()
+	const walletAddr = await signer.getAddress()
+	const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
+	const newTokenWithSigner = new Contract(
+		ADDR_ADX,
+		["function swap(uint prevTokenAmount) external"],
+		signer
+	)
+	const allowance = await legacyTokenWithSigner.allowance(walletAddr, ADDR_ADX)
+	// this mechanism is used so that we auto-calculate gas on the first tx, but hard-set on the next txns since they depend
+	// on the state of the previous
+	let hasAutocalculatedGas = false
+	const firstTimeGasLimit = gasLimit => {
+		if (hasAutocalculatedGas) return { gasLimit }
+		hasAutocalculatedGas = true
+		return {}
+	}
+	if (allowance.lt(amount)) {
+		if (allowance.gt(ZERO)) {
+			await legacyTokenWithSigner.approve(
+				ADDR_ADX,
+				ZERO,
+				firstTimeGasLimit(60000)
+			)
+		}
+		await legacyTokenWithSigner.approve(
+			ADDR_ADX,
+			amount,
+			firstTimeGasLimit(60000)
+		)
+	}
+	await newTokenWithSigner.swap(amount, firstTimeGasLimit(80000))
 }
