@@ -20,6 +20,12 @@ export function parseADX(n) {
 	return parseUnits(n, 18)
 }
 
+export function formatDate(d) {
+	return `${d.getDate()} ${d.toLocaleString("default", {
+		month: "short"
+	})} ${d.getFullYear()}`
+}
+
 // @TODO refactor to take pool arguments and use pool constants
 export function getApproxAPY(bond, totalStake) {
 	const earlyDistributionEnds = 1609372800000

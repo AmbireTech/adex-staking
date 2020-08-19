@@ -14,7 +14,12 @@ import { themeMUI } from "../themeMUi"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
 import { UNBOND_DAYS, ZERO, PRICES_API_URL } from "../helpers/constants"
-import { formatADXPretty, formatADX, getApproxAPY } from "../helpers/formatting"
+import {
+	formatADXPretty,
+	formatADX,
+	getApproxAPY,
+	formatDate
+} from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
@@ -69,10 +74,14 @@ export default function Dashboard({
 	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
+		const created = new Date(
+			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
+		)
 		return (
 			<TableRow key={getBondId(bond)}>
 				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
+				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
@@ -179,6 +188,9 @@ export default function Dashboard({
 							<TableCell style={headerCellStyle}>Bond amount</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Pool
+							</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Created
 							</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Status
