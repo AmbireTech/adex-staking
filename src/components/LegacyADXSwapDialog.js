@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react"
 import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
-import { ZERO } from "../helpers/constants"
+import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 
-const ADX_ADDR_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
+const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 const OLD_TO_NEW_MUL = bigNumberify("100000000000000")
 
 const provider = getDefaultProvider()
-const LegacyToken = new Contract(ADX_ADDR_OLD, ERC20ABI, provider)
+const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 
 export default function LegacyADXSwapDialog(getSigner) {
 	// Amount to migrate
@@ -36,7 +36,7 @@ export default function LegacyADXSwapDialog(getSigner) {
 					successful upgrade
 				</a>{" "}
 				to a new contract. You are currently holding{" "}
-				<b>{formatUnits(amount, 4)} legacy ADX</b>.
+				<b>{amount.gt(ZERO) ? formatUnits(amount, 4) : ""} legacy ADX</b>.
 			</p>
 			<p>
 				Starting August 21st 2020, the{" "}
@@ -56,9 +56,17 @@ export default function LegacyADXSwapDialog(getSigner) {
 		isOpen: amount.gt(ZERO),
 		onDeny: () => setAmount(ZERO),
 		onConfirm: async () => {
-			console.log("swap amount", amount)
+			// @TODO set approval to zero
+			// @TODO preexisting approval?
+			// @TODO simultanious getSigner fails
+			// @TODO error handling
+			// @TODO snackbar to show the progress
 			setAmount(ZERO)
-			// @TODO
+			const signer = await getSigner()
+			const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
+			const newTokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+			await tokenWithSigner.approve(ADDR_ADX, amount)
+			await newTokenWithSigner.swap(amount, { gasLimit: 120000 })
 		},
 		confirmActionName: "Swap now",
 		content
