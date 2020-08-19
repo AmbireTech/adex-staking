@@ -7,7 +7,7 @@ import {
 	Button
 } from "@material-ui/core"
 
-export default function UnbondConfirmationDialog({
+export default function ConfirmationDialog({
 	isOpen,
 	onDeny,
 	onConfirm,
