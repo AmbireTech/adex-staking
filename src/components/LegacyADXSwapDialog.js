@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Contract, getDefaultProvider } from "ethers"
-import { bigNumberify, formatUnits } from "ethers/utils"
+import { formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 
 const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
-const OLD_TO_NEW_MUL = bigNumberify("100000000000000")
 
 const provider = getDefaultProvider()
 const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
@@ -23,7 +22,7 @@ export default function LegacyADXSwapDialog(getSigner) {
 			setAmount(await LegacyToken.balanceOf(walletAddr))
 		}
 		refreshAmount().catch(e => console.error(e))
-	}, [])
+	}, [getSigner])
 
 	const content = (
 		<div>
@@ -31,11 +30,12 @@ export default function LegacyADXSwapDialog(getSigner) {
 				The ADX token completed a{" "}
 				<a
 					target="_blank"
+					rel="noopener noreferrer"
 					href="https://www.adex.network/blog/token-upgrade-defi-features/"
 				>
 					successful upgrade
 				</a>{" "}
-				to a new contract. You are currently holding{" "}
+				to a new smart contract. You are currently holding{" "}
 				<b>{amount.gt(ZERO) ? formatUnits(amount, 4) : ""} legacy ADX</b>.
 			</p>
 			<p>
@@ -48,7 +48,10 @@ export default function LegacyADXSwapDialog(getSigner) {
 			</p>
 			<p>
 				We recommend that you swap your legacy ADX right now by clicking the{" "}
-				<i>Swap now</i> button and signing the two MetaMask transactions.
+				<i>
+					<b>Swap now</b>
+				</i>{" "}
+				button and signing the MetaMask transactions.
 			</p>
 		</div>
 	)
@@ -56,19 +59,48 @@ export default function LegacyADXSwapDialog(getSigner) {
 		isOpen: amount.gt(ZERO),
 		onDeny: () => setAmount(ZERO),
 		onConfirm: async () => {
-			// @TODO set approval to zero
-			// @TODO preexisting approval?
 			// @TODO simultanious getSigner fails
 			// @TODO error handling
 			// @TODO snackbar to show the progress
 			setAmount(ZERO)
 			const signer = await getSigner()
-			const tokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
-			const newTokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-			await tokenWithSigner.approve(ADDR_ADX, amount)
-			await newTokenWithSigner.swap(amount, { gasLimit: 120000 })
+			const walletAddr = await signer.getAddress()
+			const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
+			const newTokenWithSigner = new Contract(
+				ADDR_ADX,
+				["function swap(uint prevTokenAmount) external"],
+				signer
+			)
+			const allowance = await legacyTokenWithSigner.allowance(
+				walletAddr,
+				ADDR_ADX
+			)
+			// this mechanism is used so that we auto-calculate gas on the first tx, but hard-set on the next txns since they depend
+			// on the state of the previous
+			let hasAutocalculatedGas = false
+			const firstTimeGasLimit = gasLimit => {
+				if (hasAutocalculatedGas) return { gasLimit }
+				hasAutocalculatedGas = true
+				return {}
+			}
+			if (allowance.lt(amount)) {
+				if (allowance.gt(ZERO)) {
+					await legacyTokenWithSigner.approve(
+						ADDR_ADX,
+						ZERO,
+						firstTimeGasLimit(60000)
+					)
+				}
+				await legacyTokenWithSigner.approve(
+					ADDR_ADX,
+					amount,
+					firstTimeGasLimit(60000)
+				)
+			}
+			await newTokenWithSigner.swap(amount, firstTimeGasLimit(80000))
 		},
 		confirmActionName: "Swap now",
+		title: "ADX Token ugprade",
 		content
 	})
 }

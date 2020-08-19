@@ -12,14 +12,15 @@ export default function ConfirmationDialog({
 	onDeny,
 	onConfirm,
 	content,
+	title = "Are you sure?",
 	confirmActionName
 }) {
 	return (
 		<Dialog open={isOpen} onClose={onDeny}>
-			<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+			<DialogTitle id="alert-dialog-title">{title}</DialogTitle>
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
-				<Button onClick={onDeny} autoFocus color="primary">
+				<Button onClick={onDeny} color="primary">
 					Cancel
 				</Button>
 				<Button onClick={onConfirm} variant="contained" color="primary">
