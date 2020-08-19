@@ -22,7 +22,7 @@ export default function UnbondConfirmationDialog({
 				<Button onClick={onDeny} autoFocus color="primary">
 					Cancel
 				</Button>
-				<Button onClick={onConfirm} color="primary">
+				<Button onClick={onConfirm} variant="contained" color="primary">
 					{confirmActionName}
 				</Button>
 			</DialogActions>
