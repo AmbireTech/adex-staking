@@ -465,14 +465,16 @@ async function claimRewards(rewardChannels) {
 		)
 	}
 
+	const identityChannels = rewardChannels.filter(
+		channel => channel.claimFrom !== walletAddr
+	)
 	const toTransfer = {}
-	rewardChannels.forEach(channel => {
+	identityChannels.forEach(channel => {
 		const { tokenAddr } = channel.channelArgs
 		const amnt = toTransfer[tokenAddr] || ZERO
 		toTransfer[tokenAddr] = amnt.add(channel.outstandingReward)
 	})
-	const identityTxns = rewardChannels
-		.filter(channel => channel.claimFrom !== walletAddr)
+	const identityTxns = identityChannels
 		.map(channel => {
 			const channelTuple = toChannelTuple(channel.channelArgs)
 			return [
