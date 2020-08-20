@@ -127,6 +127,6 @@ async function swapTokens(setAmount, amount, getSigner) {
 			)
 		)
 	}
-	txns.push(await newTokenWithSigner.swap(amount, firstTimeGasLimit(120000)))
+	txns.push(await newTokenWithSigner.swap(amount, firstTimeGasLimit(100000)))
 	return txns
 }
