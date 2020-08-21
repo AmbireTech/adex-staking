@@ -43,12 +43,10 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 				<b>{amount.gt(ZERO) ? formatUnits(amount, 4) : ""} legacy ADX</b>.
 			</p>
 			<p>
-				Starting August 21st 2020, the{" "}
 				<b>
-					legacy ADX will be deprecated and will no longer be traded on
-					exchanges
+					Starting August 21st 2020, the legacy ADX will be deprecated and will
+					no longer be traded on exchanges or used for staking.
 				</b>
-				.
 			</p>
 			<p>
 				We recommend that you swap your legacy ADX right now by clicking the{" "}
