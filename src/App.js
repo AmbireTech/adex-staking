@@ -417,7 +417,7 @@ async function createNewBond(stats, { amount, poolId, nonce }) {
 
 	await executeOnIdentity(
 		identityTxns,
-		setAllowance ? { gasLimit: 350000 } : {}
+		setAllowance ? { gasLimit: 450000 } : {}
 	)
 }
 
