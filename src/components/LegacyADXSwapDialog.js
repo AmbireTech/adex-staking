@@ -55,6 +55,20 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 				</i>{" "}
 				button and signing the MetaMask transactions.
 			</p>
+			<p>
+				<b>
+					After this, you can stake your ADX to earn up to 150% APY (annual
+					percentage yield) with no slashing risk (
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href="https://www.adex.network/blog/new-token-economics-and-staking/"
+					>
+						read more
+					</a>
+					).
+				</b>
+			</p>
 		</div>
 	)
 	const onSwap = wrapDoingTxns(
