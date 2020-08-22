@@ -84,7 +84,7 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 			setSwapInPrg(false)
 		},
 		confirmActionName: "Swap now",
-		title: "ADX Token ugprade",
+		title: "ADX Token upgrade",
 		content
 	})
 	return (
