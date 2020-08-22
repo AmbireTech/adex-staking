@@ -28,6 +28,11 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 		refreshAmount().catch(e => console.error(e))
 	}, [getSigner])
 
+	const farmer = (
+		<span role="img" aria-label="farmer">
+			🌾
+		</span>
+	)
 	const content = (
 		<div>
 			<p>
@@ -57,8 +62,8 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 			</p>
 			<p>
 				<b>
-					After this, you can stake your ADX to earn up to 150% APY (annual
-					percentage yield) with no slashing risk (
+					{farmer} After this, you can stake your ADX to earn up to 150% APY
+					(annual percentage yield) with no slashing risk (
 					<a
 						target="_blank"
 						rel="noopener noreferrer"
@@ -66,7 +71,7 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 					>
 						read more
 					</a>
-					).
+					). {farmer}
 				</b>
 			</p>
 		</div>
