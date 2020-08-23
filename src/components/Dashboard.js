@@ -147,7 +147,12 @@ export default function Dashboard({
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
-					extra: inUSD(stats.totalStake),
+					extra:
+						!stats.loaded || stats.userBonds.length
+							? inUSD(stats.totalStake)
+							: `Earning ${(getApproxAPY(null, stats.totalStake) * 100).toFixed(
+									2
+							  )}% APY`,
 					subtitle: formatADXPretty(stats.totalStake) + " ADX"
 				})}
 			</Grid>
