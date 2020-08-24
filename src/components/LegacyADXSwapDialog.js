@@ -84,6 +84,7 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 		onDeny: () => setAmount(ZERO),
 		onConfirm: async () => {
 			const txns = await onSwap()
+			if (!txns) return
 			setSwapInPrg(true)
 			await Promise.all(txns.map(x => x.wait()))
 			setSwapInPrg(false)
