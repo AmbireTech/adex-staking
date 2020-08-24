@@ -1,14 +1,17 @@
 import React, { useState } from "react"
 import { getPool } from "../helpers/bonds"
-import { formatADXLegacy, getApproxAPY } from "../helpers/formatting"
+import {
+	parseADX,
+	formatADX,
+	formatADXPretty,
+	getApproxAPY
+} from "../helpers/formatting"
 import {
 	UNBOND_DAYS,
-	ADX_MULTIPLIER,
 	ZERO,
 	DEFAULT_BOND,
 	STAKING_RULES_URL
 } from "../helpers/constants"
-import { bigNumberify } from "ethers/utils"
 import {
 	Paper,
 	Grid,
@@ -72,7 +75,7 @@ export default function NewBondForm({
 	const validateFields = params => {
 		const { amountBN, poolToValidate } = params
 		const minStakingAmountBN = poolToValidate
-			? bigNumberify(poolToValidate.minStakingAmount * ADX_MULTIPLIER)
+			? parseADX(poolToValidate.minStakingAmount)
 			: ZERO
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
@@ -90,12 +93,9 @@ export default function NewBondForm({
 		return
 	}
 
-	const updateStakingAmount = value => {
-		// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
-		const amount = value < 0 ? 0 : value
-		const amountBN = bigNumberify(Math.floor(amount * ADX_MULTIPLIER))
+	const updateStakingAmountBN = amountBN => {
 		validateFields({ amountBN, poolToValidate: activePool })
-		setStakingAmount(amount)
+		setStakingAmount(formatADX(amountBN))
 		setBond({
 			...bond,
 			amount: amountBN
@@ -103,7 +103,7 @@ export default function NewBondForm({
 	}
 
 	const updatePool = value => {
-		const amountBN = bigNumberify(Math.floor(stakingAmount * ADX_MULTIPLIER))
+		const amountBN = parseADX(stakingAmount)
 		const poolToValidate = getPool(value)
 		validateFields({ amountBN, poolToValidate })
 		setPool(value)
@@ -131,19 +131,23 @@ export default function NewBondForm({
 						style={minWidthStyle}
 						value={stakingAmount}
 						error={amountErr}
-						onChange={ev => updateStakingAmount(ev.target.value)}
+						onChange={ev => {
+							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
+							const amount = Math.max(0, ev.target.value)
+							const amountBN = parseADX(amount.toString(10))
+							updateStakingAmountBN(amountBN)
+							setStakingAmount(amount.toString(10))
+						}}
 						helperText={amountErr ? amountErrText : null}
 					></TextField>
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
-							onClick={ev => {
-								updateStakingAmount(
-									(maxAmount.toNumber() / ADX_MULTIPLIER).toFixed(4)
-								)
+							onClick={() => {
+								updateStakingAmountBN(maxAmount)
 							}}
 						>
-							{formatADXLegacy(maxAmount)} ADX
+							{formatADXPretty(maxAmount)} ADX
 						</Button>
 					</Typography>
 				</Grid>

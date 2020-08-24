@@ -7,20 +7,19 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody,
-	Tooltip
+	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { themeMUI } from "../themeMUi"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
+import { UNBOND_DAYS, ZERO, PRICES_API_URL } from "../helpers/constants"
 import {
-	ADX_MULTIPLIER,
-	UNBOND_DAYS,
-	ZERO,
-	PRICES_API_URL
-} from "../helpers/constants"
-import { formatADX, getApproxAPY } from "../helpers/formatting"
+	formatADXPretty,
+	formatADX,
+	getApproxAPY,
+	formatDate
+} from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Dashboard({
@@ -48,10 +47,7 @@ export default function Dashboard({
 	const inUSD = adxAmount => {
 		if (!adxAmount) return null
 		if (!prices.USD) return null
-		// @TODO fix this dirty hack?
-		const usdAmount =
-			(adxAmount.div(100000000000000).toNumber(10) / ADX_MULTIPLIER) *
-			prices.USD
+		const usdAmount = parseFloat(formatADX(adxAmount), 10) * prices.USD
 		return `${usdAmount.toFixed(2)} USD`
 	}
 
@@ -78,23 +74,16 @@ export default function Dashboard({
 	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
+		const created = new Date(
+			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
+		)
 		return (
 			<TableRow key={getBondId(bond)}>
-				<TableCell>{formatADX(bond.currentAmount)} ADX</TableCell>
+				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
+				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					<Tooltip
-						arrow={true}
-						title={"Adding more ADX will be available soon."}
-					>
-						<div>
-							<Button disabled={true} color="primary">
-								Add more ADX
-							</Button>
-						</div>
-					</Tooltip>
-
 					{bond.status === "Active" ? (
 						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
 							Request Unbond
@@ -158,8 +147,13 @@ export default function Dashboard({
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Total ADX staked",
-					extra: inUSD(stats.totalStake),
-					subtitle: formatADX(stats.totalStake) + " ADX"
+					extra:
+						!stats.loaded || stats.userBonds.length
+							? inUSD(stats.totalStake)
+							: `Earning ${(getApproxAPY(null, stats.totalStake) * 100).toFixed(
+									2
+							  )}% APY`,
+					subtitle: formatADXPretty(stats.totalStake) + " ADX"
 				})}
 			</Grid>
 
@@ -168,7 +162,7 @@ export default function Dashboard({
 					loaded: stats.loaded,
 					title: "Your total active stake",
 					extra: inUSD(userTotalStake),
-					subtitle: formatADX(userTotalStake) + " ADX"
+					subtitle: formatADXPretty(userTotalStake) + " ADX"
 				})}
 			</Grid>
 
@@ -177,7 +171,7 @@ export default function Dashboard({
 					loaded: stats.loaded,
 					title: "Your balance",
 					subtitle: stats.userBalance
-						? formatADX(stats.userBalance) + " ADX"
+						? formatADXPretty(stats.userBalance) + " ADX"
 						: "",
 					extra: inUSD(stats.userBalance)
 					/*actions: (<Button
@@ -199,6 +193,9 @@ export default function Dashboard({
 							<TableCell style={headerCellStyle}>Bond amount</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Pool
+							</TableCell>
+							<TableCell style={headerCellStyle} align="right">
+								Created
 							</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Status

@@ -34,7 +34,7 @@ export default () => {
 					<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
 				</Link>
 				<Link
-					href="https://www.adex.network/blog/adx-staking-is-here/"
+					href="https://help.adex.network/hc/en-us/categories/360002707720-Staking"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
@@ -44,6 +44,12 @@ export default () => {
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
+				</Link>
+				<Link
+					href="https://github.com/adexnetwork/adex-protocol-eth#audits"
+					target="_blank"
+				>
+					<MenuItem onClick={closeHelpMenu}>Audits</MenuItem>
 				</Link>
 				<Link
 					href="https://coinmarketcap.com/currencies/adx-net/markets/"

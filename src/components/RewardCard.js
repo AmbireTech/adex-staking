@@ -1,8 +1,8 @@
 import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
-import { Button, Tooltip } from "@material-ui/core"
-import { formatDAI, formatADX } from "../helpers/formatting"
+import { Button, Box } from "@material-ui/core"
+import { formatDAIPretty, formatADXPretty } from "../helpers/formatting"
 
 export default function RewardCard({
 	rewardChannels,
@@ -31,47 +31,37 @@ export default function RewardCard({
 	const restakeEnabled =
 		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
-		<div>
-			<Tooltip
-				arrow={true}
-				// @TODO use a grid instead of float
-				style={{ float: "left", margin: 5 }}
-				title={
-					"Coming soon! Rewards withdraw will be available when the ADX token upgrade is completed."
-				}
-			>
-				<div>
-					<Button
-						size="small"
-						variant="contained"
-						color="secondary"
-						// disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
-						disabled={true}
-						// onClick={() => onClaimRewards(rewardChannels)}
-					>
-						claim
-					</Button>
-				</div>
-			</Tooltip>
+		<Box display="flex" flexDirection="row" paddingTop={1}>
 			<Button
 				size="small"
 				variant="contained"
 				color="secondary"
-				// @TODO use a grid instead of float
-				style={{ float: "left", margin: 5 }}
-				disabled={!restakeEnabled}
-				onClick={() => onRestake(totalRewardADX)}
+				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+				onClick={() => onClaimRewards(rewardChannels)}
 			>
-				re-stake
+				claim
 			</Button>
-		</div>
+			<Box ml={1}>
+				<Button
+					size="small"
+					variant="contained"
+					color="secondary"
+					disabled={!restakeEnabled}
+					onClick={() => onRestake(totalRewardADX)}
+				>
+					re-stake
+				</Button>
+			</Box>
+		</Box>
 	)
 	return StatsCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
 		subtitle: totalRewardDAI.gt(ZERO)
-			? `${formatADX(totalRewardADX)} ADX, ${formatDAI(totalRewardDAI)} DAI`
-			: `${formatADX(totalRewardADX)} ADX`
+			? `${formatADXPretty(totalRewardADX)} ADX, ${formatDAIPretty(
+					totalRewardDAI
+			  )} DAI`
+			: `${formatADXPretty(totalRewardADX)} ADX`
 	})
 }

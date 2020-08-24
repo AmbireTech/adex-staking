@@ -7,22 +7,23 @@ import {
 	Button
 } from "@material-ui/core"
 
-export default function UnbondConfirmationDialog({
+export default function ConfirmationDialog({
 	isOpen,
 	onDeny,
 	onConfirm,
 	content,
+	title = "Are you sure?",
 	confirmActionName
 }) {
 	return (
 		<Dialog open={isOpen} onClose={onDeny}>
-			<DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+			<DialogTitle id="alert-dialog-title">{title}</DialogTitle>
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
-				<Button onClick={onDeny} autoFocus color="primary">
+				<Button onClick={onDeny} color="primary">
 					Cancel
 				</Button>
-				<Button onClick={onConfirm} color="primary">
+				<Button onClick={onConfirm} variant="contained" color="primary">
 					{confirmActionName}
 				</Button>
 			</DialogActions>
