@@ -234,7 +234,8 @@ export default function App() {
 						onNewBond: async bond => {
 							setNewBondOpen(false)
 							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
-						}
+						},
+						isEarly: stats.userBonds.find(x => x.nonce.toNumber() < 1597276800)
 					})}
 				</Fade>
 			</Modal>
