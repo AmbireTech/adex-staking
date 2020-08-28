@@ -7,6 +7,7 @@ import Modal from "@material-ui/core/Modal"
 import Backdrop from "@material-ui/core/Backdrop"
 import Fab from "@material-ui/core/Fab"
 import AddIcon from "@material-ui/icons/Add"
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet"
 import Fade from "@material-ui/core/Fade"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
@@ -34,15 +35,14 @@ import {
 	MAX_UINT,
 	ZERO,
 	UNBOND_DAYS,
-	POOLS
+	POOLS,
+	WALLET_CONNECT,
+	METAMASK
 } from "./helpers/constants"
 import { formatADXPretty } from "./helpers/formatting"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
-import QRCodeModal from "@walletconnect/qrcode-modal"
-import WalletConnect from "@walletconnect/client"
 import WalletConnectProvider from "@walletconnect/web3-provider"
-import Web3 from "web3"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
@@ -135,8 +135,7 @@ export default function App() {
 			<AppBar position="static">
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
-
-					{stats.loaded && (
+					{chosenWallet && (
 						<Fab
 							disabled={!stats.loaded}
 							onClick={() => setNewBondOpen(true)}
@@ -148,15 +147,19 @@ export default function App() {
 							{"Stake your ADX"}
 						</Fab>
 					)}
-					<Fab
-						onClick={() => setConnectWallet(true)}
-						variant="extended"
-						color="secondary"
-						style={{ position: "absolute", right: "5%", top: "50%" }}
-					>
-						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-						{"Connect Wallet"}
-					</Fab>
+					{!chosenWallet && (
+						<Fab
+							onClick={() => setConnectWallet(true)}
+							variant="extended"
+							color="secondary"
+							style={{ position: "absolute", right: "5%", top: "50%" }}
+						>
+							<AccountBalanceWalletIcon
+								style={{ margin: themeMUI.spacing(1) }}
+							/>
+							{"Connect Wallet"}
+						</Fab>
+					)}
 					{HelperMenu()}
 				</Toolbar>
 			</AppBar>
@@ -233,8 +236,13 @@ export default function App() {
 					console.log("should close")
 				},
 				handleListItemClick: text => {
-					getWalletConnectSigner()
-					setChosenWallet(text)
+					if (getSigner(text)) {
+						setChosenWallet(text)
+					} else {
+						setOpenErr(true)
+						setSnackbarErr("Please select a wallet")
+					}
+					setConnectWallet(null)
 				}
 			})}
 
@@ -281,13 +289,17 @@ export default function App() {
 	)
 }
 
-async function getSigner() {
+function getSigner(wallet) {
+	Wallet = wallet || Wallet
 	if (!Wallet) return null
-	if (Wallet === "Metamask") {
+
+	if (Wallet === METAMASK) {
 		return getMetamaskSigner()
-	} else if (Wallet === "WalletConnect") {
+	} else if (Wallet === WALLET_CONNECT) {
 		return getWalletConnectSigner()
 	}
+
+	return null
 }
 
 async function getMetamaskSigner() {

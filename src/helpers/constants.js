@@ -45,19 +45,18 @@ export const POOLS = [
 	}
 ]
 
-export const Wallet = {
-	metamask: "Metamask",
-	walletconnect: "Wallet Connect"
-}
+export const METAMASK = "Metamask"
+export const WALLET_CONNECT = "WalletConnect"
+
 export const Wallets = [
 	{
-		title: "Connect with Metamask",
-		name: "Metamask",
+		title: `Connect with ${METAMASK}`,
+		name: METAMASK,
 		icon: metamaskLogo
 	},
 	{
-		title: "Connect with WalletConnect",
-		name: "WalletConnect",
+		title: `Connect with ${WALLET_CONNECT}`,
+		name: WALLET_CONNECT,
 		icon: walletconnectLogo
 	}
 ]
