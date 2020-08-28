@@ -11,6 +11,7 @@ import Fade from "@material-ui/core/Fade"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import HelperMenu from "./components/HelperMenu"
+import ChooseWallet from "./components/ChooseWallet"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, hexZeroPad } from "ethers/utils"
@@ -38,6 +39,10 @@ import {
 import { formatADXPretty } from "./helpers/formatting"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
+import QRCodeModal from "@walletconnect/qrcode-modal"
+import WalletConnect from "@walletconnect/client"
+import WalletConnectProvider from "@walletconnect/web3-provider"
+import Web3 from "web3"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
@@ -64,6 +69,9 @@ function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
+// set to the available wallet types
+let Wallet = null
+
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
@@ -74,6 +82,8 @@ export default function App() {
 		"Error! Unspecified error occured."
 	)
 	const [stats, setStats] = useState(EMPTY_STATS)
+	const [connectWallet, setConnectWallet] = useState(null)
+	const [chosenWallet, setChosenWallet] = useState(null)
 
 	const refreshStats = () =>
 		loadStats()
@@ -90,6 +100,10 @@ export default function App() {
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
 	}, [])
+
+	useEffect(() => {
+		Wallet = chosenWallet
+	}, [chosenWallet])
 
 	const wrapDoingTxns = fn => async (...args) => {
 		try {
@@ -121,15 +135,27 @@ export default function App() {
 			<AppBar position="static">
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
+
+					{stats.loaded && (
+						<Fab
+							disabled={!stats.loaded}
+							onClick={() => setNewBondOpen(true)}
+							variant="extended"
+							color="secondary"
+							style={{ position: "absolute", right: "5%", top: "50%" }}
+						>
+							<AddIcon style={{ margin: themeMUI.spacing(1) }} />
+							{"Stake your ADX"}
+						</Fab>
+					)}
 					<Fab
-						disabled={!stats.loaded}
-						onClick={() => setNewBondOpen(true)}
+						onClick={() => setConnectWallet(true)}
 						variant="extended"
 						color="secondary"
 						style={{ position: "absolute", right: "5%", top: "50%" }}
 					>
 						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-						{"Stake your ADX"}
+						{"Connect Wallet"}
 					</Fab>
 					{HelperMenu()}
 				</Toolbar>
@@ -199,6 +225,19 @@ export default function App() {
 				)
 			})}
 
+			{ChooseWallet({
+				open: !!connectWallet,
+				content: "",
+				handleClose: () => {
+					setConnectWallet(null)
+					console.log("should close")
+				},
+				handleListItemClick: text => {
+					getWalletConnectSigner()
+					setChosenWallet(text)
+				}
+			})}
+
 			<Snackbar open={openDoingTx}>
 				<Alert severity="info">Please sign all pending MetaMask actions!</Alert>
 			</Snackbar>
@@ -243,6 +282,15 @@ export default function App() {
 }
 
 async function getSigner() {
+	if (!Wallet) return null
+	if (Wallet === "Metamask") {
+		return getMetamaskSigner()
+	} else if (Wallet === "WalletConnect") {
+		return getWalletConnectSigner()
+	}
+}
+
+async function getMetamaskSigner() {
 	if (typeof window.ethereum !== "undefined") {
 		await window.ethereum.enable()
 	}
@@ -250,8 +298,22 @@ async function getSigner() {
 	if (!window.web3) return null
 
 	const provider = new Web3Provider(window.web3.currentProvider)
-	const signer = provider.getSigner()
-	return signer
+	return provider.getSigner()
+}
+
+async function getWalletConnectSigner() {
+	const provider = new WalletConnectProvider({
+		infuraId: "27e484dcd9e3efcfd25a83a78777cdf1" // Required
+	})
+	try {
+		await provider.enable()
+	} catch (e) {
+		console.log("user closed window")
+		return null
+	}
+
+	const web3 = new Web3Provider(provider)
+	return web3.getSigner()
 }
 
 async function loadStats() {

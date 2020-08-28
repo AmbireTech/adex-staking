@@ -1,4 +1,6 @@
 import { bigNumberify, id } from "ethers/utils"
+import walletconnectLogo from "../walletconnect-logo.svg"
+import metamaskLogo from "../metamask-fox.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
@@ -40,6 +42,23 @@ export const POOLS = [
 		minStakingAmount: 0,
 		rewardPolicy: "",
 		slashPolicy: ""
+	}
+]
+
+export const Wallet = {
+	metamask: "Metamask",
+	walletconnect: "Wallet Connect"
+}
+export const Wallets = [
+	{
+		title: "Connect with Metamask",
+		name: "Metamask",
+		icon: metamaskLogo
+	},
+	{
+		title: "Connect with WalletConnect",
+		name: "WalletConnect",
+		icon: walletconnectLogo
 	}
 ]
 
