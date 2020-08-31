@@ -12,7 +12,11 @@ const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 const provider = getDefaultProvider()
 const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 
-export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
+export default function LegacyADXSwapDialog(
+	getSigner,
+	wrapDoingTxns,
+	WalletType
+) {
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
 	const [isSwapInPrg, setSwapInPrg] = useState(false)
@@ -58,7 +62,7 @@ export default function LegacyADXSwapDialog(getSigner, wrapDoingTxns) {
 				<i>
 					<b>Swap now</b>
 				</i>{" "}
-				button and signing the MetaMask transactions.
+				{`button and signing the ${WalletType || "MetaMask"} transactions.`}
 			</p>
 			<p>
 				<b>

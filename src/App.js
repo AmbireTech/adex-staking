@@ -70,7 +70,7 @@ function Alert(props) {
 }
 
 // set to the available wallet types
-let Wallet = null
+let WalletType = null
 const { REACT_APP_INFURA_ID } = process.env
 if (!REACT_APP_INFURA_ID) throw new Error("Invalid Infura id")
 
@@ -105,11 +105,11 @@ export default function App() {
 	}, [])
 
 	useEffect(() => {
-		Wallet = chosenWallet
+		WalletType = chosenWallet
 	}, [chosenWallet])
 
 	useEffect(() => {
-		setChosenWallet(Wallet)
+		setChosenWallet(WalletType)
 	}, [signer])
 
 	const wrapDoingTxns = fn => async (...args) => {
@@ -180,7 +180,11 @@ export default function App() {
 			})}
 
 			{// Load stats first to prevent simultanious calls to getSigner
-			LegacyADXSwapDialog(stats.loaded ? getSigner : null, wrapDoingTxns)}
+			LegacyADXSwapDialog(
+				stats.loaded ? getSigner : null,
+				wrapDoingTxns,
+				WalletType
+			)}
 
 			{ConfirmationDialog({
 				isOpen: !!toUnbond,
@@ -287,7 +291,8 @@ export default function App() {
 						onNewBond: async bond => {
 							setNewBondOpen(false)
 							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
-						}
+						},
+						WalletType
 					})}
 				</Fade>
 			</Modal>
@@ -296,12 +301,12 @@ export default function App() {
 }
 
 function getSigner(wallet) {
-	Wallet = wallet || Wallet
-	if (!Wallet) return null
+	WalletType = wallet || WalletType
+	if (!WalletType) return null
 
-	if (Wallet === METAMASK) {
+	if (WalletType === METAMASK) {
 		return getMetamaskSigner()
-	} else if (Wallet === WALLET_CONNECT) {
+	} else if (WalletType === WALLET_CONNECT) {
 		return getWalletConnectSigner()
 	}
 
@@ -314,7 +319,7 @@ async function getMetamaskSigner() {
 	}
 
 	if (!window.web3) {
-		Wallet = null
+		WalletType = null
 		return null
 	}
 
@@ -331,7 +336,7 @@ async function getWalletConnectSigner() {
 		await provider.enable()
 	} catch (e) {
 		console.log("user closed WalletConnect modal")
-		Wallet = null
+		WalletType = null
 		return null
 	}
 
