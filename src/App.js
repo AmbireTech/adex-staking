@@ -86,6 +86,7 @@ export default function App() {
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
 	const [chosenWallet, setChosenWallet] = useState(null)
+	const [signer, setSigner] = useState(null)
 
 	const refreshStats = () =>
 		loadStats()
@@ -106,6 +107,10 @@ export default function App() {
 	useEffect(() => {
 		Wallet = chosenWallet
 	}, [chosenWallet])
+
+	useEffect(() => {
+		setChosenWallet(Wallet)
+	}, [signer])
 
 	const wrapDoingTxns = fn => async (...args) => {
 		try {
@@ -235,16 +240,15 @@ export default function App() {
 				content: "",
 				handleClose: () => {
 					setConnectWallet(null)
-					console.log("should close")
 				},
-				handleListItemClick: text => {
-					if (getSigner(text)) {
-						setChosenWallet(text)
-					} else {
+				handleListItemClick: async text => {
+					const signer = await getSigner(text)
+					setSigner(signer)
+					setConnectWallet(null)
+					if (!signer) {
 						setOpenErr(true)
 						setSnackbarErr("Please select a wallet")
 					}
-					setConnectWallet(null)
 				}
 			})}
 
@@ -309,7 +313,10 @@ async function getMetamaskSigner() {
 		await window.ethereum.enable()
 	}
 
-	if (!window.web3) return null
+	if (!window.web3) {
+		Wallet = null
+		return null
+	}
 
 	const provider = new Web3Provider(window.web3.currentProvider)
 	return provider.getSigner()
@@ -323,7 +330,8 @@ async function getWalletConnectSigner() {
 	try {
 		await provider.enable()
 	} catch (e) {
-		console.log("user closed window")
+		console.log("user closed WalletConnect modal")
+		Wallet = null
 		return null
 	}
 
