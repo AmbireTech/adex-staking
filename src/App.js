@@ -71,6 +71,8 @@ function Alert(props) {
 
 // set to the available wallet types
 let Wallet = null
+const { REACT_APP_INFURA_ID } = process.env
+if (!REACT_APP_INFURA_ID) throw new Error("Invalid Infura id")
 
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
@@ -315,8 +317,9 @@ async function getMetamaskSigner() {
 
 async function getWalletConnectSigner() {
 	const provider = new WalletConnectProvider({
-		infuraId: "27e484dcd9e3efcfd25a83a78777cdf1" // Required
+		infuraId: REACT_APP_INFURA_ID // Required
 	})
+
 	try {
 		await provider.enable()
 	} catch (e) {
