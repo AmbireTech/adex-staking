@@ -27,15 +27,16 @@ export function formatDate(d) {
 }
 
 // @TODO refactor to take pool arguments and use pool constants
-export function getApproxAPY(bond, totalStake) {
+export function getApproxAPY(bond, totalStake, isEarly) {
 	const earlyDistributionEnds = 1609372800000
 	const bondCreatedSeconds =
 		bond && bond.nonce ? bond.nonce.toNumber() : Date.now() / 1000
-	const isEarly =
-		bondCreatedSeconds < 1597276800 && Date.now() < earlyDistributionEnds
+	const getsEarlyBird =
+		(isEarly || bondCreatedSeconds < 1597276800) &&
+		Date.now() < earlyDistributionEnds
 	// this reward is distributed over that many days, hence * (365/145)
 	const base = (6000000 / parseFloat(formatADX(totalStake), 10)) * (365 / 145)
 	const early = (1000000 / parseFloat(formatADX(totalStake), 10)) * (365 / 30)
-	return base + (isEarly ? early : 0)
+	return base + (getsEarlyBird ? early : 0)
 	// @TODO DAI rewards
 }

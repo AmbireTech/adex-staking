@@ -32,6 +32,7 @@ export default function NewBondForm({
 	onNewBond,
 	totalStake,
 	pools,
+	isEarly,
 	WalletType
 }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
@@ -185,7 +186,8 @@ export default function NewBondForm({
 							<Typography variant="h6">Pool APY:</Typography>
 							<Typography variant="body1">
 								{farmer} Current annual yield of{" "}
-								{(getApproxAPY(null, totalStake) * 100).toFixed(2)}% {farmer}
+								{(getApproxAPY(null, totalStake, isEarly) * 100).toFixed(2)}%{" "}
+								{farmer}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>

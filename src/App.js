@@ -292,7 +292,8 @@ export default function App() {
 							setNewBondOpen(false)
 							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
 						},
-						WalletType
+						WalletType,
+						isEarly: stats.userBonds.find(x => x.nonce.toNumber() < 1597276800)
 					})}
 				</Fade>
 			</Modal>
