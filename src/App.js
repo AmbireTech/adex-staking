@@ -74,7 +74,6 @@ let WalletType = null
 // chosen signer
 let Signer = null
 const { REACT_APP_INFURA_ID } = process.env
-if (!REACT_APP_INFURA_ID) throw new Error("Invalid Infura id")
 
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
@@ -249,7 +248,8 @@ export default function App() {
 					} else {
 						setChosenWalletType(WalletType)
 					}
-				}
+				},
+				disableWalletConnect: !REACT_APP_INFURA_ID
 			})}
 
 			<Snackbar open={openDoingTx}>

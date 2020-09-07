@@ -8,14 +8,14 @@ import {
 	ListItemText,
 	Avatar
 } from "@material-ui/core"
-import { Wallets } from "../helpers/constants"
+import { Wallets, WALLET_CONNECT } from "../helpers/constants"
 
 export default function ChooseWalletDialog({
 	title = "Select Wallet",
-	content,
 	handleListItemClick,
 	handleClose,
-	open
+	open,
+	disableWalletConnect
 }) {
 	return (
 		<Dialog
@@ -26,7 +26,12 @@ export default function ChooseWalletDialog({
 			<DialogTitle id="simple-dialog-title">{title}</DialogTitle>
 			<List>
 				{Wallets.map(({ icon, name, title }) => (
-					<ListItem button onClick={() => handleListItemClick(name)} key={name}>
+					<ListItem
+						disabled={disableWalletConnect && name === WALLET_CONNECT}
+						button
+						onClick={() => handleListItemClick(name)}
+						key={name}
+					>
 						<ListItemAvatar>
 							<Avatar src={icon} />
 						</ListItemAvatar>
