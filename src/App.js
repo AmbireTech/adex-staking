@@ -71,6 +71,8 @@ function Alert(props) {
 
 // set to the available wallet types
 let WalletType = null
+// chosen signer
+let Signer = null
 const { REACT_APP_INFURA_ID } = process.env
 if (!REACT_APP_INFURA_ID) throw new Error("Invalid Infura id")
 
@@ -85,11 +87,10 @@ export default function App() {
 	)
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
-	const [chosenWallet, setChosenWallet] = useState(null)
-	const [signer, setSigner] = useState(null)
+	const [chosenWalletType, setChosenWalletType] = useState(null)
 
 	const refreshStats = () =>
-		loadStats()
+		loadStats(chosenWalletType)
 			.then(setStats)
 			.catch(e => {
 				console.error("loadStats", e)
@@ -98,19 +99,13 @@ export default function App() {
 					setSnackbarErr("Error! User denied authorization!")
 				}
 			})
+
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
-	}, [])
-
-	useEffect(() => {
-		WalletType = chosenWallet
-	}, [chosenWallet])
-
-	useEffect(() => {
-		setChosenWallet(WalletType)
-	}, [signer])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chosenWalletType])
 
 	const wrapDoingTxns = fn => async (...args) => {
 		try {
@@ -142,7 +137,7 @@ export default function App() {
 			<AppBar position="static">
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
-					{chosenWallet && (
+					{chosenWalletType && (
 						<Fab
 							disabled={!stats.loaded}
 							onClick={() => setNewBondOpen(true)}
@@ -154,7 +149,7 @@ export default function App() {
 							{"Stake your ADX"}
 						</Fab>
 					)}
-					{!chosenWallet && (
+					{!chosenWalletType && (
 						<Fab
 							onClick={() => setConnectWallet(true)}
 							variant="extended"
@@ -247,11 +242,12 @@ export default function App() {
 				},
 				handleListItemClick: async text => {
 					const signer = await getSigner(text)
-					setSigner(signer)
 					setConnectWallet(null)
 					if (!signer) {
 						setOpenErr(true)
 						setSnackbarErr("Please select a wallet")
+					} else {
+						setChosenWalletType(WalletType)
 					}
 				}
 			})}
@@ -301,17 +297,18 @@ export default function App() {
 	)
 }
 
-function getSigner(wallet) {
-	WalletType = wallet || WalletType
+async function getSigner(walletType) {
+	WalletType = walletType || WalletType
 	if (!WalletType) return null
+	if (Signer) return Signer
 
 	if (WalletType === METAMASK) {
-		return getMetamaskSigner()
+		Signer = await getMetamaskSigner()
 	} else if (WalletType === WALLET_CONNECT) {
-		return getWalletConnectSigner()
+		Signer = await getWalletConnectSigner()
 	}
 
-	return null
+	return Signer
 }
 
 async function getMetamaskSigner() {
@@ -330,7 +327,8 @@ async function getMetamaskSigner() {
 
 async function getWalletConnectSigner() {
 	const provider = new WalletConnectProvider({
-		infuraId: REACT_APP_INFURA_ID // Required
+		infuraId: REACT_APP_INFURA_ID, // Required
+		pollingInterval: 13000
 	})
 
 	try {
@@ -345,16 +343,24 @@ async function getWalletConnectSigner() {
 	return web3.getSigner()
 }
 
-async function loadStats() {
+async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
-		loadUserStats()
+		loadUserStats(chosenWalletType)
 	])
 
 	return { totalStake, ...userStats }
 }
 
-async function loadUserStats() {
+async function loadUserStats(chosenWalletType) {
+	if (!chosenWalletType)
+		return {
+			loaded: true,
+			userBonds: [],
+			userBalance: ZERO,
+			rewardChannels: []
+		}
+
 	const signer = await getSigner()
 	if (!signer)
 		return {
