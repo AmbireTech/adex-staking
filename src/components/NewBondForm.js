@@ -31,8 +31,9 @@ export default function NewBondForm({
 	maxAmount,
 	onNewBond,
 	totalStake,
+	pools,
 	isEarly,
-	pools
+	WalletType
 }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState(0)
@@ -191,7 +192,8 @@ export default function NewBondForm({
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
-								<b>Please sign ALL Metamask transactions that pop up.</b>
+								<b>{`Please sign ALL ${WalletType ||
+									"Metamask"} transactions that pop up`}</b>
 							</Typography>
 						</Grid>
 					</Grid>

@@ -7,10 +7,12 @@ import Modal from "@material-ui/core/Modal"
 import Backdrop from "@material-ui/core/Backdrop"
 import Fab from "@material-ui/core/Fab"
 import AddIcon from "@material-ui/icons/Add"
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet"
 import Fade from "@material-ui/core/Fade"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import HelperMenu from "./components/HelperMenu"
+import ChooseWallet from "./components/ChooseWallet"
 import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, hexZeroPad } from "ethers/utils"
@@ -33,11 +35,14 @@ import {
 	MAX_UINT,
 	ZERO,
 	UNBOND_DAYS,
-	POOLS
+	POOLS,
+	WALLET_CONNECT,
+	METAMASK
 } from "./helpers/constants"
 import { formatADXPretty } from "./helpers/formatting"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
+import WalletConnectProvider from "@walletconnect/web3-provider"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
@@ -64,6 +69,13 @@ function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
+// set to the available wallet types
+let WalletType = null
+// chosen signer
+let Signer = null
+const { REACT_APP_INFURA_ID } = process.env
+if (!REACT_APP_INFURA_ID) throw new Error("Invalid Infura id")
+
 export default function App() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
@@ -74,9 +86,11 @@ export default function App() {
 		"Error! Unspecified error occured."
 	)
 	const [stats, setStats] = useState(EMPTY_STATS)
+	const [connectWallet, setConnectWallet] = useState(null)
+	const [chosenWalletType, setChosenWalletType] = useState(null)
 
 	const refreshStats = () =>
-		loadStats()
+		loadStats(chosenWalletType)
 			.then(setStats)
 			.catch(e => {
 				console.error("loadStats", e)
@@ -85,11 +99,13 @@ export default function App() {
 					setSnackbarErr("Error! User denied authorization!")
 				}
 			})
+
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
-	}, [])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chosenWalletType])
 
 	const wrapDoingTxns = fn => async (...args) => {
 		try {
@@ -121,16 +137,31 @@ export default function App() {
 			<AppBar position="static">
 				<Toolbar>
 					<img height="40vh" src={logo} alt="logo"></img>
-					<Fab
-						disabled={!stats.loaded}
-						onClick={() => setNewBondOpen(true)}
-						variant="extended"
-						color="secondary"
-						style={{ position: "absolute", right: "5%", top: "50%" }}
-					>
-						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-						{"Stake your ADX"}
-					</Fab>
+					{chosenWalletType && (
+						<Fab
+							disabled={!stats.loaded}
+							onClick={() => setNewBondOpen(true)}
+							variant="extended"
+							color="secondary"
+							style={{ position: "absolute", right: "5%", top: "50%" }}
+						>
+							<AddIcon style={{ margin: themeMUI.spacing(1) }} />
+							{"Stake your ADX"}
+						</Fab>
+					)}
+					{!chosenWalletType && (
+						<Fab
+							onClick={() => setConnectWallet(true)}
+							variant="extended"
+							color="secondary"
+							style={{ position: "absolute", right: "5%", top: "50%" }}
+						>
+							<AccountBalanceWalletIcon
+								style={{ margin: themeMUI.spacing(1) }}
+							/>
+							{"Connect Wallet"}
+						</Fab>
+					)}
 					{HelperMenu()}
 				</Toolbar>
 			</AppBar>
@@ -144,7 +175,11 @@ export default function App() {
 			})}
 
 			{// Load stats first to prevent simultanious calls to getSigner
-			LegacyADXSwapDialog(stats.loaded ? getSigner : null, wrapDoingTxns)}
+			LegacyADXSwapDialog(
+				stats.loaded ? getSigner : null,
+				wrapDoingTxns,
+				WalletType
+			)}
 
 			{ConfirmationDialog({
 				isOpen: !!toUnbond,
@@ -199,6 +234,24 @@ export default function App() {
 				)
 			})}
 
+			{ChooseWallet({
+				open: !!connectWallet,
+				content: "",
+				handleClose: () => {
+					setConnectWallet(null)
+				},
+				handleListItemClick: async text => {
+					const signer = await getSigner(text)
+					setConnectWallet(null)
+					if (!signer) {
+						setOpenErr(true)
+						setSnackbarErr("Please select a wallet")
+					} else {
+						setChosenWalletType(WalletType)
+					}
+				}
+			})}
+
 			<Snackbar open={openDoingTx}>
 				<Alert severity="info">Please sign all pending MetaMask actions!</Alert>
 			</Snackbar>
@@ -235,6 +288,7 @@ export default function App() {
 							setNewBondOpen(false)
 							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
 						},
+						WalletType,
 						isEarly: stats.userBonds.find(x => x.nonce.toNumber() < 1597276800)
 					})}
 				</Fade>
@@ -243,28 +297,70 @@ export default function App() {
 	)
 }
 
-async function getSigner() {
+async function getSigner(walletType) {
+	WalletType = walletType || WalletType
+	if (!WalletType) return null
+	if (Signer) return Signer
+
+	if (WalletType === METAMASK) {
+		Signer = await getMetamaskSigner()
+	} else if (WalletType === WALLET_CONNECT) {
+		Signer = await getWalletConnectSigner()
+	}
+
+	return Signer
+}
+
+async function getMetamaskSigner() {
 	if (typeof window.ethereum !== "undefined") {
 		await window.ethereum.enable()
 	}
 
-	if (!window.web3) return null
+	if (!window.web3) {
+		WalletType = null
+		return null
+	}
 
 	const provider = new Web3Provider(window.web3.currentProvider)
-	const signer = provider.getSigner()
-	return signer
+	return provider.getSigner()
 }
 
-async function loadStats() {
+async function getWalletConnectSigner() {
+	const provider = new WalletConnectProvider({
+		infuraId: REACT_APP_INFURA_ID, // Required
+		pollingInterval: 13000
+	})
+
+	try {
+		await provider.enable()
+	} catch (e) {
+		console.log("user closed WalletConnect modal")
+		WalletType = null
+		return null
+	}
+
+	const web3 = new Web3Provider(provider)
+	return web3.getSigner()
+}
+
+async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
-		loadUserStats()
+		loadUserStats(chosenWalletType)
 	])
 
 	return { totalStake, ...userStats }
 }
 
-async function loadUserStats() {
+async function loadUserStats(chosenWalletType) {
+	if (!chosenWalletType)
+		return {
+			loaded: true,
+			userBonds: [],
+			userBalance: ZERO,
+			rewardChannels: []
+		}
+
 	const signer = await getSigner()
 	if (!signer)
 		return {
