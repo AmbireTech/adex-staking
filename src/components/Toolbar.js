@@ -1,9 +1,17 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { AppBar, Toolbar, Fab } from "@material-ui/core"
+import {
+	AppBar,
+	Toolbar,
+	Fab,
+	IconButton,
+	Box,
+	Hidden
+} from "@material-ui/core"
 import {
 	AccountBalanceWalletSharp as AccountBalanceWalletIcon,
-	AddSharp as AddIcon
+	AddSharp as AddIcon,
+	MenuSharp as MenuIcon
 } from "@material-ui/icons"
 import HelperMenu from "./HelperMenu"
 import logo from "./../adex-staking.svg"
@@ -13,10 +21,22 @@ export const AppToolbar = ({
 	chosenWalletType,
 	setConnectWallet,
 	setNewBondOpen,
-	stats
+	stats,
+	handleDrawerToggle
 }) => (
 	<AppBar position="static">
 		<Toolbar>
+			<Hidden mdUp>
+				<Box pl={1}>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={handleDrawerToggle}
+					>
+						<MenuIcon />
+					</IconButton>
+				</Box>
+			</Hidden>
 			<img height="40vh" src={logo} alt="logo"></img>
 			{chosenWalletType && (
 				<Fab
