@@ -11,12 +11,12 @@ import Anchor from "./Anchor"
 import logo from "./../adex-staking.svg"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import Box from "@material-ui/core/Box"
-import Typography from "@material-ui/core/Typography"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
 import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
+import UserData from "./UserData"
 
 const RRListItem = WithRouterLink(ListItem)
 const RRAdexIconTxt = logo // withReactRouterLink(AdexIconTxt)
@@ -96,7 +96,13 @@ const useStyles = makeStyles(theme => {
 	}
 })
 
-function SideNav(props) {
+function SideNav({
+	stats,
+	onRequestUnbond,
+	onUnbond,
+	onClaimRewards,
+	onRestake
+}) {
 	const classes = useStyles()
 	const location = useLocation()
 	const path = location.pathname
@@ -113,17 +119,13 @@ function SideNav(props) {
 					<ListItem>
 						<Box>
 							<img height="40vh" src={logo} alt="logo"></img>
-
-							<Typography
-								variant="button"
-								display="block"
-								component="div"
-								color="textPrimary"
-								classes={{ button: classes.amount }}
-							></Typography>
-							<Typography variant="button" component="div" display="block">
-								{"User data here"}
-							</Typography>
+							{UserData({
+								stats,
+								onRequestUnbond,
+								onUnbond,
+								onClaimRewards,
+								onRestake
+							})}
 						</Box>
 					</ListItem>
 				</Box>

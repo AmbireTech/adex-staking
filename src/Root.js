@@ -22,6 +22,7 @@ import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "./abi/ERC20"
 import Dashboard from "./components/Dashboard"
+import Bonds from "./components/Bonds"
 import NewBondForm from "./components/NewBondForm"
 import LegacyADXSwapDialog from "./components/LegacyADXSwapDialog"
 import ConfirmationDialog from "./components/ConfirmationDialog"
@@ -139,7 +140,13 @@ export default function Root() {
 		setOpenErr(false)
 	}
 
-	const drawer = <SideNav />
+	const drawer = SideNav({
+		stats,
+		onRequestUnbond: setToUnbond,
+		onUnbond,
+		onClaimRewards,
+		onRestake: setToRestake
+	})
 
 	return (
 		<div className={classes.root}>
@@ -148,7 +155,6 @@ export default function Root() {
 				setConnectWallet={setConnectWallet}
 				setNewBondOpen={setNewBondOpen}
 				stats={stats}
-				handleDrawerToggle={handleDrawerToggle}
 			/>
 
 			<Hidden mdUp>
@@ -182,7 +188,7 @@ export default function Root() {
 				<div className={classes.contentInner}>
 					<Switch>
 						<Route path="/bonds">
-							{Dashboard({
+							{Bonds({
 								stats,
 								onRequestUnbond: setToUnbond,
 								onUnbond,

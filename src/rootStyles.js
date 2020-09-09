@@ -59,11 +59,11 @@ export const styles = theme => {
 			[theme.breakpoints.up("md")]: {
 				position: "fixed"
 			},
-			backgroundColor: "#fff"
+			backgroundColor: theme.palette.background.default
 		},
 		content: {
 			flexGrow: 1,
-			backgroundColor: theme.palette.background.default,
+			backgroundColor: "#fff",
 			padding: theme.spacing(2),
 			paddingTop: theme.spacing(2),
 			overflow: "auto",
