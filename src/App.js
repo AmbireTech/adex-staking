@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { themeMUI } from "./themeMUi"
-import AppBar from "@material-ui/core/AppBar"
-import Toolbar from "@material-ui/core/Toolbar"
 import Modal from "@material-ui/core/Modal"
 import Backdrop from "@material-ui/core/Backdrop"
-import Fab from "@material-ui/core/Fab"
-import AddIcon from "@material-ui/icons/Add"
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet"
 import Fade from "@material-ui/core/Fade"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
-import HelperMenu from "./components/HelperMenu"
 import ChooseWallet from "./components/ChooseWallet"
-import logo from "./adex-staking.svg"
 import { Contract, getDefaultProvider } from "ethers"
 import { bigNumberify, hexZeroPad } from "ethers/utils"
 import { Web3Provider } from "ethers/providers"
@@ -28,6 +21,7 @@ import Dashboard from "./components/Dashboard"
 import NewBondForm from "./components/NewBondForm"
 import LegacyADXSwapDialog from "./components/LegacyADXSwapDialog"
 import ConfirmationDialog from "./components/ConfirmationDialog"
+import { AppToolbar } from "./components/Toolbar"
 import {
 	ADDR_STAKING,
 	ADDR_FACTORY,
@@ -133,37 +127,12 @@ export default function App() {
 
 	return (
 		<MuiThemeProvider theme={themeMUI}>
-			<AppBar position="static">
-				<Toolbar>
-					<img height="40vh" src={logo} alt="logo"></img>
-					{chosenWalletType && (
-						<Fab
-							disabled={!stats.loaded}
-							onClick={() => setNewBondOpen(true)}
-							variant="extended"
-							color="secondary"
-							style={{ position: "absolute", right: "5%", top: "50%" }}
-						>
-							<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-							{"Stake your ADX"}
-						</Fab>
-					)}
-					{!chosenWalletType && (
-						<Fab
-							onClick={() => setConnectWallet(true)}
-							variant="extended"
-							color="secondary"
-							style={{ position: "absolute", right: "5%", top: "50%" }}
-						>
-							<AccountBalanceWalletIcon
-								style={{ margin: themeMUI.spacing(1) }}
-							/>
-							{"Connect Wallet"}
-						</Fab>
-					)}
-					{HelperMenu()}
-				</Toolbar>
-			</AppBar>
+			<AppToolbar
+				chosenWalletType={chosenWalletType}
+				setConnectWallet={setConnectWallet}
+				setNewBondOpen={setNewBondOpen}
+				stats={stats}
+			/>
 
 			{Dashboard({
 				stats,
