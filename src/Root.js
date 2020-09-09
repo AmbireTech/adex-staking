@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { Switch, Route } from "react-router-dom"
-import { MuiThemeProvider } from "@material-ui/core/styles"
-import { themeMUI } from "./themeMUi"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Drawer,
@@ -144,7 +142,7 @@ export default function Root() {
 	const drawer = <SideNav />
 
 	return (
-		<MuiThemeProvider theme={themeMUI}>
+		<div className={classes.root}>
 			<AppToolbar
 				chosenWalletType={chosenWalletType}
 				setConnectWallet={setConnectWallet}
@@ -180,141 +178,148 @@ export default function Root() {
 					{drawer}
 				</Drawer>
 			</Hidden>
+			<main className={classes.content}>
+				<div className={classes.contentInner}>
+					<Switch>
+						<Route path="/bonds">
+							{Dashboard({
+								stats,
+								onRequestUnbond: setToUnbond,
+								onUnbond,
+								onClaimRewards,
+								onRestake: setToRestake
+							})}
+						</Route>
+						<Route path="/">{"POOLS"}</Route>
+					</Switch>
 
-			<Switch>
-				<Route path="/bonds">
-					{Dashboard({
-						stats,
-						onRequestUnbond: setToUnbond,
-						onUnbond,
-						onClaimRewards,
-						onRestake: setToRestake
-					})}
-				</Route>
-				<Route path="/">{"POOLS"}</Route>
-			</Switch>
+					{// Load stats first to prevent simultanious calls to getSigner
+					LegacyADXSwapDialog(
+						stats.loaded ? getSigner : null,
+						wrapDoingTxns,
+						WalletType
+					)}
 
-			{// Load stats first to prevent simultanious calls to getSigner
-			LegacyADXSwapDialog(
-				stats.loaded ? getSigner : null,
-				wrapDoingTxns,
-				WalletType
-			)}
-
-			{ConfirmationDialog({
-				isOpen: !!toUnbond,
-				onDeny: () => setToUnbond(null),
-				onConfirm: () => {
-					if (toUnbond) onRequestUnbond(toUnbond)
-					setToUnbond(null)
-				},
-				confirmActionName: "Unbond",
-				content: (
-					<>
-						Are you sure you want to request unbonding of{" "}
-						{formatADXPretty(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
-						<br />
-						<br />
-						Please be aware:
-						<ol>
-							<li>
-								It will take {UNBOND_DAYS} days before you will be able to
-								withdraw your ADX!
-							</li>
-							<li>
-								You will not receive staking rewards for this amount in this{" "}
-								{UNBOND_DAYS} day period.
-							</li>
-						</ol>
-					</>
-				)
-			})}
-
-			{ConfirmationDialog({
-				isOpen: !!toRestake,
-				onDeny: () => setToRestake(null),
-				onConfirm: () => {
-					if (toRestake) onRestake()
-					setToRestake(null)
-				},
-				confirmActionName: "Re-stake",
-				content: (
-					<>
-						Are you sure you want to stake your earnings of{" "}
-						{formatADXPretty(toRestake ? toRestake : ZERO)} ADX?
-						<br />
-						<br />
-						Please be aware that this means that this amount will be locked up
-						for at least {UNBOND_DAYS} days.
-						<br />
-						{!stats.userBonds.find(x => x.status === "Active")
-							? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
-							: ""}
-					</>
-				)
-			})}
-
-			{ChooseWallet({
-				open: !!connectWallet,
-				content: "",
-				handleClose: () => {
-					setConnectWallet(null)
-				},
-				handleListItemClick: async text => {
-					const signer = await getSigner(text)
-					setConnectWallet(null)
-					if (!signer) {
-						setOpenErr(true)
-						setSnackbarErr("Please select a wallet")
-					} else {
-						setChosenWalletType(WalletType)
-					}
-				},
-				disableWalletConnect: !REACT_APP_INFURA_ID
-			})}
-
-			<Snackbar open={openDoingTx}>
-				<Alert severity="info">Please sign all pending MetaMask actions!</Alert>
-			</Snackbar>
-			<Snackbar
-				open={openErr}
-				autoHideDuration={10000}
-				onClose={handleErrClose}
-			>
-				<Alert onClose={handleErrClose} severity="error">
-					{snackbarErr}
-				</Alert>
-			</Snackbar>
-
-			<Modal
-				open={isNewBondOpen}
-				onClose={() => setNewBondOpen(false)}
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center"
-				}}
-				closeAfterTransition
-				BackdropComponent={Backdrop}
-				BackdropProps={{
-					timeout: 300
-				}}
-			>
-				<Fade in={isNewBondOpen}>
-					{NewBondForm({
-						pools: POOLS.filter(x => x.selectable),
-						totalStake: stats.totalStake,
-						maxAmount: stats.userBalance,
-						onNewBond: async bond => {
-							setNewBondOpen(false)
-							await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
+					{ConfirmationDialog({
+						isOpen: !!toUnbond,
+						onDeny: () => setToUnbond(null),
+						onConfirm: () => {
+							if (toUnbond) onRequestUnbond(toUnbond)
+							setToUnbond(null)
 						},
-						WalletType,
-						isEarly: stats.userBonds.find(x => x.nonce.toNumber() < 1597276800)
+						confirmActionName: "Unbond",
+						content: (
+							<>
+								Are you sure you want to request unbonding of{" "}
+								{formatADXPretty(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
+								<br />
+								<br />
+								Please be aware:
+								<ol>
+									<li>
+										It will take {UNBOND_DAYS} days before you will be able to
+										withdraw your ADX!
+									</li>
+									<li>
+										You will not receive staking rewards for this amount in this{" "}
+										{UNBOND_DAYS} day period.
+									</li>
+								</ol>
+							</>
+						)
 					})}
-				</Fade>
-			</Modal>
-		</MuiThemeProvider>
+
+					{ConfirmationDialog({
+						isOpen: !!toRestake,
+						onDeny: () => setToRestake(null),
+						onConfirm: () => {
+							if (toRestake) onRestake()
+							setToRestake(null)
+						},
+						confirmActionName: "Re-stake",
+						content: (
+							<>
+								Are you sure you want to stake your earnings of{" "}
+								{formatADXPretty(toRestake ? toRestake : ZERO)} ADX?
+								<br />
+								<br />
+								Please be aware that this means that this amount will be locked
+								up for at least {UNBOND_DAYS} days.
+								<br />
+								{!stats.userBonds.find(x => x.status === "Active")
+									? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+									: ""}
+							</>
+						)
+					})}
+
+					{ChooseWallet({
+						open: !!connectWallet,
+						content: "",
+						handleClose: () => {
+							setConnectWallet(null)
+						},
+						handleListItemClick: async text => {
+							const signer = await getSigner(text)
+							setConnectWallet(null)
+							if (!signer) {
+								setOpenErr(true)
+								setSnackbarErr("Please select a wallet")
+							} else {
+								setChosenWalletType(WalletType)
+							}
+						},
+						disableWalletConnect: !REACT_APP_INFURA_ID
+					})}
+
+					<Snackbar open={openDoingTx}>
+						<Alert severity="info">
+							Please sign all pending MetaMask actions!
+						</Alert>
+					</Snackbar>
+					<Snackbar
+						open={openErr}
+						autoHideDuration={10000}
+						onClose={handleErrClose}
+					>
+						<Alert onClose={handleErrClose} severity="error">
+							{snackbarErr}
+						</Alert>
+					</Snackbar>
+
+					<Modal
+						open={isNewBondOpen}
+						onClose={() => setNewBondOpen(false)}
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center"
+						}}
+						closeAfterTransition
+						BackdropComponent={Backdrop}
+						BackdropProps={{
+							timeout: 300
+						}}
+					>
+						<Fade in={isNewBondOpen}>
+							{NewBondForm({
+								pools: POOLS.filter(x => x.selectable),
+								totalStake: stats.totalStake,
+								maxAmount: stats.userBalance,
+								onNewBond: async bond => {
+									setNewBondOpen(false)
+									await wrapDoingTxns(createNewBond.bind(null, stats, bond))()
+								},
+								WalletType,
+								isEarly: stats.userBonds.find(
+									x => x.nonce.toNumber() < 1597276800
+								)
+							})}
+						</Fade>
+					</Modal>
+				</div>
+			</main>
+		</div>
 	)
 }
 
