@@ -37,12 +37,31 @@ import {
 	UNBOND_DAYS,
 	POOLS,
 	WALLET_CONNECT,
-	METAMASK
+	METAMASK,
+	TREZOR,
+	LEDGER
 } from "./helpers/constants"
+import {
+	injected,
+	trezor,
+	ledger,
+	walletconnect,
+	REACT_APP_RPC_URL
+} from "./helpers/connector"
 import { formatADXPretty } from "./helpers/formatting"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
-import WalletConnectProvider from "@walletconnect/web3-provider"
+import {
+	Web3ReactProvider,
+	useWeb3React,
+	UnsupportedChainIdError
+} from "@web3-react/core"
+import { useInactiveListener } from "./helpers/hooks"
+import {
+	NoEthereumProviderError,
+	UserRejectedRequestError as UserRejectedRequestErrorInjected
+} from "@web3-react/injected-connector"
+import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-connector"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
@@ -73,9 +92,41 @@ function Alert(props) {
 let WalletType = null
 // chosen signer
 let Signer = null
-const { REACT_APP_INFURA_ID } = process.env
 
-export default function App() {
+const connectorsByName = {
+	[METAMASK]: injected,
+	[WALLET_CONNECT]: walletconnect,
+	[TREZOR]: trezor,
+	[LEDGER]: ledger
+}
+
+function getErrorMessage(error) {
+	if (error instanceof NoEthereumProviderError) {
+		return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
+	} else if (error instanceof UnsupportedChainIdError) {
+		return "You're connected to an unsupported network."
+	} else if (
+		error instanceof UserRejectedRequestErrorInjected ||
+		error instanceof UserRejectedRequestErrorWalletConnect
+	) {
+		return "Please authorize this website to access your Ethereum account."
+	} else {
+		console.error(error)
+		return "An unknown error occurred. Check the console for more details."
+	}
+}
+
+export default function() {
+	return (
+		<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
+			<App />
+		</Web3ReactProvider>
+	)
+}
+
+export function App() {
+	const { library, activate, error, deactivate, active } = useWeb3React()
+
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
 	const [toRestake, setToRestake] = useState(null)
@@ -87,6 +138,8 @@ export default function App() {
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
 	const [chosenWalletType, setChosenWalletType] = useState(null)
+
+	useInactiveListener(!!connectWallet)
 
 	const refreshStats = () =>
 		loadStats(chosenWalletType)
@@ -105,6 +158,15 @@ export default function App() {
 		return () => clearInterval(intvl)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
+
+	useEffect(() => {
+		if (!!error) {
+			setOpenErr(true)
+			setSnackbarErr(getErrorMessage(error))
+			deactivate()
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [error])
 
 	const wrapDoingTxns = fn => async (...args) => {
 		try {
@@ -240,16 +302,14 @@ export default function App() {
 					setConnectWallet(null)
 				},
 				handleListItemClick: async text => {
-					const signer = await getSigner(text)
+					await activate(connectorsByName[text])
+					const signer = await getSigner(text, library)
 					setConnectWallet(null)
-					if (!signer) {
-						setOpenErr(true)
-						setSnackbarErr("Please select a wallet")
-					} else {
+					if (signer) {
 						setChosenWalletType(WalletType)
 					}
 				},
-				disableWalletConnect: !REACT_APP_INFURA_ID
+				disableNonBrowserWallets: !REACT_APP_RPC_URL
 			})}
 
 			<Snackbar open={openDoingTx}>
@@ -297,50 +357,13 @@ export default function App() {
 	)
 }
 
-async function getSigner(walletType) {
+async function getSigner(walletType, library) {
 	WalletType = walletType || WalletType
 	if (!WalletType) return null
 	if (Signer) return Signer
 
-	if (WalletType === METAMASK) {
-		Signer = await getMetamaskSigner()
-	} else if (WalletType === WALLET_CONNECT) {
-		Signer = await getWalletConnectSigner()
-	}
-
+	if (library) Signer = library.getSigner()
 	return Signer
-}
-
-async function getMetamaskSigner() {
-	if (typeof window.ethereum !== "undefined") {
-		await window.ethereum.enable()
-	}
-
-	if (!window.web3) {
-		WalletType = null
-		return null
-	}
-
-	const provider = new Web3Provider(window.web3.currentProvider)
-	return provider.getSigner()
-}
-
-async function getWalletConnectSigner() {
-	const provider = new WalletConnectProvider({
-		infuraId: REACT_APP_INFURA_ID, // Required
-		pollingInterval: 13000
-	})
-
-	try {
-		await provider.enable()
-	} catch (e) {
-		console.log("user closed WalletConnect modal")
-		WalletType = null
-		return null
-	}
-
-	const web3 = new Web3Provider(provider)
-	return web3.getSigner()
 }
 
 async function loadStats(chosenWalletType) {
