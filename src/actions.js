@@ -246,7 +246,7 @@ export async function onUnbondOrRequest(
 	}
 }
 
-export async function claimRewards(rewardChannels, chosenWalletType) {
+export async function claimRewards(chosenWalletType, rewardChannels) {
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
@@ -298,7 +298,7 @@ export async function claimRewards(rewardChannels, chosenWalletType) {
 		)
 
 	if (identityTxns.length) {
-		await executeOnIdentity(identityTxns)
+		await executeOnIdentity(chosenWalletType, identityTxns)
 	}
 }
 
