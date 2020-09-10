@@ -5,15 +5,15 @@ import amber from "@material-ui/core/colors/amber"
 import grey from "@material-ui/core/colors/grey"
 
 const WHITE = "#fff"
-export const PRIMARY = "#1B75BC"
-export const SECONDARY = "#FFAC00"
+export const PRIMARY = "#494560"
+export const SECONDARY = "#ff4269"
 export const ALEX_GREY = "#3f3e3e"
 export const ACCENT_ONE = "#57467B"
 export const ACCENT_TWO = "#7CB4B8"
 
 const palette = {
 	primary: { main: PRIMARY, contrastText: WHITE },
-	//secondary: { main: SECONDARY, contrastText: WHITE },
+	secondary: { main: SECONDARY, contrastText: WHITE },
 	accentOne: { main: ACCENT_ONE, contrastText: WHITE },
 	accentTwo: { main: ACCENT_TWO, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
