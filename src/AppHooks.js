@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react"
-import { ZERO } from "./helpers/constants"
 import { getSigner } from "./ethereum"
-import { loadStats, onUnbondOrRequest, claimRewards, restake } from "./actions"
+import {
+	EMPTY_STATS,
+	loadStats,
+	onUnbondOrRequest,
+	claimRewards,
+	restake
+} from "./actions"
 
 const REFRESH_INTVL = 20000
-
-const EMPTY_STATS = {
-	loaded: false,
-	userBonds: [],
-	userBalance: ZERO,
-	totalStake: ZERO
-}
 
 export default function Root() {
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
