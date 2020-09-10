@@ -57,7 +57,7 @@ export async function loadStats(chosenWalletType) {
 }
 
 export async function loadUserStats(chosenWalletType) {
-	if (!chosenWalletType) return { ...EMPTY_STATS, loaded: true }
+	if (!chosenWalletType.name) return { ...EMPTY_STATS, loaded: true }
 
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) return { ...EMPTY_STATS, loaded: true }

@@ -1,6 +1,8 @@
 import { bigNumberify, id } from "ethers/utils"
 import walletconnectLogo from "../walletconnect-logo.svg"
 import metamaskLogo from "../metamask-fox.svg"
+import trezorLogo from "../trezor.svg"
+import ledgerLogo from "../ledger.png"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
@@ -47,6 +49,8 @@ export const POOLS = [
 
 export const METAMASK = "Metamask"
 export const WALLET_CONNECT = "WalletConnect"
+export const TREZOR = "Trezor"
+export const LEDGER = "Ledger"
 
 export const Wallets = [
 	{
@@ -58,6 +62,16 @@ export const Wallets = [
 		title: `Connect with ${WALLET_CONNECT}`,
 		name: WALLET_CONNECT,
 		icon: walletconnectLogo
+	},
+	{
+		title: `Connect with ${TREZOR}`,
+		name: TREZOR,
+		icon: trezorLogo
+	},
+	{
+		title: `Connect with ${LEDGER}`,
+		name: LEDGER,
+		icon: ledgerLogo
 	}
 ]
 

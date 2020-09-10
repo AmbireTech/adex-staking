@@ -46,15 +46,12 @@ export default function Root() {
 		toRestake,
 		setToRestake,
 		openErr,
-		setOpenErr,
 		openDoingTx,
 		snackbarErr,
-		setSnackbarErr,
 		stats,
 		connectWallet,
 		setConnectWallet,
 		chosenWalletType,
-		setChosenWalletType,
 		wrapDoingTxns,
 		onRequestUnbond,
 		onUnbond,
@@ -62,7 +59,8 @@ export default function Root() {
 		onRestake,
 		handleErrClose,
 		getSigner,
-		prices
+		prices,
+		onWalletTypeSelect
 	} = useApp()
 
 	const drawer = SideNav({
@@ -197,18 +195,8 @@ export default function Root() {
 						handleClose: () => {
 							setConnectWallet(null)
 						},
-						handleListItemClick: async text => {
-							const signer = await getSigner(text)
-
-							setConnectWallet(null)
-							if (!signer) {
-								setOpenErr(true)
-								setSnackbarErr("Please select a wallet")
-							} else {
-								setChosenWalletType(text)
-							}
-						},
-						disableWalletConnect: !REACT_APP_INFURA_ID
+						handleListItemClick: onWalletTypeSelect,
+						disableNonBrowserWallets: !REACT_APP_INFURA_ID
 					})}
 
 					<Snackbar open={openDoingTx}>
