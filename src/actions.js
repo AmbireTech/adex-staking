@@ -36,8 +36,16 @@ export const EMPTY_STATS = {
 	loaded: false,
 	userBonds: [],
 	userBalance: ZERO,
-	totalStake: ZERO
+	totalStake: ZERO,
+	rewardChannels: [],
+	totalRewardADX: ZERO,
+	totalRewardDAI: ZERO,
+	userTotalStake: ZERO,
+	totalBalanceADX: ZERO
 }
+
+const sumRewards = all =>
+	all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
 
 export async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
@@ -45,33 +53,47 @@ export async function loadStats(chosenWalletType) {
 		loadUserStats(chosenWalletType)
 	])
 
-	return { totalStake, ...userStats }
+	return { ...userStats, totalStake }
 }
 
 export async function loadUserStats(chosenWalletType) {
-	if (!chosenWalletType)
-		return {
-			loaded: true,
-			userBonds: [],
-			userBalance: ZERO,
-			rewardChannels: []
-		}
+	if (!chosenWalletType) return { ...EMPTY_STATS, loaded: true }
 
 	const signer = await getSigner(chosenWalletType)
-	if (!signer)
-		return {
-			loaded: true,
-			userBonds: [],
-			userBalance: ZERO,
-			rewardChannels: []
-		}
+	if (!signer) return { ...EMPTY_STATS, loaded: true }
+
 	const addr = await signer.getAddress()
 
-	const [bondStats, rewardChannels] = await Promise.all([
+	const [{ userBonds, userBalance }, rewardChannels] = await Promise.all([
 		loadBondStats(addr),
 		getRewards(addr)
 	])
-	return { ...bondStats, loaded: true, rewardChannels }
+
+	const userTotalStake = userBonds
+		.filter(x => x.status === "Active")
+		.map(x => x.currentAmount)
+		.reduce((a, b) => a.add(b), ZERO)
+
+	const totalRewardADX = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
+	)
+
+	const totalRewardDAI = sumRewards(
+		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
+	)
+
+	const totalBalanceADX = userBalance.add(totalRewardADX).add(userTotalStake)
+
+	return {
+		userBonds,
+		userBalance, // ADX on wallet
+		loaded: true,
+		rewardChannels,
+		totalRewardADX,
+		totalRewardDAI,
+		userTotalStake,
+		totalBalanceADX // Wallet + Stake + Reward
+	}
 }
 
 export async function loadBondStats(addr) {
