@@ -302,7 +302,7 @@ export async function claimRewards(rewardChannels, chosenWalletType) {
 	}
 }
 
-export async function restake({ rewardChannels, userBonds }) {
+export async function restake(chosenWalletType, { rewardChannels, userBonds }) {
 	const channels = rewardChannels.filter(
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
@@ -345,7 +345,7 @@ export async function restake({ rewardChannels, userBonds }) {
 			]
 		])
 
-	await executeOnIdentity(identityTxns)
+	await executeOnIdentity(chosenWalletType, identityTxns)
 }
 
 function toChannelTuple(args) {
