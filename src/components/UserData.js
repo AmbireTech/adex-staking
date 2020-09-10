@@ -33,11 +33,11 @@ export default function Dashboard({ stats, onClaimRewards, onRestake }) {
 			<Box mb={2}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: "Your balance",
-					subtitle: stats.userBalance
-						? formatADXPretty(stats.userBalance) + " ADX"
+					title: "My AdEx balance",
+					subtitle: stats.totalBalanceADX
+						? formatADXPretty(stats.totalBalanceADX) + " ADX"
 						: "",
-					extra: inUSD(stats.userBalance)
+					extra: inUSD(stats.totalBalanceADX)
 					/*actions: (<Button
                             size="small"
                             variant="contained"
@@ -46,32 +46,33 @@ export default function Dashboard({ stats, onClaimRewards, onRestake }) {
                         >upgrade</Button>)*/
 				})}
 			</Box>
+
 			<Box mb={2}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: "Your total active stake",
-					extra: inUSD(userTotalStake),
-					subtitle: formatADXPretty(userTotalStake) + " ADX"
+					title: "Available on wallet",
+					subtitle: stats.userBalance
+						? formatADXPretty(stats.userBalance) + " ADX"
+						: "",
+					extra: inUSD(stats.userBalance)
 				})}
 			</Box>
 
 			<Box mb={2}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: "Total ADX staked",
-					extra:
-						!stats.loaded || stats.userBonds.length
-							? inUSD(stats.totalStake)
-							: `Earning ${(getApproxAPY(null, stats.totalStake) * 100).toFixed(
-									2
-							  )}% APY`,
-					subtitle: formatADXPretty(stats.totalStake) + " ADX"
+					title: "Active Stake",
+					extra: inUSD(stats.userTotalStake),
+					subtitle: formatADXPretty(stats.userTotalStake) + " ADX"
 				})}
 			</Box>
+
 			<Box mb={2}>
 				{RewardCard({
 					rewardChannels: stats.rewardChannels,
 					userBonds: stats.userBonds,
+					totalRewardADX: stats.totalRewardADX,
+					totalRewardDAI: stats.totalRewardDAI,
 					onClaimRewards,
 					onRestake
 				})}

@@ -190,9 +190,7 @@ export default function Root() {
 							setConnectWallet(null)
 						},
 						handleListItemClick: async text => {
-							console.log("text", text)
 							const signer = await getSigner(text)
-							console.log("signer", signer)
 
 							setConnectWallet(null)
 							if (!signer) {
