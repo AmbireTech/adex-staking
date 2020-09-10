@@ -82,7 +82,7 @@ export default function LegacyADXSwapDialog(
 		</div>
 	)
 	const onSwap = wrapDoingTxns(
-		swapTokens.bind(null, setAmount, amount, getSigner)
+		swapTokens.bind(null, setAmount, amount, getSigner, chosenWalletType)
 	)
 	const dialog = ConfirmationDialog({
 		isOpen: amount.gt(ZERO),
@@ -111,9 +111,9 @@ export default function LegacyADXSwapDialog(
 	)
 }
 
-async function swapTokens(setAmount, amount, getSigner) {
+async function swapTokens(setAmount, amount, getSigner, chosenWalletType) {
 	setAmount(ZERO)
-	const signer = await getSigner()
+	const signer = await getSigner(chosenWalletType)
 	const walletAddr = await signer.getAddress()
 	const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
 	const newTokenWithSigner = new Contract(
