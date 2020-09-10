@@ -2,7 +2,7 @@ import React from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { themeMUI } from "./themeMUi"
 import { BrowserRouter as Router } from "react-router-dom"
-import Root from "./Root"
+import Root from "./components/Root"
 
 const App = () => (
 	<MuiThemeProvider theme={themeMUI}>
