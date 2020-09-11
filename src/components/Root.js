@@ -61,10 +61,12 @@ export default function Root() {
 		onClaimRewards,
 		onRestake,
 		handleErrClose,
-		getSigner
+		getSigner,
+		prices
 	} = useApp()
 
 	const drawer = SideNav({
+		prices,
 		stats,
 		onRequestUnbond: setToUnbond,
 		onUnbond,

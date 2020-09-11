@@ -97,6 +97,7 @@ const useStyles = makeStyles(theme => {
 })
 
 function SideNav({
+	prices,
 	stats,
 	onRequestUnbond,
 	onUnbond,
@@ -118,8 +119,12 @@ function SideNav({
 				<Box>
 					<ListItem>
 						<Box>
-							<img height="40vh" src={logo} alt="logo"></img>
+							<Box my={2}>
+								<img height="40vh" src={logo} alt="logo"></img>
+							</Box>
+
 							{UserData({
+								prices,
 								stats,
 								onRequestUnbond,
 								onUnbond,
