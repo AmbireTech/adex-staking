@@ -17,6 +17,7 @@ export default () => {
 			<IconButton
 				style={{ position: "absolute", right: "1.25%", top: "10%" }}
 				onClick={openHelpMenu}
+				disableElevation
 			>
 				<HelpIcon style={{ fontSize: "1.5em", color: "white" }} />
 			</IconButton>

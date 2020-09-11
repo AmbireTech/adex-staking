@@ -145,6 +145,7 @@ export default function NewBondForm({
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
+							disableElevation
 							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}
@@ -215,6 +216,7 @@ export default function NewBondForm({
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
+							disableElevation
 							disabled={
 								!(
 									bond.poolId &&
