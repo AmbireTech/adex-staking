@@ -2,7 +2,12 @@ import React from "react"
 import StatsCard from "./StatsCard"
 import { ZERO } from "../helpers/constants"
 import { Button, Box } from "@material-ui/core"
-import { formatDAIPretty, formatADXPretty } from "../helpers/formatting"
+import {
+	formatDAIPretty,
+	formatADXPretty,
+	getADXInUSD,
+	getDAIInUSD
+} from "../helpers/formatting"
 
 export default function RewardCard({
 	rewardChannels,
@@ -10,7 +15,8 @@ export default function RewardCard({
 	totalRewardADX,
 	totalRewardDAI,
 	onClaimRewards,
-	onRestake
+	onRestake,
+	prices
 }) {
 	const title = "Unclaimed rewards"
 	const loaded = rewardChannels != null
@@ -33,6 +39,7 @@ export default function RewardCard({
 				color="secondary"
 				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
 				onClick={() => onClaimRewards(rewardChannels)}
+				disableElevation
 			>
 				claim
 			</Button>
@@ -43,6 +50,7 @@ export default function RewardCard({
 					color="secondary"
 					disabled={!restakeEnabled}
 					onClick={() => onRestake(totalRewardADX)}
+					disableElevation
 				>
 					re-stake
 				</Button>
@@ -53,10 +61,13 @@ export default function RewardCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: totalRewardDAI.gt(ZERO)
-			? `${formatADXPretty(totalRewardADX)} ADX, ${formatDAIPretty(
-					totalRewardDAI
-			  )} DAI`
-			: `${formatADXPretty(totalRewardADX)} ADX`
+		// Hax to match the design
+		subtitle: `${formatADXPretty(totalRewardADX)} ADX`,
+		extra: `+  \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${formatDAIPretty(
+			totalRewardDAI
+		)} DAI`,
+		moreExtra: `Total \u00A0$${(
+			getADXInUSD(prices, totalRewardADX) + getDAIInUSD(totalRewardDAI)
+		).toFixed(2)}`
 	})
 }
