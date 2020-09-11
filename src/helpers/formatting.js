@@ -40,3 +40,19 @@ export function getApproxAPY(bond, totalStake, isEarly) {
 	return base + (getsEarlyBird ? early : 0)
 	// @TODO DAI rewards
 }
+
+export function getADXInUSD(prices, ADX) {
+	if (!prices || !prices.USD) return 0
+	const adxUsd = parseFloat(formatADX(ADX || 0), 10) * prices.USD
+	return adxUsd
+}
+
+export function getADXInUSDFormatted(prices, ADX) {
+	const adxUsd = getADXInUSD(prices, ADX)
+	return `$${adxUsd.toFixed(2)}`
+}
+
+export function getDAIInUSD(DAI) {
+	const adxUsd = parseFloat(formatDAI(DAI || 0), 10) * 1
+	return adxUsd
+}
