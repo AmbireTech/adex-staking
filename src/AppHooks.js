@@ -150,6 +150,7 @@ export default function Root() {
 
 	const onWalletTypeSelect = async walletTypeName => {
 		setChosenWalletTypeName(walletTypeName)
+		setConnectWallet(null)
 		await activate(connectorsByName[walletTypeName])
 	}
 
