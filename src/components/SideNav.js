@@ -4,13 +4,14 @@ import {
 	ListItem,
 	ListItemIcon,
 	ListItemText,
-	Divider
+	Divider,
+	Typography,
+	Box
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
-import logo from "./../adex-staking.svg"
+import logo from "./../adex-logo-white.svg"
 import DashboardIcon from "@material-ui/icons/Dashboard"
-import Box from "@material-ui/core/Box"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
@@ -119,8 +120,23 @@ function SideNav({
 				<Box>
 					<ListItem>
 						<Box>
-							<Box my={2}>
+							<Box
+								my={2}
+								display="flex"
+								flexDirection="row"
+								alignItems="flex-start"
+							>
 								<img height="40vh" src={logo} alt="logo"></img>
+								<Typography component="div">
+									<Box
+										ml={1}
+										color="secondary.main"
+										fontWeight="fontWeightRegular"
+										fontSize={30}
+									>
+										Staking
+									</Box>
+								</Typography>
 							</Box>
 
 							{UserData({

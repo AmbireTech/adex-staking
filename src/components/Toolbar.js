@@ -35,8 +35,7 @@ export const AppToolbar = ({
 				<Hidden mdUp>
 					<Box pl={1}>
 						<IconButton
-							disableElevation
-							color="primary"
+							color="secondary"
 							aria-label="open drawer"
 							onClick={handleDrawerToggle}
 						>
