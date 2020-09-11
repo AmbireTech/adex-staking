@@ -74,6 +74,8 @@ export default function Root() {
 		onRestake: setToRestake
 	})
 
+	const container = window !== undefined ? document.body : undefined
+
 	return (
 		<div className={classes.root}>
 			<AppToolbar
@@ -84,33 +86,36 @@ export default function Root() {
 				stats={stats}
 			/>
 
-			<Hidden mdUp>
-				<Drawer
-					variant="temporary"
-					anchor="left"
-					open={mobileOpen}
-					onClose={handleDrawerToggle}
-					classes={{
-						paper: classes.drawerPaper
-					}}
-					ModalProps={{
-						keepMounted: true // Better open performance on mobile.
-					}}
-				>
-					{drawer}
-				</Drawer>
-			</Hidden>
-			<Hidden smDown implementation="css">
-				<Drawer
-					variant="permanent"
-					open
-					classes={{
-						paper: classes.drawerPaper
-					}}
-				>
-					{drawer}
-				</Drawer>
-			</Hidden>
+			<nav className={classes.drawer} aria-label="side navigation">
+				<Hidden mdUp implementation="css">
+					<Drawer
+						container={container}
+						variant="temporary"
+						anchor="left"
+						open={mobileOpen}
+						onClose={handleDrawerToggle}
+						classes={{
+							paper: classes.drawerPaper
+						}}
+						ModalProps={{
+							keepMounted: true // Better open performance on mobile.
+						}}
+					>
+						{drawer}
+					</Drawer>
+				</Hidden>
+				<Hidden smDown implementation="css">
+					<Drawer
+						variant="permanent"
+						open
+						classes={{
+							paper: classes.drawerPaper
+						}}
+					>
+						{drawer}
+					</Drawer>
+				</Hidden>
+			</nav>
 			<main className={classes.content}>
 				<div className={classes.contentInner}>
 					<Switch>
