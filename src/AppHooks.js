@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { getSigner } from "./ethereum"
+import { PRICES_API_URL } from "./helpers/constants"
 import {
 	EMPTY_STATS,
 	loadStats,
@@ -22,6 +23,7 @@ export default function Root() {
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
 	const [chosenWalletType, setChosenWalletType] = useState(null)
+	const [prices, setPrices] = useState({})
 
 	const refreshStats = () =>
 		loadStats(chosenWalletType)
@@ -34,8 +36,15 @@ export default function Root() {
 				}
 			})
 
+	const refreshPrices = () =>
+		fetch(PRICES_API_URL)
+			.then(r => r.json())
+			.then(setPrices)
+			.catch(console.error)
+
 	useEffect(() => {
 		refreshStats()
+		refreshPrices()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,6 +106,7 @@ export default function Root() {
 		onClaimRewards,
 		onRestake,
 		handleErrClose,
-		getSigner
+		getSigner,
+		prices
 	}
 }
