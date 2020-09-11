@@ -1,49 +1,32 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { Box } from "@material-ui/core"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
-import { ZERO, PRICES_API_URL } from "../helpers/constants"
-import { formatADXPretty, formatADX, getApproxAPY } from "../helpers/formatting"
+import {
+	formatADXPretty,
+	getApproxAPY,
+	getADXInUSDFormatted
+} from "../helpers/formatting"
 
-export default function Dashboard({ stats, onClaimRewards, onRestake }) {
-	const userTotalStake = stats.userBonds
-		.filter(x => x.status === "Active")
-		.map(x => x.currentAmount)
-		.reduce((a, b) => a.add(b), ZERO)
-
-	// USD values
-	const [prices, setPrices] = useState({})
-	const refreshPrices = () =>
-		fetch(PRICES_API_URL)
-			.then(r => r.json())
-			.then(setPrices)
-			.catch(console.error)
-	useEffect(() => {
-		refreshPrices()
-	}, [])
-	const inUSD = adxAmount => {
-		if (!adxAmount) return null
-		if (!prices.USD) return null
-		const usdAmount = parseFloat(formatADX(adxAmount), 10) * prices.USD
-		return `${usdAmount.toFixed(2)} USD`
-	}
-
+export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 	return (
 		<Box>
 			<Box mb={2}>
 				{StatsCard({
+					size: "large",
 					loaded: stats.loaded,
-					title: "My AdEx balance",
+					title: "MY ADX BALANCE",
 					subtitle: stats.totalBalanceADX
 						? formatADXPretty(stats.totalBalanceADX) + " ADX"
 						: "",
-					extra: inUSD(stats.totalBalanceADX)
+
+					extra: getADXInUSDFormatted(prices, stats.totalBalanceADX)
 					/*actions: (<Button
-                            size="small"
-                            variant="contained"
-                            color="secondary"
-                            disabled={true}
-                        >upgrade</Button>)*/
+							size="small"
+							variant="contained"
+							color="secondary"
+							disabled={true}
+						>upgrade</Button>)*/
 				})}
 			</Box>
 
@@ -51,10 +34,11 @@ export default function Dashboard({ stats, onClaimRewards, onRestake }) {
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Available on wallet",
+					titleInfo: "Amount available on your wallet",
 					subtitle: stats.userBalance
 						? formatADXPretty(stats.userBalance) + " ADX"
 						: "",
-					extra: inUSD(stats.userBalance)
+					extra: getADXInUSDFormatted(prices, stats.userBalance)
 				})}
 			</Box>
 
@@ -62,13 +46,17 @@ export default function Dashboard({ stats, onClaimRewards, onRestake }) {
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Active Stake",
-					extra: inUSD(stats.userTotalStake),
-					subtitle: formatADXPretty(stats.userTotalStake) + " ADX"
+					titleInfo: `Active, earning ${(
+						getApproxAPY(null, stats.totalStake) * 100
+					).toFixed(2)}% APY`,
+					subtitle: formatADXPretty(stats.userTotalStake) + " ADX",
+					extra: getADXInUSDFormatted(prices, stats.userTotalStake)
 				})}
 			</Box>
 
 			<Box mb={2}>
 				{RewardCard({
+					prices,
 					rewardChannels: stats.rewardChannels,
 					userBonds: stats.userBonds,
 					totalRewardADX: stats.totalRewardADX,
