@@ -55,12 +55,15 @@ export const styles = theme => {
 			paddingRight: 0,
 			paddingLeft: 0
 		},
+		drawer: {
+			[theme.breakpoints.up("md")]: {
+				width: drawerWidth,
+				flexShrink: 0
+			}
+		},
 		drawerPaper: {
 			width: drawerWidth,
-			[theme.breakpoints.up("md")]: {
-				position: "fixed"
-			},
-			backgroundColor: theme.palette.background.paper
+			backgroundColor: theme.palette.background.darkerPaper
 		},
 		content: {
 			flexGrow: 1,

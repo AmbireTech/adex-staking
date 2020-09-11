@@ -15,6 +15,7 @@ export const WARNING_DARK = "#c58100"
 export const TEXT_PRIMARY = "#7B7597"
 export const TEXT_SECONDARY = "#3314443D"
 export const PAPER = "#29253B"
+export const DARKER_PAPER = "#1A1825"
 
 const palette = {
 	primary: { main: PRIMARY, contrastText: WHITE },
@@ -38,6 +39,7 @@ const palette = {
 	},
 	divider: fade(WHITE, 0.12),
 	background: {
+		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
 		default: BLACK
 	}
@@ -105,9 +107,9 @@ const theme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: PRIMARY
+				backgroundColor: PAPER
 			},
-			arrow: { color: PRIMARY }
+			arrow: { color: PAPER }
 		},
 		MuiDrawer: {
 			paperAnchorLeft: {
