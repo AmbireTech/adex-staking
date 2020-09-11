@@ -145,7 +145,6 @@ export default function NewBondForm({
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
-							disableElevation
 							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}

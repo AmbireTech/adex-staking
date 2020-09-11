@@ -54,11 +54,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
-						<Button
-							color="primary"
-							onClick={() => onRequestUnbond(bond)}
-							disableElevation
-						>
+						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
 							Request Unbond
 						</Button>
 					) : (
@@ -70,7 +66,6 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 							}
 							onClick={() => onUnbond(bond)}
 							color="secondary"
-							disableElevation
 						>
 							Unbond
 						</Button>
