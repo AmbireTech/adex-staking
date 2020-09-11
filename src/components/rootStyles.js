@@ -4,13 +4,14 @@ const lastRowRightReserved = 169
 export const styles = theme => {
 	return {
 		root: {
-			marginTop: 69,
+			paddingTop: 69,
 			flexGrow: 1,
 			overflow: "hidden",
 			position: "relative",
 			display: "flex",
 			height: "calc(100vh - 69px)",
-			width: "100vw"
+			width: "100vw",
+			backgroundColor: theme.palette.background.default
 		},
 		appBar: {
 			top: 0,
@@ -59,11 +60,10 @@ export const styles = theme => {
 			[theme.breakpoints.up("md")]: {
 				position: "fixed"
 			},
-			backgroundColor: theme.palette.background.default
+			backgroundColor: theme.palette.background.paper
 		},
 		content: {
 			flexGrow: 1,
-			backgroundColor: "#fff",
 			padding: theme.spacing(2),
 			paddingTop: theme.spacing(2),
 			overflow: "auto",

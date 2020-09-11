@@ -14,30 +14,11 @@ import {
 	MenuSharp as MenuIcon
 } from "@material-ui/icons"
 import HelperMenu from "./HelperMenu"
-import logo from "./../adex-staking.svg"
 import { themeMUI } from "./../themeMUi"
+import { styles } from "./rootStyles"
 import { makeStyles } from "@material-ui/core/styles"
 
-const useStyles = makeStyles(theme => {
-	return {
-		appBar: {
-			top: 0,
-			left: 0,
-			right: 0,
-			width: "auto",
-			position: "fixed",
-			[theme.breakpoints.up("md")]: {
-				left: 250
-			}
-		},
-		toolbar: {
-			flexFlow: "wrap",
-			height: 69,
-			paddingRight: 0,
-			paddingLeft: 0
-		}
-	}
-})
+const useStyles = makeStyles(styles)
 
 export const AppToolbar = ({
 	chosenWalletType,
@@ -49,12 +30,12 @@ export const AppToolbar = ({
 	const classes = useStyles()
 
 	return (
-		<AppBar className={classes.appBar} position="static">
-			<Toolbar>
+		<AppBar className={classes.appBar} color="transparent" position="static">
+			<Toolbar className={classes.toolbar}>
 				<Hidden mdUp>
 					<Box pl={1}>
 						<IconButton
-							color="inherit"
+							color="primary"
 							aria-label="open drawer"
 							onClick={handleDrawerToggle}
 						>
@@ -62,7 +43,6 @@ export const AppToolbar = ({
 						</IconButton>
 					</Box>
 				</Hidden>
-				<img height="40vh" src={logo} alt="logo"></img>
 				{chosenWalletType && (
 					<Fab
 						disabled={!stats.loaded}

@@ -78,6 +78,7 @@ export default function Root() {
 				chosenWalletType={chosenWalletType}
 				setConnectWallet={setConnectWallet}
 				setNewBondOpen={setNewBondOpen}
+				handleDrawerToggle={handleDrawerToggle}
 				stats={stats}
 			/>
 
