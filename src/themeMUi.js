@@ -1,7 +1,6 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles"
 import lime from "@material-ui/core/colors/lime"
 import deepOrange from "@material-ui/core/colors/deepOrange"
-import amber from "@material-ui/core/colors/amber"
 import { fade } from "@material-ui/core/styles/colorManipulator"
 
 const WHITE = "#fff"
@@ -10,40 +9,47 @@ export const PRIMARY = "#494560"
 export const SECONDARY = "#ff4269"
 export const ALEX_GREY = "#3f3e3e"
 export const ALEX_GREY_LIGHT = "#666"
-export const ACCENT_ONE = "#57467B"
-export const ACCENT_TWO = "#7CB4B8"
+export const WARNING = "#FEB006"
+export const WARNING_LIGHT = "#ffe24d"
+export const WARNING_DARK = "#c58100"
 export const TEXT_PRIMARY = "#7B7597"
 export const TEXT_SECONDARY = "#3314443D"
+export const PAPER = "#29253B"
 
 const palette = {
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
-	accentOne: { main: ACCENT_ONE, contrastText: WHITE },
-	accentTwo: { main: ACCENT_TWO, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
 	error: deepOrange,
-	warning: amber,
+	warning: {
+		main: WARNING,
+		light: WARNING_LIGHT,
+		dark: WARNING_DARK,
+		contrastText: BLACK
+	},
 	first: lime,
 	contrastThreshold: 3,
 	tonalOffset: 0.2,
 	text: {
-		primary: fade(WHITE, 0.69),
-		secondary: fade(WHITE, 0.42),
-		disabled: fade(WHITE, 0.333),
-		hint: fade(WHITE, 0.333)
+		primary: fade(WHITE, 0.42),
+		secondary: fade(WHITE, 0.23),
+		disabled: fade(WHITE, 0.13),
+		hint: fade(WHITE, 0.13)
 	},
 	divider: fade(WHITE, 0.12),
 	background: {
-		paper: "#29253B",
+		paper: PAPER,
 		default: BLACK
 	}
 }
 
+const typography = {
+	fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+	fontSize: 13
+}
+
 const theme = createMuiTheme({
-	typography: {
-		fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-		fontSize: 14
-	},
+	typography,
 	palette: { ...palette },
 	overrides: {
 		MuiButton: {
@@ -59,19 +65,13 @@ const theme = createMuiTheme({
 				color: WHITE,
 				boxShadow: 0,
 				"&:hover": {
-					backgroundColor: ALEX_GREY_LIGHT,
-					boxShadow: 0,
-					"@media (hover: none)": {
-						boxShadow: 0
-					}
+					backgroundColor: ALEX_GREY_LIGHT
 				},
 				"&$focusVisible": {
-					boxShadow: 0,
 					backgroundColor: ALEX_GREY_LIGHT
 				},
 				"&:active": {
-					backgroundColor: ALEX_GREY_LIGHT,
-					boxShadow: 0
+					backgroundColor: ALEX_GREY_LIGHT
 				},
 				"&:disabled": {
 					backgroundColor: fade(WHITE, 0.12),
@@ -105,9 +105,9 @@ const theme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: `rgba(0,0,0, 0.69)`
+				backgroundColor: PRIMARY
 			},
-			arrow: { color: `rgba(0,0,0, 0.69)` }
+			arrow: { color: PRIMARY }
 		},
 		MuiDrawer: {
 			paperAnchorLeft: {
