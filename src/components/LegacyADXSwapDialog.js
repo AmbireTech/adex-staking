@@ -22,7 +22,7 @@ export default function LegacyADXSwapDialog(
 	const [isSwapInPrg, setSwapInPrg] = useState(false)
 
 	useEffect(() => {
-		if (!getSigner) return
+		if (!getSigner || !chosenWalletType.name) return
 		const refreshAmount = async () => {
 			const signer = await getSigner(chosenWalletType)
 			if (!signer) return
@@ -62,7 +62,7 @@ export default function LegacyADXSwapDialog(
 				<i>
 					<b>Swap now</b>
 				</i>{" "}
-				{`button and signing the ${chosenWalletType ||
+				{`button and signing the ${chosenWalletType.name ||
 					"MetaMask"} transactions.`}
 			</p>
 			<p>

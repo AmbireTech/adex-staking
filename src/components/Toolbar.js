@@ -43,7 +43,7 @@ export const AppToolbar = ({
 						</IconButton>
 					</Box>
 				</Hidden>
-				{chosenWalletType && (
+				{chosenWalletType.name && (
 					<Fab
 						disabled={!stats.loaded}
 						onClick={() => setNewBondOpen(true)}
@@ -55,7 +55,7 @@ export const AppToolbar = ({
 						{"Stake your ADX"}
 					</Fab>
 				)}
-				{!chosenWalletType && (
+				{!chosenWalletType.name && (
 					<Fab
 						onClick={() => setConnectWallet(true)}
 						variant="extended"

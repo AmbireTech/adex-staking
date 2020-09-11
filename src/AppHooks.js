@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import {
 	Web3ReactProvider,
 	useWeb3React,
@@ -148,15 +148,29 @@ export default function Root() {
 		setOpenErr(false)
 	}
 
-	const onWalletTypeSelect = async walletType => {
-		await activate(connectorsByName[walletType])
-
-		const signer = await getSigner(walletType, library)
-		setConnectWallet(null)
-		if (signer) {
-			setChosenWalletTypeName(walletType)
-		}
+	const onWalletTypeSelect = async walletTypeName => {
+		setChosenWalletTypeName(walletTypeName)
+		await activate(connectorsByName[walletTypeName])
 	}
+
+	useEffect(() => {
+		async function updateWalletType() {
+			if (library && chosenWalletTypeName) {
+				const newWalletType = { name: chosenWalletTypeName, library }
+				const signer = await getSigner(newWalletType)
+
+				if (signer) {
+					setChosenWalletType(newWalletType)
+				} else {
+					setChosenWalletType({})
+				}
+			} else {
+				setChosenWalletType({})
+			}
+		}
+
+		updateWalletType()
+	}, [library, chosenWalletTypeName])
 
 	return {
 		isNewBondOpen,
