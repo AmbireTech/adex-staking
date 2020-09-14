@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { Switch, Route } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 import {
@@ -20,7 +20,7 @@ import SideNav from "./SideNav"
 import { ZERO, UNBOND_DAYS, POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import { styles } from "./rootStyles"
-import useApp from "../AppHooks"
+import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
 
 function Alert(props) {
@@ -61,7 +61,7 @@ export default function Root() {
 		getSigner,
 		prices,
 		onWalletTypeSelect
-	} = useApp()
+	} = useContext(AppContext)
 
 	const drawer = SideNav({
 		prices,
