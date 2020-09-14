@@ -75,10 +75,9 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		)
 	}
 
-	const bondExplanationMsg = `This table will show all your individual ADX deposits (bonds), along
-		with information as status, amount and earned reward. By using the
-		action buttons, you will be able to request unbonding and withdraw your
-		ADX after the ${UNBOND_DAYS} day lock-up period.`
+	const bondExplanationMsg = `This table will show all your individual ADX deposits in validator pools (bonds), 
+	along with information as status, amount and current APY. By using the action buttons, 
+	you will be able to request unbonding and withdraw your ADX after the ${UNBOND_DAYS} day lock-up period.`
 
 	const bondExplanationFrag =
 		!stats.loaded || stats.userBonds.length ? (
