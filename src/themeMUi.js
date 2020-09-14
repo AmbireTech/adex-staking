@@ -32,12 +32,12 @@ const palette = {
 	contrastThreshold: 3,
 	tonalOffset: 0.2,
 	text: {
-		primary: fade(WHITE, 0.42),
-		secondary: fade(WHITE, 0.23),
-		disabled: fade(WHITE, 0.13),
+		primary: fade(WHITE, 0.69),
+		secondary: fade(WHITE, 0.42),
+		disabled: fade(WHITE, 0.23),
 		hint: fade(WHITE, 0.13)
 	},
-	divider: fade(WHITE, 0.12),
+	divider: fade(WHITE, 0.13),
 	background: {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
