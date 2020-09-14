@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
-import logo from "./../adex-logo-white.svg"
+import logo from "./../resources/staking-logo.svg"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
@@ -127,16 +127,6 @@ function SideNav({
 								alignItems="flex-start"
 							>
 								<img height="40vh" src={logo} alt="logo"></img>
-								<Typography component="div">
-									<Box
-										ml={1}
-										color="secondary.main"
-										fontWeight="fontWeightRegular"
-										fontSize={30}
-									>
-										Staking
-									</Box>
-								</Typography>
 							</Box>
 
 							{UserData({
