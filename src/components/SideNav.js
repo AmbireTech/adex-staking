@@ -20,7 +20,6 @@ import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 
 const RRListItem = WithRouterLink(ListItem)
-const RRAdexIconTxt = logo // withReactRouterLink(AdexIconTxt)
 
 const useStyles = makeStyles(theme => {
 	const activeColor = theme.palette.primary.contrastText
@@ -93,6 +92,14 @@ const useStyles = makeStyles(theme => {
 		},
 		amount: {
 			fontSize: theme.typography.pxToRem(18)
+		},
+		overlay: {
+			position: "absolute",
+			left: 0,
+			top: 0,
+			right: 0,
+			bottom: 0,
+			backgroundColor: theme.palette.overlay
 		}
 	}
 })
@@ -111,6 +118,7 @@ function SideNav({
 
 	return (
 		<Box
+			position="relative"
 			display="flex"
 			flexDirection="column"
 			justifyContent="space-between"
@@ -118,8 +126,8 @@ function SideNav({
 		>
 			<Box>
 				<Box>
-					<ListItem>
-						<Box>
+					<Box>
+						<ListItem>
 							<Box
 								my={2}
 								display="flex"
@@ -128,17 +136,35 @@ function SideNav({
 							>
 								<img height="40vh" src={logo} alt="logo"></img>
 							</Box>
+						</ListItem>
 
-							{UserData({
-								prices,
-								stats,
-								onRequestUnbond,
-								onUnbond,
-								onClaimRewards,
-								onRestake
-							})}
+						<Box position="relative">
+							<ListItem>
+								{UserData({
+									prices,
+									stats,
+									onRequestUnbond,
+									onUnbond,
+									onClaimRewards,
+									onRestake
+								})}
+							</ListItem>
+
+							{!stats.connectedWalletAddress && (
+								<Box
+									classes={{ root: classes.overlay }}
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+								>
+									<Typography align="center" component="div" variant="h3">
+										{"CONNECT WALLET"}
+									</Typography>
+								</Box>
+							)}
 						</Box>
-					</ListItem>
+					</Box>
 				</Box>
 			</Box>
 
