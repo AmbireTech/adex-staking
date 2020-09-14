@@ -42,7 +42,8 @@ const palette = {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
 		default: BLACK
-	}
+	},
+	overlay: fade(ALEX_GREY, 0.69)
 }
 
 const typography = {
