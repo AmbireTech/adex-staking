@@ -60,3 +60,7 @@ export function getDAIInUSD(DAI) {
 export function getUSDFormatted(usdAmount) {
 	return `$ ${commify(parseFloat(usdAmount.toFixed(2)))}`
 }
+
+export const formatAddress = (address = "", joinSymbol = "...") => {
+	return `${address.substring(0, 8)}${joinSymbol}${address.substring(36, 42)}`
+}
