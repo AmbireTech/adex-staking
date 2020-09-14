@@ -36,7 +36,7 @@ export default function NewBondForm({
 	WalletType
 }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
-	const [stakingAmount, setStakingAmount] = useState(0)
+	const [stakingAmount, setStakingAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)

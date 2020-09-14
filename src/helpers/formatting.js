@@ -28,7 +28,7 @@ export function formatDate(d) {
 
 // @TODO refactor to take pool arguments and use pool constants
 export function getApproxAPY(bond, totalStake, isEarly) {
-	const earlyDistributionEnds = 1609372800000
+	const earlyDistributionEnds = 1599177600000
 	const bondCreatedSeconds =
 		bond && bond.nonce ? bond.nonce.toNumber() : Date.now() / 1000
 	const getsEarlyBird =
