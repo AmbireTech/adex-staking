@@ -12,6 +12,7 @@ import {
 import { Alert as MuiAlert } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
 import Bonds from "./Bonds"
+import Pools from "./Pools"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -126,7 +127,9 @@ export default function Root() {
 								onRestake: setToRestake
 							})}
 						</Route>
-						<Route path="/">{"POOLS"}</Route>
+						<Route path="/">
+							<Pools />
+						</Route>
 					</Switch>
 
 					{// Load stats first to prevent simultanious calls to getSigner
