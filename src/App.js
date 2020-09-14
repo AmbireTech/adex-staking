@@ -174,11 +174,7 @@ export default function App() {
 			})}
 
 			{// Load stats first to prevent simultanious calls to getSigner
-			LegacyADXSwapDialog(
-				stats.loaded ? getSigner : null,
-				wrapDoingTxns,
-				WalletType
-			)}
+			LegacyADXSwapDialog(getSigner, wrapDoingTxns, WalletType)}
 
 			{ConfirmationDialog({
 				isOpen: !!toUnbond,

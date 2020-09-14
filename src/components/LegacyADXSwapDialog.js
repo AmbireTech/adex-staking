@@ -22,7 +22,6 @@ export default function LegacyADXSwapDialog(
 	const [isSwapInPrg, setSwapInPrg] = useState(false)
 
 	useEffect(() => {
-		if (!getSigner) return
 		const refreshAmount = async () => {
 			const signer = await getSigner()
 			if (!signer) return
@@ -30,7 +29,7 @@ export default function LegacyADXSwapDialog(
 			setAmount(await LegacyToken.balanceOf(walletAddr))
 		}
 		refreshAmount().catch(e => console.error(e))
-	}, [getSigner])
+	}, [WalletType])
 
 	const farmer = (
 		<span role="img" aria-label="farmer">
