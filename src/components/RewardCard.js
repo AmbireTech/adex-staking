@@ -6,7 +6,8 @@ import {
 	formatDAIPretty,
 	formatADXPretty,
 	getADXInUSD,
-	getDAIInUSD
+	getDAIInUSD,
+	getUSDFormatted
 } from "../helpers/formatting"
 
 export default function RewardCard({
@@ -66,8 +67,8 @@ export default function RewardCard({
 		extra: `+  \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${formatDAIPretty(
 			totalRewardDAI
 		)} DAI`,
-		moreExtra: `Total \u00A0$${(
+		moreExtra: `Total \u00A0${getUSDFormatted(
 			getADXInUSD(prices, totalRewardADX) + getDAIInUSD(totalRewardDAI)
-		).toFixed(2)}`
+		)}`
 	})
 }

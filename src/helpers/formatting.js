@@ -1,11 +1,11 @@
-import { formatUnits, parseUnits } from "ethers/utils"
+import { formatUnits, parseUnits, commify } from "ethers/utils"
 
 export function formatADX(num) {
 	return formatUnits(num, 18)
 }
 
 export function formatADXPretty(num) {
-	return formatUnits(num.div("100000000000000"), 4)
+	return commify(formatUnits(num.div("100000000000000"), 4))
 }
 
 export function formatDAI(num) {
@@ -13,7 +13,7 @@ export function formatDAI(num) {
 }
 
 export function formatDAIPretty(num) {
-	return formatUnits(num.div("10000000000000000"), 2)
+	return commify(formatUnits(num.div("10000000000000000"), 2))
 }
 
 export function parseADX(n) {
@@ -49,10 +49,14 @@ export function getADXInUSD(prices, ADX) {
 
 export function getADXInUSDFormatted(prices, ADX) {
 	const adxUsd = getADXInUSD(prices, ADX)
-	return `$${adxUsd.toFixed(2)}`
+	return `$ ${commify(adxUsd.toFixed(2))}`
 }
 
 export function getDAIInUSD(DAI) {
 	const adxUsd = parseFloat(formatDAI(DAI || 0), 10) * 1
 	return adxUsd
+}
+
+export function getUSDFormatted(usdAmount) {
+	return `$ ${commify(parseFloat(usdAmount.toFixed(2)))}`
 }
