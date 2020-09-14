@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { IconButton, Menu, Link, MenuItem } from "@material-ui/core"
+import { Button, Menu, Link, MenuItem } from "@material-ui/core"
 import HelpIcon from "@material-ui/icons/HelpOutline"
 
 export const Help = () => {
@@ -12,12 +12,13 @@ export const Help = () => {
 	}
 	return (
 		<>
-			<IconButton
-				style={{ position: "absolute", right: "1.25%", top: "10%" }}
+			<Button
+				size="large"
+				startIcon={<HelpIcon size="large" />}
 				onClick={openHelpMenu}
 			>
-				<HelpIcon style={{ fontSize: "1.5em", color: "white" }} />
-			</IconButton>
+				Help
+			</Button>
 			<Menu
 				id="simple-menu"
 				anchorEl={menuEl}
