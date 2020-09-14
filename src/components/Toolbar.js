@@ -52,9 +52,21 @@ export const AppToolbar = ({
 						{"Stake your ADX"}
 					</Fab>
 				)}
-
-				<Help />
-				<Wallet />
+				<Box
+					p={1}
+					flex="1"
+					display="flex"
+					flexDirection="row"
+					alignItems="center"
+					justifyContent="flex-end"
+				>
+					<Box mr={2}>
+						<Help />
+					</Box>
+					<Box>
+						<Wallet />
+					</Box>
+				</Box>
 			</Toolbar>
 		</AppBar>
 	)
