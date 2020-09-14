@@ -1,10 +1,8 @@
 import React, { useState } from "react"
-import IconButton from "@material-ui/core/IconButton"
-import Menu from "@material-ui/core/Menu"
+import { IconButton, Menu, Link, MenuItem } from "@material-ui/core"
 import HelpIcon from "@material-ui/icons/HelpOutline"
-import Link from "@material-ui/core/Link"
-import MenuItem from "@material-ui/core/MenuItem"
-export default () => {
+
+export const Help = () => {
 	const [menuEl, setMenuEl] = useState(null)
 	const openHelpMenu = ev => {
 		setMenuEl(ev.currentTarget)

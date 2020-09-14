@@ -8,12 +8,9 @@ import {
 	Box,
 	Hidden
 } from "@material-ui/core"
-import {
-	AccountBalanceWalletSharp as AccountBalanceWalletIcon,
-	AddSharp as AddIcon,
-	MenuSharp as MenuIcon
-} from "@material-ui/icons"
-import HelperMenu from "./HelperMenu"
+import { AddSharp as AddIcon, MenuSharp as MenuIcon } from "@material-ui/icons"
+import { Help } from "./HelperMenu"
+import { Wallet } from "./WalletMenu"
 import { themeMUI } from "./../themeMUi"
 import { styles } from "./rootStyles"
 import { makeStyles } from "@material-ui/core/styles"
@@ -55,18 +52,9 @@ export const AppToolbar = ({
 						{"Stake your ADX"}
 					</Fab>
 				)}
-				{!chosenWalletType.name && (
-					<Fab
-						onClick={() => setConnectWallet(true)}
-						variant="extended"
-						color="secondary"
-						style={{ position: "absolute", right: "5%", top: "50%" }}
-					>
-						<AccountBalanceWalletIcon style={{ margin: themeMUI.spacing(1) }} />
-						{"Connect Wallet"}
-					</Fab>
-				)}
-				{HelperMenu()}
+
+				<Help />
+				<Wallet />
 			</Toolbar>
 		</AppBar>
 	)
