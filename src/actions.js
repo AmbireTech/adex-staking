@@ -85,6 +85,7 @@ export async function loadUserStats(chosenWalletType) {
 	const totalBalanceADX = userBalance.add(totalRewardADX).add(userTotalStake)
 
 	return {
+		connectedWalletAddress: addr,
 		userBonds,
 		userBalance, // ADX on wallet
 		loaded: true,
