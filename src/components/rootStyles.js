@@ -71,7 +71,6 @@ export const styles = theme => {
 			paddingTop: theme.spacing(2),
 			overflow: "auto",
 			[theme.breakpoints.up("md")]: {
-				marginLeft: drawerWidth,
 				padding: theme.spacing(2),
 				paddingTop: theme.spacing(2)
 			},
