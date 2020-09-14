@@ -1,43 +1,7 @@
 import React from "react"
-import { Box, Tooltip } from "@material-ui/core"
+import { Box } from "@material-ui/core"
 import LinearProgress from "@material-ui/core/LinearProgress"
-import Typography from "@material-ui/core/Typography"
-import { InfoSharp as InfoIcon } from "@material-ui/icons"
-
-function Info({ title, color, icon }) {
-	return (
-		<Tooltip title={title}>
-			<InfoIcon fontSize="inherit" />
-		</Tooltip>
-	)
-}
-
-function CardRow({ text, infoText, fontWeight, fontSize, color }) {
-	return (
-		<Typography component="div" variant="body2">
-			<Box
-				color={color}
-				fontWeight={fontWeight}
-				fontSize={fontSize}
-				display="flex"
-				flexDirection="row"
-				alignItems="center"
-			>
-				<Box>{text}</Box>
-				{infoText && (
-					<Box
-						ml={0.69}
-						display="flex"
-						// flexDirection='row'
-						// alignItems='center'
-					>
-						<Info title={infoText} />
-					</Box>
-				)}
-			</Box>
-		</Typography>
-	)
-}
+import { CardRow } from "./cardCommon"
 
 export default function StatsCard({
 	size,
