@@ -27,7 +27,7 @@ function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
-const { REACT_APP_INFURA_ID } = process.env
+const { REACT_APP_INFURA_ID, REACT_APP_RPC_URL } = process.env
 
 const useStyles = makeStyles(styles)
 
@@ -196,7 +196,7 @@ export default function Root() {
 							setConnectWallet(null)
 						},
 						handleListItemClick: onWalletTypeSelect,
-						disableNonBrowserWallets: !REACT_APP_INFURA_ID
+						disableNonBrowserWallets: !REACT_APP_RPC_URL
 					})}
 
 					<Snackbar open={openDoingTx}>
