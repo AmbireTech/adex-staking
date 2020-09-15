@@ -48,7 +48,7 @@ const palette = {
 
 const typography = {
 	fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-	fontSize: 13
+	fontSize: 14.2
 }
 
 const theme = createMuiTheme({
@@ -124,6 +124,6 @@ const theme = createMuiTheme({
 })
 
 export const themeMUI = responsiveFontSizes(theme, {
-	options: ["xs", "sm", "md", "lg", "xl"],
+	breakpoints: ["xs", "sm", "md", "lg", "xl"],
 	factor: 3
 })

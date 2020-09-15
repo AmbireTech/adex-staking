@@ -8,6 +8,7 @@ import { Web3Provider } from "ethers/providers"
 import Root from "./components/Root"
 import AppContext from "./AppContext"
 import useApp from "./AppHooks"
+import "./App.css"
 
 const App = () => {
 	const appHooks = useApp()
