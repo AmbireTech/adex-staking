@@ -96,12 +96,11 @@ export default function Root() {
 			.catch(console.error)
 
 	useEffect(() => {
-		if (chosenWalletType.name && chosenWalletType.library) {
-			refreshStats()
-			refreshPrices()
-			const intvl = setInterval(refreshStats, REFRESH_INTVL)
-			return () => clearInterval(intvl)
-		}
+		refreshStats()
+		refreshPrices()
+		const intvl = setInterval(refreshStats, REFRESH_INTVL)
+		return () => clearInterval(intvl)
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
 
