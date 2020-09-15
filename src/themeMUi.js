@@ -18,6 +18,7 @@ export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
 
 const palette = {
+	type: "dark",
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
@@ -34,7 +35,7 @@ const palette = {
 	text: {
 		primary: fade(WHITE, 0.69),
 		secondary: fade(WHITE, 0.42),
-		disabled: fade(WHITE, 0.23),
+		disabled: fade(WHITE, 0.1948),
 		hint: fade(WHITE, 0.13)
 	},
 	divider: fade(WHITE, 0.13),
@@ -43,7 +44,19 @@ const palette = {
 		paper: PAPER,
 		default: BLACK
 	},
-	overlay: fade(ALEX_GREY, 0.69)
+	overlay: fade(ALEX_GREY, 0.69),
+	action: {
+		action: fade(WHITE, 0.46),
+		hover: fade(WHITE, 0.069),
+		hoverOpacity: 0.069,
+		selected: fade(WHITE, 0.1914),
+		selectedOpacity: 0.1914,
+		disabled: fade(WHITE, 0.1948),
+		disabledOpacity: 0.48,
+		focus: fade(WHITE, 0.18),
+		focusOpacity: 0.18,
+		activatedOpacity: 0.18
+	}
 }
 
 const typography = {
