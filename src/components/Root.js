@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core"
 import { Alert as MuiAlert } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
-import Bonds from "./Bonds"
+import Stakings from "./Stakings"
 import Pools from "./Pools"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
@@ -118,14 +118,8 @@ export default function Root() {
 			<main className={classes.content}>
 				<div className={classes.contentInner}>
 					<Switch>
-						<Route path="/bonds">
-							{Bonds({
-								stats,
-								onRequestUnbond: setToUnbond,
-								onUnbond,
-								onClaimRewards,
-								onRestake: setToRestake
-							})}
+						<Route path="/stakings">
+							<Stakings />
 						</Route>
 						<Route path="/">
 							<Pools />

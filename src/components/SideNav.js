@@ -6,7 +6,8 @@ import {
 	ListItemText,
 	Divider,
 	Typography,
-	Box
+	Box,
+	SvgIcon
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
@@ -18,6 +19,7 @@ import packageJson from "./../../package.json"
 import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
+import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -182,7 +184,7 @@ function SideNav({
 							to={{ pathname: "/" }}
 							className={clsx({ [classes.active]: path === "/" })}
 						>
-							<ListItemIcon>
+							<ListItemIcon color="inherit">
 								<DashboardIcon />
 							</ListItemIcon>
 							<ListItemText primary={"Pools"} />
@@ -190,13 +192,15 @@ function SideNav({
 						<Divider />
 						<RRListItem
 							button
-							to={{ pathname: "/bonds" }}
-							className={clsx({ [classes.active]: path === "/bonds" })}
+							to={{ pathname: "/stakings" }}
+							className={clsx({ [classes.active]: path === "/stakings" })}
 						>
-							<ListItemIcon>
-								<DashboardIcon />
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<StakingIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={"Bonds"} />
+							<ListItemText primary={"Staked ADX"} />
 						</RRListItem>
 					</List>
 				</Box>
