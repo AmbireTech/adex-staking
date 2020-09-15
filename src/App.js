@@ -1,5 +1,6 @@
 import React from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
+import CssBaseline from "@material-ui/core/CssBaseline"
 import { themeMUI } from "./themeMUi"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Web3ReactProvider } from "@web3-react/core"
@@ -11,13 +12,16 @@ import useApp from "./AppHooks"
 const App = () => {
 	const appHooks = useApp()
 	return (
-		<AppContext.Provider value={appHooks}>
+		<React.Fragment>
 			<MuiThemeProvider theme={themeMUI}>
-				<Router>
-					<Root />
-				</Router>
+				<CssBaseline />
+				<AppContext.Provider value={appHooks}>
+					<Router>
+						<Root />
+					</Router>
+				</AppContext.Provider>
 			</MuiThemeProvider>
-		</AppContext.Provider>
+		</React.Fragment>
 	)
 }
 
