@@ -32,6 +32,8 @@ export const Wallet = () => {
 				</Fab>
 			) : (
 				<Chip
+					color="primary"
+					size="large"
 					avatar={
 						stats.connectedWalletAddress ? (
 							<Avatar>

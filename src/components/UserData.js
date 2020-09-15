@@ -10,7 +10,7 @@ import {
 
 export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 	return (
-		<Box>
+		<Box width={1}>
 			<Box mb={2}>
 				{StatsCard({
 					size: "large",
