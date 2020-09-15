@@ -3,7 +3,7 @@ import {
 	TableRow,
 	TableCell,
 	Button,
-	Grid,
+	Box,
 	Table,
 	TableContainer,
 	TableHead,
@@ -54,11 +54,16 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
-						<Button color="primary" onClick={() => onRequestUnbond(bond)}>
-							Request Unbond
+						<Button
+							variant="outlined"
+							color="primary"
+							onClick={() => onRequestUnbond(bond)}
+						>
+							{"Request Unbond"}
 						</Button>
 					) : (
 						<Button
+							variant="outlined"
 							disabled={
 								bond.status === "Unbonded" ||
 								!bond.willUnlock ||
@@ -67,7 +72,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 							onClick={() => onUnbond(bond)}
 							color="secondary"
 						>
-							Unbond
+							{"Unbond"}
 						</Button>
 					)}
 				</TableCell>
@@ -80,24 +85,19 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 	you will be able to request unbonding and withdraw your ADX after the ${UNBOND_DAYS} day lock-up period.`
 
 	const bondExplanationFrag =
-		!stats.loaded || stats.userBonds.length ? (
-			<></>
-		) : (
-			<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-				<Alert square elevation={6} variant="filled" severity="info">
+		!stats.loaded || stats.userBonds.length ? null : (
+			<Box mt={2}>
+				<Alert variant="filled" severity="info">
 					{bondExplanationMsg}
 				</Alert>
-			</Grid>
+			</Box>
 		)
 
 	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Fragment>
 			<TableContainer xs={12}>
-				<Table
-					aria-label="Bonds table"
-					style={{ marginTop: themeMUI.spacing(2) }}
-				>
+				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
 							<TableCell style={headerCellStyle}>Bond amount</TableCell>
