@@ -141,6 +141,23 @@ const theme = createMuiTheme({
 			paperAnchorDockedLeft: {
 				borderRight: 0
 			}
+		},
+		MuiAlert: {
+			root: {
+				borderRadius: 0
+			},
+			outlinedSuccess: {
+				backgroundColor: BLACK
+			},
+			outlinedInfo: {
+				backgroundColor: BLACK
+			},
+			outlinedWarning: {
+				backgroundColor: BLACK
+			},
+			outlinedError: {
+				backgroundColor: WHITE
+			}
 		}
 	}
 })
