@@ -37,7 +37,7 @@ export default function RewardCard({
 			<Button
 				size="small"
 				variant="contained"
-				color="secondary"
+				color="primary"
 				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
 				onClick={() => onClaimRewards(rewardChannels)}
 				disableElevation

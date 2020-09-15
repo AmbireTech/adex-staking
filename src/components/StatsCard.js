@@ -20,7 +20,7 @@ export default function StatsCard({
 		<Box>
 			{title && (
 				<CardRow
-					color="text.primary"
+					color="text.secondary"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 16 : 13}
 					text={title}
@@ -40,7 +40,7 @@ export default function StatsCard({
 
 			{extra && (
 				<CardRow
-					color="text.primary"
+					color="text.secondary"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 16 : 13}
 					text={extra}
@@ -50,7 +50,7 @@ export default function StatsCard({
 
 			{moreExtra && (
 				<CardRow
-					color="text.primary"
+					color="text.secondary"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 16 : 13}
 					text={moreExtra}
