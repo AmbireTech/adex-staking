@@ -40,18 +40,6 @@ export const AppToolbar = ({
 						</IconButton>
 					</Box>
 				</Hidden>
-				{chosenWalletType.name && (
-					<Fab
-						disabled={!stats.loaded}
-						onClick={() => setNewBondOpen(true)}
-						variant="extended"
-						color="secondary"
-						style={{ position: "absolute", right: "5%", top: "50%" }}
-					>
-						<AddIcon style={{ margin: themeMUI.spacing(1) }} />
-						{"Stake your ADX"}
-					</Fab>
-				)}
 				<Box
 					p={1}
 					flex="1"
