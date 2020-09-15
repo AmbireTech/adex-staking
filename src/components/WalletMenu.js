@@ -33,7 +33,7 @@ export const Wallet = () => {
 			) : (
 				<Chip
 					color="primary"
-					size="large"
+					size="medium"
 					avatar={
 						stats.connectedWalletAddress ? (
 							<Avatar>

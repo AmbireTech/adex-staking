@@ -101,6 +101,15 @@ const theme = createMuiTheme({
 				"&:disabled": {
 					backgroundColor: fade(WHITE, 0.12),
 					color: fade(WHITE, 0.26)
+				},
+				"&:active": {
+					boxShadow: 0
+				},
+				"&$focusVisible": {
+					boxShadow: 0
+				},
+				"&$disabled": {
+					boxShadow: 0
 				}
 			}
 		},
