@@ -33,20 +33,22 @@ export default function RewardCard({
 	const restakeEnabled =
 		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
-		<Box display="flex" flexDirection="row" paddingTop={1}>
-			<Button
-				size="small"
-				variant="contained"
-				color="primary"
-				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
-				onClick={() => onClaimRewards(rewardChannels)}
-				disableElevation
-			>
-				claim
-			</Button>
-			<Box ml={1}>
+		<Box display="flex" flexDirection="row" paddingTop={1} flex={1}>
+			<Box width={1 / 2} pr={0.5}>
 				<Button
-					size="small"
+					fullWidth
+					variant="contained"
+					color="primary"
+					disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+					onClick={() => onClaimRewards(rewardChannels)}
+					disableElevation
+				>
+					claim
+				</Button>
+			</Box>
+			<Box width={1 / 2} pl={0.5}>
+				<Button
+					fullWidth
 					variant="contained"
 					color="secondary"
 					disabled={!restakeEnabled}
