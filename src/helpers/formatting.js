@@ -62,5 +62,5 @@ export function getUSDFormatted(usdAmount) {
 }
 
 export const formatAddress = (address = "", joinSymbol = "...") => {
-	return `${address.substring(0, 8)}${joinSymbol}${address.substring(36, 42)}`
+	return `${address.substring(0, 6)}${joinSymbol}${address.substring(38, 42)}`
 }
