@@ -13,10 +13,10 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 	const classes = useStyles()
 
 	return (
-		<AppBar className={classes.appBar} color="transparent" position="static">
+		<AppBar color="transparent" position="static">
 			<Toolbar className={classes.toolbar}>
 				<Hidden mdUp>
-					<Box pl={1}>
+					<Box>
 						<IconButton
 							color="secondary"
 							aria-label="open drawer"
@@ -27,12 +27,13 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 					</Box>
 				</Hidden>
 				<Box
-					p={1}
+					className={classes.toolbarActions}
 					flex="1"
 					display="flex"
 					flexDirection="row"
 					alignItems="center"
 					justifyContent="flex-end"
+					flexWrap="wrap"
 				>
 					<Box mr={2}>
 						<Help />

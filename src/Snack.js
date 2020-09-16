@@ -51,7 +51,7 @@ export function useSnack() {
 	}
 }
 
-export function StarvolinkiSnack({
+export function ShtarvolinkiSnack({
 	snackOpen,
 	snackMessageInfo = {},
 	closeSnack,

@@ -17,11 +17,16 @@ const SectionHeader = ({ title, actions }) => {
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 
 	return (
-		<Box display="flex" flexDirection="row" justifyContent="space-between">
-			<Box color="text.main">
+		<Box
+			display="flex"
+			flexDirection="row"
+			justifyContent="space-between"
+			flexWrap="wrap"
+		>
+			<Box color="text.main" mb={1}>
 				<Typography variant="h3">{title}</Typography>
 			</Box>
-			<Box>
+			<Box mb={1}>
 				{!!actions
 					? actions
 					: chosenWalletType.name && (

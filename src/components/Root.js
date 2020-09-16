@@ -3,11 +3,11 @@ import { Switch, Route } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Drawer,
-	Hidden,
 	Modal,
 	Backdrop,
 	Fade,
-	Snackbar
+	Snackbar,
+	useMediaQuery
 } from "@material-ui/core"
 import { Alert as MuiAlert } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
@@ -23,7 +23,7 @@ import { formatADXPretty } from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
-import { StarvolinkiSnack } from "./../Snack"
+import { ShtarvolinkiSnack } from "./../Snack"
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -39,6 +39,7 @@ export default function Root() {
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen)
 	}
+	const isTempDrawer = useMediaQuery(theme => theme.breakpoints.down("sm"))
 
 	const {
 		isNewBondOpen,
@@ -87,35 +88,22 @@ export default function Root() {
 				stats={stats}
 			/>
 
-			<nav className={classes.drawer} aria-label="side navigation">
-				<Hidden mdUp implementation="css">
-					<Drawer
-						container={container}
-						variant="temporary"
-						anchor="left"
-						open={mobileOpen}
-						onClose={handleDrawerToggle}
-						classes={{
-							paper: classes.drawerPaper
-						}}
-						ModalProps={{
-							keepMounted: true // Better open performance on mobile.
-						}}
-					>
-						{drawer}
-					</Drawer>
-				</Hidden>
-				<Hidden smDown implementation="css">
-					<Drawer
-						variant="permanent"
-						open
-						classes={{
-							paper: classes.drawerPaper
-						}}
-					>
-						{drawer}
-					</Drawer>
-				</Hidden>
+			<nav aria-label="side navigation">
+				<Drawer
+					container={container}
+					variant={isTempDrawer ? "temporary" : "permanent"}
+					anchor="left"
+					open={isTempDrawer ? mobileOpen : true}
+					onClose={handleDrawerToggle}
+					classes={{
+						paper: classes.drawerPaper
+					}}
+					ModalProps={{
+						keepMounted: true // Better open performance on mobile.
+					}}
+				>
+					{drawer}
+				</Drawer>
 			</nav>
 			<main className={classes.content}>
 				<div className={classes.contentInner}>
@@ -212,7 +200,7 @@ export default function Root() {
 							{snackbarErr}
 						</Alert>
 					</Snackbar>
-					<StarvolinkiSnack {...snackHooks} />
+					<ShtarvolinkiSnack {...snackHooks} />
 
 					<Modal
 						open={isNewBondOpen}
