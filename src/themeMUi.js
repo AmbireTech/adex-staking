@@ -1,6 +1,5 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles"
 import lime from "@material-ui/core/colors/lime"
-import deepOrange from "@material-ui/core/colors/deepOrange"
 import { fade } from "@material-ui/core/styles/colorManipulator"
 
 const WHITE = "#fff"
@@ -10,8 +9,9 @@ export const SECONDARY = "#ff4269"
 export const ALEX_GREY = "#3f3e3e"
 export const ALEX_GREY_LIGHT = "#666"
 export const WARNING = "#FEB006"
-export const WARNING_LIGHT = "#ffe24d"
-export const WARNING_DARK = "#c58100"
+export const SUCCESS = "#14dc9c"
+export const INFO = "#1b75bc"
+export const ERROR = "#ff6969"
 export const TEXT_PRIMARY = "#7B7597"
 export const TEXT_SECONDARY = "#3314443D"
 export const PAPER = "#29253B"
@@ -22,16 +22,23 @@ const palette = {
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
-	error: deepOrange,
 	warning: {
 		main: WARNING,
-		light: WARNING_LIGHT,
-		dark: WARNING_DARK,
 		contrastText: BLACK
 	},
+	success: {
+		main: SUCCESS,
+		contrastText: BLACK
+	},
+	info: {
+		main: INFO,
+		contrastText: WHITE
+	},
+	error: {
+		main: ERROR,
+		contrastText: WHITE
+	},
 	first: lime,
-	contrastThreshold: 3,
-	tonalOffset: 0.2,
 	text: {
 		primary: fade(WHITE, 0.69),
 		secondary: fade(WHITE, 0.42),
@@ -64,9 +71,11 @@ const typography = {
 	fontSize: 14.2
 }
 
+const defaultTheme = createMuiTheme({ typography, palette })
+
 const theme = createMuiTheme({
 	typography,
-	palette: { ...palette },
+	palette,
 	overrides: {
 		MuiButton: {
 			root: {
@@ -157,6 +166,18 @@ const theme = createMuiTheme({
 			},
 			outlinedError: {
 				backgroundColor: WHITE
+			},
+			filledSuccess: {
+				color: defaultTheme.palette.success.contrastText
+			},
+			filledInfo: {
+				color: defaultTheme.palette.info.contrastText
+			},
+			filledWarning: {
+				color: defaultTheme.palette.warning.contrastText
+			},
+			filledError: {
+				color: defaultTheme.palette.error.contrastText
 			}
 		}
 	}
