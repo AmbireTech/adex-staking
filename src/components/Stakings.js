@@ -17,9 +17,11 @@ const Stakings = () => {
 		<Box>
 			<SectionHeader title={"Staked ADX"} />
 			<Box mt={2}>
-				<Typography variant="h5" gutterBottom>
-					{"BONDS"}
-				</Typography>
+				<Box color="text.main">
+					<Typography variant="h5" gutterBottom>
+						{"BONDS"}
+					</Typography>
+				</Box>
 				<Typography variant="body2" gutterBottom>
 					{`This table will show all your individual ADX deposits in validator pools (bonds), along with 
                     information as status, amount and current APY. By using the action buttons, you will be 

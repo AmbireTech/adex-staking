@@ -12,8 +12,8 @@ export const WARNING = "#FEB006"
 export const SUCCESS = "#14dc9c"
 export const INFO = "#1b75bc"
 export const ERROR = "#ff6969"
-export const TEXT_PRIMARY = "#7B7597"
 export const TEXT_SECONDARY = "#3314443D"
+export const TEXT_MAIN = "#7B7597"
 export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
 
@@ -40,6 +40,7 @@ const palette = {
 	},
 	first: lime,
 	text: {
+		main: TEXT_MAIN,
 		primary: fade(WHITE, 0.69),
 		secondary: fade(WHITE, 0.42),
 		disabled: fade(WHITE, 0.1948),
@@ -124,7 +125,8 @@ const theme = createMuiTheme({
 		},
 		MuiTableCell: {
 			head: {
-				whiteSpace: "nowrap"
+				whiteSpace: "nowrap",
+				color: defaultTheme.palette.text.main
 			},
 			root: {
 				whiteSpace: "nowrap"

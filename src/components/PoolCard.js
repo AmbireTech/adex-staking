@@ -68,7 +68,7 @@ export default function PoolCard({
 			</Box>
 
 			<CardRow
-				color="text.secondary"
+				color="text.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
 				text={"Total Staked"}
@@ -84,7 +84,7 @@ export default function PoolCard({
 			/>
 
 			<CardRow
-				color="text.secondary"
+				color="text.main"
 				fontWeight={"fontWeightBold"}
 				fontSize={14}
 				text={totalStakedADX}
@@ -93,7 +93,7 @@ export default function PoolCard({
 			/>
 
 			<CardRow
-				color="text.primary"
+				color="text.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
 				text={"Current annual yield (APY)"}
@@ -109,7 +109,7 @@ export default function PoolCard({
 			/>
 
 			<CardRow
-				color="text.secondary"
+				color="text.main"
 				fontWeight={"fontWeightBold"}
 				fontSize={14}
 				text={`Weekly yield ${weeklyYield}`}

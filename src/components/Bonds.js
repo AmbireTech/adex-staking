@@ -55,7 +55,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">
 					{bond.status === "Active" ? (
 						<Button
-							variant="outlined"
+							variant="contained"
 							color="primary"
 							onClick={() => onRequestUnbond(bond)}
 						>
@@ -63,7 +63,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 						</Button>
 					) : (
 						<Button
-							variant="outlined"
+							variant="contained"
 							disabled={
 								bond.status === "Unbonded" ||
 								!bond.willUnlock ||

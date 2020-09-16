@@ -18,7 +18,7 @@ const SectionHeader = ({ title, actions }) => {
 
 	return (
 		<Box display="flex" flexDirection="row" justifyContent="space-between">
-			<Box>
+			<Box color="text.main">
 				<Typography variant="h3">{title}</Typography>
 			</Box>
 			<Box>
