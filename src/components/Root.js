@@ -23,6 +23,7 @@ import { formatADXPretty } from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
+import { StarvolinkiSnack } from "./../Snack"
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -61,7 +62,8 @@ export default function Root() {
 		handleErrClose,
 		getSigner,
 		prices,
-		onWalletTypeSelect
+		onWalletTypeSelect,
+		snackHooks
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -210,6 +212,7 @@ export default function Root() {
 							{snackbarErr}
 						</Alert>
 					</Snackbar>
+					<StarvolinkiSnack {...snackHooks} />
 
 					<Modal
 						open={isNewBondOpen}

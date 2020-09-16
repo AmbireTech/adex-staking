@@ -33,6 +33,7 @@ import {
 	restake
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
+import { useSnack } from "./Snack"
 
 const REFRESH_INTVL = 20000
 
@@ -60,6 +61,7 @@ function getErrorMessage(error) {
 }
 
 export default function Root() {
+	const { addSnack, ...snackHooks } = useSnack()
 	const { library, activate, error, deactivate } = useWeb3React()
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
@@ -200,6 +202,8 @@ export default function Root() {
 		handleErrClose,
 		getSigner,
 		prices,
-		onWalletTypeSelect
+		onWalletTypeSelect,
+		addSnack,
+		snackHooks
 	}
 }
