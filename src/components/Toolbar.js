@@ -1,29 +1,15 @@
 import React from "react"
 import PropTypes from "prop-types"
-import {
-	AppBar,
-	Toolbar,
-	Fab,
-	IconButton,
-	Box,
-	Hidden
-} from "@material-ui/core"
-import { AddSharp as AddIcon, MenuSharp as MenuIcon } from "@material-ui/icons"
+import { AppBar, Toolbar, IconButton, Box, Hidden } from "@material-ui/core"
+import { MenuSharp as MenuIcon } from "@material-ui/icons"
 import { Help } from "./HelperMenu"
 import { Wallet } from "./WalletMenu"
-import { themeMUI } from "./../themeMUi"
 import { styles } from "./rootStyles"
 import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(styles)
 
-export const AppToolbar = ({
-	chosenWalletType,
-	setConnectWallet,
-	setNewBondOpen,
-	stats,
-	handleDrawerToggle
-}) => {
+export const AppToolbar = ({ handleDrawerToggle }) => {
 	const classes = useStyles()
 
 	return (
@@ -61,8 +47,5 @@ export const AppToolbar = ({
 }
 
 AppToolbar.propTypes = {
-	chosenWalletType: PropTypes.string,
-	setConnectWallet: PropTypes.func.isRequired,
-	setNewBondOpen: PropTypes.func.isRequired,
-	stats: PropTypes.object.isRequired
+	handleDrawerToggle: PropTypes.func.isRequired
 }
