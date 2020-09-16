@@ -20,7 +20,6 @@ export function useSnack() {
 	}, [snackPack, snackMessageInfo, snackOpen])
 
 	const addSnack = (message, severity, hideTimeout) => {
-		console.log("message", message)
 		setSnackPack(prev => [
 			...prev,
 			{
