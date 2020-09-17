@@ -36,6 +36,7 @@ export default function RewardCard({
 		<Box display="flex" flexDirection="row" paddingTop={1} flex={1}>
 			<Box width={1 / 2} pr={0.5}>
 				<Button
+					id="claim-reward-tom-side-nav"
 					fullWidth
 					variant="contained"
 					color="primary"
@@ -48,6 +49,7 @@ export default function RewardCard({
 			</Box>
 			<Box width={1 / 2} pl={0.5}>
 				<Button
+					id="re-stake-tom-side-nav"
 					fullWidth
 					variant="contained"
 					color="secondary"

@@ -30,6 +30,7 @@ export const Help = () => {
 				transformOrigin={{ vertical: "top", horizontal: "center" }}
 			>
 				<Link
+					id="help-menu-external-link-adex-network-tos"
 					color="inherit"
 					href="https://www.adex.network/tos"
 					target="_blank"
@@ -37,6 +38,7 @@ export const Help = () => {
 					<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
 				</Link>
 				<Link
+					id="help-menu-external-link-adex-network-staking-user-guide"
 					color="inherit"
 					href="https://help.adex.network/hc/en-us/categories/360002707720-Staking"
 					target="_blank"
@@ -44,6 +46,7 @@ export const Help = () => {
 					<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
 				</Link>
 				<Link
+					id="help-menu-external-link-adex-network-staking-source-code"
 					color="inherit"
 					href="https://github.com/adexnetwork/adex-protocol-eth"
 					target="_blank"
@@ -51,6 +54,7 @@ export const Help = () => {
 					<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
 				</Link>
 				<Link
+					id="help-menu-external-link-adex-network-audits"
 					color="inherit"
 					href="https://github.com/adexnetwork/adex-protocol-eth#audits"
 					target="_blank"
@@ -58,6 +62,7 @@ export const Help = () => {
 					<MenuItem onClick={closeHelpMenu}>Audits</MenuItem>
 				</Link>
 				<Link
+					id="help-menu-external-link-adex-wher-to-buy-markets"
 					color="inherit"
 					href="https://coinmarketcap.com/currencies/adx-net/markets/"
 					target="_blank"

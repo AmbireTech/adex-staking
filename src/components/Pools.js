@@ -32,6 +32,7 @@ const Pools = () => {
 					justifyContent={justifyCenter ? "center" : "flex-start"}
 				>
 					<PoolCard
+						poolId="validator-tom"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
 								<TomIcon width="100%" height="100%" />
@@ -53,6 +54,7 @@ const Pools = () => {
 					/>
 
 					<PoolCard
+						poolId="loyalty-pool"
 						icon={<LoyaltyIcon fontSize="large" />}
 						name={"Loyalty pool "}
 						totalStakedADX={formatADXPretty(stats.totalStakeTom)}

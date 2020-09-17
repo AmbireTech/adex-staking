@@ -46,8 +46,9 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		const created = new Date(
 			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
 		)
+		const bondId = getBondId(bond)
 		return (
-			<TableRow key={getBondId(bond)}>
+			<TableRow key={bondId}>
 				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
 				<TableCell align="right">{poolLabel}</TableCell>
 				<TableCell align="right">{formatDate(created)}</TableCell>
@@ -55,6 +56,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">
 					{bond.status === "Active" ? (
 						<Button
+							id={`request-unbond-${bondId}`}
 							variant="contained"
 							color="primary"
 							onClick={() => onRequestUnbond(bond)}
@@ -63,6 +65,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 						</Button>
 					) : (
 						<Button
+							id={`unbond-${bondId}`}
 							variant="contained"
 							disabled={
 								bond.status === "Unbonded" ||

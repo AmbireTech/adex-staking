@@ -197,7 +197,11 @@ export default function Root() {
 						autoHideDuration={10000}
 						onClose={handleErrClose}
 					>
-						<Alert onClose={handleErrClose} severity="error">
+						<Alert
+							id={`err-aler-${snackbarErr.replaceAll(" ", "-").toLowerCase()}`}
+							onClose={handleErrClose}
+							severity="error"
+						>
 							{snackbarErr}
 						</Alert>
 					</Snackbar>

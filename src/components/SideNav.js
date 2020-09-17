@@ -162,6 +162,7 @@ function SideNav({
 
 							{!stats.connectedWalletAddress && (
 								<Box
+									id="side-nav-connect-wallet-overlay"
 									classes={{ root: classes.overlay }}
 									display="flex"
 									flexDirection="column"
@@ -191,6 +192,7 @@ function SideNav({
 					<List>
 						<Divider />
 						<RRListItem
+							id="side-nav-link-pools"
 							button
 							to={{ pathname: "/" }}
 							className={clsx({ [classes.active]: path === "/" })}
@@ -202,6 +204,7 @@ function SideNav({
 						</RRListItem>
 						<Divider />
 						<RRListItem
+							id="side-nav-link-stakings"
 							button
 							to={{ pathname: "/stakings" }}
 							className={clsx({ [classes.active]: path === "/stakings" })}
@@ -224,14 +227,22 @@ function SideNav({
 								<small>
 									{" "}
 									&copy; {new Date().getFullYear()} &nbsp;
-									<Anchor target="_blank" href={`https://adex.network`}>
+									<Anchor
+										id="external-link-adex-network"
+										target="_blank"
+										href={`https://adex.network`}
+									>
 										AdEx Network OÜ
 									</Anchor>
 								</small>
 							</div>
 							<div>
 								<small>
-									<Anchor target="_blank" href={`https://adex.network/tos`}>
+									<Anchor
+										id="external-link-adex-network-tos"
+										target="_blank"
+										href={`https://adex.network/tos`}
+									>
 										{"Terms and conditions"}
 									</Anchor>
 								</small>
@@ -239,6 +250,7 @@ function SideNav({
 							<div>
 								<small>
 									<Anchor
+										id="external-link-adex-token"
 										target="_blank"
 										href={`https://etherscan.io/address/${ADDR_ADX}`}
 									>
@@ -249,6 +261,7 @@ function SideNav({
 							<div>
 								<small>
 									<Anchor
+										id="external-link-adex-staking-overview"
 										target="_blank"
 										href="https://www.adex.network/blog/adex-defi-staking-overview/"
 									>

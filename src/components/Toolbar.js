@@ -18,6 +18,7 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 				<Hidden mdUp>
 					<Box>
 						<IconButton
+							id="mobile-burger-btn"
 							color="secondary"
 							aria-label="open drawer"
 							onClick={handleDrawerToggle}

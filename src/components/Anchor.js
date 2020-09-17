@@ -36,6 +36,7 @@ const Anchor = ({
 	color,
 	component,
 	className,
+	id,
 	...rest
 }) => {
 	const classes = useStyles()

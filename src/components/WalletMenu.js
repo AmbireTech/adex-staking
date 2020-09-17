@@ -39,6 +39,7 @@ export const Wallet = () => {
 		<Fragment>
 			{!chosenWalletType.name || !stats.connectedWalletAddress ? (
 				<Fab
+					id="connect-wallet-btn-topbar"
 					onClick={() => setConnectWallet(true)}
 					variant="extended"
 					color="secondary"
@@ -50,6 +51,7 @@ export const Wallet = () => {
 				</Fab>
 			) : (
 				<Chip
+					id="wallet-address-top-bar-copy"
 					onClick={() => {
 						copy(stats.connectedWalletAddress)
 						addSnack(

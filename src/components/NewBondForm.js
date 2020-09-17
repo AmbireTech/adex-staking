@@ -64,7 +64,11 @@ export default function NewBondForm({
 		<>
 			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
 			am familiar with the&nbsp;
-			<ExternalAnchor target="_blank" href="https://www.adex.network/tos/">
+			<ExternalAnchor
+				id="new-bond-form-adex-network-tos"
+				target="_blank"
+				href="https://www.adex.network/tos/"
+			>
 				Terms and conditions
 			</ExternalAnchor>
 			{stakingRulesFrag}.
@@ -124,6 +128,7 @@ export default function NewBondForm({
 			<Grid container spacing={2}>
 				<Grid item xs={6}>
 					<TextField
+						id="new-bond-form-amount-field"
 						required
 						label="ADX amount"
 						type="number"
@@ -142,6 +147,7 @@ export default function NewBondForm({
 					<Typography variant="subtitle2">
 						Max amount:
 						<Button
+							id="new-bond-form-max-amount-btn"
 							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}
@@ -154,6 +160,7 @@ export default function NewBondForm({
 					<FormControl required>
 						<InputLabel>Pool</InputLabel>
 						<Select
+							id="new-bond-form-pool-select"
 							style={minWidthStyle}
 							value={pool}
 							onChange={ev => updatePool(ev.target.value)}
@@ -162,7 +169,13 @@ export default function NewBondForm({
 								<em>None</em>
 							</MenuItem>
 							{pools.map(({ label, id }) => (
-								<MenuItem key={id} value={id}>
+								<MenuItem
+									id={`new-bond-form-values-${label
+										.replaceAll(" ", "-")
+										.toLowerCase()}`}
+									key={id}
+									value={id}
+								>
 									{label}
 								</MenuItem>
 							))}
@@ -203,6 +216,7 @@ export default function NewBondForm({
 						label={confirmationLabel}
 						control={
 							<Checkbox
+								id="new-bond-form-tos-check"
 								checked={confirmation}
 								onChange={ev => setConfirmation(ev.target.checked)}
 							/>
@@ -212,6 +226,12 @@ export default function NewBondForm({
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
+							id={`new-bond-stake-btn-${(bond
+								? bond.poolId
+								: "pool-not-selected"
+							)
+								.replaceAll(" ", "-")
+								.toLowerCase()}`}
 							disableElevation
 							disabled={
 								!(

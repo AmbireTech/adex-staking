@@ -20,10 +20,19 @@ export default function ConfirmationDialog({
 			<DialogTitle id="alert-dialog-title">{title}</DialogTitle>
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
-				<Button onClick={onDeny} color="primary">
+				<Button
+					id={`confirmation-dialog-deny-${confirmActionName
+						.replaceAll(" ", "-")
+						.toLowerCase()}`}
+					onClick={onDeny}
+					color="primary"
+				>
 					Cancel
 				</Button>
 				<Button
+					id={`confirmation-dialog-confirm-${confirmActionName
+						.replaceAll(" ", "-")
+						.toLowerCase()}`}
 					onClick={onConfirm}
 					variant="contained"
 					color="primary"
