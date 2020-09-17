@@ -228,7 +228,7 @@ export default function Root() {
 										createNewBond.bind(null, stats, chosenWalletType, bond)
 									)()
 								},
-								WalletType: chosenWalletType,
+								chosenWalletType,
 								isEarly: stats.userBonds.find(
 									x => x.nonce.toNumber() < 1597276800
 								)

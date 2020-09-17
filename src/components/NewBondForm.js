@@ -26,6 +26,7 @@ import {
 	Checkbox
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
+import { ExternalAnchor } from "./Anchor"
 
 export default function NewBondForm({
 	maxAmount,
@@ -33,7 +34,7 @@ export default function NewBondForm({
 	totalStake,
 	pools,
 	isEarly,
-	WalletType
+	chosenWalletType
 }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState("0.0")
@@ -63,13 +64,9 @@ export default function NewBondForm({
 		<>
 			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
 			am familiar with the&nbsp;
-			<a
-				href="https://www.adex.network/tos/"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
+			<ExternalAnchor target="_blank" href="https://www.adex.network/tos/">
 				Terms and conditions
-			</a>
+			</ExternalAnchor>
 			{stakingRulesFrag}.
 		</>
 	)
@@ -192,7 +189,7 @@ export default function NewBondForm({
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
-								<b>{`Please sign ALL ${WalletType ||
+								<b>{`Please sign ALL ${chosenWalletType.name ||
 									"Metamask"} transactions that pop up`}</b>
 							</Typography>
 						</Grid>
