@@ -30,9 +30,10 @@ export function CardRow({
 					display="flex"
 					flexDirection="row"
 					alignItems="center"
+					flexWrap="wrap"
 					justifyContent={justify || "flex-start"}
 				>
-					<Box>{text}</Box>
+					<Box style={{ wordBreak: "break-word" }}>{text}</Box>
 					{infoText && (
 						<Box ml={0.69} display="flex">
 							<Info title={infoText} />

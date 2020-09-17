@@ -5,7 +5,8 @@ import {
 	Button,
 	CircularProgress,
 	Typography,
-	SvgIcon
+	SvgIcon,
+	Tooltip
 } from "@material-ui/core"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
@@ -17,7 +18,7 @@ const useStyles = makeStyles(theme => {
 			position: "absolute",
 			width: 69,
 			height: 69,
-			top: -26,
+			top: -theme.spacing(3),
 			backgroundColor: theme.palette.common.white,
 			color: theme.palette.common.black,
 			display: "flex",
@@ -51,11 +52,14 @@ export default function PoolCard({
 	icon,
 	name,
 	totalStakedADX,
+	totalStakedUSD,
 	currentAPY,
-	weeklyYield,
+	dailyYield,
+	dailyYieldInfo,
 	onStakeBtnClick,
 	loading,
 	disabled,
+	disabledInfo,
 	loaded,
 	actions,
 	comingSoon
@@ -63,21 +67,29 @@ export default function PoolCard({
 	const classes = useStyles()
 
 	return (
-		<Box pt={4} height={1}>
+		<Box
+			m={2}
+			pt={3}
+			height={1}
+			width={280}
+			maxWidth="100%"
+			minHeight={420}
+			display="flex"
+			flexDirection="column"
+			alignItems="stretch"
+		>
 			<Box
-				height={1}
 				bgcolor={"background.paper"}
 				p={3}
 				pt={7}
-				width={320}
-				minHeight={420}
+				flex={1}
 				display="flex"
 				flexDirection="column"
 				alignItems="center"
 				position="relative"
 			>
 				<Box mb={3}>
-					<Typography align="center" variant="h4" color="textPrimary">
+					<Typography align="center" variant="h5" color="textPrimary">
 						{name}
 					</Typography>
 				</Box>
@@ -108,7 +120,7 @@ export default function PoolCard({
 							fontWeight={"fontWeightBold"}
 							fontSize={20}
 							text={totalStakedADX}
-							infoText={totalStakedADX}
+							// infoText={totalStakedADX}
 							justify="center"
 						/>
 
@@ -116,18 +128,18 @@ export default function PoolCard({
 							color="text.main"
 							fontWeight={"fontWeightBold"}
 							fontSize={14}
-							text={totalStakedADX}
-							infoText={totalStakedADX}
+							text={totalStakedUSD}
+							// infoText={totalStakedADX}
 							justify="center"
 							mb={3}
 						/>
 
 						<CardRow
-							color="text.main"
+							color="text.primary"
 							fontWeight={"fontWeightRegular"}
 							fontSize={14}
 							text={"Current annual yield (APY)"}
-							infoText={"Current annual yield (APY)"}
+							// infoText={"Current annual yield (APY)"}
 							justify="center"
 						/>
 
@@ -136,30 +148,40 @@ export default function PoolCard({
 							fontWeight={"fontWeightBold"}
 							fontSize={20}
 							text={currentAPY}
-							infoText={currentAPY}
+							// infoText={currentAPY}
 							justify="center"
 						/>
 
 						<CardRow
+							ool
 							color="text.main"
 							fontWeight={"fontWeightBold"}
 							fontSize={14}
-							text={`Weekly yield ${weeklyYield}`}
-							infoText={"Current annual yield (APY)"}
+							text={`Daily yield ${dailyYield}`}
+							infoText={dailyYieldInfo}
 							justify="center"
 							mb={3}
 						/>
 
-						<Button
-							fullWidth
-							variant="contained"
-							disableElevation
-							color="secondary"
-							onClick={onStakeBtnClick}
-							disabled={disabled}
+						<Tooltip
+							disableFocusListener={!disabled}
+							disableHoverListener={!disabled}
+							disableTouchListener={!disabled}
+							title={disabled ? disabledInfo : null}
 						>
-							{"Stake"}
-						</Button>
+							<div>
+								<Button
+									fullWidth
+									variant="contained"
+									disableElevation
+									color="secondary"
+									onClick={onStakeBtnClick}
+									disabled={disabled}
+								>
+									{"Stake"}
+								</Button>
+							</div>
+						</Tooltip>
 					</Box>
 				)}
 
