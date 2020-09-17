@@ -16,6 +16,7 @@ export const TEXT_SECONDARY = "#3314443D"
 export const TEXT_MAIN = "#7B7597"
 export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
+export const BACKGROUND_DEFAULT = "#131313"
 
 const palette = {
 	type: "dark",
@@ -50,7 +51,7 @@ const palette = {
 	background: {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
-		default: BLACK
+		default: BACKGROUND_DEFAULT
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {

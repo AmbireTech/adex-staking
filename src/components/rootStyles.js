@@ -21,6 +21,10 @@ export const styles = theme => {
 				paddingLeft: theme.spacing(4),
 				paddingRight: theme.spacing(4),
 				marginLeft: drawerWidth
+			},
+			[theme.breakpoints.down("sm")]: {
+				paddingLeft: theme.spacing(1),
+				paddingRight: theme.spacing(1)
 			}
 		},
 		toolbarActions: {
@@ -41,6 +45,10 @@ export const styles = theme => {
 				padding: theme.spacing(4),
 				paddingTop: theme.spacing(4),
 				marginLeft: drawerWidth
+			},
+			[theme.breakpoints.down("sm")]: {
+				paddingLeft: theme.spacing(1),
+				paddingRight: theme.spacing(1)
 			}
 		},
 		contentInner: {

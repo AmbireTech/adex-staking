@@ -13,7 +13,7 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 	const classes = useStyles()
 
 	return (
-		<AppBar color="transparent" position="static">
+		<AppBar elevation={0} color="transparent" position="static">
 			<Toolbar className={classes.toolbar}>
 				<Hidden mdUp>
 					<Box>

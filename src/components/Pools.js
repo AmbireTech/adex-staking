@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
-import { Box, SvgIcon } from "@material-ui/core"
+import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import { Loyalty as LoyaltyIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import {
@@ -17,6 +17,7 @@ const Pools = () => {
 	)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
+	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
 	return (
 		<Box>
@@ -28,7 +29,7 @@ const Pools = () => {
 					flexDirection="row"
 					flexWrap="wrap"
 					alignItems="stretch"
-					justifyContent="center"
+					justifyContent={justifyCenter ? "center" : "flex-start"}
 				>
 					<PoolCard
 						icon={

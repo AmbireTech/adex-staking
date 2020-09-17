@@ -50,7 +50,7 @@ export default function StatsCard({
 
 			{moreExtra && (
 				<CardRow
-					color="text.main"
+					color="warning.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 16 : 13}
 					text={moreExtra}
