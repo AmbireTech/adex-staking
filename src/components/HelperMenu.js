@@ -29,28 +29,36 @@ export const Help = () => {
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 				transformOrigin={{ vertical: "top", horizontal: "center" }}
 			>
-				<Link href="https://www.adex.network/tos" target="_blank">
+				<Link
+					color="inherit"
+					href="https://www.adex.network/tos"
+					target="_blank"
+				>
 					<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
 				</Link>
 				<Link
+					color="inherit"
 					href="https://help.adex.network/hc/en-us/categories/360002707720-Staking"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
 				</Link>
 				<Link
+					color="inherit"
 					href="https://github.com/adexnetwork/adex-protocol-eth"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
 				</Link>
 				<Link
+					color="inherit"
 					href="https://github.com/adexnetwork/adex-protocol-eth#audits"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>Audits</MenuItem>
 				</Link>
 				<Link
+					color="inherit"
 					href="https://coinmarketcap.com/currencies/adx-net/markets/"
 					target="_blank"
 				>
