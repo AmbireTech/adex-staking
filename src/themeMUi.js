@@ -52,7 +52,7 @@ const palette = {
 		paper: PAPER,
 		default: BLACK
 	},
-	overlay: fade(ALEX_GREY, 0.69),
+	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
 		action: fade(WHITE, 0.46),
 		hover: fade(WHITE, 0.069),
@@ -141,9 +141,9 @@ const theme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: PAPER
+				backgroundColor: fade(DARKER_PAPER, 0.9)
 			},
-			arrow: { color: PAPER }
+			arrow: { color: fade(DARKER_PAPER, 0.9) }
 		},
 		MuiDrawer: {
 			paperAnchorLeft: {
@@ -182,6 +182,31 @@ const theme = createMuiTheme({
 				color: defaultTheme.palette.error.contrastText
 			}
 		}
+		// MuiBackdrop: {
+		// 	root: {
+		// 		bottom: 'auto',
+		// 		right: 'auto',
+		// 		width: '100vw',
+		// 		height: '100vh'
+		// 	}
+		// },
+		// MuiDrawer: {
+		// 	root: {
+		// 		top: 0,
+		// 		left: 0,
+		// 		bottom: 'auto',
+		// 		right: 'auto',
+		// 		width: '100vw',
+		// 		height: '100vh',
+		// 		position: 'fixed'
+		// 	},
+		// 	paper: {
+		// 		top: 0,
+		// 		left: 0,
+		// 		height: '100%',
+		// 		position: 'absolute'
+		// 	}
+		// }
 	}
 })
 
@@ -189,3 +214,5 @@ export const themeMUI = responsiveFontSizes(theme, {
 	breakpoints: ["xs", "sm", "md", "lg", "xl"],
 	factor: 3
 })
+
+console.log("themeMUI", themeMUI)
