@@ -115,7 +115,8 @@ function SideNav({
 	onRequestUnbond,
 	onUnbond,
 	onClaimRewards,
-	onRestake
+	onRestake,
+	setConnectWallet
 }) {
 	const classes = useStyles()
 	const location = useLocation()
@@ -166,10 +167,13 @@ function SideNav({
 									flexDirection="column"
 									alignItems="center"
 									justifyContent="center"
+									color="secondary.main"
+									fontSize="h1.fontSize"
+									textAlign="center"
+									onClick={() => setConnectWallet(true)}
+									style={{ cursor: "pointer" }}
 								>
-									<Typography align="center" component="div" variant="h3">
-										{"CONNECT WALLET"}
-									</Typography>
+									{"CONNECT WALLET"}
 								</Box>
 							)}
 						</Box>
