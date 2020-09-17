@@ -101,7 +101,10 @@ const useStyles = makeStyles(theme => {
 			top: 0,
 			right: 0,
 			bottom: 0,
-			backgroundColor: theme.palette.overlay
+			backgroundColor: "transparent"
+		},
+		noUserData: {
+			opacity: 0.23
 		}
 	}
 })
@@ -141,7 +144,11 @@ function SideNav({
 						</ListItem>
 
 						<Box position="relative">
-							<ListItem>
+							<ListItem
+								className={clsx({
+									[classes.noUserData]: !stats.connectedWalletAddress
+								})}
+							>
 								{UserData({
 									prices,
 									stats,
