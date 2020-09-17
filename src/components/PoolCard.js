@@ -1,6 +1,13 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { Box, Button, CircularProgress, Typography } from "@material-ui/core"
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Typography,
+	SvgIcon
+} from "@material-ui/core"
+import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 
 const useStyles = makeStyles(theme => {
@@ -32,6 +39,10 @@ const useStyles = makeStyles(theme => {
 			height: "100%",
 			top: 0,
 			left: 0
+		},
+		comingSoon: {
+			width: 160,
+			height: 160
 		}
 	}
 })
@@ -46,7 +57,8 @@ export default function PoolCard({
 	loading,
 	disabled,
 	loaded,
-	actions
+	actions,
+	comingSoon
 }) {
 	const classes = useStyles()
 
@@ -67,66 +79,80 @@ export default function PoolCard({
 				</Typography>
 			</Box>
 
-			<CardRow
-				color="text.main"
-				fontWeight={"fontWeightRegular"}
-				fontSize={14}
-				text={"Total Staked"}
-				infoText={"Total Staked"}
-			/>
+			{comingSoon ? (
+				<Box>
+					<SvgIcon className={classes.comingSoon} color="primary">
+						<ComingSoonImg
+							width="100%"
+							height="100%"
+							// width={160}
+						/>
+					</SvgIcon>
+				</Box>
+			) : (
+				<Box>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={"Total Staked"}
+						infoText={"Total Staked"}
+					/>
 
-			<CardRow
-				color="warning.main"
-				fontWeight={"fontWeightBold"}
-				fontSize={20}
-				text={totalStakedADX}
-				infoText={totalStakedADX}
-			/>
+					<CardRow
+						color="warning.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={20}
+						text={totalStakedADX}
+						infoText={totalStakedADX}
+					/>
 
-			<CardRow
-				color="text.main"
-				fontWeight={"fontWeightBold"}
-				fontSize={14}
-				text={totalStakedADX}
-				infoText={totalStakedADX}
-				mb={3}
-			/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={14}
+						text={totalStakedADX}
+						infoText={totalStakedADX}
+						mb={3}
+					/>
 
-			<CardRow
-				color="text.main"
-				fontWeight={"fontWeightRegular"}
-				fontSize={14}
-				text={"Current annual yield (APY)"}
-				infoText={"Current annual yield (APY)"}
-			/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={"Current annual yield (APY)"}
+						infoText={"Current annual yield (APY)"}
+					/>
 
-			<CardRow
-				color="warning.main"
-				fontWeight={"fontWeightBold"}
-				fontSize={20}
-				text={currentAPY}
-				infoText={currentAPY}
-			/>
+					<CardRow
+						color="warning.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={20}
+						text={currentAPY}
+						infoText={currentAPY}
+					/>
 
-			<CardRow
-				color="text.main"
-				fontWeight={"fontWeightBold"}
-				fontSize={14}
-				text={`Weekly yield ${weeklyYield}`}
-				infoText={"Current annual yield (APY)"}
-				mb={3}
-			/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={14}
+						text={`Weekly yield ${weeklyYield}`}
+						infoText={"Current annual yield (APY)"}
+						mb={3}
+					/>
 
-			<Button
-				fullWidth
-				variant="contained"
-				disableElevation
-				color="secondary"
-				onClick={onStakeBtnClick}
-				disabled={disabled}
-			>
-				{"Stake"}
-			</Button>
+					<Button
+						fullWidth
+						variant="contained"
+						disableElevation
+						color="secondary"
+						onClick={onStakeBtnClick}
+						disabled={disabled}
+					>
+						{"Stake"}
+					</Button>
+				</Box>
+			)}
 
 			{!!loading && (
 				<Box
