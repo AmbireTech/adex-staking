@@ -17,6 +17,7 @@ export function CardRow({
 	fontWeight,
 	fontSize,
 	color,
+	justify,
 	...restBox
 }) {
 	return (
@@ -29,15 +30,11 @@ export function CardRow({
 					display="flex"
 					flexDirection="row"
 					alignItems="center"
+					justifyContent={justify || "flex-start"}
 				>
 					<Box>{text}</Box>
 					{infoText && (
-						<Box
-							ml={0.69}
-							display="flex"
-							// flexDirection='row'
-							// alignItems='center'
-						>
+						<Box ml={0.69} display="flex">
 							<Info title={infoText} />
 						</Box>
 					)}
