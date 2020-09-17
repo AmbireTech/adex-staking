@@ -73,7 +73,8 @@ export default function Root() {
 		onRequestUnbond: setToUnbond,
 		onUnbond,
 		onClaimRewards,
-		onRestake: setToRestake
+		onRestake: setToRestake,
+		setConnectWallet
 	})
 
 	const container = window !== undefined ? document.body : undefined
