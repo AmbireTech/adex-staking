@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => {
 			height: 69,
 			top: -theme.spacing(3),
 			backgroundColor: theme.palette.common.white,
-			color: theme.palette.common.black,
+			color: theme.palette.background.default,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
@@ -68,10 +68,12 @@ export default function PoolCard({
 
 	return (
 		<Box
-			m={2}
+			mr={1}
+			ml={1}
+			mb={2}
 			pt={3}
 			height={1}
-			width={280}
+			width={270}
 			maxWidth="100%"
 			minHeight={420}
 			display="flex"
