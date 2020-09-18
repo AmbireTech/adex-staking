@@ -2,8 +2,8 @@ import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles"
 import lime from "@material-ui/core/colors/lime"
 import { fade } from "@material-ui/core/styles/colorManipulator"
 
-const WHITE = "#fff"
-const BLACK = "#000"
+const WHITE = "#fafafa"
+const BLACK = "#0f0f0f"
 export const PRIMARY = "#494560"
 export const SECONDARY = "#ff4269"
 export const ALEX_GREY = "#3f3e3e"
@@ -51,7 +51,7 @@ const palette = {
 	background: {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
-		default: BACKGROUND_DEFAULT
+		default: BLACK
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
@@ -65,6 +65,10 @@ const palette = {
 		focus: fade(WHITE, 0.18),
 		focusOpacity: 0.18,
 		activatedOpacity: 0.18
+	},
+	common: {
+		white: WHITE,
+		black: BLACK
 	}
 }
 

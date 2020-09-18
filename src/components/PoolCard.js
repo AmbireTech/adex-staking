@@ -156,7 +156,6 @@ export default function PoolCard({
 						/>
 
 						<CardRow
-							ool
 							color="text.main"
 							fontWeight={"fontWeightBold"}
 							fontSize={14}

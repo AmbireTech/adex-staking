@@ -25,7 +25,7 @@ const Pools = () => {
 			<Box mt={4}>
 				<Box
 					display="flex"
-					flex
+					flex={1}
 					flexDirection="row"
 					flexWrap="wrap"
 					alignItems="stretch"
