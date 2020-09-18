@@ -72,7 +72,7 @@ export default function PoolCard({
 
 	return (
 		<Box
-			mr={1}
+			mr={2}
 			ml={1}
 			mb={2}
 			pt={3}
