@@ -14,7 +14,6 @@ import {
 	STAKING_RULES_URL
 } from "../helpers/constants"
 import {
-	Paper,
 	Grid,
 	TextField,
 	Typography,

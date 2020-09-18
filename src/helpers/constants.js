@@ -1,8 +1,8 @@
 import { bigNumberify, id } from "ethers/utils"
 import walletconnectLogo from "../walletconnect-logo.svg"
 import metamaskLogo from "../metamask-fox.svg"
-import trezorLogo from "../trezor.svg"
-import ledgerLogo from "../ledger.png"
+// import trezorLogo from "../trezor.svg"
+// import ledgerLogo from "../ledger.png"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
