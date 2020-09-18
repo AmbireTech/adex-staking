@@ -67,7 +67,8 @@ export default function Root() {
 		onWalletTypeSelect,
 		snackHooks,
 		chainWarning,
-		newBondPool
+		newBondPool,
+		setNewBondPool
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -222,6 +223,7 @@ export default function Root() {
 					>
 						<Fade in={isNewBondOpen}>
 							{NewBondForm({
+								setNewBondPool,
 								newBondPool,
 								pools: POOLS.filter(x => x.selectable),
 								totalStake: stats.totalStake,
