@@ -59,6 +59,14 @@ export const styles = theme => {
 			// [theme.breakpoints.down("sm")]: {
 			// 	paddingBottom: 146 + theme.spacing(2)
 			// }
+		},
+		modal: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
+		},
+		alwaysOnTop: {
+			zIndex: `${theme.zIndex.tooltip * 2} !important`
 		}
 	}
 }

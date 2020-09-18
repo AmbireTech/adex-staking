@@ -75,4 +75,6 @@ export const Wallets = [
 	}
 ]
 
+export const SUPPORTED_CHAINS = [{ id: 1, name: "mainnet" }]
+
 export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")

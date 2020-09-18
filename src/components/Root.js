@@ -9,7 +9,7 @@ import {
 	Snackbar,
 	useMediaQuery
 } from "@material-ui/core"
-import { Alert as MuiAlert } from "@material-ui/lab"
+import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
 import Stakings from "./Stakings"
 import Pools from "./Pools"
@@ -24,9 +24,10 @@ import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
 import { ShtarvolinkiSnack } from "./../Snack"
+import clsx from "clsx"
 
 function Alert(props) {
-	return <MuiAlert elevation={6} variant="filled" {...props} />
+	return <MuiAlert variant="filled" {...props} />
 }
 
 const { REACT_APP_RPC_URL } = process.env
@@ -64,7 +65,8 @@ export default function Root() {
 		getSigner,
 		prices,
 		onWalletTypeSelect,
-		snackHooks
+		snackHooks,
+		chainWarning
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -212,11 +214,7 @@ export default function Root() {
 					<Modal
 						open={isNewBondOpen}
 						onClose={() => setNewBondOpen(false)}
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center"
-						}}
+						className={classes.modal}
 						closeAfterTransition
 						BackdropComponent={Backdrop}
 						BackdropProps={{
@@ -239,6 +237,23 @@ export default function Root() {
 									x => x.nonce.toNumber() < 1597276800
 								)
 							})}
+						</Fade>
+					</Modal>
+					<Modal
+						open={chainWarning}
+						aria-labelledby="alert-chain-warning"
+						aria-describedby="alert-chain-description"
+						BackdropComponent={Backdrop}
+						className={clsx(classes.modal, classes.alwaysOnTop)}
+					>
+						<Fade in={chainWarning}>
+							<Alert severity="warning">
+								<AlertTitle>
+									{" "}
+									{"Unsupported ethereum chain detected"}
+								</AlertTitle>
+								{"Please, connect to mainnet ethereum network."}
+							</Alert>
 						</Fade>
 					</Modal>
 				</div>

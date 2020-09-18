@@ -12,7 +12,8 @@ import {
 	WALLET_CONNECT,
 	METAMASK,
 	TREZOR,
-	LEDGER
+	LEDGER,
+	SUPPORTED_CHAINS
 } from "./helpers/constants"
 import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
 import {
@@ -65,7 +66,14 @@ function getErrorMessage(error) {
 
 export default function Root() {
 	const { addSnack, ...snackHooks } = useSnack()
-	const { library, activate, error, deactivate } = useWeb3React()
+	const {
+		library,
+		activate,
+		error,
+		deactivate,
+		chainId,
+		account
+	} = useWeb3React()
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
@@ -80,6 +88,9 @@ export default function Root() {
 	const [chosenWalletTypeName, setChosenWalletTypeName] = useState(null)
 	const [chosenWalletType, setChosenWalletType] = useState({})
 	const [prices, setPrices] = useState({})
+	const [chainWarning, setChainWarning] = useState(false)
+
+	console.log("account", account)
 
 	useInactiveListener(!!connectWallet)
 
@@ -110,9 +121,24 @@ export default function Root() {
 	}, [chosenWalletType])
 
 	useEffect(() => {
-		setChosenWalletType({ name: chosenWalletTypeName, library })
+		setChosenWalletType({ name: chosenWalletTypeName, library, account })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletTypeName, library])
+	}, [chosenWalletTypeName, library, account])
+
+	useEffect(() => {
+		if (
+			!!chosenWalletTypeName &&
+			!!account &&
+			!!chainId &&
+			!SUPPORTED_CHAINS.some(chain => chainId === chain.id)
+		) {
+			setChainWarning(true)
+		} else {
+			setChainWarning(false)
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chosenWalletTypeName, chainId, account])
 
 	useEffect(() => {
 		if (!!error) {
@@ -207,6 +233,9 @@ export default function Root() {
 		prices,
 		onWalletTypeSelect,
 		addSnack,
-		snackHooks
+		snackHooks,
+		chainId,
+		account,
+		chainWarning
 	}
 }

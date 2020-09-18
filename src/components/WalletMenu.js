@@ -31,20 +31,20 @@ const useStyles = makeStyles(theme => ({
 export const Wallet = () => {
 	const classes = useStyles()
 
-	const { stats, setConnectWallet, chosenWalletType, addSnack } = useContext(
+	const { setConnectWallet, chosenWalletType, addSnack, account } = useContext(
 		AppContext
 	)
 
 	return (
 		<Fragment>
-			{!chosenWalletType.name || !stats.connectedWalletAddress ? (
+			{!chosenWalletType.name || !account ? (
 				<Fab
 					id="connect-wallet-btn-topbar"
 					onClick={() => setConnectWallet(true)}
 					variant="extended"
 					color="secondary"
 					size="medium"
-					disabled={chosenWalletType.name && !stats.connectedWalletAddress}
+					disabled={chosenWalletType.name && !account}
 				>
 					<AccountBalanceWalletIcon className={classes.fabIcon} />
 					{"Connect Wallet"}
@@ -53,25 +53,19 @@ export const Wallet = () => {
 				<Chip
 					id="wallet-address-top-bar-copy"
 					onClick={() => {
-						copy(stats.connectedWalletAddress)
-						addSnack(
-							`Address ${stats.connectedWalletAddress} copied to clipboard`,
-							"success"
-						)
+						copy(account)
+						addSnack(`Address ${account} copied to clipboard`, "success")
 					}}
 					clickable
 					classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
 					icon={
-						stats.connectedWalletAddress ? (
+						account ? (
 							<Icon>
-								<Jazzicon
-									diameter={26}
-									seed={jsNumberForAddress(stats.connectedWalletAddress)}
-								/>
+								<Jazzicon diameter={26} seed={jsNumberForAddress(account)} />
 							</Icon>
 						) : null
 					}
-					label={formatAddress(stats.connectedWalletAddress)}
+					label={formatAddress(account)}
 				/>
 			)}
 		</Fragment>
