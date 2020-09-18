@@ -247,10 +247,14 @@ export default function Root() {
 						className={clsx(classes.modal, classes.alwaysOnTop)}
 					>
 						<Fade in={chainWarning}>
-							<Alert severity="warning">
-								<AlertTitle>{"Unsupported ethereum chain detected"}</AlertTitle>
-								{"Please, connect to mainnet ethereum network."}
-							</Alert>
+							<div>
+								<Alert severity="warning">
+									<AlertTitle>
+										{"Unsupported ethereum chain detected"}
+									</AlertTitle>
+									{"Please, connect to mainnet ethereum network."}
+								</Alert>
+							</div>
 						</Fade>
 					</Modal>
 				</div>

@@ -124,12 +124,7 @@ export default function Root() {
 	}, [chosenWalletTypeName, library, account])
 
 	useEffect(() => {
-		if (
-			!!chosenWalletTypeName &&
-			!!account &&
-			!!chainId &&
-			!SUPPORTED_CHAINS.some(chain => chainId === chain.id)
-		) {
+		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
 			setChainWarning(true)
 		} else {
 			setChainWarning(false)
