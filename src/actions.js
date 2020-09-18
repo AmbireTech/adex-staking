@@ -1,4 +1,4 @@
-import { Contract, providers } from "ethers"
+import { Contract } from "ethers"
 import { bigNumberify, hexZeroPad } from "ethers/utils"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import { splitSig } from "adex-protocol-eth/js"
@@ -17,14 +17,12 @@ import {
 } from "./helpers/constants"
 import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
-import { getSigner } from "./ethereum"
-
-const { REACT_APP_INFURA_ID } = process.env
+import { getSigner, defaultProvider } from "./ethereum"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
-const provider = new providers.InfuraProvider("homestead", REACT_APP_INFURA_ID)
+const provider = defaultProvider
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const Core = new Contract(ADDR_CORE, CoreABI, provider)

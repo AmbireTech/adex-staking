@@ -248,10 +248,7 @@ export default function Root() {
 					>
 						<Fade in={chainWarning}>
 							<Alert severity="warning">
-								<AlertTitle>
-									{" "}
-									{"Unsupported ethereum chain detected"}
-								</AlertTitle>
+								<AlertTitle>{"Unsupported ethereum chain detected"}</AlertTitle>
 								{"Please, connect to mainnet ethereum network."}
 							</Alert>
 						</Fade>

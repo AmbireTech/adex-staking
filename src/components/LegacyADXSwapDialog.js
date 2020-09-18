@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react"
-import { Contract, getDefaultProvider } from "ethers"
+import { Contract } from "ethers"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import { formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
+import { defaultProvider } from "./../ethereum"
 
 const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 
-const provider = getDefaultProvider()
+const provider = defaultProvider
 const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 
 export default function LegacyADXSwapDialog(
