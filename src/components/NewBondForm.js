@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { getPool } from "../helpers/bonds"
 import {
 	parseADX,
@@ -108,12 +108,16 @@ export default function NewBondForm({
 	}
 
 	const updatePool = value => {
-		const amountBN = parseADX(stakingAmount)
-		const poolToValidate = getPool(value)
-		validateFields({ amountBN, poolToValidate })
 		setNewBondPool(value)
-		setBond({ ...bond, poolId: value })
 	}
+
+	useEffect(() => {
+		const amountBN = parseADX(stakingAmount)
+		const poolToValidate = getPool(newBondPool)
+		validateFields({ amountBN, poolToValidate })
+		setBond({ ...bond, poolId: newBondPool })
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [newBondPool])
 
 	const farmer = (
 		<span role="img" aria-label="farmer">
