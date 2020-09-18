@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Box, Typography, Paper } from "@material-ui/core"
+import { Box, Typography } from "@material-ui/core"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import SectionHeader from "./SectionHeader"

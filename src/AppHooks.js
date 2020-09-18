@@ -90,8 +90,6 @@ export default function Root() {
 	const [prices, setPrices] = useState({})
 	const [chainWarning, setChainWarning] = useState(false)
 
-	console.log("account", account)
-
 	useInactiveListener(!!connectWallet)
 
 	const refreshStats = () =>

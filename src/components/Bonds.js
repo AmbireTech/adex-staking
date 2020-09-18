@@ -10,7 +10,6 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { themeMUI } from "../themeMUi"
 import { UNBOND_DAYS, ZERO } from "../helpers/constants"
 import {
 	formatADXPretty,

@@ -219,5 +219,3 @@ export const themeMUI = responsiveFontSizes(theme, {
 	breakpoints: ["xs", "sm", "md", "lg", "xl"],
 	factor: 3
 })
-
-console.log("themeMUI", themeMUI)
