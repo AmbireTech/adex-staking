@@ -62,17 +62,17 @@ export const Wallets = [
 		title: `Connect with ${WALLET_CONNECT}`,
 		name: WALLET_CONNECT,
 		icon: walletconnectLogo
-	},
-	{
-		title: `Connect with ${TREZOR}`,
-		name: TREZOR,
-		icon: trezorLogo
-	},
-	{
-		title: `Connect with ${LEDGER}`,
-		name: LEDGER,
-		icon: ledgerLogo
 	}
+	// {
+	// 	title: `Connect with ${TREZOR}`,
+	// 	name: TREZOR,
+	// 	icon: trezorLogo
+	// },
+	// {
+	// 	title: `Connect with ${LEDGER}`,
+	// 	name: LEDGER,
+	// 	icon: ledgerLogo
+	// }
 ]
 
 export const SUPPORTED_CHAINS = [{ id: 1, name: "mainnet" }]
