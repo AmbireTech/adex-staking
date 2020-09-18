@@ -24,7 +24,8 @@ import {
 	Select,
 	MenuItem,
 	FormControlLabel,
-	Checkbox
+	Checkbox,
+	Box
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
@@ -126,14 +127,21 @@ export default function NewBondForm({
 	)
 
 	return (
-		<Paper
-			elevation={2}
-			style={{ width: "500px", padding: themeMUI.spacing(2, 4, 3) }}
+		<Box
+			width={666}
+			maxWidth={1}
+			m={1}
+			maxHeight="90vh"
+			p={2}
+			pb={4}
+			bgcolor="background.paper"
+			overflow="auto"
 		>
 			<h2>Create a bond</h2>
 			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12} sm={6}>
 					<TextField
+						fullWidth
 						id="new-bond-form-amount-field"
 						required
 						label="ADX amount"
@@ -149,21 +157,23 @@ export default function NewBondForm({
 							setStakingAmount(amount.toString(10))
 						}}
 						helperText={amountErr ? amountErrText : null}
-					></TextField>
-					<Typography variant="subtitle2">
-						Max amount:
+					/>
+					<Box mt={1}>
 						<Button
+							fullWidth
+							size="small"
 							id="new-bond-form-max-amount-btn"
 							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}
 						>
-							{formatADXPretty(maxAmount)} ADX
+							{`Max amount: ${"233,000,5465" ||
+								formatADXPretty(maxAmount)} ADX`}
 						</Button>
-					</Typography>
+					</Box>
 				</Grid>
-				<Grid item xs={6}>
-					<FormControl required>
+				<Grid item xs={12} sm={6}>
+					<FormControl fullWidth required>
 						<InputLabel>Pool</InputLabel>
 						<Select
 							id="new-bond-form-pool-select"
@@ -251,6 +261,6 @@ export default function NewBondForm({
 					</FormControl>
 				</Grid>
 			</Grid>
-		</Paper>
+		</Box>
 	)
 }
