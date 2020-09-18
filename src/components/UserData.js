@@ -11,7 +11,7 @@ import {
 export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 	return (
 		<Box width={1}>
-			<Box mb={2}>
+			<Box mb={1.5}>
 				{StatsCard({
 					size: "large",
 					loaded: stats.loaded,
@@ -30,7 +30,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				})}
 			</Box>
 
-			<Box mb={2}>
+			<Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Available on wallet",
@@ -42,7 +42,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				})}
 			</Box>
 
-			<Box mb={2}>
+			<Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: "Active Stake",
@@ -54,7 +54,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				})}
 			</Box>
 
-			<Box mb={2}>
+			<Box>
 				{RewardCard({
 					prices,
 					rewardChannels: stats.rewardChannels,

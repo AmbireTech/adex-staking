@@ -22,7 +22,7 @@ export default function StatsCard({
 				<CardRow
 					color="text.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 16 : 13}
+					fontSize={size === "large" ? 18 : 15}
 					text={title}
 					infoText={titleInfo}
 				/>
@@ -32,7 +32,7 @@ export default function StatsCard({
 				<CardRow
 					color="warning.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 19 : 15}
+					fontSize={size === "large" ? 21 : 17}
 					text={subtitle}
 					infoText={subtitleInfo}
 				/>
@@ -42,7 +42,7 @@ export default function StatsCard({
 				<CardRow
 					color="text.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 16 : 13}
+					fontSize={size === "large" ? 18 : 15}
 					text={extra}
 					infoText={extraInfo}
 				/>
@@ -52,7 +52,7 @@ export default function StatsCard({
 				<CardRow
 					color="warning.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 16 : 13}
+					fontSize={size === "large" ? 18 : 15}
 					text={moreExtra}
 					infoText={moreExtraInfo}
 				/>
