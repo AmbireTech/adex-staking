@@ -166,8 +166,7 @@ export default function NewBondForm({
 								updateStakingAmountBN(maxAmount)
 							}}
 						>
-							{`Max amount: ${"233,000,5465" ||
-								formatADXPretty(maxAmount)} ADX`}
+							{`Max amount: ${formatADXPretty(maxAmount)} ADX`}
 						</Button>
 					</Box>
 				</Grid>
