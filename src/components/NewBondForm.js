@@ -34,16 +34,17 @@ export default function NewBondForm({
 	totalStake,
 	pools,
 	isEarly,
-	chosenWalletType
+	chosenWalletType,
+	newBondPool,
+	setNewBondPool
 }) {
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
-	const [pool, setPool] = useState("")
 	const minWidthStyle = { minWidth: "180px" }
-	const activePool = getPool(pool)
+	const activePool = getPool(newBondPool)
 
 	const onAction = () => {
 		setConfirmation(false)
@@ -109,7 +110,7 @@ export default function NewBondForm({
 		const amountBN = parseADX(stakingAmount)
 		const poolToValidate = getPool(value)
 		validateFields({ amountBN, poolToValidate })
-		setPool(value)
+		setNewBondPool(value)
 		setBond({ ...bond, poolId: value })
 	}
 
@@ -162,7 +163,7 @@ export default function NewBondForm({
 						<Select
 							id="new-bond-form-pool-select"
 							style={minWidthStyle}
-							value={pool}
+							value={newBondPool}
 							onChange={ev => updatePool(ev.target.value)}
 						>
 							<MenuItem value={""}>

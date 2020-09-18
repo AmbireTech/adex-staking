@@ -13,7 +13,12 @@ const useStyles = makeStyles(theme => ({
 const SectionHeader = ({ title, actions }) => {
 	const classes = useStyles()
 
-	const { stats, setNewBondOpen, chosenWalletType } = useContext(AppContext)
+	const {
+		stats,
+		setNewBondOpen,
+		chosenWalletType,
+		setNewBondPool
+	} = useContext(AppContext)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 
 	return (
@@ -35,7 +40,10 @@ const SectionHeader = ({ title, actions }) => {
 									.replaceAll(" ", "-")
 									.toLowerCase()}`}
 								disabled={!stats.loaded || !canStake}
-								onClick={() => setNewBondOpen(true)}
+								onClick={() => {
+									setNewBondPool("")
+									setNewBondOpen(true)
+								}}
 								variant="extended"
 								color="secondary"
 								size="medium"

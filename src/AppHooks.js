@@ -89,6 +89,7 @@ export default function Root() {
 	const [chosenWalletType, setChosenWalletType] = useState({})
 	const [prices, setPrices] = useState({})
 	const [chainWarning, setChainWarning] = useState(false)
+	const [newBondPool, setNewBondPool] = useState(null)
 
 	useInactiveListener(!!connectWallet)
 
@@ -229,6 +230,8 @@ export default function Root() {
 		snackHooks,
 		chainId,
 		account,
-		chainWarning
+		chainWarning,
+		newBondPool,
+		setNewBondPool
 	}
 }

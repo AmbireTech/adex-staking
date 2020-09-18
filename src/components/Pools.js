@@ -10,12 +10,16 @@ import {
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import SectionHeader from "./SectionHeader"
-import { UNBOND_DAYS } from "../helpers/constants"
+import { UNBOND_DAYS, POOLS } from "../helpers/constants"
 
 const Pools = () => {
-	const { stats, setNewBondOpen, chosenWalletType, prices } = useContext(
-		AppContext
-	)
+	const {
+		stats,
+		setNewBondOpen,
+		chosenWalletType,
+		prices,
+		setNewBondPool
+	} = useContext(AppContext)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
@@ -50,7 +54,11 @@ const Pools = () => {
 						weeklyYieldInfo={[
 							`Current daily yield ${(tomAPY / 365).toFixed(4)}%`
 						]}
-						onStakeBtnClick={() => setNewBondOpen(true)}
+						onStakeBtnClick={() => {
+							setNewBondPool(POOLS[0].id)
+							setNewBondOpen(true)
+						}}
+						loadin
 						loading={!stats.loaded}
 						disabled={!canStake}
 						disabledInfo={"Connect wallet to stake"}
@@ -70,7 +78,9 @@ const Pools = () => {
 						currentAPY={`${(
 							getApproxAPY(null, stats.totalStakeTom) * 100
 						).toFixed(2)}% APY`}
-						onStakeBtnClick={() => setNewBondOpen(true)}
+						onStakeBtnClick={() => {
+							setNewBondOpen(true)
+						}}
 						loading={!stats.loaded}
 						disabled={!canStake}
 						comingSoon

@@ -66,7 +66,8 @@ export default function Root() {
 		prices,
 		onWalletTypeSelect,
 		snackHooks,
-		chainWarning
+		chainWarning,
+		newBondPool
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -80,6 +81,7 @@ export default function Root() {
 	})
 
 	const container = window !== undefined ? document.body : undefined
+	console.log("newBondPool 1", newBondPool)
 
 	return (
 		<div className={classes.root}>
@@ -223,6 +225,7 @@ export default function Root() {
 					>
 						<Fade in={isNewBondOpen}>
 							{NewBondForm({
+								newBondPool,
 								pools: POOLS.filter(x => x.selectable),
 								totalStake: stats.totalStake,
 								maxAmount: stats.userBalance,
