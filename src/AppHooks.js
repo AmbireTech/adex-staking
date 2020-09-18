@@ -1,9 +1,5 @@
-import { useEffect, useState, useCallback } from "react"
-import {
-	Web3ReactProvider,
-	useWeb3React,
-	UnsupportedChainIdError
-} from "@web3-react/core"
+import { useEffect, useState } from "react"
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core"
 import {
 	NoEthereumProviderError,
 	UserRejectedRequestError as UserRejectedRequestErrorInjected
@@ -18,13 +14,7 @@ import {
 	TREZOR,
 	LEDGER
 } from "./helpers/constants"
-import {
-	injected,
-	trezor,
-	ledger,
-	walletconnect,
-	REACT_APP_RPC_URL
-} from "./helpers/connector"
+import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
 import {
 	EMPTY_STATS,
 	loadStats,
@@ -44,6 +34,16 @@ const connectorsByName = {
 	[LEDGER]: ledger
 }
 
+function tryGetErrMessage(error) {
+	if (error && error.message) {
+		return error.message
+	} else if (typeof error === "string") {
+		return error
+	} else {
+		return null
+	}
+}
+
 function getErrorMessage(error) {
 	if (error instanceof NoEthereumProviderError) {
 		return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
@@ -54,6 +54,9 @@ function getErrorMessage(error) {
 		error instanceof UserRejectedRequestErrorWalletConnect
 	) {
 		return "Please authorize this website to access your Ethereum account."
+	} else if (tryGetErrMessage(error)) {
+		console.error(error)
+		return tryGetErrMessage(error)
 	} else {
 		console.error(error)
 		return "An unknown error occurred. Check the console for more details."
