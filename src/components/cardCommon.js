@@ -1,11 +1,29 @@
-import React from "react"
+import React, { Fragment } from "react"
 import { Box, Tooltip } from "@material-ui/core"
 import Typography from "@material-ui/core/Typography"
 import { InfoSharp as InfoIcon } from "@material-ui/icons"
 
-export function Info({ title, color, icon }) {
+const ExtraLabel = ({ label = "" }) =>
+	Array.isArray(label) ? (
+		<Fragment>
+			{label.map((x, index) => (
+				<Typography
+					key={index}
+					display="block"
+					variant="caption"
+					color="inherit"
+				>
+					{x}
+				</Typography>
+			))}
+		</Fragment>
+	) : (
+		label
+	)
+
+export function Info({ title }) {
 	return (
-		<Tooltip title={title}>
+		<Tooltip title={<ExtraLabel label={title} />}>
 			<InfoIcon fontSize="inherit" />
 		</Tooltip>
 	)

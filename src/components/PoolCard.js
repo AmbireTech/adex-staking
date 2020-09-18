@@ -55,12 +55,15 @@ export default function PoolCard({
 	totalStakedADX,
 	totalStakedUSD,
 	currentAPY,
-	dailyYield,
-	dailyYieldInfo,
+	weeklyYield,
+	weeklyYieldInfo,
 	onStakeBtnClick,
 	loading,
 	disabled,
 	disabledInfo,
+	lockupPeriodTitle,
+	lockupPeriodInfo,
+	lockupPeriod,
 	loaded,
 	actions,
 	comingSoon
@@ -73,7 +76,6 @@ export default function PoolCard({
 			ml={1}
 			mb={2}
 			pt={3}
-			height={1}
 			width={270}
 			maxWidth="100%"
 			minHeight={420}
@@ -159,8 +161,28 @@ export default function PoolCard({
 							color="text.main"
 							fontWeight={"fontWeightBold"}
 							fontSize={14}
-							text={`Daily yield ${dailyYield}`}
-							infoText={dailyYieldInfo}
+							text={`Weekly yield ${weeklyYield}`}
+							infoText={weeklyYieldInfo}
+							justify="center"
+							mb={3}
+						/>
+
+						<CardRow
+							color="text.main"
+							fontWeight={"fontWeightRegular"}
+							fontSize={14}
+							text={lockupPeriodTitle}
+							infoText={lockupPeriodInfo}
+							// infoText={"Current annual yield (APY)"}
+							justify="center"
+						/>
+
+						<CardRow
+							color="text.primary"
+							fontWeight={"fontWeightRegular"}
+							fontSize={14}
+							text={lockupPeriod}
+							// infoText={"Current annual yield (APY)"}
 							justify="center"
 							mb={3}
 						/>
@@ -169,7 +191,7 @@ export default function PoolCard({
 							disableFocusListener={!disabled}
 							disableHoverListener={!disabled}
 							disableTouchListener={!disabled}
-							title={disabled ? disabledInfo : null}
+							title={disabled ? disabledInfo : ""}
 						>
 							<div>
 								<Button

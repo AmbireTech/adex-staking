@@ -10,6 +10,7 @@ import {
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import SectionHeader from "./SectionHeader"
+import { UNBOND_DAYS } from "../helpers/constants"
 
 const Pools = () => {
 	const { stats, setNewBondOpen, chosenWalletType, prices } = useContext(
@@ -45,12 +46,20 @@ const Pools = () => {
 							stats.totalStakeTom
 						)}`}
 						currentAPY={`${tomAPY.toFixed(2)}% APY`}
-						dailyYield={`${(tomAPY / 365).toFixed(4)}% DPY`}
-						dailyYieldInfo={`Current daily yield ${(tomAPY / 365).toFixed(4)}%`}
+						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)}%`}
+						weeklyYieldInfo={[
+							`Current daily yield ${(tomAPY / 365).toFixed(4)}%`
+						]}
 						onStakeBtnClick={() => setNewBondOpen(true)}
 						loading={!stats.loaded}
 						disabled={!canStake}
 						disabledInfo={"Connect wallet to stake"}
+						lockupPeriodTitle={"Unbond period"}
+						lockupPeriodInfo={`The unbond period is the amount 
+							you must wait before withdrawing your ADX tokens. 
+							From the moment you request unbonding, the ${UNBOND_DAYS} days start counting. 
+							During those days, you won't receive staking rewards.`}
+						lockupPeriod={`${UNBOND_DAYS} days`}
 					/>
 
 					<PoolCard
