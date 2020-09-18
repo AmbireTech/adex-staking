@@ -13,6 +13,7 @@ export const Help = () => {
 	return (
 		<>
 			<Button
+				id="help-menu-btn"
 				size="large"
 				startIcon={<HelpIcon size="large" />}
 				onClick={openHelpMenu}
@@ -20,7 +21,7 @@ export const Help = () => {
 				Help
 			</Button>
 			<Menu
-				id="simple-menu"
+				id="help-menu-menu"
 				anchorEl={menuEl}
 				open={Boolean(menuEl)}
 				keepMounted

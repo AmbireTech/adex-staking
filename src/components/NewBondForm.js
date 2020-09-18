@@ -170,7 +170,7 @@ export default function NewBondForm({
 							</MenuItem>
 							{pools.map(({ label, id }) => (
 								<MenuItem
-									id={`new-bond-form-values-${label
+									id={`new-bond-form-values-${(label || "")
 										.replaceAll(" ", "-")
 										.toLowerCase()}`}
 									key={id}
@@ -227,7 +227,7 @@ export default function NewBondForm({
 					<FormControl style={{ display: "flex" }}>
 						<Button
 							id={`new-bond-stake-btn-${(bond
-								? bond.poolId
+								? bond.poolId || "bond"
 								: "pool-not-selected"
 							)
 								.replaceAll(" ", "-")

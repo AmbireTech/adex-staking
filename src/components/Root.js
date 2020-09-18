@@ -198,7 +198,9 @@ export default function Root() {
 						onClose={handleErrClose}
 					>
 						<Alert
-							id={`err-aler-${snackbarErr.replaceAll(" ", "-").toLowerCase()}`}
+							id={`err-aler-${(snackbarErr || "")
+								.replaceAll(" ", "-")
+								.toLowerCase()}`}
 							onClose={handleErrClose}
 							severity="error"
 						>

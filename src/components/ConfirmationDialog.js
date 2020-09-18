@@ -21,7 +21,7 @@ export default function ConfirmationDialog({
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
 				<Button
-					id={`confirmation-dialog-deny-${confirmActionName
+					id={`confirmation-dialog-deny-${(confirmActionName || "")
 						.replaceAll(" ", "-")
 						.toLowerCase()}`}
 					onClick={onDeny}
@@ -30,7 +30,7 @@ export default function ConfirmationDialog({
 					Cancel
 				</Button>
 				<Button
-					id={`confirmation-dialog-confirm-${confirmActionName
+					id={`confirmation-dialog-confirm-${(confirmActionName || "")
 						.replaceAll(" ", "-")
 						.toLowerCase()}`}
 					onClick={onConfirm}

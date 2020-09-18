@@ -31,7 +31,7 @@ const SectionHeader = ({ title, actions }) => {
 					? actions
 					: chosenWalletType.name && (
 							<Fab
-								id={`section-header-fab-stake-adx-${title
+								id={`section-header-fab-stake-adx-${(title || "")
 									.replaceAll(" ", "-")
 									.toLowerCase()}`}
 								disabled={!stats.loaded || !canStake}

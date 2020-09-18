@@ -27,7 +27,7 @@ export default function ChooseWalletDialog({
 			<List>
 				{Wallets.map(({ icon, name = "", title }) => (
 					<ListItem
-						id={`connect-wallet-select-${name
+						id={`connect-wallet-select-${(name || "")
 							.replaceAll(" ", "-")
 							.toLowerCase()}`}
 						disabled={disableNonBrowserWallets && name !== METAMASK}
