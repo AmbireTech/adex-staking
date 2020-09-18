@@ -6,6 +6,7 @@ import {
 	DialogActions,
 	Button
 } from "@material-ui/core"
+import { toIdAttributeString } from "../helpers/formatting"
 
 export default function ConfirmationDialog({
 	isOpen,
@@ -21,18 +22,18 @@ export default function ConfirmationDialog({
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
 				<Button
-					id={`confirmation-dialog-deny-${(confirmActionName || "")
-						.replaceAll(" ", "-")
-						.toLowerCase()}`}
+					id={`confirmation-dialog-deny-${toIdAttributeString(
+						confirmActionName
+					)}`}
 					onClick={onDeny}
 					color="primary"
 				>
 					Cancel
 				</Button>
 				<Button
-					id={`confirmation-dialog-confirm-${(confirmActionName || "")
-						.replaceAll(" ", "-")
-						.toLowerCase()}`}
+					id={`confirmation-dialog-confirm-${toIdAttributeString(
+						confirmActionName
+					)}`}
 					onClick={onConfirm}
 					variant="contained"
 					color="primary"

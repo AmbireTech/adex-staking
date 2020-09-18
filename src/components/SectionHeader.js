@@ -3,6 +3,7 @@ import AppContext from "../AppContext"
 import { makeStyles } from "@material-ui/core/styles"
 import { Fab, Box, Typography } from "@material-ui/core"
 import { AddSharp as AddIcon } from "@material-ui/icons"
+import { toIdAttributeString } from "../helpers/formatting"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -36,9 +37,9 @@ const SectionHeader = ({ title, actions }) => {
 					? actions
 					: chosenWalletType.name && (
 							<Fab
-								id={`section-header-fab-stake-adx-${(title || "")
-									.replaceAll(" ", "-")
-									.toLowerCase()}`}
+								id={`section-header-fab-stake-adx-${toIdAttributeString(
+									title
+								)}`}
 								disabled={!stats.loaded || !canStake}
 								onClick={() => {
 									setNewBondPool("")

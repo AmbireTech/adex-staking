@@ -4,7 +4,8 @@ import {
 	parseADX,
 	formatADX,
 	formatADXPretty,
-	getApproxAPY
+	getApproxAPY,
+	toIdAttributeString
 } from "../helpers/formatting"
 import {
 	UNBOND_DAYS,
@@ -171,9 +172,7 @@ export default function NewBondForm({
 							</MenuItem>
 							{pools.map(({ label, id }) => (
 								<MenuItem
-									id={`new-bond-form-values-${(label || "")
-										.replaceAll(" ", "-")
-										.toLowerCase()}`}
+									id={`new-bond-form-values-${toIdAttributeString(label)}`}
 									key={id}
 									value={id}
 								>
@@ -227,12 +226,9 @@ export default function NewBondForm({
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
-							id={`new-bond-stake-btn-${(bond
-								? bond.poolId || "bond"
-								: "pool-not-selected"
-							)
-								.replaceAll(" ", "-")
-								.toLowerCase()}`}
+							id={`new-bond-stake-btn-${toIdAttributeString(
+								bond ? bond.poolId || "bond" : "pool-not-selected"
+							)}`}
 							disableElevation
 							disabled={
 								!(

@@ -19,7 +19,7 @@ import ConfirmationDialog from "./ConfirmationDialog"
 import { AppToolbar } from "./Toolbar"
 import SideNav from "./SideNav"
 import { ZERO, UNBOND_DAYS, POOLS } from "../helpers/constants"
-import { formatADXPretty } from "../helpers/formatting"
+import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
@@ -81,7 +81,6 @@ export default function Root() {
 	})
 
 	const container = window !== undefined ? document.body : undefined
-	console.log("newBondPool 1", newBondPool)
 
 	return (
 		<div className={classes.root}>
@@ -202,9 +201,7 @@ export default function Root() {
 						onClose={handleErrClose}
 					>
 						<Alert
-							id={`err-aler-${(snackbarErr || "")
-								.replaceAll(" ", "-")
-								.toLowerCase()}`}
+							id={`err-aler-${toIdAttributeString(snackbarErr)}`}
 							onClose={handleErrClose}
 							severity="error"
 						>

@@ -9,6 +9,7 @@ import {
 	ListItemIcon
 } from "@material-ui/core"
 import { Wallets, METAMASK } from "../helpers/constants"
+import { toIdAttributeString } from "../helpers/formatting"
 
 export default function ChooseWalletDialog({
 	title = "Select Wallet",
@@ -27,9 +28,7 @@ export default function ChooseWalletDialog({
 			<List>
 				{Wallets.map(({ icon, name = "", title }) => (
 					<ListItem
-						id={`connect-wallet-select-${(name || "")
-							.replaceAll(" ", "-")
-							.toLowerCase()}`}
+						id={`connect-wallet-select-${toIdAttributeString(name)}`}
 						disabled={disableNonBrowserWallets && name !== METAMASK}
 						button
 						onClick={() => handleListItemClick(name)}
