@@ -160,7 +160,11 @@ const theme = createMuiTheme({
 		},
 		MuiAlert: {
 			root: {
-				borderRadius: 0
+				borderRadius: 0,
+				maxWidth: "100%"
+			},
+			message: {
+				wordBreak: "break-word"
 			},
 			outlinedSuccess: {
 				backgroundColor: BLACK
@@ -186,15 +190,12 @@ const theme = createMuiTheme({
 			filledError: {
 				color: defaultTheme.palette.error.contrastText
 			}
+		},
+		MuiBackdrop: {
+			root: {
+				backgroundColor: fade(BLACK, 0.69)
+			}
 		}
-		// MuiBackdrop: {
-		// 	root: {
-		// 		bottom: 'auto',
-		// 		right: 'auto',
-		// 		width: '100vw',
-		// 		height: '100vh'
-		// 	}
-		// },
 		// MuiDrawer: {
 		// 	root: {
 		// 		top: 0,
