@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react"
-import { Contract, getDefaultProvider } from "ethers"
+import { Contract } from "ethers"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import { formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
+import { defaultProvider } from "./../ethereum"
 
 const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 
-const provider = getDefaultProvider()
+const provider = defaultProvider
 const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 
 export default function LegacyADXSwapDialog(
 	getSigner,
 	wrapDoingTxns,
-	WalletType
+	chosenWalletType
 ) {
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
 	const [isSwapInPrg, setSwapInPrg] = useState(false)
 
 	useEffect(() => {
+		if (!getSigner || !chosenWalletType.name) return
 		const refreshAmount = async () => {
-			const signer = await getSigner()
+			const signer = await getSigner(chosenWalletType)
 			if (!signer) return
 			const walletAddr = await signer.getAddress()
 			setAmount(await LegacyToken.balanceOf(walletAddr))
 		}
 		refreshAmount().catch(e => console.error(e))
-	}, [WalletType])
+	}, [getSigner, chosenWalletType])
 
 	const farmer = (
 		<span role="img" aria-label="farmer">
@@ -61,7 +63,8 @@ export default function LegacyADXSwapDialog(
 				<i>
 					<b>Swap now</b>
 				</i>{" "}
-				{`button and signing the ${WalletType || "MetaMask"} transactions.`}
+				{`button and signing the ${chosenWalletType.name ||
+					"MetaMask"} transactions.`}
 			</p>
 			<p>
 				<b>
@@ -80,7 +83,7 @@ export default function LegacyADXSwapDialog(
 		</div>
 	)
 	const onSwap = wrapDoingTxns(
-		swapTokens.bind(null, setAmount, amount, getSigner)
+		swapTokens.bind(null, setAmount, amount, getSigner, chosenWalletType)
 	)
 	const dialog = ConfirmationDialog({
 		isOpen: amount.gt(ZERO),
@@ -109,9 +112,9 @@ export default function LegacyADXSwapDialog(
 	)
 }
 
-async function swapTokens(setAmount, amount, getSigner) {
+async function swapTokens(setAmount, amount, getSigner, chosenWalletType) {
 	setAmount(ZERO)
-	const signer = await getSigner()
+	const signer = await getSigner(chosenWalletType)
 	const walletAddr = await signer.getAddress()
 	const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
 	const newTokenWithSigner = new Contract(

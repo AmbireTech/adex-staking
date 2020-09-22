@@ -1,16 +1,25 @@
 import React from "react"
 import StatsCard from "./StatsCard"
-import { ZERO, ADDR_ADX } from "../helpers/constants"
+import { ZERO } from "../helpers/constants"
 import { Button, Box } from "@material-ui/core"
-import { formatDAIPretty, formatADXPretty } from "../helpers/formatting"
+import {
+	formatDAIPretty,
+	formatADXPretty,
+	getADXInUSD,
+	getDAIInUSD,
+	getUSDFormatted
+} from "../helpers/formatting"
 
 export default function RewardCard({
 	rewardChannels,
 	userBonds,
+	totalRewardADX,
+	totalRewardDAI,
 	onClaimRewards,
-	onRestake
+	onRestake,
+	prices
 }) {
-	const title = "Your total unclaimed reward"
+	const title = "Unclaimed rewards"
 	const loaded = rewardChannels != null
 	if (!loaded) {
 		return StatsCard({
@@ -20,34 +29,33 @@ export default function RewardCard({
 			subtitle: "0.00 DAI"
 		})
 	}
-	const sumRewards = all =>
-		all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
-	const totalRewardADX = sumRewards(
-		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
-	)
-	const totalRewardDAI = sumRewards(
-		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
-	)
+
 	const restakeEnabled =
 		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
 	const rewardActions = (
-		<Box display="flex" flexDirection="row" paddingTop={1}>
-			<Button
-				size="small"
-				variant="contained"
-				color="secondary"
-				disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
-				onClick={() => onClaimRewards(rewardChannels)}
-			>
-				claim
-			</Button>
-			<Box ml={1}>
+		<Box display="flex" flexDirection="row" paddingTop={1} flex={1}>
+			<Box width={1 / 2} pr={0.5}>
 				<Button
-					size="small"
+					id="claim-reward-tom-side-nav"
+					fullWidth
+					variant="contained"
+					color="primary"
+					disabled={totalRewardADX.add(totalRewardDAI).eq(ZERO)}
+					onClick={() => onClaimRewards(rewardChannels)}
+					disableElevation
+				>
+					claim
+				</Button>
+			</Box>
+			<Box width={1 / 2} pl={0.5}>
+				<Button
+					id="re-stake-tom-side-nav"
+					fullWidth
 					variant="contained"
 					color="secondary"
 					disabled={!restakeEnabled}
 					onClick={() => onRestake(totalRewardADX)}
+					disableElevation
 				>
 					re-stake
 				</Button>
@@ -58,10 +66,13 @@ export default function RewardCard({
 		loaded: true,
 		title,
 		actions: rewardActions,
-		subtitle: totalRewardDAI.gt(ZERO)
-			? `${formatADXPretty(totalRewardADX)} ADX, ${formatDAIPretty(
-					totalRewardDAI
-			  )} DAI`
-			: `${formatADXPretty(totalRewardADX)} ADX`
+		// Hax to match the design
+		subtitle: `${formatADXPretty(totalRewardADX)} ADX`,
+		extra: `+  \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${formatDAIPretty(
+			totalRewardDAI
+		)} DAI`,
+		moreExtra: `Total \u00A0${getUSDFormatted(
+			getADXInUSD(prices, totalRewardADX) + getDAIInUSD(totalRewardDAI)
+		)}`
 	})
 }

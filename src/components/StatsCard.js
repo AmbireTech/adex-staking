@@ -1,31 +1,66 @@
 import React from "react"
-import { Paper } from "@material-ui/core"
+import { Box } from "@material-ui/core"
 import LinearProgress from "@material-ui/core/LinearProgress"
-import Typography from "@material-ui/core/Typography"
-import { themeMUI } from "../themeMUi"
+import { CardRow } from "./cardCommon"
 
-export default function StatsCard({ title, subtitle, extra, loaded, actions }) {
-	const extraElem =
-		typeof extra === "string" ? (
-			<Typography color="primary" variant="h6">
-				{extra}
-			</Typography>
-		) : (
-			extra || <></>
-		)
+export default function StatsCard({
+	size,
+	title,
+	titleInfo,
+	subtitle,
+	subtitleInfo,
+	extra,
+	extraInfo,
+	moreExtra,
+	moreExtraInfo,
+	loaded,
+	actions
+}) {
 	return (
-		<Paper elevation={3} style={{ height: "100%" }}>
-			<div style={{ padding: themeMUI.spacing(2), minHeight: "85px" }}>
-				<Typography variant={subtitle.length > 16 ? "h6" : "h5"}>
-					{subtitle}
-				</Typography>
-				{extraElem}
-				<Typography color="textSecondary" variant="subtitle2">
-					{title}
-				</Typography>
-				{actions || <></>}
-			</div>
+		<Box>
+			{title && (
+				<CardRow
+					color="text.main"
+					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
+					fontSize={size === "large" ? 18 : 15}
+					text={title}
+					infoText={titleInfo}
+				/>
+			)}
+
+			{subtitle && (
+				<CardRow
+					color="warning.main"
+					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
+					fontSize={size === "large" ? 21 : 17}
+					text={subtitle}
+					infoText={subtitleInfo}
+				/>
+			)}
+
+			{extra && (
+				<CardRow
+					color="text.main"
+					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
+					fontSize={size === "large" ? 18 : 15}
+					text={extra}
+					infoText={extraInfo}
+				/>
+			)}
+
+			{moreExtra && (
+				<CardRow
+					color="warning.main"
+					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
+					fontSize={size === "large" ? 18 : 15}
+					text={moreExtra}
+					infoText={moreExtraInfo}
+				/>
+			)}
+
+			{actions || <></>}
+
 			{!loaded ? <LinearProgress /> : <></>}
-		</Paper>
+		</Box>
 	)
 }

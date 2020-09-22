@@ -4,18 +4,19 @@ import {
 	DialogTitle,
 	List,
 	ListItem,
-	ListItemAvatar,
 	ListItemText,
-	Avatar
+	Avatar,
+	ListItemIcon
 } from "@material-ui/core"
-import { Wallets, WALLET_CONNECT } from "../helpers/constants"
+import { Wallets, METAMASK } from "../helpers/constants"
+import { toIdAttributeString } from "../helpers/formatting"
 
 export default function ChooseWalletDialog({
 	title = "Select Wallet",
 	handleListItemClick,
 	handleClose,
 	open,
-	disableWalletConnect
+	disableNonBrowserWallets
 }) {
 	return (
 		<Dialog
@@ -25,16 +26,17 @@ export default function ChooseWalletDialog({
 		>
 			<DialogTitle id="simple-dialog-title">{title}</DialogTitle>
 			<List>
-				{Wallets.map(({ icon, name, title }) => (
+				{Wallets.map(({ icon, name = "", title }) => (
 					<ListItem
-						disabled={disableWalletConnect && name === WALLET_CONNECT}
+						id={`connect-wallet-select-${toIdAttributeString(name)}`}
+						disabled={disableNonBrowserWallets && name !== METAMASK}
 						button
 						onClick={() => handleListItemClick(name)}
 						key={name}
 					>
-						<ListItemAvatar>
+						<ListItemIcon>
 							<Avatar src={icon} />
-						</ListItemAvatar>
+						</ListItemIcon>
 						<ListItemText primary={title} />
 					</ListItem>
 				))}
