@@ -134,7 +134,7 @@ function SideNav({
 					<Box>
 						<ListItem>
 							<Box
-								my={2}
+								mb={1}
 								display="flex"
 								flexDirection="row"
 								alignItems="flex-start"

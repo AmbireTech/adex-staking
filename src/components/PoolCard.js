@@ -125,6 +125,7 @@ export default function PoolCard({
 							fontWeight={"fontWeightBold"}
 							fontSize={20}
 							text={totalStakedADX}
+							isAmountText
 							// infoText={totalStakedADX}
 							justify="center"
 						/>
@@ -134,6 +135,7 @@ export default function PoolCard({
 							fontWeight={"fontWeightBold"}
 							fontSize={14}
 							text={totalStakedUSD}
+							isAmountText
 							// infoText={totalStakedADX}
 							justify="center"
 							mb={3}
@@ -153,6 +155,7 @@ export default function PoolCard({
 							fontWeight={"fontWeightBold"}
 							fontSize={20}
 							text={currentAPY}
+							isAmountText
 							// infoText={currentAPY}
 							justify="center"
 						/>

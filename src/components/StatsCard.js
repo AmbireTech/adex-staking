@@ -24,6 +24,7 @@ export default function StatsCard({
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 18 : 15}
 					text={title}
+					isAmountText
 					infoText={titleInfo}
 				/>
 			)}
@@ -34,6 +35,7 @@ export default function StatsCard({
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 21 : 17}
 					text={subtitle}
+					isAmountText
 					infoText={subtitleInfo}
 				/>
 			)}
@@ -44,6 +46,7 @@ export default function StatsCard({
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 18 : 15}
 					text={extra}
+					isAmountText
 					infoText={extraInfo}
 				/>
 			)}
@@ -54,6 +57,7 @@ export default function StatsCard({
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
 					fontSize={size === "large" ? 18 : 15}
 					text={moreExtra}
+					isAmountText
 					infoText={moreExtraInfo}
 				/>
 			)}
