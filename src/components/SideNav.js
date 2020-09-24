@@ -19,6 +19,7 @@ import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
+import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -214,6 +215,20 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={"Staked ADX"} />
+						</RRListItem>
+						<Divider />
+						<RRListItem
+							id="side-nav-link-gasless"
+							button
+							to={{ pathname: "/gasless" }}
+							className={clsx({ [classes.active]: path === "/gasless" })}
+						>
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<GaslessIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
+							</ListItemIcon>
+							<ListItemText primary={"Gasless Staking"} />
 						</RRListItem>
 					</List>
 				</Box>
