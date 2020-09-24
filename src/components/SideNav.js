@@ -159,6 +159,7 @@ function SideNav({
 									onRestake
 								})}
 							</ListItem>
+							<Divider />
 
 							{!stats.connectedWalletAddress && (
 								<Box
@@ -190,7 +191,6 @@ function SideNav({
 			>
 				<Box>
 					<List>
-						<Divider />
 						<RRListItem
 							id="side-nav-link-pools"
 							button
@@ -202,7 +202,6 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={"Pools"} />
 						</RRListItem>
-						<Divider />
 						<RRListItem
 							id="side-nav-link-stakings"
 							button
@@ -216,7 +215,6 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={"Staked ADX"} />
 						</RRListItem>
-						<Divider />
 						<RRListItem
 							id="side-nav-link-gasless"
 							button
