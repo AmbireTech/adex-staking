@@ -1,8 +1,18 @@
 import React, { useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import clsx from "clsx"
-import { Box, SvgIcon, Typography, IconButton } from "@material-ui/core"
-import { FileCopySharp as CopyIcon } from "@material-ui/icons"
+import {
+	Box,
+	SvgIcon,
+	Typography,
+	IconButton,
+	Tooltip
+} from "@material-ui/core"
+import {
+	FileCopySharp as CopyIcon,
+	HelpSharp as HelpIcon,
+	HelpSharp
+} from "@material-ui/icons"
 import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
@@ -52,47 +62,76 @@ const Gasless = () => {
 							<GaslessIcon width="100%" height="100%" color="secondary" />
 						</SvgIcon>
 					</Box>
-					<Box
-						mt={4}
-						display="flex"
-						flexDirection="column"
-						alignItems="flex-start"
-					>
-						<Box>
-							<Typography component="div" variant="body2">
-								{"Gasless account address"}
-							</Typography>
-						</Box>
+					<Box>
 						<Box
-							mt={2}
-							bgcolor="background.paper"
-							color="text.main"
-							fontSize={23}
+							mt={4}
 							display="flex"
-							flexDirection="row"
-							alignItems="center"
-							justifyContent="flex-start"
-							flexGrow={0}
-							flexWrap="wrap"
+							flexDirection="column"
+							alignItems="flex-start"
 						>
-							<Box m={1} ml={2} classes={{ root: classes.address }}>
-								{stats.identityAddr}
+							<Box>
+								<Typography component="div" variant="h5">
+									{"Gasless account address"}
+								</Typography>
 							</Box>
-							<Box m={1}>
-								<IconButton
-									id="mobile-burger-btn"
-									color="secondary"
-									aria-label="open drawer"
-									onClick={() => {
-										copy(stats.identityAddr)
-										addSnack(
-											`Gasless Staking address ${stats.identityAddr} copied to clipboard`,
-											"success"
-										)
-									}}
+							<Box
+								mt={2}
+								display="flex"
+								flexDirection="row"
+								alignItems="center"
+								justifyContent="flex-start"
+								flexGrow={0}
+								flexWrap="wrap"
+							>
+								<Box
+									display="flex"
+									flexDirection="row"
+									alignItems="center"
+									justifyContent="flex-start"
+									flexWrap="wrap"
+									bgcolor="background.paper"
+									color="text.main"
+									fontSize={23}
 								>
-									<CopyIcon />
-								</IconButton>
+									<Box m={1} ml={2} classes={{ root: classes.address }}>
+										{stats.identityAddr}
+									</Box>
+									<Box m={1}>
+										<IconButton
+											id="mobile-burger-btn"
+											color="secondary"
+											aria-label="open drawer"
+											onClick={() => {
+												copy(stats.identityAddr)
+												addSnack(
+													`Gasless Staking address ${stats.identityAddr} copied to clipboard`,
+													"success"
+												)
+											}}
+										>
+											<CopyIcon />
+										</IconButton>
+									</Box>
+								</Box>
+								<Box m={1}>
+									<Tooltip
+										title={`
+                                This is the address of your gasless account: 
+                                it's an automatically calculated (CRAETE2) smart contract 
+                                address that will be created once the first transaction is issued.
+                                `}
+									>
+										<HelpIcon color="primary" />
+									</Tooltip>
+								</Box>
+							</Box>
+
+							<Box mt={2}>
+								{`
+                                Deposit ADX to this address. When there's a minimum of хххх ADX deposited, 
+                                you can click "Stake" and that amount will be staked without gas fees. 
+                                You can send ADX from wallets and exchanges as many times as you want before clicking "Stake".                                    
+                            `}
 							</Box>
 						</Box>
 					</Box>
