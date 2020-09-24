@@ -64,9 +64,10 @@ export async function loadUserStats(chosenWalletType) {
 	if (!signer) return { ...EMPTY_STATS, loaded: true }
 
 	const addr = await signer.getAddress()
+	const identityAddr = getUserIdentity(addr).addr
 
 	const [{ userBonds, userBalance }, rewardChannels] = await Promise.all([
-		loadBondStats(addr),
+		loadBondStats(addr, identityAddr),
 		getRewards(addr)
 	])
 
@@ -86,6 +87,7 @@ export async function loadUserStats(chosenWalletType) {
 	const totalBalanceADX = userBalance.add(totalRewardADX).add(userTotalStake)
 
 	return {
+		identityAddr,
 		connectedWalletAddress: addr,
 		userBonds,
 		userBalance, // ADX on wallet
@@ -98,8 +100,7 @@ export async function loadUserStats(chosenWalletType) {
 	}
 }
 
-export async function loadBondStats(addr) {
-	const identityAddr = getUserIdentity(addr).addr
+export async function loadBondStats(addr, identityAddr) {
 	const [balances, logs, slashLogs] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		provider.getLogs({
@@ -146,7 +147,7 @@ export async function loadBondStats(addr) {
 		return bonds
 	}, [])
 
-	return { userBonds, userBalance }
+	return { identityAddr, userBonds, userBalance }
 }
 
 export async function getRewards(addr) {
