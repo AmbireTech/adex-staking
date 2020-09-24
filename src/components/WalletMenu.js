@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 		marginRight: theme.spacing(1)
 	},
 	chipRoot: {
-		backgroundColor: theme.palette.background.darkerPaper,
+		backgroundColor: theme.palette.background.paper,
 		color: theme.palette.text.main,
 		fontWeight: theme.typography.fontWeightBold,
 		fontSize: theme.typography.pxToRem(15),
