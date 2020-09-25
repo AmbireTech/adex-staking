@@ -19,6 +19,7 @@ import { getBondId } from "./helpers/bonds"
 import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
 import { getSigner, defaultProvider } from "./ethereum"
 
+const { ADEX_RELAYER_HOST } = process.env
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
@@ -182,7 +183,8 @@ export async function getRewards(addr) {
 export async function createNewBond(
 	stats,
 	chosenWalletType,
-	{ amount, poolId, nonce }
+	{ amount, poolId, nonce },
+	gasless
 ) {
 	if (!poolId) return
 	if (!stats.userBalance) return
@@ -240,7 +242,8 @@ export async function createNewBond(
 	await executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
-		setAllowance ? { gasLimit: 450000 } : {}
+		setAllowance ? { gasLimit: 450000 } : {},
+		gasless
 	)
 }
 
@@ -384,7 +387,12 @@ function toChannelTuple(args) {
 	]
 }
 
-export async function executeOnIdentity(chosenWalletType, txns, opts = {}) {
+export async function executeOnIdentity(
+	chosenWalletType,
+	txns,
+	opts = {},
+	gasless
+) {
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
@@ -400,7 +408,23 @@ export async function executeOnIdentity(chosenWalletType, txns, opts = {}) {
 			to,
 			data
 		).toSolidityTuple()
-	if (!needsToDeploy) {
+	if (gasless) {
+		const txnsRaw = txns.map(toTuples(0))
+		const signatures = []
+		for (const tx of txnsRaw) {
+			signatures.push(await await signer.signMessage(tx.hash()))
+		}
+
+		await fetch({
+			route: `${ADEX_RELAYER_HOST}/identity/${walletAddr}/execute`,
+			method: "POST",
+			body: JSON.stringify({
+				txnsRaw,
+				signatures
+			}),
+			headers: { "Content-Type": "application/json" }
+		})
+	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
 		await identity.executeBySender(txnTuples, opts)
 	} else {
