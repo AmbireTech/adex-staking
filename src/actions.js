@@ -1,7 +1,7 @@
 import { Contract } from "ethers"
 import { bigNumberify, hexZeroPad } from "ethers/utils"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
-import { splitSig } from "adex-protocol-eth/js"
+import { splitSig, Transaction } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
@@ -16,10 +16,10 @@ import {
 	POOLS
 } from "./helpers/constants"
 import { getBondId } from "./helpers/bonds"
-import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
+import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "./helpers/identity"
+import { ADEX_RELAYER_HOST } from "./helpers/constants"
 import { getSigner, defaultProvider } from "./ethereum"
 
-const { ADEX_RELAYER_HOST } = process.env
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
@@ -43,7 +43,9 @@ export const EMPTY_STATS = {
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
 	userTotalStake: ZERO,
-	totalBalanceADX: ZERO
+	totalBalanceADX: ZERO,
+	userWalletBalance: ZERO,
+	userIdentityBalance: ZERO
 }
 
 const sumRewards = all =>
@@ -67,10 +69,10 @@ export async function loadUserStats(chosenWalletType) {
 	const addr = await signer.getAddress()
 	const identityAddr = getUserIdentity(addr).addr
 
-	const [{ userBonds, userBalance }, rewardChannels] = await Promise.all([
-		loadBondStats(addr, identityAddr),
-		getRewards(addr)
-	])
+	const [
+		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
+		rewardChannels
+	] = await Promise.all([loadBondStats(addr, identityAddr), getRewards(addr)])
 
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")
@@ -97,12 +99,18 @@ export async function loadUserStats(chosenWalletType) {
 		totalRewardADX,
 		totalRewardDAI,
 		userTotalStake,
-		totalBalanceADX // Wallet + Stake + Reward
+		totalBalanceADX, // Wallet + Stake + Reward
+		userWalletBalance,
+		userIdentityBalance
 	}
 }
 
 export async function loadBondStats(addr, identityAddr) {
-	const [balances, logs, slashLogs] = await Promise.all([
+	const [
+		[userWalletBalance, userIdentityBalance],
+		logs,
+		slashLogs
+	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		provider.getLogs({
 			fromBlock: 0,
@@ -112,7 +120,7 @@ export async function loadBondStats(addr, identityAddr) {
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
 
-	const userBalance = balances.reduce((a, b) => a.add(b))
+	const userBalance = userWalletBalance.add(userIdentityBalance)
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
@@ -148,7 +156,12 @@ export async function loadBondStats(addr, identityAddr) {
 		return bonds
 	}, [])
 
-	return { identityAddr, userBonds, userBalance }
+	return {
+		userBonds,
+		userBalance,
+		userWalletBalance,
+		userIdentityBalance
+	}
 }
 
 export async function getRewards(addr) {
@@ -409,14 +422,17 @@ export async function executeOnIdentity(
 			data
 		).toSolidityTuple()
 	if (gasless) {
-		const txnsRaw = txns.map(toTuples(0))
+		const txnsRaw = txns.map(([to, data], i) =>
+			rawZeroFeeTx(identity.address, idNonce.add(i), to, data)
+		)
 		const signatures = []
 		for (const tx of txnsRaw) {
-			signatures.push(await await signer.signMessage(tx.hash()))
+			signatures.push(await signer.signMessage(new Transaction(tx).hash()))
 		}
 
-		await fetch({
-			route: `${ADEX_RELAYER_HOST}/identity/${walletAddr}/execute`,
+		const executeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/execute`
+
+		await fetch(executeUrl, {
 			method: "POST",
 			body: JSON.stringify({
 				txnsRaw,
