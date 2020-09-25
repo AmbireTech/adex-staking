@@ -17,6 +17,7 @@ import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
+import { createNewBond } from "../actions"
 import { POOLS } from "../helpers/constants"
 
 const useStyles = makeStyles(theme => {
@@ -45,9 +46,20 @@ const Gasless = () => {
 		stats,
 		setConnectWallet,
 		addSnack,
-		setNewBondPool,
-		setNewBondOpen
+		chosenWalletType,
+		wrapDoingTxns
 	} = useContext(AppContext)
+
+	const onStake = async () => {
+		const bond = {
+			poolId: POOLS[0].id,
+			amount: stats.userIdentityBalance
+		}
+
+		await wrapDoingTxns(
+			createNewBond.bind(null, stats, chosenWalletType, bond, true)
+		)()
+	}
 
 	return (
 		<Box>
@@ -145,10 +157,7 @@ const Gasless = () => {
 								<Button
 									id={`gasless-stake-btn}`}
 									disabled={!stats.loaded}
-									onClick={() => {
-										setNewBondPool(POOLS[0].id)
-										setNewBondOpen(true)
-									}}
+									onClick={onStake}
 									color="secondary"
 									size="large"
 									variant="contained"
