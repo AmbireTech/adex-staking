@@ -6,17 +6,18 @@ import {
 	SvgIcon,
 	Typography,
 	IconButton,
-	Tooltip
+	Tooltip,
+	Button
 } from "@material-ui/core"
 import {
 	FileCopySharp as CopyIcon,
-	HelpSharp as HelpIcon,
-	HelpSharp
+	HelpSharp as HelpIcon
 } from "@material-ui/icons"
 import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
+import { POOLS } from "../helpers/constants"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -40,7 +41,13 @@ const useStyles = makeStyles(theme => {
 const Gasless = () => {
 	const classes = useStyles()
 
-	const { stats, setConnectWallet, addSnack } = useContext(AppContext)
+	const {
+		stats,
+		setConnectWallet,
+		addSnack,
+		setNewBondPool,
+		setNewBondOpen
+	} = useContext(AppContext)
 
 	return (
 		<Box>
@@ -132,6 +139,22 @@ const Gasless = () => {
                                 you can click "Stake" and that amount will be staked without gas fees. 
                                 You can send ADX from wallets and exchanges as many times as you want before clicking "Stake".                                    
                             `}
+							</Box>
+							<Box>
+								{/* TODO: gasless */}
+								<Button
+									id={`gasless-stake-btn}`}
+									disabled={!stats.loaded}
+									onClick={() => {
+										setNewBondPool(POOLS[0].id)
+										setNewBondOpen(true)
+									}}
+									color="secondary"
+									size="large"
+									variant="contained"
+								>
+									{"Stake"}
+								</Button>
 							</Box>
 						</Box>
 					</Box>
