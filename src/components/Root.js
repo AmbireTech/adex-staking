@@ -19,7 +19,12 @@ import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { AppToolbar } from "./Toolbar"
 import SideNav from "./SideNav"
-import { ZERO, UNBOND_DAYS, POOLS } from "../helpers/constants"
+import {
+	ZERO,
+	UNBOND_DAYS,
+	POOLS,
+	REACT_APP_RPC_URL
+} from "../helpers/constants"
 import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
@@ -30,8 +35,6 @@ import clsx from "clsx"
 function Alert(props) {
 	return <MuiAlert variant="filled" {...props} />
 }
-
-const { REACT_APP_RPC_URL } = process.env
 
 const useStyles = makeStyles(styles)
 

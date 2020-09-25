@@ -2,8 +2,7 @@ import { LedgerConnector } from "@web3-react/ledger-connector"
 import { TrezorConnector } from "@web3-react/trezor-connector"
 import { InjectedConnector } from "@web3-react/injected-connector"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
-
-export const REACT_APP_RPC_URL = process.env.REACT_APP_RPC_URL
+import { REACT_APP_RPC_URL } from "../helpers/constants"
 
 const POLLING_INTERVAL = 13000
 

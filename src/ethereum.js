@@ -1,6 +1,6 @@
 import { providers } from "ethers"
 
-const { REACT_APP_INFURA_ID } = process.env
+import { REACT_APP_INFURA_ID } from "./helpers/constants"
 
 export const defaultProvider = new providers.InfuraProvider(
 	"homestead",
