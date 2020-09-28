@@ -6,7 +6,7 @@ import {
 	ListItemText,
 	Divider,
 	Box,
-	SvgIcon,
+	SvgIcon
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
@@ -23,22 +23,22 @@ import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 
 const RRListItem = WithRouterLink(ListItem)
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
 	const activeColor = theme.palette.primary.contrastText
 	const activeBgColor = theme.palette.primary.main
 
 	return {
 		navigation: {
-			backgroundColor: theme.palette.background.paper,
+			backgroundColor: theme.palette.background.paper
 		},
 		sntPadding: {
-			paddingTop: 0,
+			paddingTop: 0
 		},
 		navListRoot: {
 			color: theme.palette.text.secondary,
 			display: "flex",
 			flexDirection: "column",
-			justifyContent: "space-between",
+			justifyContent: "space-between"
 		},
 		navList: {
 			position: "absolute",
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => {
 			right: 0,
 			bottom: 100,
 			overflowY: "auto",
-			overflowX: "hidden",
+			overflowX: "hidden"
 		},
 		sideNavToolbar: {},
 		version: {
@@ -59,41 +59,41 @@ const useStyles = makeStyles((theme) => {
 			paddingLeft: 16,
 			borderTopWidth: 1,
 			borderTopColor: theme.palette.divider,
-			borderTopStyle: "solid",
+			borderTopStyle: "solid"
 		},
 		active: {
 			color: activeColor,
 			backgroundColor: activeBgColor,
 			"&:focus": {
-				backgroundColor: activeBgColor,
+				backgroundColor: activeBgColor
 			},
 			"&:hover": {
 				backgroundColor: activeBgColor,
 				color: activeColor,
 				"& .MuiListItemIcon-root": {
-					color: activeColor,
-				},
+					color: activeColor
+				}
 			},
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.common.white,
-			},
+				color: theme.palette.common.white
+			}
 		},
 		adxLink: {
 			color: theme.palette.text.hint,
 			"&:hover": {
-				color: theme.palette.text.secondary,
-			},
+				color: theme.palette.text.secondary
+			}
 		},
 		sideSwitch: {
-			marginBottom: `${theme.spacing(2)}px`,
+			marginBottom: `${theme.spacing(2)}px`
 		},
 		icon: {
 			height: 32,
 			width: "auto",
-			cursor: "pointer",
+			cursor: "pointer"
 		},
 		amount: {
-			fontSize: theme.typography.pxToRem(18),
+			fontSize: theme.typography.pxToRem(18)
 		},
 		overlay: {
 			position: "absolute",
@@ -101,11 +101,11 @@ const useStyles = makeStyles((theme) => {
 			top: 0,
 			right: 0,
 			bottom: 0,
-			backgroundColor: "transparent",
+			backgroundColor: "transparent"
 		},
 		noUserData: {
-			opacity: 0.23,
-		},
+			opacity: 0.23
+		}
 	}
 })
 
@@ -116,7 +116,7 @@ function SideNav({
 	onUnbond,
 	onClaimRewards,
 	onRestake,
-	setConnectWallet,
+	setConnectWallet
 }) {
 	const classes = useStyles()
 	const location = useLocation()
@@ -147,7 +147,7 @@ function SideNav({
 						<Box position="relative">
 							<ListItem
 								className={clsx({
-									[classes.noUserData]: !stats.connectedWalletAddress,
+									[classes.noUserData]: !stats.connectedWalletAddress
 								})}
 							>
 								{UserData({
@@ -156,7 +156,7 @@ function SideNav({
 									onRequestUnbond,
 									onUnbond,
 									onClaimRewards,
-									onRestake,
+									onRestake
 								})}
 							</ListItem>
 
@@ -235,7 +235,7 @@ function SideNav({
 								<HomeIcon width="100%" height="100%" color="white" />
 							</SvgIcon>
 						</ListItemIcon>
-						<ListItemText primary={"Homepage"} />
+						<ListItemText primary={"Homepage & Calculator"} />
 					</RRListItem>
 					<Divider />
 					<ListItem>
