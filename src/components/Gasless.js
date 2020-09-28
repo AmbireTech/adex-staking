@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import clsx from "clsx"
 import {
@@ -7,7 +7,10 @@ import {
 	Typography,
 	IconButton,
 	Tooltip,
-	Button
+	Button,
+	Modal,
+	Fade,
+	Backdrop
 } from "@material-ui/core"
 import {
 	FileCopySharp as CopyIcon,
@@ -19,6 +22,9 @@ import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
 import { POOLS } from "../helpers/constants"
+import StatsCard from "./StatsCard"
+import { formatADXPretty } from "../helpers/formatting"
+import NewGaslessBondForm from "./NewGaslessBondForm"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -35,6 +41,11 @@ const useStyles = makeStyles(theme => {
 		},
 		address: {
 			wordBreak: "break-all"
+		},
+		modal: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
 		}
 	}
 })
@@ -42,34 +53,49 @@ const useStyles = makeStyles(theme => {
 const Gasless = () => {
 	const classes = useStyles()
 
+	const [bondOpen, setBondOpen] = useState(false)
+	const [bond, setBond] = useState({})
+
 	const {
 		stats,
 		setConnectWallet,
 		addSnack,
 		chosenWalletType,
-		wrapDoingTxns
+		wrapDoingTxns,
+		prices
 	} = useContext(AppContext)
 
-	const onStake = async () => {
-		const bond = {
-			poolId: POOLS[0].id,
-			amount: stats.userIdentityBalance
-		}
+	const {
+		connectedWalletAddress,
+		userIdentityBalance,
+		identityAddr,
+		loaded,
+		canExecuteGasless,
+		canExecuteGaslessError
+	} = stats
 
+	const walletConnected = identityAddr && loaded
+	const disabled = !walletConnected || !canExecuteGasless
+
+	const onStake = async () => {
+		setBondOpen(false)
 		await wrapDoingTxns(
 			createNewBond.bind(null, stats, chosenWalletType, bond, true)
 		)()
 	}
 
+	useEffect(() => {
+		setBond({
+			poolId: POOLS[0].id,
+			amount: userIdentityBalance
+		})
+	}, [identityAddr, userIdentityBalance, loaded])
+
 	return (
 		<Box>
 			<SectionHeader title={"Gasless Staking"} />
 			<Box>
-				<Box
-					className={clsx({
-						[classes.noUserData]: !stats.connectedWalletAddress
-					})}
-				>
+				<Box>
 					<Box mt={4} color="text.main" fontSize={88}>
 						<SvgIcon color="inherit" fontSize="inherit">
 							<GaslessIcon width="100%" height="100%" color="secondary" />
@@ -112,25 +138,34 @@ const Gasless = () => {
 									color="text.main"
 									fontSize={23}
 								>
-									<Box m={1} ml={2} classes={{ root: classes.address }}>
-										{stats.identityAddr}
+									<Box
+										onClick={() => !identityAddr && setConnectWallet(true)}
+										m={1}
+										mx={2}
+										classes={{ root: classes.address }}
+										{...(!identityAddr ? { style: { cursor: "pointer" } } : {})}
+									>
+										{identityAddr ||
+											"connect wallet to see gasless staking address"}
 									</Box>
-									<Box m={1}>
-										<IconButton
-											id="mobile-burger-btn"
-											color="secondary"
-											aria-label="open drawer"
-											onClick={() => {
-												copy(stats.identityAddr)
-												addSnack(
-													`Gasless Staking address ${stats.identityAddr} copied to clipboard`,
-													"success"
-												)
-											}}
-										>
-											<CopyIcon />
-										</IconButton>
-									</Box>
+									{identityAddr && (
+										<Box m={1}>
+											<IconButton
+												id="mobile-burger-btn"
+												color="secondary"
+												aria-label="open drawer"
+												onClick={() => {
+													copy(identityAddr)
+													addSnack(
+														`Gasless Staking address ${identityAddr} copied to clipboard`,
+														"success"
+													)
+												}}
+											>
+												<CopyIcon />
+											</IconButton>
+										</Box>
+									)}
 								</Box>
 								<Box m={1}>
 									<Tooltip
@@ -144,7 +179,6 @@ const Gasless = () => {
 									</Tooltip>
 								</Box>
 							</Box>
-
 							<Box mt={2}>
 								{`
                                 Deposit ADX to this address. When there's a minimum of хххх ADX deposited, 
@@ -152,41 +186,65 @@ const Gasless = () => {
                                 You can send ADX from wallets and exchanges as many times as you want before clicking "Stake".                                    
                             `}
 							</Box>
+							{walletConnected && (
+								<Box mt={2}>
+									<Box mb={1.5}>
+										{StatsCard({
+											size: "large",
+											loaded,
+											title: "ADX BALANCE ON GASLESS ADDRESS",
+											subtitle: userIdentityBalance
+												? formatADXPretty(userIdentityBalance) + " ADX"
+												: ""
+										})}
+									</Box>
+								</Box>
+							)}
 							<Box>
-								{/* TODO: gasless */}
-								<Button
-									id={`gasless-stake-btn}`}
-									disabled={!stats.loaded}
-									onClick={onStake}
-									color="secondary"
-									size="large"
-									variant="contained"
+								<Tooltip
+									disableFocusListener={!disabled}
+									disableHoverListener={!disabled}
+									disableTouchListener={!disabled}
+									title={!canExecuteGasless ? canExecuteGaslessError || "" : ""}
 								>
-									{"Stake"}
-								</Button>
+									<div>
+										<Button
+											id={`stake-gasless-form-open}`}
+											fullWidth
+											variant="contained"
+											disableElevation
+											color="secondary"
+											size="large"
+											onClick={() => setBondOpen(true)}
+											disabled={disabled}
+										>
+											{"Stake"}
+										</Button>
+									</div>
+								</Tooltip>
 							</Box>
 						</Box>
 					</Box>
 				</Box>
 
-				{!stats.connectedWalletAddress && (
-					<Box
-						id="side-nav-connect-wallet-overlay"
-						classes={{ root: classes.overlay }}
-						display="flex"
-						flexDirection="column"
-						alignItems="center"
-						justifyContent="center"
-						color="secondary.main"
-						bgcolor="transparent"
-						fontSize="h1.fontSize"
-						textAlign="center"
-						onClick={() => setConnectWallet(true)}
-						style={{ cursor: "pointer" }}
-					>
-						{"CONNECT WALLET"}
-					</Box>
-				)}
+				<Modal
+					open={bondOpen}
+					onClose={() => setBondOpen(false)}
+					className={classes.modal}
+					closeAfterTransition
+					BackdropComponent={Backdrop}
+					BackdropProps={{
+						timeout: 300
+					}}
+				>
+					<Fade in={bondOpen}>
+						{NewGaslessBondForm({
+							bond,
+							onStake,
+							chosenWalletType
+						})}
+					</Fade>
+				</Modal>
 			</Box>
 		</Box>
 	)
