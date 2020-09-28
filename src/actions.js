@@ -45,7 +45,9 @@ export const EMPTY_STATS = {
 	userTotalStake: ZERO,
 	totalBalanceADX: ZERO,
 	userWalletBalance: ZERO,
-	userIdentityBalance: ZERO
+	userIdentityBalance: ZERO,
+	canExecuteGasless: false,
+	canExecuteGaslessError: null
 }
 
 const sumRewards = all =>
@@ -71,8 +73,13 @@ export async function loadUserStats(chosenWalletType) {
 
 	const [
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
-		rewardChannels
-	] = await Promise.all([loadBondStats(addr, identityAddr), getRewards(addr)])
+		rewardChannels,
+		{ canExecuteGasless, canExecuteGaslessError }
+	] = await Promise.all([
+		loadBondStats(addr, identityAddr),
+		getRewards(addr),
+		getGaslessInfo(addr)
+	])
 
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")
@@ -101,7 +108,9 @@ export async function loadUserStats(chosenWalletType) {
 		userTotalStake,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
-		userIdentityBalance
+		userIdentityBalance,
+		canExecuteGasless,
+		canExecuteGaslessError
 	}
 }
 
@@ -191,6 +200,23 @@ export async function getRewards(addr) {
 		})
 	)
 	return forUser.filter(x => x)
+}
+
+export async function getGaslessInfo(addr) {
+	try {
+		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
+		const resData = await res.json()
+
+		return {
+			canExecuteGasless: resData.canExecute === true,
+			canExecuteGaslessError: resData.message || null
+		}
+	} catch (err) {
+		return {
+			canExecuteGasless: false,
+			canExecuteGaslessError: err.message || err
+		}
+	}
 }
 
 export async function createNewBond(
