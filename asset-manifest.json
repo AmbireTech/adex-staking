@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/static/css/main.7a743c3f.chunk.css",
-    "main.js": "/static/js/main.a228695c.chunk.js",
-    "main.js.map": "/static/js/main.a228695c.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.78feda1c.js",
-    "runtime-main.js.map": "/static/js/runtime-main.78feda1c.js.map",
-    "static/js/2.7c9b59e3.chunk.js": "/static/js/2.7c9b59e3.chunk.js",
-    "static/js/2.7c9b59e3.chunk.js.map": "/static/js/2.7c9b59e3.chunk.js.map",
-    "static/js/3.fad4317d.chunk.js": "/static/js/3.fad4317d.chunk.js",
-    "static/js/3.fad4317d.chunk.js.map": "/static/js/3.fad4317d.chunk.js.map",
-    "static/js/4.2f643cd9.chunk.js": "/static/js/4.2f643cd9.chunk.js",
-    "static/js/4.2f643cd9.chunk.js.map": "/static/js/4.2f643cd9.chunk.js.map",
+    "main.js": "/static/js/main.e3a19314.chunk.js",
+    "main.js.map": "/static/js/main.e3a19314.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.322d4da4.js",
+    "runtime-main.js.map": "/static/js/runtime-main.322d4da4.js.map",
+    "static/js/2.48f76285.chunk.js": "/static/js/2.48f76285.chunk.js",
+    "static/js/2.48f76285.chunk.js.map": "/static/js/2.48f76285.chunk.js.map",
+    "static/js/3.eeec84c3.chunk.js": "/static/js/3.eeec84c3.chunk.js",
+    "static/js/3.eeec84c3.chunk.js.map": "/static/js/3.eeec84c3.chunk.js.map",
+    "static/js/4.933531f9.chunk.js": "/static/js/4.933531f9.chunk.js",
+    "static/js/4.933531f9.chunk.js.map": "/static/js/4.933531f9.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.3bf59adad6df4dca2621c18c0a65a638.js": "/precache-manifest.3bf59adad6df4dca2621c18c0a65a638.js",
+    "precache-manifest.a1e93206c908b47ecffc800df9549c44.js": "/precache-manifest.a1e93206c908b47ecffc800df9549c44.js",
     "service-worker.js": "/service-worker.js",
     "static/css/main.7a743c3f.chunk.css.map": "/static/css/main.7a743c3f.chunk.css.map",
-    "static/js/2.7c9b59e3.chunk.js.LICENSE.txt": "/static/js/2.7c9b59e3.chunk.js.LICENSE.txt",
-    "static/js/3.fad4317d.chunk.js.LICENSE.txt": "/static/js/3.fad4317d.chunk.js.LICENSE.txt",
+    "static/js/2.48f76285.chunk.js.LICENSE.txt": "/static/js/2.48f76285.chunk.js.LICENSE.txt",
+    "static/js/3.eeec84c3.chunk.js.LICENSE.txt": "/static/js/3.eeec84c3.chunk.js.LICENSE.txt",
     "static/media/App.css": "/static/media/Roboto-Regular.11eabca2.ttf",
     "static/media/coming-soon-ic.556674d8.svg": "/static/media/coming-soon-ic.556674d8.svg",
     "static/media/link-ic.b389cfb7.svg": "/static/media/link-ic.b389cfb7.svg",
@@ -26,9 +26,9 @@
     "static/media/walletconnect-logo.svg": "/static/media/walletconnect-logo.37f2bc6e.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.78feda1c.js",
-    "static/js/2.7c9b59e3.chunk.js",
+    "static/js/runtime-main.322d4da4.js",
+    "static/js/2.48f76285.chunk.js",
     "static/css/main.7a743c3f.chunk.css",
-    "static/js/main.a228695c.chunk.js"
+    "static/js/main.e3a19314.chunk.js"
   ]
 }
