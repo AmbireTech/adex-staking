@@ -65,12 +65,12 @@ const Anchor = ({
 	)
 }
 
-export const ExternalAnchor = ({ href, children, style, ...rest }) => (
+export const ExternalAnchor = ({ href, children, style, color, ...rest }) => (
 	<Anchor
 		style={{ fontWeight: "bold" }}
 		underline="always"
 		target="_blank"
-		color="secondary"
+		color={color || "secondary"}
 		externalIcon
 		href={href}
 		{...rest}
