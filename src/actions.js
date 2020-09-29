@@ -479,7 +479,7 @@ export async function executeOnIdentity(
 			}),
 			headers: { "Content-Type": "application/json" }
 		})
-
+		if (res.status === 500) throw new Error("Relayer: internal error")
 		return res.json()
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
