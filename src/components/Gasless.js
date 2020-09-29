@@ -83,20 +83,21 @@ const Gasless = () => {
 			createNewBond.bind(null, stats, chosenWalletType, bond, true)
 		)()
 
-		addSnack(
-			`Gasless transactions ${res.txId} sent!`,
-			"success",
-			50000,
-
-			<ExternalAnchor
-				color="inherit"
-				id="new-bond-form-adex-network-tos"
-				target="_blank"
-				href={`https://etherscan.io/tx/${res.txId}`}
-			>
-				See on ETHERSCAN
-			</ExternalAnchor>
-		)
+		if (res && res.txId) {
+			addSnack(
+				`Gasless transactions ${res.txId} sent!`,
+				"success",
+				20000,
+				<ExternalAnchor
+					color="inherit"
+					id="new-bond-form-adex-network-tos"
+					target="_blank"
+					href={`https://etherscan.io/tx/${res.txId}`}
+				>
+					See on Etherscan
+				</ExternalAnchor>
+			)
+		}
 	}
 
 	useEffect(() => {

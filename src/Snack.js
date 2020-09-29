@@ -74,7 +74,7 @@ export function ShtarvolinkiSnack({
 				onClose={closeSnack}
 				severity={snackMessageInfo.severity || "info"}
 				variant="filled"
-				action={snackMessageInfo.action}
+				action={snackMessageInfo.action || null}
 			>
 				{snackMessageInfo.message}
 			</Alert>
