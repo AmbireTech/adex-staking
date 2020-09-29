@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import clsx from "clsx"
 import {
 	Box,
 	SvgIcon,
@@ -25,6 +24,7 @@ import { POOLS, MIN_BALANCE_FOR_GASLESS_TXNS } from "../helpers/constants"
 import StatsCard from "./StatsCard"
 import { formatADXPretty } from "../helpers/formatting"
 import NewGaslessBondForm from "./NewGaslessBondForm"
+import { ExternalAnchor } from "./Anchor"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -79,9 +79,24 @@ const Gasless = () => {
 
 	const onStake = async () => {
 		setBondOpen(false)
-		await wrapDoingTxns(
+		const res = await wrapDoingTxns(
 			createNewBond.bind(null, stats, chosenWalletType, bond, true)
 		)()
+
+		addSnack(
+			`Gasless transactions ${res.txId} sent!.`,
+			"success",
+			50000,
+
+			<ExternalAnchor
+				color="inherit"
+				id="new-bond-form-adex-network-tos"
+				target="_blank"
+				href={`https://etherscan.io/tx/${res.txId}`}
+			>
+				See on ETHERSCAN
+			</ExternalAnchor>
+		)
 	}
 
 	useEffect(() => {
@@ -184,18 +199,21 @@ const Gasless = () => {
 									</Tooltip>
 								</Box>
 							</Box>
-							<Box mt={2}>
+							<Box mt={2} fontSize="h5.fontSize">
 								Deposit ADX to this address. When there's a minimum of{" "}
 								<strong>{`${formatADXPretty(
 									MIN_BALANCE_FOR_GASLESS_TXNS
 								)} ADX`}</strong>{" "}
 								deposited, you can click "Stake" and that amount will be staked
-								without gas fees. You can send ADX from wallets and exchanges as
-								many times as you want before clicking "Stake". Gasless staking
-								is limited to one stake in 12 hours.
+								without gas fees.
+							</Box>
+							<Box mt={1} fontSize="h5.fontSize">
+								You can send ADX from wallets and exchanges as many times as you
+								want before clicking "Stake". Gasless staking is limited to one
+								stake in 12 hours.
 							</Box>
 							{walletConnected && (
-								<Box mt={2}>
+								<Box mt={4}>
 									<Box>
 										{StatsCard({
 											size: "large",
@@ -223,7 +241,6 @@ const Gasless = () => {
 									<div>
 										<Button
 											id={`stake-gasless-form-open}`}
-											fullWidth
 											variant="contained"
 											disableElevation
 											color="secondary"
@@ -235,6 +252,21 @@ const Gasless = () => {
 										</Button>
 									</div>
 								</Tooltip>
+								{!disabled && (
+									<Box mt={2}>
+										{`Once you send your gasless transaction, it will take some time for it to be executed on the chain. Please be patient.
+										Yours stats will be updated when the transaction is confirmed. Confirmation time depends on network load.										
+										You can see all transactions of your gasless address `}
+										<ExternalAnchor
+											color="inherit"
+											id="new-bond-form-adex-network-tos"
+											target="_blank"
+											href={`https://etherscan.io/address/${identityAddr}`}
+										>
+											{" HERE"}
+										</ExternalAnchor>
+									</Box>
+								)}
 							</Box>
 						</Box>
 					</Box>
