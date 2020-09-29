@@ -196,7 +196,7 @@ const Gasless = () => {
 									<Tooltip
 										title={`
                                 This is the address of your gasless account: 
-                                it's an automatically calculated (CRAETE2) smart contract 
+                                it's an automatically calculated (CREATE2) smart contract
                                 address that will be created once the first transaction is issued.
                                 `}
 									>
@@ -229,7 +229,8 @@ const Gasless = () => {
 											subtitle: userIdentityBalance
 												? formatADXPretty(userIdentityBalance) + " ADX"
 												: "",
-											extra: canExecuteGaslessError || "Ready for gasless stake"
+											extra:
+												canExecuteGaslessError || "✅ Ready for gasless stake"
 										})}
 									</Box>
 								</Box>
