@@ -249,7 +249,7 @@ function SideNav({
 					>
 						<ListItemIcon color="inherit">
 							<SvgIcon color="inherit">
-								<HomeIcon width="100%" height="100%" color="white" />
+								<HomeIcon color="inherit" />
 							</SvgIcon>
 						</ListItemIcon>
 						<ListItemText primary={"Homepage & Calculator"} />
