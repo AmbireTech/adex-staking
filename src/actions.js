@@ -278,12 +278,14 @@ export async function createNewBond(
 		: Staking.interface.functions.addBond.encode([bond])
 	identityTxns.push([Staking.address, stakingData])
 
-	await executeOnIdentity(
+	const res = await executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
 		setAllowance ? { gasLimit: 450000 } : {},
 		gasless
 	)
+
+	return res
 }
 
 export async function onUnbondOrRequest(
@@ -460,7 +462,7 @@ export async function executeOnIdentity(
 
 		const executeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/execute`
 
-		await fetch(executeUrl, {
+		const res = await fetch(executeUrl, {
 			method: "POST",
 			body: JSON.stringify({
 				txnsRaw,
@@ -468,6 +470,10 @@ export async function executeOnIdentity(
 			}),
 			headers: { "Content-Type": "application/json" }
 		})
+
+		const resData = await res.json()
+
+		return resData
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
 		await identity.executeBySender(txnTuples, opts)
