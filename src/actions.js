@@ -278,14 +278,12 @@ export async function createNewBond(
 		: Staking.interface.functions.addBond.encode([bond])
 	identityTxns.push([Staking.address, stakingData])
 
-	const res = await executeOnIdentity(
+	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
 		setAllowance ? { gasLimit: 450000 } : {},
 		gasless
 	)
-
-	return res
 }
 
 export async function onUnbondOrRequest(
@@ -471,9 +469,7 @@ export async function executeOnIdentity(
 			headers: { "Content-Type": "application/json" }
 		})
 
-		const resData = await res.json()
-
-		return resData
+		return res.json()
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
 		await identity.executeBySender(txnTuples, opts)

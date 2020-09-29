@@ -84,7 +84,7 @@ const Gasless = () => {
 		)()
 
 		addSnack(
-			`Gasless transactions ${res.txId} sent!.`,
+			`Gasless transactions ${res.txId} sent!`,
 			"success",
 			50000,
 
