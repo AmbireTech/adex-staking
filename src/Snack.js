@@ -19,13 +19,14 @@ export function useSnack() {
 		}
 	}, [snackPack, snackMessageInfo, snackOpen])
 
-	const addSnack = (message, severity, hideTimeout) => {
+	const addSnack = (message, severity, hideTimeout, action) => {
 		setSnackPack(prev => [
 			...prev,
 			{
 				message,
 				severity,
 				hideTimeout,
+				action,
 				key: new Date().getTime() + "-" + Math.random()
 			}
 		])
@@ -73,6 +74,7 @@ export function ShtarvolinkiSnack({
 				onClose={closeSnack}
 				severity={snackMessageInfo.severity || "info"}
 				variant="filled"
+				action={snackMessageInfo.action}
 			>
 				{snackMessageInfo.message}
 			</Alert>
