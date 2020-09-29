@@ -212,6 +212,7 @@ export async function getGaslessInfo(addr) {
 			canExecuteGaslessError: resData.message || null
 		}
 	} catch (err) {
+		console.error(err)
 		return {
 			canExecuteGasless: false,
 			canExecuteGaslessError: "Gasless staking temporary unavailable"
