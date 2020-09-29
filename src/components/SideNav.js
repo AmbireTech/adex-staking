@@ -18,6 +18,7 @@ import packageJson from "./../../package.json"
 import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
+import { HomeSharp as HomeIcon } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 
@@ -230,8 +231,25 @@ function SideNav({
 						</RRListItem>
 					</List>
 				</Box>
-
 				<Box>
+					<RRListItem
+						id="side-nav-link-staking-landing-page"
+						button
+						onClick={() =>
+							window.open(
+								"https://www.adex.network/staking/",
+								"_blank",
+								"noopener,noreferrer"
+							)
+						}
+					>
+						<ListItemIcon color="inherit">
+							<SvgIcon color="inherit">
+								<HomeIcon width="100%" height="100%" color="white" />
+							</SvgIcon>
+						</ListItemIcon>
+						<ListItemText primary={"Homepage & Calculator"} />
+					</RRListItem>
 					<Divider />
 					<ListItem>
 						<Box>
