@@ -214,7 +214,7 @@ export async function getGaslessInfo(addr) {
 	} catch (err) {
 		return {
 			canExecuteGasless: false,
-			canExecuteGaslessError: err.message || err
+			canExecuteGaslessError: "Gasless staking temporary unavailable"
 		}
 	}
 }
