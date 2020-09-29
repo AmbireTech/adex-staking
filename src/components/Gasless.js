@@ -93,20 +93,24 @@ const Gasless = () => {
 
 	return (
 		<Box>
-			<SectionHeader title={"Gasless Staking"} />
-			<Box>
-				<Box>
-					<Box mt={4} color="text.main" fontSize={88}>
-						<SvgIcon color="inherit" fontSize="inherit">
-							<GaslessIcon width="100%" height="100%" color="secondary" />
-						</SvgIcon>
-						<SvgIcon color="inherit" fontSize="inherit">
-							<GaslessIcon width="100%" height="100%" color="secondary" />
-						</SvgIcon>
+			<SectionHeader
+				title={"Gasless Staking"}
+				actions={
+					<Box
+						color="text.main"
+						fontSize={88}
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+					>
 						<SvgIcon color="inherit" fontSize="inherit">
 							<GaslessIcon width="100%" height="100%" color="secondary" />
 						</SvgIcon>
 					</Box>
+				}
+			/>
+			<Box>
+				<Box>
 					<Box>
 						<Box
 							mt={4}
@@ -137,6 +141,7 @@ const Gasless = () => {
 									bgcolor="background.paper"
 									color="text.main"
 									fontSize={23}
+									boxShadow={25}
 								>
 									<Box
 										onClick={() => !identityAddr && setConnectWallet(true)}

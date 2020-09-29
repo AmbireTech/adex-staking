@@ -72,173 +72,161 @@ export default function PoolCard({
 
 	return (
 		<Box
-			mr={2}
-			ml={1}
-			mb={2}
-			pt={3}
+			bgcolor={"background.paper"}
+			p={3}
+			my={3}
+			mx={1.5}
+			pt={7}
 			width={270}
 			maxWidth="100%"
 			minHeight={420}
 			display="flex"
 			flexDirection="column"
-			alignItems="stretch"
+			alignItems="center"
+			boxShadow={25}
+			position="relative"
 		>
-			<Box
-				bgcolor={"background.paper"}
-				p={3}
-				pt={7}
-				flex={1}
-				display="flex"
-				flexDirection="column"
-				alignItems="center"
-				position="relative"
-			>
-				<Box mb={3}>
-					<Typography align="center" variant="h5" color="textPrimary">
-						{name}
-					</Typography>
+			<Box mb={3}>
+				<Typography align="center" variant="h5" color="textPrimary">
+					{name}
+				</Typography>
+			</Box>
+
+			{comingSoon ? (
+				<Box>
+					<SvgIcon className={classes.comingSoon} color="primary">
+						<ComingSoonImg
+							width="100%"
+							height="100%"
+							// width={160}
+						/>
+					</SvgIcon>
 				</Box>
+			) : (
+				<Box>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={"Total Staked"}
+						infoText={"Total Staked"}
+						justify="center"
+					/>
 
-				{comingSoon ? (
-					<Box>
-						<SvgIcon className={classes.comingSoon} color="primary">
-							<ComingSoonImg
-								width="100%"
-								height="100%"
-								// width={160}
-							/>
-						</SvgIcon>
-					</Box>
-				) : (
-					<Box>
-						<CardRow
-							color="text.main"
-							fontWeight={"fontWeightRegular"}
-							fontSize={14}
-							text={"Total Staked"}
-							infoText={"Total Staked"}
-							justify="center"
-						/>
+					<CardRow
+						color="warning.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={20}
+						text={totalStakedADX}
+						isAmountText
+						// infoText={totalStakedADX}
+						justify="center"
+					/>
 
-						<CardRow
-							color="warning.main"
-							fontWeight={"fontWeightBold"}
-							fontSize={20}
-							text={totalStakedADX}
-							isAmountText
-							// infoText={totalStakedADX}
-							justify="center"
-						/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={14}
+						text={totalStakedUSD}
+						isAmountText
+						// infoText={totalStakedADX}
+						justify="center"
+						mb={3}
+					/>
 
-						<CardRow
-							color="text.main"
-							fontWeight={"fontWeightBold"}
-							fontSize={14}
-							text={totalStakedUSD}
-							isAmountText
-							// infoText={totalStakedADX}
-							justify="center"
-							mb={3}
-						/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={"Current annual yield (APY)"}
+						// infoText={"Current annual yield (APY)"}
+						justify="center"
+					/>
 
-						<CardRow
-							color="text.primary"
-							fontWeight={"fontWeightRegular"}
-							fontSize={14}
-							text={"Current annual yield (APY)"}
-							// infoText={"Current annual yield (APY)"}
-							justify="center"
-						/>
+					<CardRow
+						color="warning.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={20}
+						text={currentAPY}
+						isAmountText
+						// infoText={currentAPY}
+						justify="center"
+					/>
 
-						<CardRow
-							color="warning.main"
-							fontWeight={"fontWeightBold"}
-							fontSize={20}
-							text={currentAPY}
-							isAmountText
-							// infoText={currentAPY}
-							justify="center"
-						/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightBold"}
+						fontSize={14}
+						text={`Weekly yield ${weeklyYield}`}
+						infoText={weeklyYieldInfo}
+						justify="center"
+						mb={3}
+					/>
 
-						<CardRow
-							color="text.main"
-							fontWeight={"fontWeightBold"}
-							fontSize={14}
-							text={`Weekly yield ${weeklyYield}`}
-							infoText={weeklyYieldInfo}
-							justify="center"
-							mb={3}
-						/>
+					<CardRow
+						color="text.main"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={lockupPeriodTitle}
+						infoText={lockupPeriodInfo}
+						// infoText={"Current annual yield (APY)"}
+						justify="center"
+					/>
 
-						<CardRow
-							color="text.main"
-							fontWeight={"fontWeightRegular"}
-							fontSize={14}
-							text={lockupPeriodTitle}
-							infoText={lockupPeriodInfo}
-							// infoText={"Current annual yield (APY)"}
-							justify="center"
-						/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={lockupPeriod}
+						// infoText={"Current annual yield (APY)"}
+						justify="center"
+						mb={3}
+					/>
 
-						<CardRow
-							color="text.primary"
-							fontWeight={"fontWeightRegular"}
-							fontSize={14}
-							text={lockupPeriod}
-							// infoText={"Current annual yield (APY)"}
-							justify="center"
-							mb={3}
-						/>
-
-						<Tooltip
-							disableFocusListener={!disabled}
-							disableHoverListener={!disabled}
-							disableTouchListener={!disabled}
-							title={disabled ? disabledInfo : ""}
-						>
-							<div>
-								<Button
-									id={`stake-pool-${poolId}`}
-									fullWidth
-									variant="contained"
-									disableElevation
-									color="secondary"
-									onClick={onStakeBtnClick}
-									disabled={disabled}
-								>
-									{"Stake"}
-								</Button>
-							</div>
-						</Tooltip>
-					</Box>
-				)}
-
-				{!!loading && (
-					<Box
-						classes={{ root: classes.overlay }}
-						display="flex"
-						flexDirection="column"
-						alignItems="center"
-						justifyContent="center"
+					<Tooltip
+						disableFocusListener={!disabled}
+						disableHoverListener={!disabled}
+						disableTouchListener={!disabled}
+						title={disabled ? disabledInfo : ""}
 					>
-						<Typography
-							align="center"
-							component="div"
-							variant="h3"
-						></Typography>
-					</Box>
-				)}
-
-				<Box classes={{ root: classes.iconBox }}>
-					{icon || null}
-					{!!loading && (
-						<CircularProgress
-							classes={{ root: classes.loading }}
-							size={69}
-							color="secondary"
-						/>
-					)}
+						<div>
+							<Button
+								id={`stake-pool-${poolId}`}
+								fullWidth
+								variant="contained"
+								disableElevation
+								color="secondary"
+								onClick={onStakeBtnClick}
+								disabled={disabled}
+							>
+								{"Stake"}
+							</Button>
+						</div>
+					</Tooltip>
 				</Box>
+			)}
+
+			{!!loading && (
+				<Box
+					classes={{ root: classes.overlay }}
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					justifyContent="center"
+				>
+					<Typography align="center" component="div" variant="h3"></Typography>
+				</Box>
+			)}
+
+			<Box classes={{ root: classes.iconBox }}>
+				{icon || null}
+				{!!loading && (
+					<CircularProgress
+						classes={{ root: classes.loading }}
+						size={69}
+						color="secondary"
+					/>
+				)}
 			</Box>
 		</Box>
 	)

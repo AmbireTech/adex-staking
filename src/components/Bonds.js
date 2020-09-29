@@ -97,7 +97,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 
 	const headerCellStyle = { fontWeight: "bold" }
 	return (
-		<Fragment>
+		<Box>
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
 					<TableHead>
@@ -127,6 +127,6 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</TableContainer>
 
 			{bondExplanationFrag}
-		</Fragment>
+		</Box>
 	)
 }

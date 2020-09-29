@@ -27,6 +27,7 @@ const SectionHeader = ({ title, actions }) => {
 			display="flex"
 			flexDirection="row"
 			justifyContent="space-between"
+			alignItems="center"
 			flexWrap="wrap"
 		>
 			<Box color="text.main" mb={1}>
