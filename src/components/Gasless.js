@@ -208,8 +208,10 @@ const Gasless = () => {
 							</Box>
 							<Box mt={1} fontSize="h5.fontSize">
 								You can send ADX from wallets and exchanges as many times as you
-								want before clicking "Stake". Gasless staking is limited to one
-								stake in 12 hours.
+								want before clicking "Stake".
+							</Box>
+							<Box mt={1} fontSize="h5.fontSize">
+								Gasless staking is limited to one stake in 12 hours.
 							</Box>
 							{walletConnected && (
 								<Box mt={4}>
