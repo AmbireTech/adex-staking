@@ -21,7 +21,7 @@ import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
-import { POOLS } from "../helpers/constants"
+import { POOLS, MIN_BALANCE_FOR_GASLESS_TXNS } from "../helpers/constants"
 import StatsCard from "./StatsCard"
 import { formatADXPretty } from "../helpers/formatting"
 import NewGaslessBondForm from "./NewGaslessBondForm"
@@ -185,32 +185,40 @@ const Gasless = () => {
 								</Box>
 							</Box>
 							<Box mt={2}>
-								{`
-                                Deposit ADX to this address. When there's a minimum of хххх ADX deposited, 
-                                you can click "Stake" and that amount will be staked without gas fees. 
-                                You can send ADX from wallets and exchanges as many times as you want before clicking "Stake".                                    
-                            `}
+								Deposit ADX to this address. When there's a minimum of{" "}
+								<strong>{`${formatADXPretty(
+									MIN_BALANCE_FOR_GASLESS_TXNS
+								)} ADX`}</strong>{" "}
+								deposited, you can click "Stake" and that amount will be staked
+								without gas fees. You can send ADX from wallets and exchanges as
+								many times as you want before clicking "Stake". Gasless staking
+								is limited to one stake in 12 hours.
 							</Box>
 							{walletConnected && (
 								<Box mt={2}>
-									<Box mb={1.5}>
+									<Box>
 										{StatsCard({
 											size: "large",
 											loaded,
 											title: "ADX BALANCE ON GASLESS ADDRESS",
 											subtitle: userIdentityBalance
 												? formatADXPretty(userIdentityBalance) + " ADX"
-												: ""
+												: "",
+											extra: canExecuteGaslessError || "Ready for gasless stake"
 										})}
 									</Box>
 								</Box>
 							)}
-							<Box>
+							<Box mt={2}>
 								<Tooltip
 									disableFocusListener={!disabled}
 									disableHoverListener={!disabled}
 									disableTouchListener={!disabled}
-									title={!canExecuteGasless ? canExecuteGaslessError || "" : ""}
+									title={
+										walletConnected
+											? canExecuteGaslessError || ""
+											: "Connect wallet"
+									}
 								>
 									<div>
 										<Button
