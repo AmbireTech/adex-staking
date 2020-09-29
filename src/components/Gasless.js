@@ -256,7 +256,8 @@ const Gasless = () => {
 								{!disabled && (
 									<Box mt={2}>
 										{`Once you send your gasless transaction, it will take some time for it to be executed on the chain. Please be patient.
-										Yours stats will be updated when the transaction is confirmed. Confirmation time depends on network load.										
+										Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load.
+
 										You can see all transactions of your gasless address `}
 										<ExternalAnchor
 											color="inherit"
