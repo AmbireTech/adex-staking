@@ -7,7 +7,8 @@ import {
 	Backdrop,
 	Fade,
 	Snackbar,
-	useMediaQuery
+	useMediaQuery,
+	Box
 } from "@material-ui/core"
 import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
@@ -198,11 +199,6 @@ export default function Root() {
 						disableNonBrowserWallets: !REACT_APP_RPC_URL
 					})}
 
-					<Snackbar open={openDoingTx}>
-						<Alert severity="info">
-							Please sign all pending MetaMask actions!
-						</Alert>
-					</Snackbar>
 					<Snackbar
 						open={openErr}
 						autoHideDuration={10000}
@@ -264,6 +260,19 @@ export default function Root() {
 									{"Please, connect to mainnet ethereum network."}
 								</Alert>
 							</div>
+						</Fade>
+					</Modal>
+					<Modal
+						open={openDoingTx}
+						aria-labelledby="info-doingTx"
+						aria-describedby="info-doingTx"
+						BackdropComponent={Backdrop}
+						className={clsx(classes.modal)}
+					>
+						<Fade in={openDoingTx}>
+							<Alert severity="info">
+								<Box p={2}>{"Please sign all pending MetaMask actions!"}</Box>
+							</Alert>
 						</Fade>
 					</Modal>
 				</div>
