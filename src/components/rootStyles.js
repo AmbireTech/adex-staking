@@ -16,7 +16,7 @@ export const styles = theme => {
 			backgroundColor: theme.palette.background.default,
 			backgroundImage: `radial-gradient(
 				circle,
-				${fade(theme.palette.background.special, 0.42)} 0%,
+				${fade(theme.palette.background.special, 0.333)} 0%,
 				${theme.palette.common.black} 69%
 			)`,
 

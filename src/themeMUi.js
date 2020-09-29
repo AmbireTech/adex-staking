@@ -178,7 +178,8 @@ const theme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: fade(DARKER_PAPER, 0.9)
+				backgroundColor: fade(DARKER_PAPER, 0.9),
+				padding: defaultTheme.spacing(2)
 			},
 			arrow: { color: fade(DARKER_PAPER, 0.9) }
 		},
