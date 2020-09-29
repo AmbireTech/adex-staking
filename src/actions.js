@@ -248,6 +248,23 @@ export async function createNewBond(
 		Token.balanceOf(addr)
 	])
 
+	// Edge case: if we're gasless, the ADX is already on the identity and it's not deployed (constructor will be executed)
+	console.log(
+		gasless,
+		amount.eq(balanceOnIdentity),
+		await provider.getCode(addr)
+	)
+	if (
+		gasless &&
+		amount.eq(balanceOnIdentity) &&
+		(await provider.getCode(addr)) === "0x"
+	) {
+		return executeOnIdentity(chosenWalletType, [], {}, true)
+	}
+	// @TODO consider handling this edge case in non-gasless cases when there's some ADX on the identity
+	// or at least `if (needsDeploying && balanceOnIdentity.gt(ZERO)) throw` cause otherwise the tx would just fail
+	// because the cnstructor will bond this amount first
+
 	// Eg bond amount is 10 but we only have 60, we need another 40
 	const needed = amount.sub(balanceOnIdentity)
 	const setAllowance = needed.gt(ZERO) && !allowance.gte(amount)
