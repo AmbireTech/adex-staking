@@ -46,6 +46,11 @@ const useStyles = makeStyles(theme => {
 			display: "flex",
 			alignItems: "center",
 			justifyContent: "center"
+		},
+		content: {
+			[theme.breakpoints.up("md")]: {
+				maxWidth: 800
+			}
 		}
 	}
 })
@@ -127,6 +132,7 @@ const Gasless = () => {
 				<Box>
 					<Box>
 						<Box
+							className={classes.content}
 							mt={4}
 							display="flex"
 							flexDirection="column"
@@ -138,7 +144,7 @@ const Gasless = () => {
 								</Typography>
 							</Box>
 							<Box
-								mt={2}
+								my={2}
 								display="flex"
 								flexDirection="row"
 								alignItems="center"
@@ -198,21 +204,21 @@ const Gasless = () => {
 									</Tooltip>
 								</Box>
 							</Box>
-							<Box mt={2} fontSize="h5.fontSize">
-								Deposit ADX to this address. When there's a minimum of{" "}
+							<Typography variant="h6" gutterBottom>
+								{" - "} Deposit ADX to this address. When there's a minimum of{" "}
 								<strong>{`${formatADXPretty(
 									MIN_BALANCE_FOR_GASLESS_TXNS
 								)} ADX`}</strong>{" "}
 								deposited, you can click "Stake" and that amount will be staked
 								without gas fees.
-							</Box>
-							<Box mt={1} fontSize="h5.fontSize">
-								You can send ADX from wallets and exchanges as many times as you
-								want before clicking "Stake".
-							</Box>
-							<Box mt={1} fontSize="h5.fontSize">
-								Gasless staking is limited to one stake in 12 hours.
-							</Box>
+							</Typography>
+							<Typography variant="h6" gutterBottom>
+								{" - "} You can send ADX from wallets and exchanges as many
+								times as you want before clicking "Stake".
+							</Typography>
+							<Typography variant="h6" gutterBottom>
+								{" - "} Gasless staking is limited to one stake in 12 hours.
+							</Typography>
 							{walletConnected && (
 								<Box mt={4}>
 									<Box>
