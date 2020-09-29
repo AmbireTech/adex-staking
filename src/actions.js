@@ -249,11 +249,6 @@ export async function createNewBond(
 	])
 
 	// Edge case: if we're gasless, the ADX is already on the identity and it's not deployed (constructor will be executed)
-	console.log(
-		gasless,
-		amount.eq(balanceOnIdentity),
-		await provider.getCode(addr)
-	)
 	if (
 		gasless &&
 		amount.eq(balanceOnIdentity) &&
