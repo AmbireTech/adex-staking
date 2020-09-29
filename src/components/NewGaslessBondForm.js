@@ -96,22 +96,6 @@ export default function NewGaslessBondForm({
 							<Typography variant="h6">Pool slashing policy:</Typography>
 							<Typography variant="body1">{activePool.slashPolicy}</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="h6">Pool APY:</Typography>
-							<Typography variant="body1">
-								{farmer} Current annual yield of{" "}
-								{/* {(getApproxAPY(null, totalStake, isEarly) * 100).toFixed(2)}%{" "} */}
-								{farmer}
-							</Typography>
-						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="body1">
-								<b>
-									{/* {`Please sign ALL ${chosenWalletType.name ||
-									"Metamask"} transactions that pop up`} */}
-								</b>
-							</Typography>
-						</Grid>
 					</Grid>
 				) : (
 					""

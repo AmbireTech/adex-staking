@@ -455,12 +455,10 @@ export async function executeOnIdentity(
 		const signatures = []
 		for (const tx of txnsRaw) {
 			const sig = await signer.signMessage(new Transaction(tx).hash())
-
 			signatures.push(splitSig(sig))
 		}
 
 		const executeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/execute`
-
 		const res = await fetch(executeUrl, {
 			method: "POST",
 			body: JSON.stringify({
