@@ -53,12 +53,6 @@ export default function NewGaslessBondForm({
 		</>
 	)
 
-	const farmer = (
-		<span role="img" aria-label="farmer">
-			🌾
-		</span>
-	)
-
 	return (
 		<Box
 			width={666}

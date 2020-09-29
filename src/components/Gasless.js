@@ -61,12 +61,10 @@ const Gasless = () => {
 		setConnectWallet,
 		addSnack,
 		chosenWalletType,
-		wrapDoingTxns,
-		prices
+		wrapDoingTxns
 	} = useContext(AppContext)
 
 	const {
-		connectedWalletAddress,
 		userIdentityBalance,
 		identityAddr,
 		loaded,
