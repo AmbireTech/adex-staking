@@ -194,7 +194,8 @@ const theme = createMuiTheme({
 		MuiAlert: {
 			root: {
 				borderRadius: 0,
-				maxWidth: "100%"
+				maxWidth: "100%",
+				alignItems: "center"
 			},
 			message: {
 				wordBreak: "break-word"
