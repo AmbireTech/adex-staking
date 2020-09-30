@@ -54,7 +54,7 @@ export const EMPTY_STATS = {
 const sumRewards = all =>
 	all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
 
-const isTomChannelId = channel =>
+export const isTomChannelId = channel =>
 	channel.channelArgs.validators.some(
 		val => id(`validator:${val}`) === POOLS[0].id
 	)
@@ -442,7 +442,7 @@ export async function restake(
 			]
 		])
 
-	await executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
+	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
 }
 
 function toChannelTuple(args) {
