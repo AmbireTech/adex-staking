@@ -246,33 +246,39 @@ export default function Root() {
 					</Modal>
 					<Modal
 						open={chainWarning}
-						aria-labelledby="alert-chain-warning"
+						aria-labelledby="alert-chain-warning-title"
 						aria-describedby="alert-chain-description"
 						BackdropComponent={Backdrop}
 						className={clsx(classes.modal, classes.alwaysOnTop)}
 					>
 						<Fade in={chainWarning}>
-							<div>
+							<Box>
 								<Alert severity="warning">
-									<AlertTitle>
+									<AlertTitle id="alert-chain-warning-title">
 										{"Unsupported ethereum chain detected"}
 									</AlertTitle>
-									{"Please, connect to mainnet ethereum network."}
+									<Box id="alert-chain-description">
+										{"Please, connect to mainnet ethereum network."}
+									</Box>
 								</Alert>
-							</div>
+							</Box>
 						</Fade>
 					</Modal>
 					<Modal
 						open={openDoingTx}
 						aria-labelledby="info-doingTx"
-						aria-describedby="info-doingTx"
 						BackdropComponent={Backdrop}
+						closeAfterTransition
 						className={clsx(classes.modal)}
 					>
 						<Fade in={openDoingTx}>
-							<Alert severity="info">
-								<Box p={2}>{"Please sign all pending MetaMask actions!"}</Box>
-							</Alert>
+							<Box>
+								<Alert severity="info">
+									<Box id="info-doingTx" p={2}>
+										{"Please sign all pending MetaMask actions!"}
+									</Box>
+								</Alert>
+							</Box>
 						</Fade>
 					</Modal>
 				</div>

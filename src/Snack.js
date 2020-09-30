@@ -19,7 +19,7 @@ export function useSnack() {
 		}
 	}, [snackPack, snackMessageInfo, snackOpen])
 
-	const addSnack = (message, severity, hideTimeout, action) => {
+	const addSnack = (message, severity, hideTimeout = 20000, action) => {
 		setSnackPack(prev => [
 			...prev,
 			{
@@ -36,6 +36,7 @@ export function useSnack() {
 		if (reason === "clickaway") {
 			return
 		}
+		setMessageInfo(undefined)
 		setOpen(false)
 	}
 
@@ -66,7 +67,7 @@ export function ShtarvolinkiSnack({
 				horizontal: "center"
 			}}
 			open={snackOpen}
-			autoHideDuration={snackMessageInfo.hideTimeout || 20000}
+			autoHideDuration={snackMessageInfo.hideTimeout}
 			onExited={snackExited}
 			onClose={closeSnack}
 		>
