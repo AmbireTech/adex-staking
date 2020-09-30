@@ -1,5 +1,5 @@
 import { Contract } from "ethers"
-import { bigNumberify, hexZeroPad } from "ethers/utils"
+import { bigNumberify, hexZeroPad, id } from "ethers/utils"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import { splitSig, Transaction } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
@@ -42,6 +42,7 @@ export const EMPTY_STATS = {
 	rewardChannels: [],
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
+	tomRewardADX: ZERO,
 	userTotalStake: ZERO,
 	totalBalanceADX: ZERO,
 	userWalletBalance: ZERO,
@@ -52,6 +53,11 @@ export const EMPTY_STATS = {
 
 const sumRewards = all =>
 	all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
+
+const isTomChannelId = channel =>
+	channel.channelArgs.validators.some(
+		val => id(`validator:${val}`) === POOLS[0].id
+	)
 
 export async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
@@ -86,9 +92,13 @@ export async function loadUserStats(chosenWalletType) {
 		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
-	const totalRewardADX = sumRewards(
-		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
+	const adxRewardsChannels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
+	const tomAdxRewards = [...adxRewardsChannels].filter(x => isTomChannelId(x))
+
+	const totalRewardADX = sumRewards(adxRewardsChannels)
+	const tomRewardADX = sumRewards(tomAdxRewards)
 
 	const totalRewardDAI = sumRewards(
 		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
@@ -105,6 +115,7 @@ export async function loadUserStats(chosenWalletType) {
 		rewardChannels,
 		totalRewardADX,
 		totalRewardDAI,
+		tomRewardADX,
 		userTotalStake,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
@@ -382,9 +393,15 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	}
 }
 
-export async function restake(chosenWalletType, { rewardChannels, userBonds }) {
+export async function restake(
+	chosenWalletType,
+	{ rewardChannels, userBonds },
+	gasless
+) {
 	const channels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr === ADDR_ADX
+		x =>
+			x.channelArgs.tokenAddr === ADDR_ADX &&
+			(gasless ? isTomChannelId(x) : true)
 	)
 	if (!channels.length) throw new Error("no channels to earn from")
 
@@ -425,7 +442,7 @@ export async function restake(chosenWalletType, { rewardChannels, userBonds }) {
 			]
 		])
 
-	await executeOnIdentity(chosenWalletType, identityTxns)
+	await executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
 }
 
 function toChannelTuple(args) {
