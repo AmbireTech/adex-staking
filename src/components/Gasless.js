@@ -33,7 +33,7 @@ import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
 import ConfirmationDialog from "./ConfirmationDialog"
 
-const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(2)
+const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -88,16 +88,16 @@ const Gasless = () => {
 		tomRewardADX
 	} = stats
 
-	const hasEnoughForReStake = MIN_GASLESS_RE_STAKE_REWARDS.gte(tomRewardADX)
+	const hasEnoughForReStake = tomRewardADX.gte(MIN_GASLESS_RE_STAKE_REWARDS)
 
 	const walletConnected = identityAddr && loaded
 	const disabled = !walletConnected || !canExecuteGasless
 	const disableReStake = disabled || !hasEnoughForReStake
 	const canExecuteGaslessReStakeError =
 		canExecuteGaslessError ||
-		`Not enough rewards. Min rewards for gasless re-stake ${formatADXPretty(
-			tomRewardADX
-		)} ADX`
+		`Not enough rewards (min rewards for gasless re-stake ${formatADXPretty(
+			MIN_GASLESS_RE_STAKE_REWARDS
+		)} ADX)`
 	const showReStake =
 		walletConnected &&
 		!(canExecuteGaslessError || "")
