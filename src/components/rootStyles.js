@@ -17,12 +17,16 @@ export const styles = theme => {
 			backgroundImage: `radial-gradient(
 				circle,
 				${fade(theme.palette.background.special, 0.333)} 0%,
-				${theme.palette.common.black} 69%
+				${fade(theme.palette.common.black, 0.69)} 146%
 			)`,
-
 			backgroundRepeat: "no-repeat",
 			[theme.breakpoints.up("md")]: {
-				backgroundPositionX: drawerWidth / 2
+				backgroundPositionX: drawerWidth / 2,
+				backgroundImage: `radial-gradient(
+					circle,
+					${fade(theme.palette.background.special, 0.333)} 0%,
+					${fade(theme.palette.common.black, 0.69)} 93%
+				)`
 			}
 		},
 		toolbar: {

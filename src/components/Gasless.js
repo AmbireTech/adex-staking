@@ -60,6 +60,7 @@ const Gasless = () => {
 
 	const [bondOpen, setBondOpen] = useState(false)
 	const [bond, setBond] = useState({})
+	const [clicks, setClicks] = useState(0)
 
 	const {
 		stats,
@@ -205,7 +206,7 @@ const Gasless = () => {
 								</Box>
 							</Box>
 							<Typography variant="h6" gutterBottom>
-								{" - "} Deposit ADX to this address. When there's a minimum of{" "}
+								{" • "} Deposit ADX to this address. When there's a minimum of{" "}
 								<strong>{`${formatADXPretty(
 									MIN_BALANCE_FOR_GASLESS_TXNS
 								)} ADX`}</strong>{" "}
@@ -213,11 +214,11 @@ const Gasless = () => {
 								without gas fees.
 							</Typography>
 							<Typography variant="h6" gutterBottom>
-								{" - "} You can send ADX from wallets and exchanges as many
+								{" • "} You can send ADX from wallets and exchanges as many
 								times as you want before clicking "Stake".
 							</Typography>
 							<Typography variant="h6" gutterBottom>
-								{" - "} Gasless staking is limited to one stake in 12 hours.
+								{" • "} Gasless staking is limited to one stake in 12 hours.
 							</Typography>
 							{walletConnected && (
 								<Box mt={4}>
@@ -248,7 +249,7 @@ const Gasless = () => {
 								>
 									<div>
 										<Button
-											id={`stake-gasless-form-open}`}
+											id={`stake-gasless-form-open`}
 											variant="contained"
 											disableElevation
 											color="secondary"
