@@ -85,7 +85,8 @@ const Gasless = () => {
 		loaded,
 		canExecuteGasless,
 		canExecuteGaslessError,
-		tomRewardADX
+		tomRewardADX,
+		userBonds
 	} = stats
 
 	const hasEnoughForReStake = tomRewardADX.gte(MIN_GASLESS_RE_STAKE_REWARDS)
@@ -93,23 +94,20 @@ const Gasless = () => {
 	const walletConnected = identityAddr && loaded
 	const disabled = !walletConnected || !canExecuteGasless
 	const disableReStake = disabled || !hasEnoughForReStake
-	const canExecuteGaslessReStakeError =
-		canExecuteGaslessError ||
-		`Not enough rewards (min rewards for gasless re-stake ${formatADXPretty(
-			MIN_GASLESS_RE_STAKE_REWARDS
-		)} ADX)`
+	const canExecuteGaslessReStakeError = (canExecuteGaslessError || "")
+		.toLowerCase()
+		.includes("needs to have at least")
+		? `Insufficient gasless address balance`
+		: canExecuteGaslessError ||
+		  `Not enough rewards (min rewards for gasless re-stake ${formatADXPretty(
+				MIN_GASLESS_RE_STAKE_REWARDS
+		  )} ADX)`
 	const showReStake =
 		walletConnected &&
-		!(canExecuteGaslessError || "")
-			.toLowerCase()
-			.includes("needs to have at least")
+		userBonds &&
+		userBonds.some(x => x.poolId === POOLS[0].id)
 
-	const onStake = async () => {
-		setBondOpen(false)
-		const res = await wrapDoingTxns(
-			createNewBond.bind(null, stats, chosenWalletType, bond, true)
-		)()
-
+	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
 			addSnack(
 				`Gasless transactions ${res.txId} sent!`,
@@ -117,7 +115,7 @@ const Gasless = () => {
 				20000,
 				<ExternalAnchor
 					color="inherit"
-					id="new-gasless-stake-snack"
+					id={btnId}
 					target="_blank"
 					href={`https://etherscan.io/tx/${res.txId}`}
 				>
@@ -127,27 +125,22 @@ const Gasless = () => {
 		}
 	}
 
+	const onStake = async () => {
+		setBondOpen(false)
+		const res = await wrapDoingTxns(
+			createNewBond.bind(null, stats, chosenWalletType, bond, true)
+		)()
+
+		onTxRes(res, "new-gasless-stake-snack")
+	}
+
 	const onReStake = async () => {
 		setReStakeOpen(false)
 		const res = await wrapDoingTxns(
 			restake.bind(null, chosenWalletType, stats, true)
 		)()
 
-		if (res && res.txId) {
-			addSnack(
-				`Gasless transactions ${res.txId} sent!`,
-				"success",
-				20000,
-				<ExternalAnchor
-					color="inherit"
-					id="new-gasless-re-stake-snack"
-					target="_blank"
-					href={`https://etherscan.io/tx/${res.txId}`}
-				>
-					See on Etherscan
-				</ExternalAnchor>
-			)
-		}
+		onTxRes(res, "new-gasless-re-stake-snack")
 	}
 
 	useEffect(() => {
@@ -356,7 +349,7 @@ const Gasless = () => {
 																onClick={() => setReStakeOpen(true)}
 																disabled={disableReStake}
 															>
-																{"RE-STAKE"}
+																{"RE-STAKE REWARDS"}
 															</Button>
 														</Box>
 													</Tooltip>
