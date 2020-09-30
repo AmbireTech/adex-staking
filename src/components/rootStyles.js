@@ -39,8 +39,8 @@ export const styles = theme => {
 				marginLeft: drawerWidth
 			},
 			[theme.breakpoints.down("sm")]: {
-				paddingLeft: theme.spacing(1),
-				paddingRight: theme.spacing(1)
+				paddingLeft: theme.spacing(1.5),
+				paddingRight: theme.spacing(1.5)
 			}
 		},
 		toolbarActions: {
@@ -63,8 +63,8 @@ export const styles = theme => {
 				marginLeft: drawerWidth
 			},
 			[theme.breakpoints.down("sm")]: {
-				paddingLeft: theme.spacing(1),
-				paddingRight: theme.spacing(1)
+				paddingLeft: theme.spacing(1.5),
+				paddingRight: theme.spacing(1.5)
 			}
 		},
 		contentInner: {
