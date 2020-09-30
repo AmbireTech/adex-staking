@@ -5,7 +5,6 @@ import {
 	SvgIcon,
 	Typography,
 	IconButton,
-	Tooltip,
 	Button,
 	Modal,
 	Fade,
@@ -25,6 +24,7 @@ import StatsCard from "./StatsCard"
 import { formatADXPretty } from "../helpers/formatting"
 import NewGaslessBondForm from "./NewGaslessBondForm"
 import { ExternalAnchor } from "./Anchor"
+import Tooltip from "./Tooltip"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -60,7 +60,6 @@ const Gasless = () => {
 
 	const [bondOpen, setBondOpen] = useState(false)
 	const [bond, setBond] = useState({})
-	const [clicks, setClicks] = useState(0)
 
 	const {
 		stats,
@@ -238,9 +237,6 @@ const Gasless = () => {
 							)}
 							<Box mt={2}>
 								<Tooltip
-									disableFocusListener={!disabled}
-									disableHoverListener={!disabled}
-									disableTouchListener={!disabled}
 									title={
 										walletConnected
 											? canExecuteGaslessError || ""

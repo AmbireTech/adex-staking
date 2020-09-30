@@ -5,11 +5,11 @@ import {
 	Button,
 	CircularProgress,
 	Typography,
-	SvgIcon,
-	Tooltip
+	SvgIcon
 } from "@material-ui/core"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
+import Tooltip from "./Tooltip"
 
 const useStyles = makeStyles(theme => {
 	return {

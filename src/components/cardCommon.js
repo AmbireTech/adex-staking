@@ -1,7 +1,8 @@
 import React, { Fragment } from "react"
-import { Box, Tooltip } from "@material-ui/core"
+import { Box } from "@material-ui/core"
 import Typography from "@material-ui/core/Typography"
 import { InfoSharp as InfoIcon } from "@material-ui/icons"
+import Tooltip from "./Tooltip"
 
 const ExtraLabel = ({ label = "" }) =>
 	Array.isArray(label) ? (
