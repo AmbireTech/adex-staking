@@ -11,6 +11,7 @@ import {
 	ADDR_STAKING,
 	ADDR_FACTORY,
 	ADDR_ADX,
+	ADDR_ADX_LOYALTY_TOKEN,
 	MAX_UINT,
 	ZERO,
 	POOLS
@@ -27,6 +28,7 @@ const provider = defaultProvider
 const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const Core = new Contract(ADDR_CORE, CoreABI, provider)
+const LoyaltyToken = new Contract(ADDR_ADX_LOYALTY_TOKEN, ERC20ABI, provider)
 
 const MAX_SLASH = bigNumberify("1000000000000000000")
 
@@ -69,6 +71,7 @@ export async function loadStats(chosenWalletType) {
 }
 
 export async function loadUserStats(chosenWalletType) {
+	loadDepositsStats()
 	if (!chosenWalletType.name) return { ...EMPTY_STATS, loaded: true }
 
 	const signer = await getSigner(chosenWalletType)
@@ -229,6 +232,79 @@ export async function getGaslessInfo(addr) {
 			canExecuteGaslessError: "Gasless staking temporary unavailable"
 		}
 	}
+}
+
+export async function loadDepositsStats(walletAddr) {
+	const zer0Addr = "0x0000000000000000000000000000000000000000"
+	walletAddr = "0xd6e371526cdaee04cd8af225d42e37bc14688d9e"
+	const [
+		totalADX,
+		balanceLpToken,
+		totalSupplyLPT,
+		loyaltyTokenTransfersLogs,
+		adexTokenTransfersLogs
+	] = await Promise.all([
+		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
+		LoyaltyToken.totalSupply(),
+		LoyaltyToken.balanceOf(walletAddr),
+		provider.getLogs({
+			fromBlock: 0,
+			...LoyaltyToken.filters.Transfer(null, walletAddr, null)
+		}),
+		provider.getLogs({
+			fromBlock: 0,
+			...Token.filters.Transfer(walletAddr, ADDR_ADX_LOYALTY_TOKEN, null)
+		})
+	])
+
+	const balanceLpADX = balanceLpToken.mul(totalADX).div(totalSupplyLPT)
+
+	const currentBalance = {
+		balanceLpToken,
+		balanceLpADX
+	}
+
+	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
+		log => LoyaltyToken.interface.parseLog(log).values[0] !== zer0Addr
+	)
+
+	// rewards === null => unknown rewards - can not be calculated
+	if (hasExternalLoyaltyTokenTransfers) {
+		currentBalance.rewards = null
+		return currentBalance
+	}
+
+	const adxTransfersByTxHash = adexTokenTransfersLogs.reduce((txns, log) => {
+		txns[log.transactionHash] = log
+		return txns
+	}, {})
+
+	const userDeposits = loyaltyTokenTransfersLogs.reduce(
+		(deposits, log) => {
+			const axdTransferLog = adxTransfersByTxHash[log.transactionHash]
+
+			if (axdTransferLog) {
+				const lpTokenLog = LoyaltyToken.interface.parseLog(log)
+				const adxTransferLog = Token.interface.parseLog(axdTransferLog)
+
+				deposits.adx = deposits.adx.add(lpTokenLog.values[2])
+				deposits.adxLPT = deposits.adxLPT.add(adxTransferLog.values[2])
+			}
+
+			return deposits
+		},
+		{ adx: ZERO, adxLPT: ZERO }
+	)
+
+	const avgDepositPrice = userDeposits.adxLPT.div(userDeposits.adx)
+
+	const depositedADX = balanceLpADX.div(avgDepositPrice)
+
+	const reward = balanceLpADX - depositedADX
+
+	currentBalance.reward = reward
+
+	return currentBalance
 }
 
 export async function createNewBond(
