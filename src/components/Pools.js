@@ -49,10 +49,10 @@ const Pools = () => {
 							prices,
 							stats.totalStakeTom
 						)}`}
-						currentAPY={`${tomAPY.toFixed(2)}% APY`}
-						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)}%`}
+						currentAPY={`${tomAPY.toFixed(2)} %`}
+						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(tomAPY / 365).toFixed(4)}%`
+							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`
 						]}
 						onStakeBtnClick={() => {
 							setNewBondPool(POOLS[0].id)
@@ -77,7 +77,7 @@ const Pools = () => {
 						totalStakedADX={formatADXPretty(stats.totalStakeTom)}
 						currentAPY={`${(
 							getApproxAPY(null, stats.totalStakeTom) * 100
-						).toFixed(2)}% APY`}
+						).toFixed(2)} %`}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
 						}}

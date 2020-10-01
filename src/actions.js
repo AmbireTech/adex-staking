@@ -1,7 +1,7 @@
 import { Contract } from "ethers"
-import { bigNumberify, hexZeroPad } from "ethers/utils"
+import { bigNumberify, hexZeroPad, id } from "ethers/utils"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
-import { splitSig } from "adex-protocol-eth/js"
+import { splitSig, Transaction } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
@@ -16,7 +16,8 @@ import {
 	POOLS
 } from "./helpers/constants"
 import { getBondId } from "./helpers/bonds"
-import { getUserIdentity, zeroFeeTx } from "./helpers/identity"
+import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "./helpers/identity"
+import { ADEX_RELAYER_HOST } from "./helpers/constants"
 import { getSigner, defaultProvider } from "./ethereum"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
@@ -41,12 +42,22 @@ export const EMPTY_STATS = {
 	rewardChannels: [],
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
+	tomRewardADX: ZERO,
 	userTotalStake: ZERO,
-	totalBalanceADX: ZERO
+	totalBalanceADX: ZERO,
+	userWalletBalance: ZERO,
+	userIdentityBalance: ZERO,
+	canExecuteGasless: false,
+	canExecuteGaslessError: null
 }
 
 const sumRewards = all =>
 	all.map(x => x.outstandingReward).reduce((a, b) => a.add(b), ZERO)
+
+export const isTomChannelId = channel =>
+	channel.channelArgs.validators.some(
+		val => id(`validator:${val}`) === POOLS[0].id
+	)
 
 export async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
@@ -64,10 +75,16 @@ export async function loadUserStats(chosenWalletType) {
 	if (!signer) return { ...EMPTY_STATS, loaded: true }
 
 	const addr = await signer.getAddress()
+	const identityAddr = getUserIdentity(addr).addr
 
-	const [{ userBonds, userBalance }, rewardChannels] = await Promise.all([
-		loadBondStats(addr),
-		getRewards(addr)
+	const [
+		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
+		rewardChannels,
+		{ canExecuteGasless, canExecuteGaslessError }
+	] = await Promise.all([
+		loadBondStats(addr, identityAddr),
+		getRewards(addr),
+		getGaslessInfo(addr)
 	])
 
 	const userTotalStake = userBonds
@@ -75,9 +92,13 @@ export async function loadUserStats(chosenWalletType) {
 		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
-	const totalRewardADX = sumRewards(
-		rewardChannels.filter(x => x.channelArgs.tokenAddr === ADDR_ADX)
+	const adxRewardsChannels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
+	const tomAdxRewards = [...adxRewardsChannels].filter(x => isTomChannelId(x))
+
+	const totalRewardADX = sumRewards(adxRewardsChannels)
+	const tomRewardADX = sumRewards(tomAdxRewards)
 
 	const totalRewardDAI = sumRewards(
 		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
@@ -86,6 +107,7 @@ export async function loadUserStats(chosenWalletType) {
 	const totalBalanceADX = userBalance.add(totalRewardADX).add(userTotalStake)
 
 	return {
+		identityAddr,
 		connectedWalletAddress: addr,
 		userBonds,
 		userBalance, // ADX on wallet
@@ -93,14 +115,22 @@ export async function loadUserStats(chosenWalletType) {
 		rewardChannels,
 		totalRewardADX,
 		totalRewardDAI,
+		tomRewardADX,
 		userTotalStake,
-		totalBalanceADX // Wallet + Stake + Reward
+		totalBalanceADX, // Wallet + Stake + Reward
+		userWalletBalance,
+		userIdentityBalance,
+		canExecuteGasless,
+		canExecuteGaslessError
 	}
 }
 
-export async function loadBondStats(addr) {
-	const identityAddr = getUserIdentity(addr).addr
-	const [balances, logs, slashLogs] = await Promise.all([
+export async function loadBondStats(addr, identityAddr) {
+	const [
+		[userWalletBalance, userIdentityBalance],
+		logs,
+		slashLogs
+	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		provider.getLogs({
 			fromBlock: 0,
@@ -110,7 +140,7 @@ export async function loadBondStats(addr) {
 		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
 	])
 
-	const userBalance = balances.reduce((a, b) => a.add(b))
+	const userBalance = userWalletBalance.add(userIdentityBalance)
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
@@ -146,7 +176,12 @@ export async function loadBondStats(addr) {
 		return bonds
 	}, [])
 
-	return { userBonds, userBalance }
+	return {
+		userBonds,
+		userBalance,
+		userWalletBalance,
+		userIdentityBalance
+	}
 }
 
 export async function getRewards(addr) {
@@ -178,10 +213,29 @@ export async function getRewards(addr) {
 	return forUser.filter(x => x)
 }
 
+export async function getGaslessInfo(addr) {
+	try {
+		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
+		const resData = await res.json()
+
+		return {
+			canExecuteGasless: resData.canExecute === true,
+			canExecuteGaslessError: resData.message || null
+		}
+	} catch (err) {
+		console.error(err)
+		return {
+			canExecuteGasless: false,
+			canExecuteGaslessError: "Gasless staking temporary unavailable"
+		}
+	}
+}
+
 export async function createNewBond(
 	stats,
 	chosenWalletType,
-	{ amount, poolId, nonce }
+	{ amount, poolId, nonce },
+	gasless
 ) {
 	if (!poolId) return
 	if (!stats.userBalance) return
@@ -204,6 +258,18 @@ export async function createNewBond(
 		Token.allowance(addr, Staking.address),
 		Token.balanceOf(addr)
 	])
+
+	// Edge case: if we're gasless, the ADX is already on the identity and it's not deployed (constructor will be executed)
+	if (
+		gasless &&
+		amount.eq(balanceOnIdentity) &&
+		(await provider.getCode(addr)) === "0x"
+	) {
+		return executeOnIdentity(chosenWalletType, [], {}, true)
+	}
+	// @TODO consider handling this edge case in non-gasless cases when there's some ADX on the identity
+	// or at least `if (needsDeploying && balanceOnIdentity.gt(ZERO)) throw` cause otherwise the tx would just fail
+	// because the cnstructor will bond this amount first
 
 	// Eg bond amount is 10 but we only have 60, we need another 40
 	const needed = amount.sub(balanceOnIdentity)
@@ -236,10 +302,11 @@ export async function createNewBond(
 		: Staking.interface.functions.addBond.encode([bond])
 	identityTxns.push([Staking.address, stakingData])
 
-	await executeOnIdentity(
+	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
-		setAllowance ? { gasLimit: 450000 } : {}
+		setAllowance ? { gasLimit: 450000 } : {},
+		gasless
 	)
 }
 
@@ -326,9 +393,15 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	}
 }
 
-export async function restake(chosenWalletType, { rewardChannels, userBonds }) {
+export async function restake(
+	chosenWalletType,
+	{ rewardChannels, userBonds },
+	gasless
+) {
 	const channels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr === ADDR_ADX
+		x =>
+			x.channelArgs.tokenAddr === ADDR_ADX &&
+			(gasless ? isTomChannelId(x) : true)
 	)
 	if (!channels.length) throw new Error("no channels to earn from")
 
@@ -369,7 +442,7 @@ export async function restake(chosenWalletType, { rewardChannels, userBonds }) {
 			]
 		])
 
-	await executeOnIdentity(chosenWalletType, identityTxns)
+	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
 }
 
 function toChannelTuple(args) {
@@ -383,7 +456,12 @@ function toChannelTuple(args) {
 	]
 }
 
-export async function executeOnIdentity(chosenWalletType, txns, opts = {}) {
+export async function executeOnIdentity(
+	chosenWalletType,
+	txns,
+	opts = {},
+	gasless
+) {
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("failed to get signer")
 	const walletAddr = await signer.getAddress()
@@ -399,7 +477,29 @@ export async function executeOnIdentity(chosenWalletType, txns, opts = {}) {
 			to,
 			data
 		).toSolidityTuple()
-	if (!needsToDeploy) {
+	if (gasless) {
+		// @TODO: we can use execute that calls into executeBySender here to only sign one tx
+		const txnsRaw = txns.map(([to, data], i) =>
+			rawZeroFeeTx(identity.address, idNonce.add(i), to, data)
+		)
+		const signatures = []
+		for (const tx of txnsRaw) {
+			const sig = await signer.signMessage(new Transaction(tx).hash())
+			signatures.push(splitSig(sig))
+		}
+
+		const executeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/execute`
+		const res = await fetch(executeUrl, {
+			method: "POST",
+			body: JSON.stringify({
+				txnsRaw,
+				signatures
+			}),
+			headers: { "Content-Type": "application/json" }
+		})
+		if (res.status === 500) throw new Error("Relayer: internal error")
+		return res.json()
+	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
 		await identity.executeBySender(txnTuples, opts)
 	} else {

@@ -27,7 +27,7 @@ const Stakings = () => {
                     information as status, amount and current APY. By using the action buttons, you will be 
                     able to request unbonding and withdraw your ADX after the 30 day lock-up period.`}
 				</Typography>
-				<Box mt={2} bgcolor="background.darkerPaper">
+				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
 					<Box p={3}>
 						{Bonds({
 							stats,

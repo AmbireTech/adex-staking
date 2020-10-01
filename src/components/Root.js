@@ -7,18 +7,25 @@ import {
 	Backdrop,
 	Fade,
 	Snackbar,
-	useMediaQuery
+	useMediaQuery,
+	Box
 } from "@material-ui/core"
 import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
 import Stakings from "./Stakings"
+import Gasless from "./Gasless"
 import Pools from "./Pools"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { AppToolbar } from "./Toolbar"
 import SideNav from "./SideNav"
-import { ZERO, UNBOND_DAYS, POOLS } from "../helpers/constants"
+import {
+	ZERO,
+	UNBOND_DAYS,
+	POOLS,
+	REACT_APP_RPC_URL
+} from "../helpers/constants"
 import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
@@ -29,8 +36,6 @@ import clsx from "clsx"
 function Alert(props) {
 	return <MuiAlert variant="filled" {...props} />
 }
-
-const { REACT_APP_RPC_URL } = process.env
 
 const useStyles = makeStyles(styles)
 
@@ -116,6 +121,9 @@ export default function Root() {
 						<Route path="/stakings">
 							<Stakings />
 						</Route>
+						<Route path="/gasless">
+							<Gasless />
+						</Route>
 						<Route path="/">
 							<Pools />
 						</Route>
@@ -191,11 +199,6 @@ export default function Root() {
 						disableNonBrowserWallets: !REACT_APP_RPC_URL
 					})}
 
-					<Snackbar open={openDoingTx}>
-						<Alert severity="info">
-							Please sign all pending MetaMask actions!
-						</Alert>
-					</Snackbar>
 					<Snackbar
 						open={openErr}
 						autoHideDuration={10000}
@@ -243,20 +246,39 @@ export default function Root() {
 					</Modal>
 					<Modal
 						open={chainWarning}
-						aria-labelledby="alert-chain-warning"
+						aria-labelledby="alert-chain-warning-title"
 						aria-describedby="alert-chain-description"
 						BackdropComponent={Backdrop}
 						className={clsx(classes.modal, classes.alwaysOnTop)}
 					>
 						<Fade in={chainWarning}>
-							<div>
+							<Box>
 								<Alert severity="warning">
-									<AlertTitle>
+									<AlertTitle id="alert-chain-warning-title">
 										{"Unsupported ethereum chain detected"}
 									</AlertTitle>
-									{"Please, connect to mainnet ethereum network."}
+									<Box id="alert-chain-description">
+										{"Please, connect to mainnet ethereum network."}
+									</Box>
 								</Alert>
-							</div>
+							</Box>
+						</Fade>
+					</Modal>
+					<Modal
+						open={openDoingTx}
+						aria-labelledby="info-doingTx"
+						BackdropComponent={Backdrop}
+						closeAfterTransition
+						className={clsx(classes.modal)}
+					>
+						<Fade in={openDoingTx}>
+							<Box>
+								<Alert severity="info">
+									<Box id="info-doingTx" p={2}>
+										{"Please sign all pending MetaMask actions!"}
+									</Box>
+								</Alert>
+							</Box>
 						</Fade>
 					</Modal>
 				</div>

@@ -1,6 +1,6 @@
 import { providers } from "ethers"
 
-const { REACT_APP_INFURA_ID } = process.env
+import { REACT_APP_INFURA_ID } from "./helpers/constants"
 
 export const defaultProvider = new providers.InfuraProvider(
 	"homestead",
@@ -8,8 +8,8 @@ export const defaultProvider = new providers.InfuraProvider(
 )
 
 export async function getSigner(chosenWalletType) {
-	console.log("chosenWalletType", chosenWalletType)
+	// console.log("chosenWalletType", chosenWalletType)
 	if (!chosenWalletType || !chosenWalletType.library)
-		throw new Error("library not provided")
+		throw new Error("Wallet not connected")
 	return chosenWalletType.library.getSigner()
 }

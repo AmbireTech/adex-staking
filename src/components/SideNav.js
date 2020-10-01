@@ -20,6 +20,7 @@ import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import { HomeSharp as HomeIcon } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
+import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -135,7 +136,7 @@ function SideNav({
 					<Box>
 						<ListItem>
 							<Box
-								my={2}
+								mb={1}
 								display="flex"
 								flexDirection="row"
 								alignItems="flex-start"
@@ -159,6 +160,7 @@ function SideNav({
 									onRestake
 								})}
 							</ListItem>
+							<Divider />
 
 							{!stats.connectedWalletAddress && (
 								<Box
@@ -190,7 +192,6 @@ function SideNav({
 			>
 				<Box>
 					<List>
-						<Divider />
 						<RRListItem
 							id="side-nav-link-pools"
 							button
@@ -202,7 +203,7 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={"Pools"} />
 						</RRListItem>
-						<Divider />
+
 						<RRListItem
 							id="side-nav-link-stakings"
 							button
@@ -215,6 +216,19 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={"Staked ADX"} />
+						</RRListItem>
+						<RRListItem
+							id="side-nav-link-gasless"
+							button
+							to={{ pathname: "/gasless" }}
+							className={clsx({ [classes.active]: path === "/gasless" })}
+						>
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<GaslessIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
+							</ListItemIcon>
+							<ListItemText primary={"Gasless Staking"} />
 						</RRListItem>
 					</List>
 				</Box>
@@ -232,7 +246,7 @@ function SideNav({
 					>
 						<ListItemIcon color="inherit">
 							<SvgIcon color="inherit">
-								<HomeIcon width="100%" height="100%" color="white" />
+								<HomeIcon color="inherit" />
 							</SvgIcon>
 						</ListItemIcon>
 						<ListItemText primary={"Homepage & Calculator"} />

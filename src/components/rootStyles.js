@@ -1,3 +1,5 @@
+import { fade } from "@material-ui/core/styles/colorManipulator"
+
 const drawerWidth = 269
 const maxContentWidth = 1420
 
@@ -11,7 +13,21 @@ export const styles = theme => {
 			flexDirection: "column",
 			height: "100vh",
 			width: "100vw",
-			backgroundColor: theme.palette.background.default
+			backgroundColor: theme.palette.background.default,
+			backgroundImage: `radial-gradient(
+				circle,
+				${fade(theme.palette.background.special, 0.333)} 0%,
+				${fade(theme.palette.common.black, 0.69)} 146%
+			)`,
+			backgroundRepeat: "no-repeat",
+			[theme.breakpoints.up("md")]: {
+				backgroundPositionX: drawerWidth / 2,
+				backgroundImage: `radial-gradient(
+					circle,
+					${fade(theme.palette.background.special, 0.333)} 0%,
+					${fade(theme.palette.common.black, 0.69)} 93%
+				)`
+			}
 		},
 		toolbar: {
 			flexWrap: "wrap",
@@ -23,8 +39,8 @@ export const styles = theme => {
 				marginLeft: drawerWidth
 			},
 			[theme.breakpoints.down("sm")]: {
-				paddingLeft: theme.spacing(1),
-				paddingRight: theme.spacing(1)
+				paddingLeft: theme.spacing(1.5),
+				paddingRight: theme.spacing(1.5)
 			}
 		},
 		toolbarActions: {
@@ -47,8 +63,8 @@ export const styles = theme => {
 				marginLeft: drawerWidth
 			},
 			[theme.breakpoints.down("sm")]: {
-				paddingLeft: theme.spacing(1),
-				paddingRight: theme.spacing(1)
+				paddingLeft: theme.spacing(1.5),
+				paddingRight: theme.spacing(1.5)
 			}
 		},
 		contentInner: {
