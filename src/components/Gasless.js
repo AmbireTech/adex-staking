@@ -8,8 +8,7 @@ import {
 	Button,
 	Modal,
 	Fade,
-	Backdrop,
-	Grid
+	Backdrop
 } from "@material-ui/core"
 import {
 	FileCopySharp as CopyIcon,
@@ -110,6 +109,11 @@ const Gasless = () => {
 		walletConnected &&
 		userBonds &&
 		userBonds.some(x => x.poolId === POOLS[0].id)
+	// NOTE: When there is old account with rewards
+	// and 20 000 on the identity - if the identity is not deployed
+	// If you gasless re-stake the rewards you will stake the amount on
+	// the identity as well without notification
+	// TODO: maybe add notification
 
 	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
