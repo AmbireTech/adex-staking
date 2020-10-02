@@ -53,6 +53,21 @@ export const POOLS = [
 	}
 ]
 
+export const DEPOSIT_POOLS = [
+	{
+		label: "Loyalty Pool",
+		id: id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
+		selectable: true,
+		minStakingAmount: "0.0",
+		rewardPolicy: "ADX-LOYALTY token  inflation based rewards",
+		slashPolicy: "No slashing.",
+		url:
+			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
+		confirmationLabel: "I understand there is no locking period",
+		confirmationUrl: "https://www.adex.network/tos/"
+	}
+]
+
 export const METAMASK = "Metamask"
 export const WALLET_CONNECT = "WalletConnect"
 export const TREZOR = "Trezor"
