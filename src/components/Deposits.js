@@ -12,25 +12,34 @@ import {
 import { Alert } from "@material-ui/lab"
 import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import AppContext from "../AppContext"
+import { onLoyaltyPoolDeposit } from "../actions"
 
-const getLoyaltyPoolDeposit = loyaltyPoolStats => ({
-	poolId: "adex-loyalty-pool",
-	label: "Loyalty Pool",
-	balance: `${formatADXPretty(
-		loyaltyPoolStats.balanceLpADX
-	)} ADX, ${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY`,
-	reward: loyaltyPoolStats.rewardADX
-		? formatADXPretty(loyaltyPoolStats.rewardADX)
-		: "Unknown",
-	actions: [
-		{
-			id: toIdAttributeString(`withdraw-loyalty-pool-btn`),
-			label: "Withdraw",
-			onClick: () => {},
-			disabled: false
-		}
-	]
-})
+const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
+	const { loyaltyPoolStats } = stats
+	return {
+		poolId: "adex-loyalty-pool",
+		label: "Loyalty Pool",
+		balance: `${formatADXPretty(
+			loyaltyPoolStats.balanceLpADX
+		)} ADX, ${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY`,
+		reward: loyaltyPoolStats.rewardADX
+			? formatADXPretty(loyaltyPoolStats.rewardADX)
+			: "Unknown",
+		actions: [
+			{
+				id: toIdAttributeString(`withdraw-loyalty-pool-btn`),
+				label: "Withdraw",
+				onClick: () =>
+					onLoyaltyPoolDeposit(
+						stats,
+						chosenWalletType,
+						loyaltyPoolStats.balanceLpADX
+					),
+				disabled: false
+			}
+		]
+	}
+}
 
 const updateDeposits = (deposits, newDeposit) => {
 	const index = deposits.findIndex(x => x.poolId === newDeposit.poolId)
@@ -48,11 +57,11 @@ const updateDeposits = (deposits, newDeposit) => {
 export default function Deposits() {
 	const [deposits, setDeposits] = useState([])
 
-	const { stats } = useContext(AppContext)
+	const { stats, chosenWalletType } = useContext(AppContext)
 
 	useEffect(() => {
 		if (stats.loyaltyPoolStats.loaded) {
-			const loyaltyPoolDeposit = getLoyaltyPoolDeposit(stats.loyaltyPoolStats)
+			const loyaltyPoolDeposit = getLoyaltyPoolDeposit(stats, chosenWalletType)
 			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
 		}
 
