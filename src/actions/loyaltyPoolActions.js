@@ -5,9 +5,12 @@ import {
 	ADDR_ADX,
 	ADDR_ADX_LOYALTY_TOKEN,
 	ZERO,
-	MAX_UINT
+	MAX_UINT,
+	DEPOSIT_POOLS
 } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
+
+export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
 const provider = defaultProvider
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
@@ -20,7 +23,6 @@ const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADX_LP_TOKEN_DECIMALS_MUL = "1000000000000000000"
 
 export async function loadDepositsStats(walletAddr) {
-	walletAddr = "0xd6e371526cdaee04cd8af225d42e37bc14688d9e"
 	const [
 		balanceLpToken,
 		currentShareValue,
@@ -120,7 +122,7 @@ export async function onLoyaltyPoolDeposit(
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		await tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+		tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
 	}
 
 	const loyaltyTokenWithSigner = new Contract(
