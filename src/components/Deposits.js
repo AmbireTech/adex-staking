@@ -10,17 +10,40 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { formatADXPretty } from "../helpers/formatting"
+import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import AppContext from "../AppContext"
 
 const getLoyaltyPoolDeposit = loyaltyPoolStats => ({
 	poolId: "adex-loyalty-pool",
 	label: "Loyalty Pool",
-	amount: formatADXPretty(loyaltyPoolStats.balanceLpADX),
+	balance: `${formatADXPretty(
+		loyaltyPoolStats.balanceLpADX
+	)} ADX, ${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY`,
 	reward: loyaltyPoolStats.rewardADX
 		? formatADXPretty(loyaltyPoolStats.rewardADX)
-		: "Unknown"
+		: "Unknown",
+	actions: [
+		{
+			id: toIdAttributeString(`withdraw-loyalty-pool-btn`),
+			label: "Withdraw",
+			onClick: () => {},
+			disabled: false
+		}
+	]
 })
+
+const updateDeposits = (deposits, newDeposit) => {
+	const index = deposits.findIndex(x => x.poolId === newDeposit.poolId)
+	const newDeposits = [...deposits]
+
+	if (index > -1) {
+		newDeposits[index] = newDeposit
+	} else {
+		newDeposits.push(newDeposit)
+	}
+
+	return newDeposits
+}
 
 export default function Deposits() {
 	const [deposits, setDeposits] = useState([])
@@ -29,34 +52,33 @@ export default function Deposits() {
 
 	useEffect(() => {
 		if (stats.loyaltyPoolStats.loaded) {
-			setDeposits(
-				deposits.splice(
-					deposits.findIndex(x => x.poolId === "adex-loyalty-pool"),
-					1,
-					getLoyaltyPoolDeposit(stats.loyaltyPoolStats)
-				)
-			)
+			const loyaltyPoolDeposit = getLoyaltyPoolDeposit(stats.loyaltyPoolStats)
+			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
 
+	console.log("deposits", deposits)
 	const renderDepositRow = deposit => {
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>{deposit.amount}</TableCell>
-				<TableCell align="right">{deposit.label}</TableCell>
+				<TableCell>{deposit.label}</TableCell>
+				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.reward}</TableCell>
 				<TableCell align="right">
-					<Button
-						id={`withdraw-${deposit.poolId}`}
-						variant="contained"
-						disabled={false}
-						onClick={() => {}}
-						color="secondary"
-					>
-						{"Withdraw"}
-					</Button>
+					{deposit.actions.map(({ id, label, disabled, onClick }) => (
+						<Button
+							key={id}
+							id={id}
+							variant="contained"
+							disabled={false}
+							onClick={onClick}
+							color="secondary"
+						>
+							{label}
+						</Button>
+					))}
 				</TableCell>
 			</TableRow>
 		)
@@ -82,9 +104,9 @@ export default function Deposits() {
 				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
-							<TableCell style={headerCellStyle}>Deposit amount</TableCell>
+							<TableCell style={headerCellStyle}>Pool</TableCell>
 							<TableCell style={headerCellStyle} align="right">
-								Pool
+								Balance
 							</TableCell>
 							<TableCell style={headerCellStyle} align="right">
 								Reward
