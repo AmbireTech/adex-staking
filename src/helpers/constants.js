@@ -19,8 +19,8 @@ export const MAX_UINT = bigNumberify(
 )
 
 export const MIN_BALANCE_FOR_GASLESS_TXNS = bigNumberify(
-	"20000000000000000000000"
-) // 20 000 ADX
+	"10000000000000000000000"
+) // 10 000 ADX
 
 export const DEFAULT_BOND = {
 	poolId: "",
