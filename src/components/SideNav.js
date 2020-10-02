@@ -215,7 +215,7 @@ function SideNav({
 									<StakingIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={"Staked ADX"} />
+							<ListItemText primary={"Staked"} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-gasless"
