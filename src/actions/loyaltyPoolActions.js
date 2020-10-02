@@ -84,9 +84,10 @@ export async function loadDepositsStats(walletAddr) {
 	)
 
 	// multiply by decimals to keep the precision
-	const avgDepositShareValue = userDeposits.adx
+	const avgDepositShareValue = userDeposits.adxLPT
 		.mul(ADX_LP_TOKEN_DECIMALS_MUL)
-		.div(userDeposits.adxLPT)
+		.div(userDeposits.adx)
+
 	const reward = balanceLpToken
 		.mul(currentShareValue.sub(avgDepositShareValue))
 		.div(ADX_LP_TOKEN_DECIMALS_MUL)
