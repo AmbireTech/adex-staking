@@ -13,6 +13,10 @@ import { Alert } from "@material-ui/lab"
 import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { onLoyaltyPoolDeposit } from "../actions"
+import WithDialog from "./WithDialog"
+import DepositForm from "./DepositForm"
+
+const DepositsDialog = WithDialog(DepositForm)
 
 const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
 	const { loyaltyPoolStats } = stats
@@ -109,27 +113,39 @@ export default function Deposits() {
 	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
-			<TableContainer xs={12}>
-				<Table aria-label="Bonds table">
-					<TableHead>
-						<TableRow>
-							<TableCell style={headerCellStyle}>Pool</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Balance
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Reward
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Actions
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
-				</Table>
-			</TableContainer>
+			<Box>
+				<DepositsDialog
+					title="Add new deposit"
+					btnLabel="New Deposit"
+					color="secondary"
+					size="large"
+					variant="contained"
+					disabled={!chosenWalletType.name}
+				/>
+			</Box>
+			<Box>
+				<TableContainer xs={12}>
+					<Table aria-label="Bonds table">
+						<TableHead>
+							<TableRow>
+								<TableCell style={headerCellStyle}>Pool</TableCell>
+								<TableCell style={headerCellStyle} align="right">
+									Balance
+								</TableCell>
+								<TableCell style={headerCellStyle} align="right">
+									Reward
+								</TableCell>
+								<TableCell style={headerCellStyle} align="right">
+									Actions
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
+					</Table>
+				</TableContainer>
 
-			{bondExplanationFrag}
+				{bondExplanationFrag}
+			</Box>
 		</Box>
 	)
 }
