@@ -40,7 +40,8 @@ export async function loadDepositsStats(walletAddr) {
 
 	const currentBalance = {
 		balanceLpToken,
-		balanceLpADX
+		balanceLpADX,
+		loaded: true
 	}
 
 	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
@@ -49,7 +50,7 @@ export async function loadDepositsStats(walletAddr) {
 
 	// reward === null => unknown reward - can not be calculated
 	if (hasExternalLoyaltyTokenTransfers) {
-		currentBalance.reward = null
+		currentBalance.rewardADX = null
 		return currentBalance
 	}
 
@@ -87,7 +88,7 @@ export async function loadDepositsStats(walletAddr) {
 	// console.log('balanceLpToken', balanceLpToken.toString())
 	// console.log('balanceLpADX', balanceLpADX.toString())
 
-	currentBalance.reward = reward
+	currentBalance.rewardADX = reward
 
 	return currentBalance
 }

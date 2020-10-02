@@ -49,7 +49,13 @@ export const EMPTY_STATS = {
 	userWalletBalance: ZERO,
 	userIdentityBalance: ZERO,
 	canExecuteGasless: false,
-	canExecuteGaslessError: null
+	canExecuteGaslessError: null,
+	loyaltyPoolStats: {
+		balanceLpToken: ZERO,
+		balanceLpADX: ZERO,
+		rewardADX: ZERO,
+		loaded: false
+	}
 }
 
 const sumRewards = all =>
@@ -70,7 +76,6 @@ export async function loadStats(chosenWalletType) {
 }
 
 export async function loadUserStats(chosenWalletType) {
-	loadDepositsStats()
 	if (!chosenWalletType.name) return { ...EMPTY_STATS, loaded: true }
 
 	const signer = await getSigner(chosenWalletType)
@@ -82,11 +87,13 @@ export async function loadUserStats(chosenWalletType) {
 	const [
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
 		rewardChannels,
-		{ canExecuteGasless, canExecuteGaslessError }
+		{ canExecuteGasless, canExecuteGaslessError },
+		loyaltyPoolStats
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr),
 		getRewards(addr),
-		getGaslessInfo(addr)
+		getGaslessInfo(addr),
+		loadDepositsStats(addr)
 	])
 
 	const userTotalStake = userBonds
@@ -106,7 +113,10 @@ export async function loadUserStats(chosenWalletType) {
 		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
 	)
 
-	const totalBalanceADX = userBalance.add(totalRewardADX).add(userTotalStake)
+	const totalBalanceADX = userBalance
+		.add(totalRewardADX)
+		.add(userTotalStake)
+		.add(loyaltyPoolStats.balanceLpADX)
 
 	return {
 		identityAddr,
@@ -123,7 +133,8 @@ export async function loadUserStats(chosenWalletType) {
 		userWalletBalance,
 		userIdentityBalance,
 		canExecuteGasless,
-		canExecuteGaslessError
+		canExecuteGaslessError,
+		loyaltyPoolStats
 	}
 }
 
