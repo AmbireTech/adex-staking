@@ -1,7 +1,12 @@
 import { Contract } from "ethers"
 import ERC20ABI from "../abi/ERC20"
 import ADXLoyaltyPoolTokenABI from "../abi/ADXLoyaltyPoolToken"
-import { ADDR_ADX, ADDR_ADX_LOYALTY_TOKEN, ZERO } from "../helpers/constants"
+import {
+	ADDR_ADX,
+	ADDR_ADX_LOYALTY_TOKEN,
+	ZERO,
+	MAX_UINT
+} from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
 
 const provider = defaultProvider
@@ -91,4 +96,38 @@ export async function loadDepositsStats(walletAddr) {
 	currentBalance.rewardADX = reward
 
 	return currentBalance
+}
+
+export async function onLoyaltyPoolDeposit(
+	stats,
+	chosenWalletType,
+	adxDepositAmount
+) {
+	if (!stats.userBalance) throw new Error("Stats not provided")
+	if (!adxDepositAmount) throw new Error("No deposit amount provided")
+	if (adxDepositAmount.isZero()) throw new Error("Can not deposit 0 ADX")
+	if (adxDepositAmount.gt(stats.userBalance))
+		throw new Error("amount too large")
+
+	const signer = await getSigner(chosenWalletType)
+	const walletAddr = await signer.getAddress()
+
+	const [allowanceADXLOYALTY] = await Promise.all([
+		Token.allowance(walletAddr, LoyaltyToken.address)
+	])
+
+	const setAllowance = allowanceADXLOYALTY.lt(adxDepositAmount)
+
+	if (setAllowance) {
+		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+		await tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+	}
+
+	const loyaltyTokenWithSigner = new Contract(
+		ADDR_ADX_LOYALTY_TOKEN,
+		ADXLoyaltyPoolTokenABI,
+		signer
+	)
+
+	await loyaltyTokenWithSigner.enter(adxDepositAmount)
 }
