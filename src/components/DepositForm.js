@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useContext } from "react"
-import { getDepositPool, getDepositActionByPoolId } from "../actions"
+import {
+	getDepositPool,
+	getDepositActionByPoolId,
+	getWithdrawActionByPoolId,
+	getPoolStatsByPoolId
+} from "../actions"
 import {
 	parseADX,
 	formatADX,
@@ -23,24 +28,32 @@ import {
 import { themeMUI } from "../themeMUi"
 import AppContext from "../AppContext"
 
-export default function DepositForm({ depositPool, closeDialog }) {
+export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
-	const [stakingAmount, setStakingAmount] = useState("0.0")
+	const [actionAmount, setActionAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
 	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
 	const activePool = getDepositPool(newDepositPool)
+	const poolStats = getPoolStatsByPoolId(stats, activePool.id) || {}
+	const actionName = withdraw ? "withdraw" : "deposit"
 
-	const maxAmount = stats.userWalletBalance
+	const maxAmount = withdraw
+		? poolStats.balanceLpADX || ZERO
+		: stats.userWalletBalance
 
 	const onAction = async () => {
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
-		const depositAction = getDepositActionByPoolId(activePool.id)
+
+		const action = withdraw
+			? getDepositActionByPoolId(activePool.id)
+			: getWithdrawActionByPoolId(activePool.id)
+
 		await wrapDoingTxns(
-			depositAction.bind(null, stats, chosenWalletType, parseADX(stakingAmount))
+			action.bind(null, stats, chosenWalletType, parseADX(actionAmount))
 		)()
 	}
 
@@ -69,7 +82,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 
 	const updateStakingAmountBN = amountBN => {
 		validateFields({ amountBN, poolToValidate: activePool })
-		setStakingAmount(formatADX(amountBN))
+		setActionAmount(formatADX(amountBN))
 	}
 
 	const updatePool = value => {
@@ -77,7 +90,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 	}
 
 	useEffect(() => {
-		const amountBN = parseADX(stakingAmount)
+		const amountBN = parseADX(actionAmount)
 		const poolToValidate = getDepositPool(newDepositPool)
 		validateFields({ amountBN, poolToValidate })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,18 +102,18 @@ export default function DepositForm({ depositPool, closeDialog }) {
 				<Grid item xs={12} sm={6}>
 					<TextField
 						fullWidth
-						id="new-deposit-form-amount-field"
+						id={`new-${actionName}-form-amount-field`}
 						required
 						label="ADX amount"
 						type="number"
-						value={stakingAmount}
+						value={actionAmount}
 						error={amountErr}
 						onChange={ev => {
 							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
 							const amount = Math.max(0, ev.target.value)
 							const amountBN = parseADX(amount.toString(10))
 							updateStakingAmountBN(amountBN)
-							setStakingAmount(amount.toString(10))
+							setActionAmount(amount.toString(10))
 						}}
 						helperText={amountErr ? amountErrText : null}
 					/>
@@ -108,7 +121,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 						<Button
 							fullWidth
 							size="small"
-							id="new-deposit-form-max-amount-btn"
+							id={`new-${actionName}-form-max-amount-btn`}
 							onClick={() => {
 								updateStakingAmountBN(maxAmount)
 							}}
@@ -121,7 +134,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 					<FormControl fullWidth required>
 						<InputLabel>Pool</InputLabel>
 						<Select
-							id="new-deposit-form-pool-select"
+							id={`new-${actionName}-form-pool-select`}
 							value={newDepositPool}
 							onChange={ev => updatePool(ev.target.value)}
 						>
@@ -130,7 +143,9 @@ export default function DepositForm({ depositPool, closeDialog }) {
 							</MenuItem>
 							{DEPOSIT_POOLS.map(({ label, id }) => (
 								<MenuItem
-									id={`new-deposit-form-values-${toIdAttributeString(label)}`}
+									id={`new-${actionName}-form-values-${toIdAttributeString(
+										label
+									)}`}
 									key={id}
 									value={id}
 								>
@@ -161,7 +176,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 							label={confirmationLabel}
 							control={
 								<Checkbox
-									id="new-deposit-form-tos-check"
+									id={`new-${actionName}-form-tos-check`}
 									checked={confirmation}
 									onChange={ev => setConfirmation(ev.target.checked)}
 								/>
@@ -172,9 +187,9 @@ export default function DepositForm({ depositPool, closeDialog }) {
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
-							id={`new-deposit-stake-btn-${toIdAttributeString(
+							id={`new-${actionName}-stake-btn-${toIdAttributeString(
 								activePool
-									? activePool.poolId || "deposit"
+									? activePool.poolId || actionName
 									: "pool-not-selected"
 							)}`}
 							disableElevation
@@ -183,7 +198,7 @@ export default function DepositForm({ depositPool, closeDialog }) {
 							variant="contained"
 							onClick={onAction}
 						>
-							DEPOSIT ADX
+							{withdraw ? "Withdraw ADX" : "DEPOSIT ADX"}
 						</Button>
 					</FormControl>
 				</Grid>
