@@ -9,7 +9,7 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
@@ -81,7 +81,6 @@ export default function Deposits() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
 
-	console.log("deposits", deposits)
 	const renderDepositRow = deposit => {
 		return (
 			<TableRow key={deposit.poolId}>

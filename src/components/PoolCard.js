@@ -66,7 +66,8 @@ export default function PoolCard({
 	lockupPeriod,
 	loaded,
 	actions,
-	comingSoon
+	comingSoon,
+	actionBtn
 }) {
 	const classes = useStyles()
 
@@ -190,17 +191,20 @@ export default function PoolCard({
 						title={disabled ? disabledInfo : ""}
 					>
 						<div>
-							<Button
-								id={`stake-pool-${poolId}`}
-								fullWidth
-								variant="contained"
-								disableElevation
-								color="secondary"
-								onClick={onStakeBtnClick}
-								disabled={disabled}
-							>
-								{"Stake"}
-							</Button>
+							{actionBtn || (
+								<Button
+									id={`stake-pool-${poolId}`}
+									fullWidth
+									variant="contained"
+									disableElevation
+									color="secondary"
+									size="large"
+									onClick={onStakeBtnClick}
+									disabled={disabled}
+								>
+									{"Stake"}
+								</Button>
+							)}
 						</div>
 					</Tooltip>
 				</Box>

@@ -10,7 +10,11 @@ import {
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import SectionHeader from "./SectionHeader"
-import { UNBOND_DAYS, POOLS } from "../helpers/constants"
+import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
+import WithDialog from "./WithDialog"
+import DepositForm from "./DepositForm"
+
+const DepositsDialog = WithDialog(DepositForm)
 
 const Pools = () => {
 	const {
@@ -93,9 +97,23 @@ const Pools = () => {
 						}}
 						loading={!loyaltyPoolStats.loaded}
 						disabled={!canStake}
+						disabledInfo={"Connect wallet to deposit"}
 						lockupPeriodTitle={"Unbond period"}
 						lockupPeriodInfo={`No unbond period`}
 						lockupPeriod={`No unbond period`}
+						actionBtn={
+							<DepositsDialog
+								fullWidth
+								id="loyalty-pool-deposit-form-card"
+								title="Add new deposit"
+								btnLabel="Deposit"
+								color="secondary"
+								size="large"
+								variant="contained"
+								disabled={!canStake}
+								depositPool={DEPOSIT_POOLS[0].id}
+							/>
+						}
 						// comingSoon
 					/>
 				</Box>
