@@ -23,6 +23,8 @@ const Pools = () => {
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
+	const { loyaltyPoolStats } = stats
+	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY
 
 	return (
 		<Box>
@@ -74,16 +76,27 @@ const Pools = () => {
 						poolId="loyalty-pool"
 						icon={<LoyaltyIcon fontSize="large" />}
 						name={"Loyalty pool "}
-						totalStakedADX={formatADXPretty(stats.totalStakeTom)}
-						currentAPY={`${(
-							getApproxAPY(null, stats.totalStakeTom) * 100
-						).toFixed(2)} %`}
+						totalStakedADX={`${formatADXPretty(
+							loyaltyPoolStats.poolTotalStaked
+						)} ADX`}
+						totalStakedUSD={`${getADXInUSDFormatted(
+							prices,
+							loyaltyPoolStats.poolTotalStaked
+						)}`}
+						currentAPY={`${loyaltyPoolAPY.toFixed(2)} %`}
+						weeklyYield={`${(loyaltyPoolAPY / (365 / 7)).toFixed(4)} %`}
+						weeklyYieldInfo={[
+							`Current daily yield ${(loyaltyPoolAPY / 365).toFixed(4)} %`
+						]}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
 						}}
-						loading={!stats.loaded}
+						loading={!loyaltyPoolStats.loaded}
 						disabled={!canStake}
-						comingSoon
+						lockupPeriodTitle={"Unbond period"}
+						lockupPeriodInfo={`No unbond period`}
+						lockupPeriod={`No unbond period`}
+						// comingSoon
 					/>
 				</Box>
 			</Box>
