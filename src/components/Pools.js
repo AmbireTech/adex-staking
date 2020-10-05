@@ -6,11 +6,12 @@ import PoolCard from "./PoolCard"
 import {
 	getApproxAPY,
 	formatADXPretty,
-	getADXInUSDFormatted
+	getADXInUSDFormatted,
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import SectionHeader from "./SectionHeader"
 import { UNBOND_DAYS, POOLS } from "../helpers/constants"
+import EmailSignUp from "./EmailSignUpCard"
 
 const Pools = () => {
 	const {
@@ -18,11 +19,11 @@ const Pools = () => {
 		setNewBondOpen,
 		chosenWalletType,
 		prices,
-		setNewBondPool
+		setNewBondPool,
 	} = useContext(AppContext)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
-	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
+	const justifyCenter = useMediaQuery((theme) => theme.breakpoints.down("xs"))
 
 	return (
 		<Box>
@@ -52,7 +53,7 @@ const Pools = () => {
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`
+							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`,
 						]}
 						onStakeBtnClick={() => {
 							setNewBondPool(POOLS[0].id)
@@ -85,6 +86,7 @@ const Pools = () => {
 						disabled={!canStake}
 						comingSoon
 					/>
+					<EmailSignUp />
 				</Box>
 			</Box>
 		</Box>
