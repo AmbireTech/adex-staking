@@ -22,7 +22,40 @@ const LoyaltyToken = new Contract(
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADX_LP_TOKEN_DECIMALS_MUL = "1000000000000000000"
 
-export async function loadDepositsStats(walletAddr) {
+export const LOYALTY_POOP_EMPTY_STATS = {
+	balanceLpToken: ZERO,
+	balanceLpADX: ZERO,
+	rewardADX: ZERO,
+	poolTotalStaked: ZERO,
+	currentAPY: 0,
+	loaded: false
+}
+
+export async function loadLoyaltyPoolData() {
+	const [poolTotalStaked, currentAPY] = await Promise.all([
+		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
+		LoyaltyToken.incentivePerTokenPerAnnum()
+	])
+
+	return {
+		poolTotalStaked,
+		currentAPY: currentAPY
+			.div(ADX_LP_TOKEN_DECIMALS_MUL)
+			.mul(100)
+			.toNumber()
+	}
+}
+
+export async function loadUserLoyaltyPoolsStats(walletAddr) {
+	const poolData = await loadLoyaltyPoolData()
+	if (!walletAddr) {
+		return {
+			...LOYALTY_POOP_EMPTY_STATS,
+			...poolData,
+			loaded: true
+		}
+	}
+
 	const [
 		balanceLpToken,
 		currentShareValue,
@@ -46,9 +79,9 @@ export async function loadDepositsStats(walletAddr) {
 		.div(ADX_LP_TOKEN_DECIMALS_MUL)
 
 	const currentBalance = {
+		...poolData,
 		balanceLpToken,
-		balanceLpADX,
-		loaded: true
+		balanceLpADX
 	}
 
 	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
