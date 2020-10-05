@@ -9,6 +9,7 @@ import {
 	DEPOSIT_POOLS
 } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
+import { bigNumberify } from "ethers/utils"
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
@@ -84,9 +85,9 @@ export async function loadDepositsStats(walletAddr) {
 	)
 
 	// multiply by decimals to keep the precision
-	const avgDepositShareValue = userDeposits.adxLPT
-		.mul(ADX_LP_TOKEN_DECIMALS_MUL)
-		.div(userDeposits.adx)
+	const avgDepositShareValue = userDeposits.adx.isZero()
+		? ZERO
+		: userDeposits.adxLPT.mul(ADX_LP_TOKEN_DECIMALS_MUL).div(userDeposits.adx)
 
 	const reward = balanceLpToken
 		.mul(currentShareValue.sub(avgDepositShareValue))
@@ -106,7 +107,7 @@ export async function onLoyaltyPoolDeposit(
 	chosenWalletType,
 	adxDepositAmount
 ) {
-	if (!stats.userBalance) throw new Error("Stats not provided")
+	if (!stats) throw new Error("Stats not provided")
 	if (!adxDepositAmount) throw new Error("No deposit amount provided")
 	if (adxDepositAmount.isZero()) throw new Error("Can not deposit 0 ADX")
 	if (adxDepositAmount.gt(stats.userBalance))
@@ -133,4 +134,41 @@ export async function onLoyaltyPoolDeposit(
 	)
 
 	await loyaltyTokenWithSigner.enter(adxDepositAmount)
+}
+
+export async function onLoyaltyPoolWithdraw(
+	stats,
+	chosenWalletType,
+	withdrawAmount
+) {
+	if (!stats) throw new Error("Stats not provided")
+
+	const { balanceLpADX } = stats
+
+	if (!withdrawAmount) throw new Error("No withdraw amount provided")
+	if (balanceLpADX.isZero()) throw new Error("Can not deposit 0 ADX")
+	if (withdrawAmount.gt(balanceLpADX)) throw new Error("amount too large")
+
+	const signer = await getSigner(chosenWalletType)
+	const walletAddr = await signer.getAddress()
+
+	const [allowanceADXLOYALTY] = await Promise.all([
+		Token.allowance(walletAddr, LoyaltyToken.address)
+	])
+
+	// It is possible to have balance w/o enter - just transferred ADX-LPT
+	const setAllowance = allowanceADXLOYALTY.lt(withdrawAmount)
+
+	if (setAllowance) {
+		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+		tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+	}
+
+	const loyaltyTokenWithSigner = new Contract(
+		ADDR_ADX_LOYALTY_TOKEN,
+		ADXLoyaltyPoolTokenABI,
+		signer
+	)
+
+	await loyaltyTokenWithSigner.leave(withdrawAmount)
 }
