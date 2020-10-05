@@ -9,7 +9,6 @@ import {
 	DEPOSIT_POOLS
 } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
-import { bigNumberify } from "ethers/utils"
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 

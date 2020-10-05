@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react"
 import {
 	TableRow,
 	TableCell,
-	Button,
 	Box,
 	Table,
 	TableContainer,
@@ -10,9 +9,9 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
+import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
-import { onLoyaltyPoolDeposit } from "../actions"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 
@@ -30,17 +29,27 @@ const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
 			? formatADXPretty(loyaltyPoolStats.rewardADX)
 			: "Unknown",
 		actions: [
-			{
-				id: toIdAttributeString(`withdraw-loyalty-pool-btn`),
-				label: "Withdraw",
-				onClick: () =>
-					onLoyaltyPoolDeposit(
-						stats,
-						chosenWalletType,
-						loyaltyPoolStats.balanceLpADX
-					),
-				disabled: false
-			}
+			<DepositsDialog
+				key="loyalty-pool-deposit-form"
+				title="Add new deposit"
+				btnLabel="Deposit"
+				color="secondary"
+				size="small"
+				variant="contained"
+				disabled={!chosenWalletType.name}
+				depositPool={DEPOSIT_POOLS[0].id}
+			/>,
+			<DepositsDialog
+				key="loyalty-pool-withdraw-form"
+				title="Withdraw from loyalty pool"
+				btnLabel="Withdraw"
+				color="default"
+				size="small"
+				variant="contained"
+				disabled={!chosenWalletType.name}
+				depositPool={DEPOSIT_POOLS[0].id}
+				withdraw
+			/>
 		]
 	}
 }
@@ -80,17 +89,10 @@ export default function Deposits() {
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.reward}</TableCell>
 				<TableCell align="right">
-					{deposit.actions.map(({ id, label, disabled, onClick }) => (
-						<Button
-							key={id}
-							id={id}
-							variant="contained"
-							disabled={false}
-							onClick={onClick}
-							color="secondary"
-						>
-							{label}
-						</Button>
+					{deposit.actions.map((action, index) => (
+						<Box key={index} display="inline-block" m={0.5}>
+							{action}
+						</Box>
 					))}
 				</TableCell>
 			</TableRow>
