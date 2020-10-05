@@ -1,15 +1,19 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	Button,
 	Typography,
 	Checkbox,
+	FormGroup,
+	FormControl,
+	FormHelperText,
 	FormControlLabel,
 	TextField,
 } from "@material-ui/core"
 import { CardRow } from "./cardCommon"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
+import { validateEmail } from "./../helpers/validation"
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -34,13 +38,39 @@ const useStyles = makeStyles((theme) => {
 			borderRadius: 20,
 		},
 		gdprCheckbox: {
-			fontSize: 11,
+			fontSize: 10,
 		},
 	}
 })
 
-export default function EmailSignUp({}) {
+export default function EmailSignUp() {
 	const classes = useStyles()
+	const [email, setEmail] = useState("")
+	const [gdpr, setGDPR] = useState(false)
+	const [errors, setErrors] = useState({
+		email: false,
+		gdpr: false,
+		initialTouch: true,
+	})
+
+	useEffect(() => {
+		console.log(email, gdpr)
+	}, [email, gdpr])
+
+	const handleSubmit = () => {
+		setErrors({
+			email: !validateEmail(email),
+			gdpr: !gdpr,
+			initialTouch: false,
+		})
+		const hasErrors = Object.values(errors).filter((i) => i).length > 0
+		console.log(hasErrors, errors)
+		if (!hasErrors) {
+			console.log("success")
+		} else {
+			console.log(errors)
+		}
+	}
 
 	return (
 		<Box
@@ -81,20 +111,38 @@ export default function EmailSignUp({}) {
 					label="Email"
 					variant="filled"
 					color="secondary"
+					onChange={(e) => setEmail(e.target.value)}
+					helperText={errors.email ? "Please provide a valid email!" : ""}
+					error={errors.email}
 					fullWidth
 				/>
 			</Box>
-			<Box mt={1}>
-				<FormControlLabel
-					classes={{ label: classes.gdprCheckbox }}
-					control={<Checkbox size="small" name="checkedA" />}
-					label={`Yes, I want AdEx Network to send me news and other related content`}
-				/>
+			<Box mt={1} width={1}>
+				<FormControl error={errors.gdpr}>
+					<FormGroup>
+						<FormControlLabel
+							onChange={(e) => setGDPR(e.target.checked)}
+							name="gdpr"
+							classes={{ label: classes.gdprCheckbox }}
+							control={<Checkbox size="small" name="checkedA" />}
+							label={`Yes, I want AdEx Network to send me news and other related content`}
+						/>
+					</FormGroup>
+					{errors.gdpr && (
+						<Box>
+							<FormHelperText classes={{ root: classes.gdprCheckbox }}>
+								This checkbox is required!
+							</FormHelperText>
+						</Box>
+					)}
+				</FormControl>
 			</Box>
 			<Box width={1} mt={3} display="flex" justifyContent="center">
 				<Button
+					type="submit"
 					id={`sign-up`}
 					className={classes.singUp}
+					onClick={() => handleSubmit()}
 					variant="contained"
 					color="secondary"
 				>
