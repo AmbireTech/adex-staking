@@ -19,7 +19,10 @@ import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
 import { ADEX_RELAYER_HOST } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
-import { loadDepositsStats } from "./loyaltyPoolActions"
+import {
+	loadUserLoyaltyPoolsStats,
+	LOYALTY_POOP_EMPTY_STATS
+} from "./loyaltyPoolActions"
 
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
@@ -50,12 +53,7 @@ export const EMPTY_STATS = {
 	userIdentityBalance: ZERO,
 	canExecuteGasless: false,
 	canExecuteGaslessError: null,
-	loyaltyPoolStats: {
-		balanceLpToken: ZERO,
-		balanceLpADX: ZERO,
-		rewardADX: ZERO,
-		loaded: false
-	}
+	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS
 }
 
 const sumRewards = all =>
@@ -72,11 +70,15 @@ export async function loadStats(chosenWalletType) {
 		loadUserStats(chosenWalletType)
 	])
 
-	return { ...userStats, totalStake, totalStakeTom: totalStake }
+	return { ...userStats, ...totalStake, totalStakeTom: totalStake }
 }
 
 export async function loadUserStats(chosenWalletType) {
-	if (!chosenWalletType.name) return { ...EMPTY_STATS, loaded: true }
+	if (!chosenWalletType.name) {
+		const loyaltyPoolStats = await loadUserLoyaltyPoolsStats()
+
+		return { ...EMPTY_STATS, loyaltyPoolStats, loaded: true }
+	}
 
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) return { ...EMPTY_STATS, loaded: true }
@@ -93,7 +95,7 @@ export async function loadUserStats(chosenWalletType) {
 		loadBondStats(addr, identityAddr),
 		getRewards(addr),
 		getGaslessInfo(addr),
-		loadDepositsStats(addr)
+		loadUserLoyaltyPoolsStats(addr)
 	])
 
 	const userTotalStake = userBonds
