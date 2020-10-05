@@ -3,7 +3,8 @@ import {
 	getDepositPool,
 	getDepositActionByPoolId,
 	getWithdrawActionByPoolId,
-	getPoolStatsByPoolId
+	getPoolStatsByPoolId,
+	isValidNumberString
 } from "../actions"
 import {
 	parseADX,
@@ -36,7 +37,8 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
 	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
-	const activePool = getDepositPool(newDepositPool)
+
+	const activePool = getDepositPool(newDepositPool) || {}
 	const poolStats = getPoolStatsByPoolId(stats, activePool.id) || {}
 	const actionName = withdraw ? "withdraw" : "deposit"
 
@@ -49,8 +51,8 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		if (closeDialog) closeDialog()
 
 		const action = withdraw
-			? getDepositActionByPoolId(activePool.id)
-			: getWithdrawActionByPoolId(activePool.id)
+			? getWithdrawActionByPoolId(activePool.id)
+			: getDepositActionByPoolId(activePool.id)
 
 		await wrapDoingTxns(
 			action.bind(null, stats, chosenWalletType, parseADX(actionAmount))
@@ -60,9 +62,18 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
 
 	const validateFields = params => {
-		const { amountBN, poolToValidate } = params
+		const { userInputAmount, poolToValidate } = params
+
+		if (!isValidNumberString(userInputAmount)) {
+			setAmountErr(true)
+			setAmountErrText("Invalid amount input!")
+			return
+		}
+
+		const amountBN = parseADX(userInputAmount)
+
 		const minStakingAmountBN = poolToValidate
-			? parseADX(poolToValidate.minStakingAmount)
+			? parseADX(poolToValidate.minStakingAmount || "0")
 			: ZERO
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
@@ -80,19 +91,18 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		return
 	}
 
-	const updateStakingAmountBN = amountBN => {
-		validateFields({ amountBN, poolToValidate: activePool })
-		setActionAmount(formatADX(amountBN))
-	}
-
 	const updatePool = value => {
 		setNewDepositPool(value)
 	}
 
+	const onAmountChange = amountStr => {
+		setActionAmount(amountStr)
+		validateFields({ userInputAmount: amountStr, poolToValidate: activePool })
+	}
+
 	useEffect(() => {
-		const amountBN = parseADX(actionAmount)
 		const poolToValidate = getDepositPool(newDepositPool)
-		validateFields({ amountBN, poolToValidate })
+		validateFields({ userInputAmount: actionAmount, poolToValidate })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newDepositPool])
 
@@ -105,15 +115,11 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						id={`new-${actionName}-form-amount-field`}
 						required
 						label="ADX amount"
-						type="number"
+						type="text"
 						value={actionAmount}
 						error={amountErr}
 						onChange={ev => {
-							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
-							const amount = Math.max(0, ev.target.value)
-							const amountBN = parseADX(amount.toString(10))
-							updateStakingAmountBN(amountBN)
-							setActionAmount(amount.toString(10))
+							onAmountChange(ev.target.value)
 						}}
 						helperText={amountErr ? amountErrText : null}
 					/>
@@ -123,7 +129,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 							size="small"
 							id={`new-${actionName}-form-max-amount-btn`}
 							onClick={() => {
-								updateStakingAmountBN(maxAmount)
+								onAmountChange(formatADX(maxAmount))
 							}}
 						>
 							{`Max amount: ${formatADXPretty(maxAmount)} ADX`}
