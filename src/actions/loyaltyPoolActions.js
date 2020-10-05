@@ -123,7 +123,7 @@ export async function onLoyaltyPoolDeposit(
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+		await tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
 	}
 
 	const loyaltyTokenWithSigner = new Contract(
@@ -132,7 +132,10 @@ export async function onLoyaltyPoolDeposit(
 		signer
 	)
 
-	await loyaltyTokenWithSigner.enter(adxDepositAmount)
+	await loyaltyTokenWithSigner.enter(
+		adxDepositAmount,
+		setAllowance ? { gasLimit: 150000 } : {}
+	)
 }
 
 export async function onLoyaltyPoolWithdraw(
@@ -142,26 +145,13 @@ export async function onLoyaltyPoolWithdraw(
 ) {
 	if (!stats) throw new Error("Stats not provided")
 
-	const { balanceLpADX } = stats
+	const { balanceLpADX } = stats.loyaltyPoolStats
 
 	if (!withdrawAmount) throw new Error("No withdraw amount provided")
 	if (balanceLpADX.isZero()) throw new Error("Can not deposit 0 ADX")
 	if (withdrawAmount.gt(balanceLpADX)) throw new Error("amount too large")
 
 	const signer = await getSigner(chosenWalletType)
-	const walletAddr = await signer.getAddress()
-
-	const [allowanceADXLOYALTY] = await Promise.all([
-		Token.allowance(walletAddr, LoyaltyToken.address)
-	])
-
-	// It is possible to have balance w/o enter - just transferred ADX-LPT
-	const setAllowance = allowanceADXLOYALTY.lt(withdrawAmount)
-
-	if (setAllowance) {
-		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
-	}
 
 	const loyaltyTokenWithSigner = new Contract(
 		ADDR_ADX_LOYALTY_TOKEN,
