@@ -75,7 +75,7 @@ export default function EmailSignUp(props) {
 			console.log("success")
 			setWaiting(true)
 			try {
-				const HTMLResponse = await submitFormToMautic(props)
+				const HTMLResponse = await submitFormToMautic({ ...props, email })
 				const jsonResponse = await extractJSONResponseFromHTML(HTMLResponse)
 				setMauticState({
 					...jsonResponse,
@@ -103,6 +103,8 @@ export default function EmailSignUp(props) {
 			boxShadow={25}
 			position="relative"
 		>
+			{/* Used for debugging mautic responses */}
+			{/* <Box>{JSON.stringify(mauticState)}</Box> */}
 			<Box classes={{ root: classes.iconBox }}>
 				<EmailAwardsIcon />
 			</Box>

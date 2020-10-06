@@ -10,7 +10,7 @@ export const submitFormToMautic = async ({
 	messenger,
 }) => {
 	const data = stringify({
-		"mauticform[email]": email || "",
+		"mauticform[email]": email,
 		"mauticform[formId]": formId || "",
 		"mauticform[return]": returnValue || "",
 		"mauticform[formName]": formName || "",
