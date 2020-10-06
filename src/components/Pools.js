@@ -86,7 +86,7 @@ const Pools = () => {
 						disabled={!canStake}
 						comingSoon
 					/>
-					<EmailSignUp />
+					<EmailSignUp formId={2} formName="stakingportalleads" />
 				</Box>
 			</Box>
 		</Box>
