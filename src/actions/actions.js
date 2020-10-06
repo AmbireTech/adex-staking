@@ -99,6 +99,30 @@ export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
 	return apy.toNumber() / (1000 * 1000)
 }
 
+export const getValidatorFeesAPY = ({ channel, totalStake }) => {
+	const { periodStart, periodEnd, channelArgs } = channel
+
+	const { tokenAmount } = channelArgs
+	// TODO: get ADX/DAI price
+	const rewardInADXvalue = totalStake.div(6)
+
+	const toDistribute = bigNumberify(tokenAmount)
+	const distributionSeconds = Math.floor(
+		(new Date(periodEnd) - new Date(periodStart)) / 1000
+	)
+
+	const apy = toDistribute
+		.mul(1000)
+		.mul(
+			bigNumberify(SECONDS_IN_YEAR)
+				.mul(1000)
+				.div(distributionSeconds)
+		)
+		.div(rewardInADXvalue)
+
+	return apy.toNumber() / (1000 * 1000)
+}
+
 export async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
@@ -153,9 +177,19 @@ export async function loadUserStats(chosenWalletType) {
 	const totalRewardADX = sumRewards(adxRewardsChannels)
 	const tomRewardADX = sumRewards(tomAdxRewards)
 
-	const totalRewardDAI = sumRewards(
-		rewardChannels.filter(x => x.channelArgs.tokenAddr !== ADDR_ADX)
+	const daiRewardsChannels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr !== ADDR_ADX
 	)
+
+	const totalRewardDAI = sumRewards(daiRewardsChannels)
+
+	// TODO
+	const apyLastTomDAI = getValidatorFeesAPY({
+		channel: daiRewardsChannels[0],
+		totalStake
+	})
+
+	console.log("apyLastTomDAI", apyLastTomDAI)
 
 	const totalBalanceADX = userBalance
 		.add(totalRewardADX)
