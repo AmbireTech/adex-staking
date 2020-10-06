@@ -13,7 +13,6 @@ import {
 import { CardRow } from "./cardCommon"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
 import { validateEmail } from "./../helpers/validation"
-import { stringify } from "query-string"
 import {
 	extractJSONResponseFromHTML,
 	submitFormToMautic,
@@ -104,72 +103,91 @@ export default function EmailSignUp(props) {
 			boxShadow={25}
 			position="relative"
 		>
-			<CardRow
-				mt={3}
-				color="white"
-				fontWeight={"fontWeightBold"}
-				fontSize={16}
-				text={"Subscribe for AdEx News &"}
-				justify="center"
-			/>
-			<Box color="warning.main" fontWeight={"fontWeightBold"}>
-				<Typography component="span" variant="h6">
-					win
-					<Typography className={classes.bold} component="span" variant="h5">
-						{` 5x1000 `}
-					</Typography>
-					ADX!
-				</Typography>{" "}
-			</Box>
-			<Box width={1} mt={3}>
-				<TextField
-					id="standard-helperText"
-					label="Email"
-					variant="filled"
-					color="secondary"
-					onBlur={(e) =>
-						setErrors({ ...errors, email: !validateEmail(e.target.value) })
-					}
-					onChange={(e) => setEmail(e.target.value)}
-					helperText={
-						errors.email
-							? "Please provide a valid email!"
-							: "Please provide your best email"
-					}
-					error={errors.email}
-					fullWidth
-				/>
-			</Box>
-			<Box mt={1} width={1}>
-				<FormControl error={errors.gdpr}>
-					<FormGroup>
-						<FormControlLabel
-							onChange={(e) => setGDPR(e.target.checked)}
-							error={errors.gdpr}
-							name="gdpr"
-							classes={{ label: classes.gdprCheckbox }}
-							control={<Checkbox size="small" name="checkedA" />}
-							label={`Yes, I want AdEx Network to send me news and other related content`}
-						/>
-					</FormGroup>
-				</FormControl>
-			</Box>
-			<Box>{JSON.stringify(mauticState)}</Box>
-			<Box width={1} mt={3} display="flex" justifyContent="center">
-				<Button
-					type="submit"
-					id={`sign-up`}
-					className={classes.singUp}
-					onClick={() => handleSubmit()}
-					variant="contained"
-					color="secondary"
-				>
-					{"Sure, I'm in"}
-				</Button>
-			</Box>
 			<Box classes={{ root: classes.iconBox }}>
 				<EmailAwardsIcon />
 			</Box>
+			{mauticState.success ? (
+				<CardRow
+					mt={3}
+					color="white"
+					fontWeight={"fontWeightBold"}
+					fontSize={16}
+					text={mauticState.successMessage}
+					justify="center"
+					height={1}
+					display="flex"
+				/>
+			) : (
+				<>
+					<CardRow
+						mt={3}
+						color="white"
+						fontWeight={"fontWeightBold"}
+						fontSize={16}
+						text={"Subscribe for AdEx News &"}
+						justify="center"
+					/>
+					<Box color="warning.main" fontWeight={"fontWeightBold"}>
+						<Typography component="span" variant="h6">
+							win
+							<Typography
+								className={classes.bold}
+								component="span"
+								variant="h5"
+							>
+								{` 5x1000 `}
+							</Typography>
+							ADX!
+						</Typography>{" "}
+					</Box>
+					<Box width={1} mt={2}>
+						<TextField
+							id="standard-helperText"
+							label="Email"
+							variant="filled"
+							color="secondary"
+							onBlur={(e) =>
+								setErrors({ ...errors, email: !validateEmail(e.target.value) })
+							}
+							onChange={(e) => setEmail(e.target.value)}
+							helperText={
+								errors.email
+									? "Please provide a valid email!"
+									: "Please provide your best email"
+							}
+							error={errors.email}
+							fullWidth
+						/>
+					</Box>
+					<Box mt={1} width={1}>
+						<FormControl error={errors.gdpr}>
+							<FormGroup>
+								<FormControlLabel
+									onChange={(e) => setGDPR(e.target.checked)}
+									error={errors.gdpr}
+									name="gdpr"
+									classes={{ label: classes.gdprCheckbox }}
+									control={<Checkbox size="small" name="checkedA" />}
+									label={`Yes, I want AdEx Network to send me news and other related content`}
+								/>
+							</FormGroup>
+						</FormControl>
+					</Box>
+					<Box width={1} mt={2} display="flex" justifyContent="center">
+						<Button
+							type="submit"
+							id={`sign-up`}
+							disabled={waiting}
+							className={classes.singUp}
+							onClick={() => handleSubmit()}
+							variant="contained"
+							color="secondary"
+						>
+							{waiting ? "Submitting..." : "Sure, I'm in"}
+						</Button>
+					</Box>
+				</>
+			)}
 		</Box>
 	)
 }
