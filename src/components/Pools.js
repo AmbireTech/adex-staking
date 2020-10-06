@@ -59,7 +59,6 @@ const Pools = () => {
 							setNewBondPool(POOLS[0].id)
 							setNewBondOpen(true)
 						}}
-						loadin
 						loading={!stats.loaded}
 						disabled={!canStake}
 						disabledInfo={"Connect wallet to stake"}
