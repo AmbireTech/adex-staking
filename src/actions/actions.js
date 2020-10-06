@@ -33,6 +33,7 @@ const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
 const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
 const MAX_SLASH = bigNumberify("1000000000000000000")
+const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 
 // 0.2 DAI or ADX
 const OUTSTANDING_REWARD_THRESHOLD = bigNumberify("200000000000000000")
@@ -47,6 +48,7 @@ export const EMPTY_STATS = {
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
 	tomRewardADX: ZERO,
+	apyTomADX: 0,
 	userTotalStake: ZERO,
 	totalBalanceADX: ZERO,
 	userWalletBalance: ZERO,
@@ -63,6 +65,39 @@ export const isTomChannelId = channel =>
 	channel.channelArgs.validators.some(
 		val => id(`validator:${val}`) === POOLS[0].id
 	)
+
+export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
+	const {
+		periodEnd,
+		currentRewardPerSecond = "478927203065134100",
+		currentTotalActiveStake
+	} = channel
+
+	const poolTotalStake = bigNumberify(currentTotalActiveStake || totalStake)
+	const distributionEnds = new Date(periodEnd)
+	const now = Date.now()
+
+	if (now > distributionEnds) {
+		return 0
+	}
+
+	const secondsLeft = Math.floor((distributionEnds - now) / 1000)
+
+	const toDistribute = bigNumberify(currentRewardPerSecond).mul(
+		bigNumberify(secondsLeft)
+	)
+
+	const apy = toDistribute
+		.mul(1000)
+		.mul(
+			bigNumberify(SECONDS_IN_YEAR)
+				.mul(1000)
+				.div(secondsLeft)
+		)
+		.div(poolTotalStake)
+
+	return apy.toNumber() / (1000 * 1000)
+}
 
 export async function loadStats(chosenWalletType) {
 	const [totalStake, userStats] = await Promise.all([
@@ -90,12 +125,14 @@ export async function loadUserStats(chosenWalletType) {
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
 		rewardChannels,
 		{ canExecuteGasless, canExecuteGaslessError },
-		loyaltyPoolStats
+		loyaltyPoolStats,
+		totalStake
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr),
 		getRewards(addr),
 		getGaslessInfo(addr),
-		loadUserLoyaltyPoolsStats(addr)
+		loadUserLoyaltyPoolsStats(addr),
+		Token.balanceOf(ADDR_STAKING)
 	])
 
 	const userTotalStake = userBonds
@@ -107,6 +144,11 @@ export async function loadUserStats(chosenWalletType) {
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
 	const tomAdxRewards = [...adxRewardsChannels].filter(x => isTomChannelId(x))
+
+	const apyTomADX = tomAdxRewards.reduce(
+		(sum, channel) => getIncentiveChannelCurrentAPY({ channel, totalStake }),
+		0
+	)
 
 	const totalRewardADX = sumRewards(adxRewardsChannels)
 	const tomRewardADX = sumRewards(tomAdxRewards)
@@ -130,6 +172,7 @@ export async function loadUserStats(chosenWalletType) {
 		totalRewardADX,
 		totalRewardDAI,
 		tomRewardADX,
+		apyTomADX,
 		userTotalStake,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
