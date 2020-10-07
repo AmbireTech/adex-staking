@@ -22,12 +22,15 @@ const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
 	return {
 		poolId: "adex-loyalty-pool",
 		label: "Loyalty Pool",
-		balance: `${formatADXPretty(
-			loyaltyPoolStats.balanceLpADX
-		)} ADX, ${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY`,
-		reward: loyaltyPoolStats.rewardADX
-			? formatADXPretty(loyaltyPoolStats.rewardADX)
-			: "Unknown",
+		balance: `
+		${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY
+		(= ${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ADX)
+		`,
+		reward: `${
+			loyaltyPoolStats.rewardADX
+				? formatADXPretty(loyaltyPoolStats.rewardADX)
+				: "Unknown"
+		} ADX`,
 		actions: [
 			<DepositsDialog
 				key="loyalty-pool-deposit-form"
@@ -98,20 +101,6 @@ export default function Deposits() {
 		)
 	}
 
-	const depositExplanationMsg = `This table will show all your individual ADX deposits, 
-	along with information as status, amount and current APY. By using the action buttons, 
-	you will be able to request withdraw depending on pool policy`
-
-	const bondExplanationFrag =
-		!stats.loaded || stats.userBonds.length ? null : (
-			<Box mt={2}>
-				<Alert variant="filled" severity="info">
-					{depositExplanationMsg}
-				</Alert>
-			</Box>
-		)
-
-	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
 			<Box>
@@ -129,23 +118,15 @@ export default function Deposits() {
 					<Table aria-label="Bonds table">
 						<TableHead>
 							<TableRow>
-								<TableCell style={headerCellStyle}>Pool</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Balance
-								</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Reward
-								</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Actions
-								</TableCell>
+								<TableCell>Pool</TableCell>
+								<TableCell align="right">Balance</TableCell>
+								<TableCell align="right">Reward</TableCell>
+								<TableCell align="right">Actions</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
 					</Table>
 				</TableContainer>
-
-				{bondExplanationFrag}
 			</Box>
 		</Box>
 	)
