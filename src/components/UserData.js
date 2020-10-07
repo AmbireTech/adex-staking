@@ -47,7 +47,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 					loaded: stats.loaded,
 					title: "Active Stake",
 					titleInfo: `Active, earning ${(
-						getApproxAPY(null, stats.totalStake) * 100
+						getApproxAPY(null, stats.totalStakeTom) * 100
 					).toFixed(2)}% APY`,
 					subtitle: formatADXPretty(stats.userTotalStake) + " ADX",
 					extra: getADXInUSDFormatted(prices, stats.userTotalStake)

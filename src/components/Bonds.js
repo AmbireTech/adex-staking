@@ -18,7 +18,7 @@ import {
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
-export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
+export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
@@ -33,7 +33,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		}
 		if (bond.status === "Active") {
 			return `Active, earning ${(
-				getApproxAPY(bond, stats.totalStake) * 100
+				getApproxAPY(bond, stats.totalStakeTom) * 100
 			).toFixed(2)}% APY`
 		}
 		return bond.status
