@@ -220,10 +220,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 							id={`new-${actionName}-stake-btn-${toIdAttributeString(
 								activePool
 									? activePool.poolId || actionName
-									: "pool-not-selected"
+									: "-deposit-pool-not-selected"
 							)}`}
 							disableElevation
-							disabled={!(confirmed && !amountErr)}
+							disabled={!confirmed || !!amountErr || !activePool}
 							color="primary"
 							variant="contained"
 							onClick={onAction}
