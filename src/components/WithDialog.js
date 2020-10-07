@@ -156,7 +156,10 @@ export default function WithDialogHoc(Decorated) {
 		return (
 			<Fragment>
 				<Tooltip title={tooltipTitle || ""}>
-					<Box display="inline-block">
+					<Box
+						display="inline-block"
+						{...(btnProps.fullWidth ? { width: 1 } : {})}
+					>
 						<ButtonComponent
 							id={id}
 							disabled={disabled}
