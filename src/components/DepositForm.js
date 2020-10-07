@@ -38,8 +38,8 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const [confirmation, setConfirmation] = useState(false)
 	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
 
-	const activePool = getDepositPool(newDepositPool) || {}
-	const poolStats = getPoolStatsByPoolId(stats, activePool.id) || {}
+	const activePool = getDepositPool(newDepositPool)
+	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
 	const actionName = withdraw ? "withdraw" : "deposit"
 
 	const maxAmount = withdraw
@@ -47,6 +47,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		: stats.userWalletBalance
 
 	const onAction = async () => {
+		if (!activePool) {
+			return
+		}
+
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
 
