@@ -230,6 +230,13 @@ const theme = createMuiTheme({
 			root: {
 				backgroundColor: fade(BLACK, 0.69)
 			}
+		},
+		MuiFilledInput: {
+			root: {
+				borderRadius: 0,
+				borderTopLeftRadius: 0,
+				borderTopRightRadius: 0
+			}
 		}
 		// MuiDrawer: {
 		// 	root: {

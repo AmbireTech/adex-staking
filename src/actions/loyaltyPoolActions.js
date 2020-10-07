@@ -6,11 +6,12 @@ import {
 	ADDR_ADX_LOYALTY_TOKEN,
 	ZERO,
 	MAX_UINT,
-	DEPOSIT_POOLS
+	DEPOSIT_POOLS,
 } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
 
-export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
+export const getDepositPool = (poolId) =>
+	DEPOSIT_POOLS.find((x) => x.id === poolId)
 
 const provider = defaultProvider
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
@@ -30,23 +31,20 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	currentAPY: 0,
 	poolDepositsLimit: ZERO,
 	loaded: false,
-	userDataLoaded: false
+	userDataLoaded: false,
 }
 
 export async function loadLoyaltyPoolData() {
 	const [poolTotalStaked, currentAPY, poolDepositsLimit] = await Promise.all([
 		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
 		LoyaltyToken.incentivePerTokenPerAnnum(),
-		LoyaltyToken.maxTotalADX()
+		LoyaltyToken.maxTotalADX(),
 	])
 
 	return {
 		poolTotalStaked,
 		poolDepositsLimit,
-		currentAPY: currentAPY
-			.mul(100)
-			.div(ADX_LP_TOKEN_DECIMALS_MUL)
-			.toNumber()
+		currentAPY: currentAPY.mul(100).div(ADX_LP_TOKEN_DECIMALS_MUL).toNumber(),
 	}
 }
 
@@ -56,7 +54,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		return {
 			...LOYALTY_POOP_EMPTY_STATS,
 			...poolData,
-			loaded: true
+			loaded: true,
 		}
 	}
 
@@ -64,18 +62,18 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		balanceLpToken,
 		currentShareValue,
 		loyaltyTokenTransfersLogs,
-		adexTokenTransfersLogs
+		adexTokenTransfersLogs,
 	] = await Promise.all([
 		LoyaltyToken.balanceOf(walletAddr),
 		LoyaltyToken.shareValue(),
 		provider.getLogs({
 			fromBlock: 0,
-			...LoyaltyToken.filters.Transfer(null, walletAddr, null)
+			...LoyaltyToken.filters.Transfer(null, walletAddr, null),
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...Token.filters.Transfer(walletAddr, ADDR_ADX_LOYALTY_TOKEN, null)
-		})
+			...Token.filters.Transfer(walletAddr, ADDR_ADX_LOYALTY_TOKEN, null),
+		}),
 	])
 
 	const balanceLpADX = balanceLpToken
@@ -86,11 +84,11 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		...poolData,
 		balanceLpToken,
 		balanceLpADX,
-		loaded: true
+		loaded: true,
 	}
 
 	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
-		log => LoyaltyToken.interface.parseLog(log).values[0] !== ZERO_ADDR
+		(log) => LoyaltyToken.interface.parseLog(log).values[0] !== ZERO_ADDR
 	)
 
 	// reward === null => unknown reward - can not be calculated
@@ -154,7 +152,7 @@ export async function onLoyaltyPoolDeposit(
 	const walletAddr = await signer.getAddress()
 
 	const [allowanceADXLOYALTY] = await Promise.all([
-		Token.allowance(walletAddr, LoyaltyToken.address)
+		Token.allowance(walletAddr, LoyaltyToken.address),
 	])
 
 	const setAllowance = allowanceADXLOYALTY.lt(adxDepositAmount)

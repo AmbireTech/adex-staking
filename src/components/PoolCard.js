@@ -5,13 +5,13 @@ import {
 	Button,
 	CircularProgress,
 	Typography,
-	SvgIcon
+	SvgIcon,
 } from "@material-ui/core"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
 
-const useStyles = makeStyles(theme => {
+const useStyles = makeStyles((theme) => {
 	return {
 		iconBox: {
 			borderRadius: "100%",
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => {
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
-			justifyContent: "center"
+			justifyContent: "center",
 		},
 		overlay: {
 			position: "absolute",
@@ -32,19 +32,19 @@ const useStyles = makeStyles(theme => {
 			top: 0,
 			right: 0,
 			bottom: 0,
-			backgroundColor: theme.palette.overlay
+			backgroundColor: theme.palette.overlay,
 		},
 		loading: {
 			position: "absolute",
 			width: "100%",
 			height: "100%",
 			top: 0,
-			left: 0
+			left: 0,
 		},
 		comingSoon: {
 			width: 160,
-			height: "auto"
-		}
+			height: "auto",
+		},
 	}
 })
 
@@ -68,7 +68,7 @@ export default function PoolCard({
 	actions,
 	comingSoon,
 	actionBtn,
-	extraData = []
+	extraData = [],
 }) {
 	const classes = useStyles()
 
@@ -185,7 +185,7 @@ export default function PoolCard({
 						mb={3}
 					/>
 
-					{extraData.map(data => (
+					{extraData.map((data) => (
 						<Fragment key={data.id}>
 							<CardRow
 								color="text.main"
