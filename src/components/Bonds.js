@@ -95,26 +95,17 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</Box>
 		)
 
-	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
-							<TableCell style={headerCellStyle}>Bond amount</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Pool
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Created
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Status
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Actions
-							</TableCell>
+							<TableCell>Bond amount</TableCell>
+							<TableCell align="right">Pool</TableCell>
+							<TableCell align="right">Created</TableCell>
+							<TableCell align="right">Status</TableCell>
+							<TableCell align="right">Actions</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

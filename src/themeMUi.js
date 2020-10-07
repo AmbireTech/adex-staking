@@ -229,6 +229,11 @@ const theme = createMuiTheme({
 			root: {
 				backgroundColor: fade(BLACK, 0.69)
 			}
+		},
+		MuiTableCell: {
+			head: {
+				fontWeight: 700
+			}
 		}
 		// MuiDrawer: {
 		// 	root: {
