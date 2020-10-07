@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
-import { Loyalty as LoyaltyIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import {
 	getApproxAPY,
@@ -9,6 +8,7 @@ import {
 	getADXInUSDFormatted
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
 import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
 import WithDialog from "./WithDialog"
@@ -78,7 +78,11 @@ const Pools = () => {
 
 					<PoolCard
 						poolId="loyalty-pool"
-						icon={<LoyaltyIcon fontSize="large" />}
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<LoyaltyIcon width="100%" height="100%" />
+							</SvgIcon>
+						}
 						name={"Loyalty pool "}
 						totalStakedADX={`${formatADXPretty(
 							loyaltyPoolStats.poolTotalStaked
