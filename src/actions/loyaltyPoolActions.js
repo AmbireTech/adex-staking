@@ -28,17 +28,20 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	rewardADX: ZERO,
 	poolTotalStaked: ZERO,
 	currentAPY: 0,
+	poolDepositsLimit: ZERO,
 	loaded: false
 }
 
 export async function loadLoyaltyPoolData() {
-	const [poolTotalStaked, currentAPY] = await Promise.all([
+	const [poolTotalStaked, currentAPY, poolDepositsLimit] = await Promise.all([
 		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
-		LoyaltyToken.incentivePerTokenPerAnnum()
+		LoyaltyToken.incentivePerTokenPerAnnum(),
+		LoyaltyToken.maxTotalADX()
 	])
 
 	return {
 		poolTotalStaked,
+		poolDepositsLimit,
 		currentAPY: currentAPY
 			.mul(100)
 			.div(ADX_LP_TOKEN_DECIMALS_MUL)

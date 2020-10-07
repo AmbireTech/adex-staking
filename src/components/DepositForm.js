@@ -67,7 +67,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
-		const { userInputAmount, poolToValidate } = params
+		const { userInputAmount, poolToValidate, poolStats } = params
 
 		if (!isValidNumberString(userInputAmount)) {
 			setAmountErr(true)
@@ -92,6 +92,21 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 			)
 			return
 		}
+
+		if (
+			!withdraw &&
+			poolStats &&
+			poolStats.poolTotalStaked &&
+			poolStats.poolDepositsLimit &&
+			amountBN.add(poolStats.poolTotalStaked).gt(poolStats.poolDepositsLimit)
+		) {
+			setAmountErr(true)
+			setAmountErrText(
+				"ADX amount too large - will go over the pool total deposits limit!"
+			)
+			return
+		}
+
 		setAmountErr(false)
 		return
 	}
@@ -102,12 +117,16 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 
 	const onAmountChange = amountStr => {
 		setActionAmount(amountStr)
-		validateFields({ userInputAmount: amountStr, poolToValidate: activePool })
+		validateFields({
+			userInputAmount: amountStr,
+			poolToValidate: activePool,
+			poolStats
+		})
 	}
 
 	useEffect(() => {
 		const poolToValidate = getDepositPool(newDepositPool)
-		validateFields({ userInputAmount: actionAmount, poolToValidate })
+		validateFields({ userInputAmount: actionAmount, poolToValidate, poolStats })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newDepositPool])
 
