@@ -1,11 +1,12 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
+import { AccountBalanceSharp as LiquidityIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import {
 	getApproxAPY,
 	formatADXPretty,
-	getADXInUSDFormatted,
+	getADXInUSDFormatted
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
@@ -23,11 +24,11 @@ const Pools = () => {
 		setNewBondOpen,
 		chosenWalletType,
 		prices,
-		setNewBondPool,
+		setNewBondPool
 	} = useContext(AppContext)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
-	const justifyCenter = useMediaQuery((theme) => theme.breakpoints.down("xs"))
+	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 	const { loyaltyPoolStats } = stats
 	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY
 
@@ -59,7 +60,7 @@ const Pools = () => {
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`,
+							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`
 						]}
 						onStakeBtnClick={() => {
 							setNewBondPool(POOLS[0].id)
@@ -83,7 +84,7 @@ const Pools = () => {
 								<LoyaltyIcon width="100%" height="100%" />
 							</SvgIcon>
 						}
-						name={"Loyalty pool "}
+						name={"Loyalty pool"}
 						totalStakedADX={`${formatADXPretty(
 							loyaltyPoolStats.poolTotalStaked
 						)} ADX`}
@@ -94,7 +95,7 @@ const Pools = () => {
 						currentAPY={`${loyaltyPoolAPY.toFixed(2)} %`}
 						weeklyYield={`${(loyaltyPoolAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(loyaltyPoolAPY / 365).toFixed(4)} %`,
+							`Current daily yield ${(loyaltyPoolAPY / 365).toFixed(4)} %`
 						]}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
@@ -114,8 +115,8 @@ const Pools = () => {
 								importantValue: "",
 								valueInfo: "",
 								extra: "",
-								extrInfo: "",
-							},
+								extrInfo: ""
+							}
 						]}
 						actionBtn={
 							<DepositsDialog
@@ -131,6 +132,17 @@ const Pools = () => {
 							/>
 						}
 						// comingSoon
+					/>
+					<PoolCard
+						poolId="liquidity-pool"
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<LiquidityIcon />
+							</SvgIcon>
+						}
+						name={"Liquidity pool"}
+						loading={!stats.loaded}
+						comingSoon
 					/>
 					<EmailSignUp formId={2} formName="stakingportalleads" />
 				</Box>
