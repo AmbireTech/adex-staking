@@ -26,19 +26,19 @@ const palette = {
 	grey: { main: ALEX_GREY, contrastText: WHITE },
 	warning: {
 		main: WARNING,
-		contrastText: BLACK
+		contrastText: BLACK,
 	},
 	success: {
 		main: SUCCESS,
-		contrastText: BLACK
+		contrastText: BLACK,
 	},
 	info: {
 		main: INFO,
-		contrastText: WHITE
+		contrastText: WHITE,
 	},
 	error: {
 		main: ERROR,
-		contrastText: WHITE
+		contrastText: WHITE,
 	},
 	first: lime,
 	text: {
@@ -46,14 +46,14 @@ const palette = {
 		primary: fade(WHITE, 0.69),
 		secondary: fade(WHITE, 0.42),
 		disabled: fade(WHITE, 0.1948),
-		hint: fade(WHITE, 0.13)
+		hint: fade(WHITE, 0.13),
 	},
 	divider: fade(WHITE, 0.13),
 	background: {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
 		default: BLACK,
-		special: BACKGROUND_SPECIAL
+		special: BACKGROUND_SPECIAL,
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
@@ -66,17 +66,17 @@ const palette = {
 		disabledOpacity: 0.48,
 		focus: fade(WHITE, 0.18),
 		focusOpacity: 0.18,
-		activatedOpacity: 0.18
+		activatedOpacity: 0.18,
 	},
 	common: {
 		white: WHITE,
-		black: BLACK
-	}
+		black: BLACK,
+	},
 }
 
 const typography = {
 	fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-	fontSize: 14.2
+	fontSize: 14.2,
 }
 
 const shadows = [
@@ -105,7 +105,7 @@ const shadows = [
 	"0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12)",
 	"0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
 	"0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
-	"3px 4px 15px 0px rgba(0,0,0,1)"
+	"3px 4px 15px 0px rgba(0,0,0,1)",
 ]
 
 const defaultTheme = createMuiTheme({ typography, palette })
@@ -117,119 +117,120 @@ const theme = createMuiTheme({
 	overrides: {
 		MuiButton: {
 			root: {
-				borderRadius: 0
+				borderRadius: 0,
 			},
 			outlined: {
 				borderRadius: 0,
-				borderColor: ALEX_GREY
+				borderColor: ALEX_GREY,
 			},
 			contained: {
 				backgroundColor: ALEX_GREY,
 				color: WHITE,
 				boxShadow: 0,
 				"&:hover": {
-					backgroundColor: ALEX_GREY_LIGHT
+					backgroundColor: ALEX_GREY_LIGHT,
 				},
 				"&$focusVisible": {
-					backgroundColor: ALEX_GREY_LIGHT
+					backgroundColor: ALEX_GREY_LIGHT,
 				},
 				"&:active": {
-					backgroundColor: ALEX_GREY_LIGHT
+					backgroundColor: ALEX_GREY_LIGHT,
 				},
 				"&:disabled": {
 					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
-				}
-			}
+					color: fade(WHITE, 0.26),
+				},
+			},
 		},
 		MuiFab: {
 			root: {
 				boxShadow: 0,
 				"&:disabled": {
 					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
+					color: fade(WHITE, 0.26),
 				},
 				"&:active": {
-					boxShadow: 0
+					boxShadow: 0,
 				},
 				"&$focusVisible": {
-					boxShadow: 0
+					boxShadow: 0,
 				},
 				"&$disabled": {
-					boxShadow: 0
-				}
-			}
+					boxShadow: 0,
+				},
+			},
 		},
 		MuiTableCell: {
 			head: {
 				whiteSpace: "nowrap",
-				color: defaultTheme.palette.text.main
+				color: defaultTheme.palette.text.main,
+				fontWeight: 700,
 			},
 			root: {
-				whiteSpace: "nowrap"
-			}
+				whiteSpace: "nowrap",
+			},
 		},
 		MuiPaper: {
 			rounded: {
-				borderRadius: 0
-			}
+				borderRadius: 0,
+			},
 		},
 		MuiTooltip: {
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
 				backgroundColor: fade(DARKER_PAPER, 0.9),
-				padding: defaultTheme.spacing(2)
+				padding: defaultTheme.spacing(2),
 			},
-			arrow: { color: fade(DARKER_PAPER, 0.9) }
+			arrow: { color: fade(DARKER_PAPER, 0.9) },
 		},
 		MuiDrawer: {
 			paperAnchorLeft: {
-				borderRight: 0
+				borderRight: 0,
 			},
 			paperAnchorDockedLeft: {
-				borderRight: 0
-			}
+				borderRight: 0,
+			},
 		},
 		MuiAlert: {
 			root: {
 				borderRadius: 0,
 				maxWidth: "100%",
-				alignItems: "center"
+				alignItems: "center",
 			},
 			message: {
-				wordBreak: "break-word"
+				wordBreak: "break-word",
 			},
 			outlinedSuccess: {
-				backgroundColor: BLACK
+				backgroundColor: BLACK,
 			},
 			outlinedInfo: {
-				backgroundColor: BLACK
+				backgroundColor: BLACK,
 			},
 			outlinedWarning: {
-				backgroundColor: BLACK
+				backgroundColor: BLACK,
 			},
 			outlinedError: {
-				backgroundColor: WHITE
+				backgroundColor: WHITE,
 			},
 			filledSuccess: {
-				color: defaultTheme.palette.success.contrastText
+				color: defaultTheme.palette.success.contrastText,
 			},
 			filledInfo: {
-				color: defaultTheme.palette.info.contrastText
+				color: defaultTheme.palette.info.contrastText,
 			},
 			filledWarning: {
-				color: defaultTheme.palette.warning.contrastText
+				color: defaultTheme.palette.warning.contrastText,
 			},
 			filledError: {
-				color: defaultTheme.palette.error.contrastText
-			}
+				color: defaultTheme.palette.error.contrastText,
+			},
 		},
 		MuiBackdrop: {
 			root: {
-				backgroundColor: fade(BLACK, 0.69)
-			}
-		}
+				backgroundColor: fade(BLACK, 0.69),
+			},
+		},
 		// MuiDrawer: {
 		// 	root: {
 		// 		top: 0,
@@ -247,10 +248,10 @@ const theme = createMuiTheme({
 		// 		position: 'absolute'
 		// 	}
 		// }
-	}
+	},
 })
 
 export const themeMUI = responsiveFontSizes(theme, {
 	breakpoints: ["xs", "sm", "md", "lg", "xl"],
-	factor: 3
+	factor: 3,
 })

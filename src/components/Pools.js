@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
-import { Loyalty as LoyaltyIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import {
 	getApproxAPY,
@@ -9,9 +8,14 @@ import {
 	getADXInUSDFormatted,
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
-import { UNBOND_DAYS, POOLS } from "../helpers/constants"
+import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
+import WithDialog from "./WithDialog"
+import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
+
+const DepositsDialog = WithDialog(DepositForm)
 
 const Pools = () => {
 	const {
@@ -24,6 +28,8 @@ const Pools = () => {
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
 	const justifyCenter = useMediaQuery((theme) => theme.breakpoints.down("xs"))
+	const { loyaltyPoolStats } = stats
+	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY
 
 	return (
 		<Box>
@@ -72,18 +78,59 @@ const Pools = () => {
 
 					<PoolCard
 						poolId="loyalty-pool"
-						icon={<LoyaltyIcon fontSize="large" />}
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<LoyaltyIcon width="100%" height="100%" />
+							</SvgIcon>
+						}
 						name={"Loyalty pool "}
-						totalStakedADX={formatADXPretty(stats.totalStakeTom)}
-						currentAPY={`${(
-							getApproxAPY(null, stats.totalStakeTom) * 100
-						).toFixed(2)} %`}
+						totalStakedADX={`${formatADXPretty(
+							loyaltyPoolStats.poolTotalStaked
+						)} ADX`}
+						totalStakedUSD={`${getADXInUSDFormatted(
+							prices,
+							loyaltyPoolStats.poolTotalStaked
+						)}`}
+						currentAPY={`${loyaltyPoolAPY.toFixed(2)} %`}
+						weeklyYield={`${(loyaltyPoolAPY / (365 / 7)).toFixed(4)} %`}
+						weeklyYieldInfo={[
+							`Current daily yield ${(loyaltyPoolAPY / 365).toFixed(4)} %`,
+						]}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
 						}}
-						loading={!stats.loaded}
+						loading={!loyaltyPoolStats.loaded}
 						disabled={!canStake}
-						comingSoon
+						disabledInfo={"Connect wallet to deposit"}
+						lockupPeriodTitle={"Unbond period"}
+						lockupPeriodInfo={`No unbond period`}
+						lockupPeriod={`No unbond period`}
+						extraData={[
+							{
+								id: "loyalty-pool-deposits-limit",
+								title: "Total deposits limit",
+								titleInfo: "",
+								normalValue: "25 000 000 ADX",
+								importantValue: "",
+								valueInfo: "",
+								extra: "",
+								extrInfo: "",
+							},
+						]}
+						actionBtn={
+							<DepositsDialog
+								fullWidth
+								id="loyalty-pool-deposit-form-card"
+								title="Add new deposit"
+								btnLabel="Deposit"
+								color="secondary"
+								size="large"
+								variant="contained"
+								disabled={!canStake}
+								depositPool={DEPOSIT_POOLS[0].id}
+							/>
+						}
+						// comingSoon
 					/>
 					<EmailSignUp formId={2} formName="stakingportalleads" />
 				</Box>
