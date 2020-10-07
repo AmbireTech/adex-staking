@@ -18,14 +18,14 @@ export const styles = theme => {
 	const spacing = theme.spacing(2)
 	return {
 		dialog: {
-			height: `calc(100vh - ${spacing}px)`,
-			minWidth: 999,
-			maxWidth: 999,
-			backgroundColor: theme.palette.background.paper,
-			"@media(max-width:1080px)": {
-				maxWidth: "100%",
-				minWidth: `calc(100vw - ${spacing}px)`
-			}
+			// height: `calc(100vh - ${spacing}px)`,
+			// minWidth: 999,
+			// maxWidth: 999,
+			backgroundColor: theme.palette.background.paper
+			// "@media(max-width:1080px)": {
+			// 	maxWidth: "100%",
+			// 	minWidth: `calc(100vw - ${spacing}px)`
+			// }
 		},
 		dialogTitle: {
 			display: "flex",
@@ -183,7 +183,7 @@ export default function WithDialogHoc(Decorated) {
 							root: clsx(classes.dialogTitle, classes.breakLong)
 						}}
 					>
-						<Typography variant="subtitle1">{title}</Typography>
+						<Typography variant="h4">{title}</Typography>
 						<IconButton onClick={handleToggle} size="small">
 							<CancelIcon />
 						</IconButton>
