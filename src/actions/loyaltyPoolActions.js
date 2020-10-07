@@ -40,8 +40,8 @@ export async function loadLoyaltyPoolData() {
 	return {
 		poolTotalStaked,
 		currentAPY: currentAPY
-			.div(ADX_LP_TOKEN_DECIMALS_MUL)
 			.mul(100)
+			.div(ADX_LP_TOKEN_DECIMALS_MUL)
 			.toNumber()
 	}
 }
