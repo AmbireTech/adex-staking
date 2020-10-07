@@ -179,15 +179,15 @@ export async function onLoyaltyPoolDeposit(
 export async function onLoyaltyPoolWithdraw(
 	stats,
 	chosenWalletType,
-	withdrawAmount
+	withdrawAmountADX
 ) {
 	if (!stats) throw new Error("Stats not provided")
 
-	const { balanceLpADX } = stats.loyaltyPoolStats
+	const { balanceLpADX, balanceLpToken } = stats.loyaltyPoolStats
 
-	if (!withdrawAmount) throw new Error("No withdraw amount provided")
+	if (!withdrawAmountADX) throw new Error("No withdraw amount provided")
 	if (balanceLpADX.isZero()) throw new Error("Can not deposit 0 ADX")
-	if (withdrawAmount.gt(balanceLpADX)) throw new Error("amount too large")
+	if (withdrawAmountADX.gt(balanceLpADX)) throw new Error("amount too large")
 
 	const signer = await getSigner(chosenWalletType)
 
@@ -197,5 +197,8 @@ export async function onLoyaltyPoolWithdraw(
 		signer
 	)
 
-	await loyaltyTokenWithSigner.leave(withdrawAmount)
+	const lpTokensToWithdraw = withdrawAmountADX
+		.mul(balanceLpToken)
+		.div(balanceLpADX)
+	await loyaltyTokenWithSigner.leave(lpTokensToWithdraw)
 }
