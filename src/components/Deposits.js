@@ -154,7 +154,7 @@ export default function Deposits() {
 
 	return (
 		<Box>
-			<Box>
+			{/* <Box>
 				<DepositsDialog
 					id="deposits-table-open-deposit-modal-btn"
 					title="Add new deposit"
@@ -165,7 +165,7 @@ export default function Deposits() {
 					disabled={!!disableDepositsMsg}
 					tooltipTitle={disableDepositsMsg}
 				/>
-			</Box>
+			</Box> */}
 			<Box>
 				<TableContainer xs={12}>
 					<Table aria-label="Bonds table">
