@@ -6,13 +6,24 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	TableBody,
+	SvgIcon
 } from "@material-ui/core"
 import { DEPOSIT_POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+
+const iconByPoolId = poolId => {
+	switch (poolId) {
+		case "adex-loyalty-pool":
+			return LoyaltyIcon
+		default:
+			return null
+	}
+}
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -115,9 +126,19 @@ export default function Deposits() {
 	}, [stats])
 
 	const renderDepositRow = deposit => {
+		const PoolIcon = iconByPoolId(deposit.poolId)
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>{deposit.label}</TableCell>
+				<TableCell>
+					{PoolIcon && (
+						<Box display="inline-block" mr={1}>
+							<SvgIcon fontSize="inherit" color="inherit">
+								<PoolIcon width="100%" height="100%" />
+							</SvgIcon>
+						</Box>
+					)}
+					{deposit.label}
+				</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.reward}</TableCell>
 				<TableCell align="right">
