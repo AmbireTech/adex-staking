@@ -29,7 +29,8 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	poolTotalStaked: ZERO,
 	currentAPY: 0,
 	poolDepositsLimit: ZERO,
-	loaded: false
+	loaded: false,
+	userDataLoaded: false
 }
 
 export async function loadLoyaltyPoolData() {
