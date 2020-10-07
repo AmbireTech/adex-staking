@@ -8,7 +8,6 @@ import {
 	TableHead,
 	TableBody
 } from "@material-ui/core"
-import { Alert } from "@material-ui/lab"
 import { DEPOSIT_POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
@@ -17,7 +16,11 @@ import DepositForm from "./DepositForm"
 
 const DepositsDialog = WithDialog(DepositForm)
 
-const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
+const getLoyaltyPoolDeposit = ({
+	stats,
+	disabledDepositsMsg,
+	disabledWithdrawsMsg
+}) => {
 	const { loyaltyPoolStats } = stats
 	return {
 		poolId: "adex-loyalty-pool",
@@ -33,24 +36,26 @@ const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
 		} ADX`,
 		actions: [
 			<DepositsDialog
-				key="loyalty-pool-deposit-form"
+				id="loyalty-pool-deposit-form"
 				title="Add new deposit"
 				btnLabel="Deposit"
 				color="secondary"
 				size="small"
 				variant="contained"
-				disabled={!chosenWalletType.name}
+				disabled={!!disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 			/>,
 			<DepositsDialog
-				key="loyalty-pool-withdraw-form"
+				id="loyalty-pool-withdraw-form"
 				title="Withdraw from loyalty pool"
 				btnLabel="Withdraw"
 				color="default"
 				size="small"
 				variant="contained"
-				disabled={!chosenWalletType.name}
+				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
+				tooltipTitle={disabledWithdrawsMsg}
 				withdraw
 			/>
 		]
@@ -75,9 +80,34 @@ export default function Deposits() {
 
 	const { stats, chosenWalletType } = useContext(AppContext)
 
+	const { loyaltyPoolStats } = stats
+
+	// TODO: UPDATE if more deposit pools
+	const disableDepositsMsg = !chosenWalletType.name
+		? "Connect wallet"
+		: !loyaltyPoolStats.loaded
+		? "Loading data"
+		: loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
+		? "Pool deposits limit reached"
+		: ""
+
 	useEffect(() => {
-		if (stats.loyaltyPoolStats.loaded) {
-			const loyaltyPoolDeposit = getLoyaltyPoolDeposit(stats, chosenWalletType)
+		const { loyaltyPoolStats } = stats
+		if (loyaltyPoolStats.loaded) {
+			// const disabledDepositsMsg = !chosenWalletType.name ?
+			// 	'Connect wallet' :
+			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
+			// 		'Pool deposits limit reached' : ''
+			// 	)
+			const disabledWithdrawsMsg = !chosenWalletType.name
+				? "Connect wallet"
+				: ""
+
+			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				stats,
+				disabledDepositsMsg: disableDepositsMsg,
+				disabledWithdrawsMsg
+			})
 			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
 		}
 
@@ -105,12 +135,14 @@ export default function Deposits() {
 		<Box>
 			<Box>
 				<DepositsDialog
+					id="deposits-table-open-deposit-modal-btn"
 					title="Add new deposit"
 					btnLabel="New Deposit"
 					color="secondary"
 					size="large"
 					variant="contained"
-					disabled={!chosenWalletType.name}
+					disabled={!!disableDepositsMsg}
+					tooltipTitle={disableDepositsMsg}
 				/>
 			</Box>
 			<Box>
