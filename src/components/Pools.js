@@ -105,6 +105,18 @@ const Pools = () => {
 						lockupPeriodTitle={"Unbond period"}
 						lockupPeriodInfo={`No unbond period`}
 						lockupPeriod={`No unbond period`}
+						extraData={[
+							{
+								id: "loyalty-pool-deposits-limit",
+								title: "Total deposits limit",
+								titleInfo: "",
+								normalValue: "25 000 000 ADX",
+								importantValue: "",
+								valueInfo: "",
+								extra: "",
+								extrInfo: ""
+							}
+						]}
 						actionBtn={
 							<DepositsDialog
 								fullWidth
