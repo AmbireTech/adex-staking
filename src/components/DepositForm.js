@@ -64,6 +64,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	}
 
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
+	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
 		const { userInputAmount, poolToValidate } = params
@@ -203,7 +204,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 									: "pool-not-selected"
 							)}`}
 							disableElevation
-							disabled={!(confirmation && !amountErr)}
+							disabled={!(confirmed && !amountErr)}
 							color="primary"
 							variant="contained"
 							onClick={onAction}

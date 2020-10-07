@@ -66,7 +66,7 @@ export const DEPOSIT_POOLS = [
 		slashPolicy: "No slashing.",
 		url:
 			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
-		confirmationLabel: "I understand there is no locking period",
+		confirmationLabel: null,
 		confirmationUrl: "https://www.adex.network/tos/"
 	}
 ]
