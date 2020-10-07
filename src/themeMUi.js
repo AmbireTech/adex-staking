@@ -163,7 +163,8 @@ const theme = createMuiTheme({
 		MuiTableCell: {
 			head: {
 				whiteSpace: "nowrap",
-				color: defaultTheme.palette.text.main
+				color: defaultTheme.palette.text.main,
+				fontWeight: 700
 			},
 			root: {
 				whiteSpace: "nowrap"
@@ -228,11 +229,6 @@ const theme = createMuiTheme({
 		MuiBackdrop: {
 			root: {
 				backgroundColor: fade(BLACK, 0.69)
-			}
-		},
-		MuiTableCell: {
-			head: {
-				fontWeight: 700
 			}
 		}
 		// MuiDrawer: {
