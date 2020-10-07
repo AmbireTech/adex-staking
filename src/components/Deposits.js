@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
+import { makeStyles } from "@material-ui/core/styles"
 import {
 	TableRow,
 	TableCell,
@@ -26,6 +27,22 @@ const iconByPoolId = poolId => {
 }
 
 const DepositsDialog = WithDialog(DepositForm)
+
+const useStyles = makeStyles(theme => {
+	return {
+		iconBox: {
+			borderRadius: "100%",
+			width: 42,
+			height: 42,
+			backgroundColor: theme.palette.common.white,
+			color: theme.palette.background.default,
+			display: "flex",
+			flexDirection: "column",
+			alignItems: "center",
+			justifyContent: "center"
+		}
+	}
+})
 
 const getLoyaltyPoolDeposit = ({
 	stats,
@@ -87,6 +104,8 @@ const updateDeposits = (deposits, newDeposit) => {
 }
 
 export default function Deposits() {
+	const classes = useStyles()
+
 	const [deposits, setDeposits] = useState([])
 
 	const { stats, chosenWalletType } = useContext(AppContext)
@@ -130,14 +149,23 @@ export default function Deposits() {
 		return (
 			<TableRow key={deposit.poolId}>
 				<TableCell>
-					{PoolIcon && (
-						<Box display="inline-block" mr={1}>
-							<SvgIcon fontSize="inherit" color="inherit">
-								<PoolIcon width="100%" height="100%" />
-							</SvgIcon>
-						</Box>
-					)}
-					{deposit.label}
+					<Box
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+						justifyContent="flex-start"
+					>
+						{PoolIcon && (
+							<Box mr={1}>
+								<Box classes={{ root: classes.iconBox }}>
+									<SvgIcon fontSize="large" color="inherit">
+										<PoolIcon width="100%" height="100%" />
+									</SvgIcon>
+								</Box>
+							</Box>
+						)}
+						<Box>{deposit.label}</Box>
+					</Box>
 				</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.reward}</TableCell>
