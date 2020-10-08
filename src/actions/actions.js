@@ -210,14 +210,12 @@ export async function loadUserStats(chosenWalletType) {
 		rewardChannels,
 		{ canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
-		totalStake,
 		poolsStats
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr),
 		getRewards(addr),
 		getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
-		Token.balanceOf(ADDR_STAKING),
 		loadActivePoolsStats()
 	])
 
@@ -235,12 +233,6 @@ export async function loadUserStats(chosenWalletType) {
 		isTomChannelId(x)
 	)
 
-	const apyTomADX = tomAdxRewardsChannels.reduce(
-		(sum, channel) =>
-			sum + getIncentiveChannelCurrentAPY({ channel, totalStake }),
-		0
-	)
-
 	const totalRewardADX = sumRewards(adxRewardsChannels)
 	const tomRewardADX = sumRewards(tomAdxRewardsChannels)
 
@@ -249,14 +241,6 @@ export async function loadUserStats(chosenWalletType) {
 	)
 
 	const totalRewardDAI = sumRewards(daiRewardsChannels)
-
-	// TODO
-	const apyLastTomDAI = getValidatorFeesAPY({
-		channel: daiRewardsChannels[0],
-		totalStake
-	})
-
-	console.log("apyLastTomDAI", apyLastTomDAI)
 
 	const totalBalanceADX = userBalance
 		.add(totalRewardADX)
@@ -273,7 +257,6 @@ export async function loadUserStats(chosenWalletType) {
 		totalRewardADX,
 		totalRewardDAI,
 		tomRewardADX,
-		apyTomADX,
 		userTotalStake,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
