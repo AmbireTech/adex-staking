@@ -3,11 +3,7 @@ import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import { AccountBalanceSharp as LiquidityIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
-import {
-	getApproxAPY,
-	formatADXPretty,
-	getADXInUSDFormatted
-} from "../helpers/formatting"
+import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
@@ -26,10 +22,12 @@ const Pools = () => {
 		prices,
 		setNewBondPool
 	} = useContext(AppContext)
+	const { loyaltyPoolStats, tomPoolStats } = stats
+
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
-	const tomAPY = getApproxAPY(null, stats.totalStakeTom) * 100
+	const tomAPY = tomPoolStats.totalAPY * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
-	const { loyaltyPoolStats } = stats
+
 	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY
 
 	return (
@@ -45,7 +43,7 @@ const Pools = () => {
 					justifyContent={justifyCenter ? "center" : "flex-start"}
 				>
 					<PoolCard
-						poolId="validator-tom"
+						id="validator-tom"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
 								<TomIcon width="100%" height="100%" />
@@ -78,7 +76,7 @@ const Pools = () => {
 					/>
 
 					<PoolCard
-						poolId="loyalty-pool"
+						id="loyalty-pool"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
 								<LoyaltyIcon width="100%" height="100%" />
@@ -134,7 +132,7 @@ const Pools = () => {
 						// comingSoon
 					/>
 					<PoolCard
-						poolId="liquidity-pool"
+						id="liquidity-pool"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
 								<LiquidityIcon />

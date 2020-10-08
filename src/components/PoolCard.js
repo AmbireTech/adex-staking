@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => {
 })
 
 export default function PoolCard({
-	poolId,
+	id,
 	icon,
 	name,
 	totalStakedADX,
@@ -243,7 +243,7 @@ export default function PoolCard({
 						<div>
 							{actionBtn || (
 								<Button
-									id={`stake-pool-${poolId}`}
+									id={`stake-pool-${id}`}
 									fullWidth
 									variant="contained"
 									disableElevation
