@@ -1,4 +1,4 @@
-import { DEPOSIT_POOLS } from "../helpers/constants"
+import { DEPOSIT_POOLS, POOLS } from "../helpers/constants"
 import {
 	onLoyaltyPoolDeposit,
 	onLoyaltyPoolWithdraw
@@ -21,5 +21,8 @@ export const getWithdrawActionByPoolId = poolId => {
 export const getPoolStatsByPoolId = (stats, poolId) => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return stats.loyaltyPoolStats
+	}
+	if (poolId === POOLS[0].id) {
+		return stats.tomPoolStats
 	}
 }
