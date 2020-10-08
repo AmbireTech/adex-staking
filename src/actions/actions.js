@@ -38,6 +38,18 @@ const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 // 0.2 DAI or ADX
 const OUTSTANDING_REWARD_THRESHOLD = bigNumberify("200000000000000000")
 
+export const POOL_EMPTY_STATS = {
+	totalStake: ZERO,
+	currentAdxIncentiveAPY: 0,
+	lastDaiFeesAPY: 0,
+	totalAPY: 0,
+	userRewardsADX: ZERO,
+	userRewardsDAI: ZERO,
+	loaded: false,
+	userDataLoaded: false,
+	rewardChannels: []
+}
+
 export const EMPTY_STATS = {
 	loaded: false,
 	userBonds: [],
@@ -55,7 +67,8 @@ export const EMPTY_STATS = {
 	userIdentityBalance: ZERO,
 	canExecuteGasless: false,
 	canExecuteGaslessError: null,
-	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS
+	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
+	tomPoolStats: POOL_EMPTY_STATS
 }
 
 const sumRewards = all =>
@@ -74,29 +87,26 @@ export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
 	} = channel
 
 	const poolTotalStake = bigNumberify(currentTotalActiveStake || totalStake)
-	const distributionEnds = new Date(periodEnd)
+	const distributionEnds = new Date(periodEnd).getTime()
 	const now = Date.now()
 
-	if (now > distributionEnds) {
+	if (now >= distributionEnds) {
 		return 0
 	}
 
 	const secondsLeft = Math.floor((distributionEnds - now) / 1000)
 
-	const toDistribute = bigNumberify(currentRewardPerSecond).mul(
-		bigNumberify(secondsLeft)
-	)
+	const toDistribute = bigNumberify(currentRewardPerSecond).mul(secondsLeft)
+
+	const precision = 10_000_000
 
 	const apy = toDistribute
-		.mul(1000)
-		.mul(
-			bigNumberify(SECONDS_IN_YEAR)
-				.mul(1000)
-				.div(secondsLeft)
-		)
+		.mul(SECONDS_IN_YEAR)
+		.mul(precision)
+		.div(secondsLeft)
 		.div(poolTotalStake)
 
-	return apy.toNumber() / (1000 * 1000)
+	return apy.toNumber() / precision
 }
 
 export const getValidatorFeesAPY = ({ channel, totalStake }) => {
@@ -132,11 +142,61 @@ export async function loadStats(chosenWalletType) {
 	return { ...userStats, ...totalStake, totalStakeTom: totalStake }
 }
 
+export async function loadActivePoolsStats() {
+	const tomPoolStats = await getPoolStats(POOLS[0])
+
+	return { tomPoolStats }
+}
+
+export async function getPoolStats(pool) {
+	const rewardChannels = await getRewardChannels(pool)
+	const totalStake = await Token.balanceOf(ADDR_STAKING)
+
+	const now = Math.floor(Date.now() / 1000)
+
+	const adxIncentiveRewardsChannels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr === ADDR_ADX && now < x.channelArgs.validUntil
+	)
+
+	const feeRewardsChannels = rewardChannels.filter(
+		x => x.channelArgs.tokenAddr !== ADDR_ADX
+	)
+
+	const currentActiveIncentiveChannel = adxIncentiveRewardsChannels.sort(
+		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
+	)[0]
+	const lastFeeRewardChannel = feeRewardsChannels.sort(
+		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
+	)[0]
+
+	const currentAdxIncentiveAPY = currentActiveIncentiveChannel
+		? getIncentiveChannelCurrentAPY({
+				channel: currentActiveIncentiveChannel,
+				totalStake
+		  })
+		: 0
+	const lastDaiFeesAPY = getValidatorFeesAPY({
+		channel: lastFeeRewardChannel,
+		totalStake
+	})
+
+	const stats = {
+		currentAdxIncentiveAPY,
+		lastDaiFeesAPY,
+		totalAPY: currentAdxIncentiveAPY + lastDaiFeesAPY,
+		loaded: true,
+		totalStake
+	}
+
+	return stats
+}
+
 export async function loadUserStats(chosenWalletType) {
 	if (!chosenWalletType.name) {
 		const loyaltyPoolStats = await loadUserLoyaltyPoolsStats()
+		const poolStats = await loadActivePoolsStats()
 
-		return { ...EMPTY_STATS, loyaltyPoolStats, loaded: true }
+		return { ...EMPTY_STATS, loyaltyPoolStats, ...poolStats, loaded: true }
 	}
 
 	const signer = await getSigner(chosenWalletType)
@@ -150,14 +210,18 @@ export async function loadUserStats(chosenWalletType) {
 		rewardChannels,
 		{ canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
-		totalStake
+		totalStake,
+		poolsStats
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr),
 		getRewards(addr),
 		getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
-		Token.balanceOf(ADDR_STAKING)
+		Token.balanceOf(ADDR_STAKING),
+		loadActivePoolsStats()
 	])
+
+	const { tomPoolStats } = poolsStats
 
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")
@@ -167,15 +231,18 @@ export async function loadUserStats(chosenWalletType) {
 	const adxRewardsChannels = rewardChannels.filter(
 		x => x.channelArgs.tokenAddr === ADDR_ADX
 	)
-	const tomAdxRewards = [...adxRewardsChannels].filter(x => isTomChannelId(x))
+	const tomAdxRewardsChannels = [...adxRewardsChannels].filter(x =>
+		isTomChannelId(x)
+	)
 
-	const apyTomADX = tomAdxRewards.reduce(
-		(sum, channel) => getIncentiveChannelCurrentAPY({ channel, totalStake }),
+	const apyTomADX = tomAdxRewardsChannels.reduce(
+		(sum, channel) =>
+			sum + getIncentiveChannelCurrentAPY({ channel, totalStake }),
 		0
 	)
 
 	const totalRewardADX = sumRewards(adxRewardsChannels)
-	const tomRewardADX = sumRewards(tomAdxRewards)
+	const tomRewardADX = sumRewards(tomAdxRewardsChannels)
 
 	const daiRewardsChannels = rewardChannels.filter(
 		x => x.channelArgs.tokenAddr !== ADDR_ADX
@@ -213,7 +280,8 @@ export async function loadUserStats(chosenWalletType) {
 		userIdentityBalance,
 		canExecuteGasless,
 		canExecuteGaslessError,
-		loyaltyPoolStats
+		loyaltyPoolStats,
+		tomPoolStats
 	}
 }
 
@@ -276,11 +344,17 @@ export async function loadBondStats(addr, identityAddr) {
 	}
 }
 
+export async function getRewardChannels(rewardPool) {
+	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
+	const rewardChannels = await resp.json()
+
+	return rewardChannels
+}
+
 export async function getRewards(addr) {
 	const identityAddr = getUserIdentity(addr).addr
 	const rewardPool = POOLS[0]
-	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
-	const rewardChannels = await resp.json()
+	const rewardChannels = await getRewardChannels(rewardPool)
 	const validUntil = Math.floor(Date.now() / 1000)
 	const forUser = await Promise.all(
 		rewardChannels.map(async rewardChannel => {
