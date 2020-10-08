@@ -21,8 +21,8 @@ export const MAX_UINT = bigNumberify(
 )
 
 export const MIN_BALANCE_FOR_GASLESS_TXNS = bigNumberify(
-	"20000000000000000000000"
-) // 20 000 ADX
+	"10000000000000000000000"
+) // 10 000 ADX
 
 export const DEFAULT_BOND = {
 	poolId: "",
@@ -35,8 +35,9 @@ export const POOLS = [
 		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
 		selectable: true,
 		minStakingAmount: "0.0",
-		rewardPolicy:
-			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.',
+		rewardPolicy: `The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. 
+		The fee earnings will be 7% of the total volume, which you can track on our Explorer. 
+		There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.`,
 		slashPolicy: "No slashing.",
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
@@ -59,11 +60,13 @@ export const DEPOSIT_POOLS = [
 		id: id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
 		selectable: true,
 		minStakingAmount: "0.0",
-		rewardPolicy: "ADX-LOYALTY token  inflation based rewards",
+		rewardPolicy: `By depositing ADX you receive ADX-LOYALTY, 
+		which automatically incurs new rewards in ADX based on elastic issuance, 
+		while also allowing you to participate in AdEx governance.`,
 		slashPolicy: "No slashing.",
 		url:
 			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
-		confirmationLabel: "I understand there is no locking period",
+		confirmationLabel: null,
 		confirmationUrl: "https://www.adex.network/tos/"
 	}
 ]

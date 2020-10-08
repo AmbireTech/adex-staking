@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
-import { Loyalty as LoyaltyIcon } from "@material-ui/icons"
+import { AccountBalanceSharp as LiquidityIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import {
 	getApproxAPY,
@@ -9,10 +9,12 @@ import {
 	getADXInUSDFormatted
 } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
 import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
+import EmailSignUp from "./EmailSignUpCard"
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -64,7 +66,6 @@ const Pools = () => {
 							setNewBondPool(POOLS[0].id)
 							setNewBondOpen(true)
 						}}
-						loadin
 						loading={!stats.loaded}
 						disabled={!canStake}
 						disabledInfo={"Connect wallet to stake"}
@@ -78,8 +79,12 @@ const Pools = () => {
 
 					<PoolCard
 						poolId="loyalty-pool"
-						icon={<LoyaltyIcon fontSize="large" />}
-						name={"Loyalty pool "}
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<LoyaltyIcon width="100%" height="100%" />
+							</SvgIcon>
+						}
+						name={"Loyalty pool"}
 						totalStakedADX={`${formatADXPretty(
 							loyaltyPoolStats.poolTotalStaked
 						)} ADX`}
@@ -101,6 +106,18 @@ const Pools = () => {
 						lockupPeriodTitle={"Unbond period"}
 						lockupPeriodInfo={`No unbond period`}
 						lockupPeriod={`No unbond period`}
+						extraData={[
+							{
+								id: "loyalty-pool-deposits-limit",
+								title: "Total deposits limit",
+								titleInfo: "",
+								normalValue: "25 000 000 ADX",
+								importantValue: "",
+								valueInfo: "",
+								extra: "",
+								extrInfo: ""
+							}
+						]}
 						actionBtn={
 							<DepositsDialog
 								fullWidth
@@ -116,6 +133,18 @@ const Pools = () => {
 						}
 						// comingSoon
 					/>
+					<PoolCard
+						poolId="liquidity-pool"
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<LiquidityIcon />
+							</SvgIcon>
+						}
+						name={"Liquidity pool"}
+						loading={!stats.loaded}
+						comingSoon
+					/>
+					<EmailSignUp formId={2} formName="stakingportalleads" />
 				</Box>
 			</Box>
 		</Box>

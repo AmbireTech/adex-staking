@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
+import { makeStyles } from "@material-ui/core/styles"
 import {
 	TableRow,
 	TableCell,
@@ -6,48 +7,83 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	TableBody,
+	SvgIcon
 } from "@material-ui/core"
-import { Alert } from "@material-ui/lab"
 import { DEPOSIT_POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+
+const iconByPoolId = poolId => {
+	switch (poolId) {
+		case "adex-loyalty-pool":
+			return LoyaltyIcon
+		default:
+			return null
+	}
+}
 
 const DepositsDialog = WithDialog(DepositForm)
 
-const getLoyaltyPoolDeposit = (stats, chosenWalletType) => {
+const useStyles = makeStyles(theme => {
+	return {
+		iconBox: {
+			borderRadius: "100%",
+			width: 42,
+			height: 42,
+			backgroundColor: theme.palette.common.white,
+			color: theme.palette.background.default,
+			display: "flex",
+			flexDirection: "column",
+			alignItems: "center",
+			justifyContent: "center"
+		}
+	}
+})
+
+const getLoyaltyPoolDeposit = ({
+	stats,
+	disabledDepositsMsg,
+	disabledWithdrawsMsg
+}) => {
 	const { loyaltyPoolStats } = stats
 	return {
 		poolId: "adex-loyalty-pool",
 		label: "Loyalty Pool",
-		balance: `${formatADXPretty(
-			loyaltyPoolStats.balanceLpADX
-		)} ADX, ${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY`,
-		reward: loyaltyPoolStats.rewardADX
-			? formatADXPretty(loyaltyPoolStats.rewardADX)
-			: "Unknown",
+		balance: `
+		${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY
+		(= ${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ADX)
+		`,
+		reward: `${
+			loyaltyPoolStats.rewardADX
+				? formatADXPretty(loyaltyPoolStats.rewardADX)
+				: "Unknown"
+		} ADX`,
 		actions: [
 			<DepositsDialog
-				key="loyalty-pool-deposit-form"
+				id="loyalty-pool-deposit-form"
 				title="Add new deposit"
 				btnLabel="Deposit"
 				color="secondary"
 				size="small"
 				variant="contained"
-				disabled={!chosenWalletType.name}
+				disabled={!!disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 			/>,
 			<DepositsDialog
-				key="loyalty-pool-withdraw-form"
+				id="loyalty-pool-withdraw-form"
 				title="Withdraw from loyalty pool"
 				btnLabel="Withdraw"
 				color="default"
 				size="small"
 				variant="contained"
-				disabled={!chosenWalletType.name}
+				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
+				tooltipTitle={disabledWithdrawsMsg}
 				withdraw
 			/>
 		]
@@ -68,13 +104,40 @@ const updateDeposits = (deposits, newDeposit) => {
 }
 
 export default function Deposits() {
+	const classes = useStyles()
+
 	const [deposits, setDeposits] = useState([])
 
 	const { stats, chosenWalletType } = useContext(AppContext)
 
+	const { loyaltyPoolStats } = stats
+
+	// TODO: UPDATE if more deposit pools
+	const disableDepositsMsg = !chosenWalletType.name
+		? "Connect wallet"
+		: !loyaltyPoolStats.loaded
+		? "Loading data"
+		: loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
+		? "Pool deposits limit reached"
+		: ""
+
 	useEffect(() => {
-		if (stats.loyaltyPoolStats.loaded) {
-			const loyaltyPoolDeposit = getLoyaltyPoolDeposit(stats, chosenWalletType)
+		const { loyaltyPoolStats } = stats
+		if (loyaltyPoolStats.loaded) {
+			// const disabledDepositsMsg = !chosenWalletType.name ?
+			// 	'Connect wallet' :
+			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
+			// 		'Pool deposits limit reached' : ''
+			// 	)
+			const disabledWithdrawsMsg = !chosenWalletType.name
+				? "Connect wallet"
+				: ""
+
+			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				stats,
+				disabledDepositsMsg: disableDepositsMsg,
+				disabledWithdrawsMsg
+			})
 			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
 		}
 
@@ -82,9 +145,28 @@ export default function Deposits() {
 	}, [stats])
 
 	const renderDepositRow = deposit => {
+		const PoolIcon = iconByPoolId(deposit.poolId)
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>{deposit.label}</TableCell>
+				<TableCell>
+					<Box
+						display="flex"
+						flexDirection="row"
+						alignItems="center"
+						justifyContent="flex-start"
+					>
+						{PoolIcon && (
+							<Box mr={1}>
+								<Box classes={{ root: classes.iconBox }}>
+									<SvgIcon fontSize="large" color="inherit">
+										<PoolIcon width="100%" height="100%" />
+									</SvgIcon>
+								</Box>
+							</Box>
+						)}
+						<Box>{deposit.label}</Box>
+					</Box>
+				</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.reward}</TableCell>
 				<TableCell align="right">
@@ -98,54 +180,34 @@ export default function Deposits() {
 		)
 	}
 
-	const depositExplanationMsg = `This table will show all your individual ADX deposits, 
-	along with information as status, amount and current APY. By using the action buttons, 
-	you will be able to request withdraw depending on pool policy`
-
-	const bondExplanationFrag =
-		!stats.loaded || stats.userBonds.length ? null : (
-			<Box mt={2}>
-				<Alert variant="filled" severity="info">
-					{depositExplanationMsg}
-				</Alert>
-			</Box>
-		)
-
-	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
-			<Box>
+			{/* <Box>
 				<DepositsDialog
+					id="deposits-table-open-deposit-modal-btn"
 					title="Add new deposit"
 					btnLabel="New Deposit"
 					color="secondary"
 					size="large"
 					variant="contained"
-					disabled={!chosenWalletType.name}
+					disabled={!!disableDepositsMsg}
+					tooltipTitle={disableDepositsMsg}
 				/>
-			</Box>
+			</Box> */}
 			<Box>
 				<TableContainer xs={12}>
 					<Table aria-label="Bonds table">
 						<TableHead>
 							<TableRow>
-								<TableCell style={headerCellStyle}>Pool</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Balance
-								</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Reward
-								</TableCell>
-								<TableCell style={headerCellStyle} align="right">
-									Actions
-								</TableCell>
+								<TableCell>Pool</TableCell>
+								<TableCell align="right">Balance</TableCell>
+								<TableCell align="right">Reward</TableCell>
+								<TableCell align="right">Actions</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
 					</Table>
 				</TableContainer>
-
-				{bondExplanationFrag}
 			</Box>
 		</Box>
 	)

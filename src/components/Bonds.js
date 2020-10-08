@@ -18,7 +18,7 @@ import {
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
-export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
+export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
@@ -33,7 +33,7 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		}
 		if (bond.status === "Active") {
 			return `Active, earning ${(
-				getApproxAPY(bond, stats.totalStake) * 100
+				getApproxAPY(bond, stats.totalStakeTom) * 100
 			).toFixed(2)}% APY`
 		}
 		return bond.status
@@ -95,26 +95,17 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</Box>
 		)
 
-	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
-							<TableCell style={headerCellStyle}>Bond amount</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Pool
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Created
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Status
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Actions
-							</TableCell>
+							<TableCell>Bond amount</TableCell>
+							<TableCell align="right">Pool</TableCell>
+							<TableCell align="right">Created</TableCell>
+							<TableCell align="right">Status</TableCell>
+							<TableCell align="right">Actions</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>

@@ -38,8 +38,8 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const [confirmation, setConfirmation] = useState(false)
 	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
 
-	const activePool = getDepositPool(newDepositPool) || {}
-	const poolStats = getPoolStatsByPoolId(stats, activePool.id) || {}
+	const activePool = getDepositPool(newDepositPool)
+	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
 	const actionName = withdraw ? "withdraw" : "deposit"
 
 	const maxAmount = withdraw
@@ -47,6 +47,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		: stats.userWalletBalance
 
 	const onAction = async () => {
+		if (!activePool) {
+			return
+		}
+
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
 
@@ -60,9 +64,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	}
 
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
+	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
-		const { userInputAmount, poolToValidate } = params
+		const { userInputAmount, poolToValidate, poolStats } = params
 
 		if (!isValidNumberString(userInputAmount)) {
 			setAmountErr(true)
@@ -87,6 +92,21 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 			)
 			return
 		}
+
+		if (
+			!withdraw &&
+			poolStats &&
+			poolStats.poolTotalStaked &&
+			poolStats.poolDepositsLimit &&
+			amountBN.add(poolStats.poolTotalStaked).gt(poolStats.poolDepositsLimit)
+		) {
+			setAmountErr(true)
+			setAmountErrText(
+				"ADX amount too large - will go over the pool total deposits limit!"
+			)
+			return
+		}
+
 		setAmountErr(false)
 		return
 	}
@@ -97,12 +117,16 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 
 	const onAmountChange = amountStr => {
 		setActionAmount(amountStr)
-		validateFields({ userInputAmount: amountStr, poolToValidate: activePool })
+		validateFields({
+			userInputAmount: amountStr,
+			poolToValidate: activePool,
+			poolStats
+		})
 	}
 
 	useEffect(() => {
 		const poolToValidate = getDepositPool(newDepositPool)
-		validateFields({ userInputAmount: actionAmount, poolToValidate })
+		validateFields({ userInputAmount: actionAmount, poolToValidate, poolStats })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newDepositPool])
 
@@ -196,10 +220,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 							id={`new-${actionName}-stake-btn-${toIdAttributeString(
 								activePool
 									? activePool.poolId || actionName
-									: "pool-not-selected"
+									: "-deposit-pool-not-selected"
 							)}`}
 							disableElevation
-							disabled={!(confirmation && !amountErr)}
+							disabled={!confirmed || !!amountErr || !activePool}
 							color="primary"
 							variant="contained"
 							onClick={onAction}

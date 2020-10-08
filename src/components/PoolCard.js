@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Fragment } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
@@ -67,7 +67,8 @@ export default function PoolCard({
 	loaded,
 	actions,
 	comingSoon,
-	actionBtn
+	actionBtn,
+	extraData = []
 }) {
 	const classes = useStyles()
 
@@ -183,6 +184,55 @@ export default function PoolCard({
 						justify="center"
 						mb={3}
 					/>
+
+					{extraData.map(data => (
+						<Fragment key={data.id}>
+							<CardRow
+								color="text.main"
+								fontWeight={"fontWeightRegular"}
+								fontSize={14}
+								text={data.title}
+								infoText={data.titleInfo}
+								justify="center"
+							/>
+
+							{data.importantValue && (
+								<CardRow
+									color="warning.main"
+									fontWeight={"fontWeightBold"}
+									fontSize={20}
+									text={data.importantValue}
+									isAmountText
+									infoText={data.valueInfo}
+									justify="center"
+								/>
+							)}
+
+							{data.normalValue && (
+								<CardRow
+									color="text.primary"
+									fontWeight={"fontWeightRegular"}
+									fontSize={14}
+									text={data.normalValue}
+									infoText={data.valueInfo}
+									justify="center"
+									mb={3}
+								/>
+							)}
+
+							{data.extra && (
+								<CardRow
+									color="text.primary"
+									fontWeight={"fontWeightRegular"}
+									fontSize={14}
+									text={data.extra}
+									infoText={data.extrInfo}
+									justify="center"
+									mb={3}
+								/>
+							)}
+						</Fragment>
+					))}
 
 					<Tooltip
 						disableFocusListener={!disabled}

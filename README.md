@@ -10,6 +10,15 @@ Smart contracts: https://github.com/adexnetwork/adex-protocol-eth
 
 Terms and conditions: https://www.adex.network/tos/
 
+## Screenshots
+
+### Pools dashboard
+
+![Pools](./screenshots/1.png)
+
+### Gasless staking
+
+![Gasless](./screenshots/2.png)
 
 ## Available Scripts
 

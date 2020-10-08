@@ -1,31 +1,35 @@
 import React, { Fragment, useState, forwardRef } from "react"
 import PropTypes from "prop-types"
 import { makeStyles } from "@material-ui/core/styles"
-import Button from "@material-ui/core/Button"
-import Fab from "@material-ui/core/Fab"
-import IconButton from "@material-ui/core/IconButton"
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
+import {
+	Button,
+	Box,
+	Fab,
+	IconButton,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	Slide,
+	DialogActions,
+	Typography
+} from "@material-ui/core"
 import clsx from "clsx"
-import Slide from "@material-ui/core/Slide"
 import { withStyles } from "@material-ui/core/styles"
 import CancelIcon from "@material-ui/icons/Cancel"
-import DialogActions from "@material-ui/core/DialogActions"
-import Typography from "@material-ui/core/Typography"
+import Tooltip from "./Tooltip"
 
 export const styles = theme => {
 	const spacing = theme.spacing(2)
 	return {
 		dialog: {
-			height: `calc(100vh - ${spacing}px)`,
-			minWidth: 999,
-			maxWidth: 999,
-			backgroundColor: theme.palette.background.paper,
-			"@media(max-width:1080px)": {
-				maxWidth: "100%",
-				minWidth: `calc(100vw - ${spacing}px)`
-			}
+			// height: `calc(100vh - ${spacing}px)`,
+			// minWidth: 999,
+			// maxWidth: 999,
+			backgroundColor: theme.palette.background.paper
+			// "@media(max-width:1080px)": {
+			// 	maxWidth: "100%",
+			// 	minWidth: `calc(100vw - ${spacing}px)`
+			// }
 		},
 		dialogTitle: {
 			display: "flex",
@@ -86,6 +90,7 @@ const useStyles = makeStyles(styles)
 export default function WithDialogHoc(Decorated) {
 	function WithDialog(props) {
 		const {
+			id,
 			disableBackdropClick = false,
 			forwardedRef,
 			iconButton,
@@ -104,6 +109,7 @@ export default function WithDialogHoc(Decorated) {
 			onClick,
 			fullWidth,
 			onBeforeOpen,
+			tooltipTitle,
 			...rest
 		} = props
 
@@ -149,22 +155,30 @@ export default function WithDialogHoc(Decorated) {
 		}
 		return (
 			<Fragment>
-				<ButtonComponent
-					disabled={disabled}
-					aria-label={btnLabel || ""}
-					label={btnLabel || ""}
-					onClick={ev => handleClick(ev)}
-					{...btnProps}
-					className={clsx(
-						className,
-						{ [classes.floating]: !!fabButton },
-						{ [classes.first]: color === "first" },
-						{ [classes.second]: color === "second" }
-					)}
-				>
-					{icon}
-					{(!iconButton && btnLabel) || ""}
-				</ButtonComponent>
+				<Tooltip title={tooltipTitle || ""}>
+					<Box
+						display="inline-block"
+						{...(btnProps.fullWidth ? { width: 1 } : {})}
+					>
+						<ButtonComponent
+							id={id}
+							disabled={disabled}
+							aria-label={btnLabel || ""}
+							label={btnLabel || ""}
+							onClick={ev => handleClick(ev)}
+							{...btnProps}
+							className={clsx(
+								className,
+								{ [classes.floating]: !!fabButton },
+								{ [classes.first]: color === "first" },
+								{ [classes.second]: color === "second" }
+							)}
+						>
+							{icon}
+							{(!iconButton && btnLabel) || ""}
+						</ButtonComponent>
+					</Box>
+				</Tooltip>
 				<Dialog
 					disableBackdropClick={disableBackdropClick}
 					// disableEscapeKeyDown
@@ -183,7 +197,7 @@ export default function WithDialogHoc(Decorated) {
 							root: clsx(classes.dialogTitle, classes.breakLong)
 						}}
 					>
-						<Typography variant="subtitle1">{title}</Typography>
+						<Typography variant="h4">{title}</Typography>
 						<IconButton onClick={handleToggle} size="small">
 							<CancelIcon />
 						</IconButton>
