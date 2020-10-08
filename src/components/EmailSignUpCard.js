@@ -59,7 +59,7 @@ export default function EmailSignUp(props) {
 	const classes = useStyles({ errors })
 
 	useEffect(() => {
-		console.log(email, gdpr, errors)
+		// console.log(email, gdpr, errors)
 	}, [email, gdpr, errors])
 
 	const handleValidationErrors = () => {
@@ -166,7 +166,6 @@ export default function EmailSignUp(props) {
 							<FormGroup>
 								<FormControlLabel
 									onChange={e => setGDPR(e.target.checked)}
-									error={errors.gdpr}
 									name="gdpr"
 									classes={{ label: classes.gdprCheckbox }}
 									control={<Checkbox size="small" name="checkedA" />}
