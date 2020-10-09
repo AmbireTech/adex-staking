@@ -80,11 +80,12 @@ export const isTomChannelId = channel =>
 	)
 
 export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
+	const { periodEnd, stats = {} } = channel
+
 	const {
-		periodEnd,
 		currentRewardPerSecond = "478927203065134100",
 		currentTotalActiveStake
-	} = channel
+	} = stats
 
 	const poolTotalStake = bigNumberify(currentTotalActiveStake || totalStake)
 	const distributionEnds = new Date(periodEnd).getTime()
