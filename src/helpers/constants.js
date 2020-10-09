@@ -26,7 +26,7 @@ export const MIN_BALANCE_FOR_GASLESS_TXNS = bigNumberify(
 
 export const DEFAULT_BOND = {
 	poolId: "",
-	amount: ZERO,
+	amount: ZERO
 }
 
 export const POOLS = [
@@ -42,7 +42,7 @@ export const POOLS = [
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
 		estimatedAnnualADXYield: 15103448.2758,
-		estimatedAnnualADXEarlyYield: 12166666.6666,
+		estimatedAnnualADXEarlyYield: 12166666.6666
 	},
 	{
 		label: "Validator Jerry",
@@ -50,8 +50,8 @@ export const POOLS = [
 		selectable: false,
 		minStakingAmount: 0,
 		rewardPolicy: "",
-		slashPolicy: "",
-	},
+		slashPolicy: ""
+	}
 ]
 
 export const DEPOSIT_POOLS = [
@@ -67,8 +67,8 @@ export const DEPOSIT_POOLS = [
 		url:
 			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
 		confirmationLabel: null,
-		confirmationUrl: "https://www.adex.network/tos/",
-	},
+		confirmationUrl: "https://www.adex.network/tos/"
+	}
 ]
 
 export const METAMASK = "Metamask"
@@ -80,13 +80,13 @@ export const Wallets = [
 	{
 		title: `Connect with ${METAMASK}`,
 		name: METAMASK,
-		icon: metamaskLogo,
+		icon: metamaskLogo
 	},
 	{
 		title: `Connect with ${WALLET_CONNECT}`,
 		name: WALLET_CONNECT,
-		icon: walletconnectLogo,
-	},
+		icon: walletconnectLogo
+	}
 	// {
 	// 	title: `Connect with ${TREZOR}`,
 	// 	name: TREZOR,

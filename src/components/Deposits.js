@@ -8,7 +8,7 @@ import {
 	TableContainer,
 	TableHead,
 	TableBody,
-	SvgIcon,
+	SvgIcon
 } from "@material-ui/core"
 import { DEPOSIT_POOLS } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
@@ -17,7 +17,7 @@ import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 
-const iconByPoolId = (poolId) => {
+const iconByPoolId = poolId => {
 	switch (poolId) {
 		case "adex-loyalty-pool":
 			return LoyaltyIcon
@@ -28,7 +28,7 @@ const iconByPoolId = (poolId) => {
 
 const DepositsDialog = WithDialog(DepositForm)
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
 	return {
 		iconBox: {
 			borderRadius: "100%",
@@ -39,15 +39,15 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
-			justifyContent: "center",
-		},
+			justifyContent: "center"
+		}
 	}
 })
 
 const getLoyaltyPoolDeposit = ({
 	stats,
 	disabledDepositsMsg,
-	disabledWithdrawsMsg,
+	disabledWithdrawsMsg
 }) => {
 	const { loyaltyPoolStats } = stats
 	return {
@@ -85,13 +85,13 @@ const getLoyaltyPoolDeposit = ({
 				depositPool={DEPOSIT_POOLS[0].id}
 				tooltipTitle={disabledWithdrawsMsg}
 				withdraw
-			/>,
-		],
+			/>
+		]
 	}
 }
 
 const updateDeposits = (deposits, newDeposit) => {
-	const index = deposits.findIndex((x) => x.poolId === newDeposit.poolId)
+	const index = deposits.findIndex(x => x.poolId === newDeposit.poolId)
 	const newDeposits = [...deposits]
 
 	if (index > -1) {
@@ -136,7 +136,7 @@ export default function Deposits() {
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
-				disabledWithdrawsMsg,
+				disabledWithdrawsMsg
 			})
 			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
 		}
@@ -144,7 +144,7 @@ export default function Deposits() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
 
-	const renderDepositRow = (deposit) => {
+	const renderDepositRow = deposit => {
 		const PoolIcon = iconByPoolId(deposit.poolId)
 		return (
 			<TableRow key={deposit.poolId}>

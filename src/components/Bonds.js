@@ -7,20 +7,20 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody,
+	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { UNBOND_DAYS, ZERO } from "../helpers/constants"
 import {
 	formatADXPretty,
 	getApproxAPY,
-	formatDate,
+	formatDate
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
 export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	// Render all stats cards + bond table
-	const bondStatus = (bond) => {
+	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
 			const willUnlock = bond.willUnlock.getTime()
 			const now = Date.now()
@@ -39,7 +39,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		return bond.status
 	}
 
-	const renderBondRow = (bond) => {
+	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
 		const created = new Date(
@@ -110,7 +110,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 					</TableHead>
 					<TableBody>
 						{[...(stats.userBonds || [])]
-							.filter((x) => x.status !== "Unbonded")
+							.filter(x => x.status !== "Unbonded")
 							.reverse()
 							.map(renderBondRow)}
 					</TableBody>

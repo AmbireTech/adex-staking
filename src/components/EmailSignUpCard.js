@@ -8,17 +8,17 @@ import {
 	FormGroup,
 	FormControl,
 	FormControlLabel,
-	TextField,
+	TextField
 } from "@material-ui/core"
 import { CardRow } from "./cardCommon"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
 import { validateEmail } from "./../helpers/validation"
 import {
 	extractJSONResponseFromHTML,
-	submitFormToMautic,
+	submitFormToMautic
 } from "../mauticActions"
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(theme => {
 	return {
 		iconBox: {
 			borderRadius: "100%",
@@ -31,19 +31,19 @@ const useStyles = makeStyles((theme) => {
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
-			justifyContent: "center",
+			justifyContent: "center"
 		},
 		bold: {
-			fontWeight: 800,
+			fontWeight: 800
 		},
 		singUp: {
 			backgroundColor: theme.palette.text.main,
-			borderRadius: 20,
+			borderRadius: 20
 		},
 		gdprCheckbox: ({ errors }) => ({
 			fontSize: 10,
-			color: errors.gdpr ? theme.palette.error.main : theme.palette.text.main,
-		}),
+			color: errors.gdpr ? theme.palette.error.main : theme.palette.text.main
+		})
 	}
 })
 
@@ -54,18 +54,18 @@ export default function EmailSignUp(props) {
 	const [gdpr, setGDPR] = useState(false)
 	const [errors, setErrors] = useState({
 		email: false,
-		gdpr: false,
+		gdpr: false
 	})
 	const classes = useStyles({ errors })
 
 	useEffect(() => {
-		console.log(email, gdpr, errors)
+		// console.log(email, gdpr, errors)
 	}, [email, gdpr, errors])
 
 	const handleValidationErrors = () => {
 		setErrors({
 			email: !validateEmail(email),
-			gdpr: !gdpr,
+			gdpr: !gdpr
 		})
 	}
 
@@ -78,7 +78,7 @@ export default function EmailSignUp(props) {
 				const HTMLResponse = await submitFormToMautic({ ...props, email })
 				const jsonResponse = await extractJSONResponseFromHTML(HTMLResponse)
 				setMauticState({
-					...jsonResponse,
+					...jsonResponse
 				})
 			} catch (error) {
 				// If cors is not enabled for address
@@ -148,10 +148,10 @@ export default function EmailSignUp(props) {
 							label="Email"
 							variant="filled"
 							color="secondary"
-							onBlur={(e) =>
+							onBlur={e =>
 								setErrors({ ...errors, email: !validateEmail(e.target.value) })
 							}
-							onChange={(e) => setEmail(e.target.value)}
+							onChange={e => setEmail(e.target.value)}
 							helperText={
 								errors.email
 									? "Please provide a valid email!"
@@ -165,8 +165,7 @@ export default function EmailSignUp(props) {
 						<FormControl error={errors.gdpr}>
 							<FormGroup>
 								<FormControlLabel
-									onChange={(e) => setGDPR(e.target.checked)}
-									error={errors.gdpr}
+									onChange={e => setGDPR(e.target.checked)}
 									name="gdpr"
 									classes={{ label: classes.gdprCheckbox }}
 									control={<Checkbox size="small" name="checkedA" />}

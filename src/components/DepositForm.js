@@ -4,13 +4,13 @@ import {
 	getDepositActionByPoolId,
 	getWithdrawActionByPoolId,
 	getPoolStatsByPoolId,
-	isValidNumberString,
+	isValidNumberString
 } from "../actions"
 import {
 	parseADX,
 	formatADX,
 	formatADXPretty,
-	toIdAttributeString,
+	toIdAttributeString
 } from "../helpers/formatting"
 import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
 import {
@@ -24,7 +24,7 @@ import {
 	MenuItem,
 	FormControlLabel,
 	Checkbox,
-	Box,
+	Box
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 import AppContext from "../AppContext"
@@ -66,7 +66,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
 	const confirmed = !confirmationLabel || confirmation
 
-	const validateFields = (params) => {
+	const validateFields = params => {
 		const { userInputAmount, poolToValidate, poolStats } = params
 
 		if (!isValidNumberString(userInputAmount)) {
@@ -111,16 +111,16 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		return
 	}
 
-	const updatePool = (value) => {
+	const updatePool = value => {
 		setNewDepositPool(value)
 	}
 
-	const onAmountChange = (amountStr) => {
+	const onAmountChange = amountStr => {
 		setActionAmount(amountStr)
 		validateFields({
 			userInputAmount: amountStr,
 			poolToValidate: activePool,
-			poolStats,
+			poolStats
 		})
 	}
 
@@ -142,7 +142,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						type="text"
 						value={actionAmount}
 						error={amountErr}
-						onChange={(ev) => {
+						onChange={ev => {
 							onAmountChange(ev.target.value)
 						}}
 						helperText={amountErr ? amountErrText : null}
@@ -166,7 +166,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						<Select
 							id={`new-${actionName}-form-pool-select`}
 							value={newDepositPool}
-							onChange={(ev) => updatePool(ev.target.value)}
+							onChange={ev => updatePool(ev.target.value)}
 						>
 							<MenuItem value={""}>
 								<em>None</em>
@@ -208,7 +208,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								<Checkbox
 									id={`new-${actionName}-form-tos-check`}
 									checked={confirmation}
-									onChange={(ev) => setConfirmation(ev.target.checked)}
+									onChange={ev => setConfirmation(ev.target.checked)}
 								/>
 							}
 						></FormControlLabel>

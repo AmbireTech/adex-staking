@@ -7,14 +7,14 @@ export const submitFormToMautic = async ({
 	formId,
 	returnValue,
 	formName,
-	messenger,
+	messenger
 }) => {
 	const data = stringify({
 		"mauticform[email]": email,
 		"mauticform[formId]": formId || "",
 		"mauticform[return]": returnValue || "",
 		"mauticform[formName]": formName || "",
-		"mauticform[messenger]": messenger || true,
+		"mauticform[messenger]": messenger || true
 	})
 	const response = await fetch(
 		`${MAUTIC_BASE_URL}/form/submit?formId=${formId}`,
@@ -23,8 +23,8 @@ export const submitFormToMautic = async ({
 			body: data,
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-				"X-Requested-With": "XMLHttpRequest",
-			},
+				"X-Requested-With": "XMLHttpRequest"
+			}
 		}
 	)
 	const utf8Decoder = new TextDecoder("utf-8")
@@ -36,7 +36,7 @@ export const submitFormToMautic = async ({
 	return mauticDataResponse
 }
 
-export const extractJSONResponseFromHTML = async (mauticDataResponse) => {
+export const extractJSONResponseFromHTML = async mauticDataResponse => {
 	const regex = /parent.postMessage\("(.+)".+\)/gm
 	const matches = regex.exec(mauticDataResponse)
 	if (matches && matches.length >= 1) {

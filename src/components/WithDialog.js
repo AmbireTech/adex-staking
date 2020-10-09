@@ -11,21 +11,21 @@ import {
 	DialogContent,
 	Slide,
 	DialogActions,
-	Typography,
+	Typography
 } from "@material-ui/core"
 import clsx from "clsx"
 import { withStyles } from "@material-ui/core/styles"
 import CancelIcon from "@material-ui/icons/Cancel"
 import Tooltip from "./Tooltip"
 
-export const styles = (theme) => {
+export const styles = theme => {
 	const spacing = theme.spacing(2)
 	return {
 		dialog: {
 			// height: `calc(100vh - ${spacing}px)`,
 			// minWidth: 999,
 			// maxWidth: 999,
-			backgroundColor: theme.palette.background.paper,
+			backgroundColor: theme.palette.background.paper
 			// "@media(max-width:1080px)": {
 			// 	maxWidth: "100%",
 			// 	minWidth: `calc(100vw - ${spacing}px)`
@@ -40,7 +40,7 @@ export const styles = (theme) => {
 			margin: spacing,
 			marginLeft: theme.spacing(2),
 			marginBottom: 0,
-			padding: 0,
+			padding: 0
 		},
 		content: {
 			display: "flex",
@@ -50,19 +50,19 @@ export const styles = (theme) => {
 			padding: spacing,
 			margin: 0,
 			overflowX: "visible",
-			overflowY: "auto",
+			overflowY: "auto"
 		},
 		textBtn: {
-			cursor: "pointer",
+			cursor: "pointer"
 		},
 		btnIconLeft: {
-			marginRight: theme.spacing(1),
+			marginRight: theme.spacing(1)
 		},
 		breakLong: {
 			wordBreak: "break-word",
 			overflowWrap: "break-word",
-			hyphens: "auto",
-		},
+			hyphens: "auto"
+		}
 	}
 }
 
@@ -116,7 +116,7 @@ export default function WithDialogHoc(Decorated) {
 		const btnProps = {
 			color,
 			size,
-			variant,
+			variant
 		}
 
 		const classes = useStyles()
@@ -130,7 +130,7 @@ export default function WithDialogHoc(Decorated) {
 			setOpen(!open)
 		}
 
-		const handleClick = async (ev) => {
+		const handleClick = async ev => {
 			ev && ev.stopPropagation && ev.stopPropagation()
 			ev && ev.preventDefault && ev.preventDefault()
 			await handleToggle()
@@ -165,7 +165,7 @@ export default function WithDialogHoc(Decorated) {
 							disabled={disabled}
 							aria-label={btnLabel || ""}
 							label={btnLabel || ""}
-							onClick={(ev) => handleClick(ev)}
+							onClick={ev => handleClick(ev)}
 							{...btnProps}
 							className={clsx(
 								className,
@@ -194,7 +194,7 @@ export default function WithDialogHoc(Decorated) {
 					<DialogTitle
 						disableTypography
 						classes={{
-							root: clsx(classes.dialogTitle, classes.breakLong),
+							root: clsx(classes.dialogTitle, classes.breakLong)
 						}}
 					>
 						<Typography variant="h4">{title}</Typography>
@@ -215,7 +215,7 @@ export default function WithDialogHoc(Decorated) {
 		btnLabel: PropTypes.string,
 		title: PropTypes.string.isRequired,
 		floating: PropTypes.bool,
-		onBeforeOpen: PropTypes.func,
+		onBeforeOpen: PropTypes.func
 	}
 
 	return forwardRef((props, ref) => (

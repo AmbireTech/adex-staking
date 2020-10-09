@@ -226,10 +226,10 @@ export default function Root() {
 					>
 						<Fade in={isNewBondOpen}>
 							{NewBondForm({
+								stats,
 								setNewBondPool,
 								newBondPool,
 								pools: POOLS.filter(x => x.selectable),
-								totalStake: stats.totalStake,
 								maxAmount: stats.userBalance,
 								onNewBond: async bond => {
 									setNewBondOpen(false)

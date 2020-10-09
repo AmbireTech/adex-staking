@@ -4,7 +4,6 @@ import {
 	parseADX,
 	formatADX,
 	formatADXPretty,
-	getApproxAPY,
 	toIdAttributeString
 } from "../helpers/formatting"
 import {
@@ -28,13 +27,13 @@ import {
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
+import { getPoolStatsByPoolId } from "../actions"
 
 export default function NewBondForm({
+	stats,
 	maxAmount,
 	onNewBond,
-	totalStake,
 	pools,
-	isEarly,
 	chosenWalletType,
 	newBondPool,
 	setNewBondPool
@@ -46,6 +45,7 @@ export default function NewBondForm({
 	const [confirmation, setConfirmation] = useState(false)
 	const minWidthStyle = { minWidth: "180px" }
 	const activePool = getPool(newBondPool)
+	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
 
 	const onAction = () => {
 		setConfirmation(false)
@@ -208,8 +208,7 @@ export default function NewBondForm({
 							<Typography variant="h6">Pool APY:</Typography>
 							<Typography variant="body1">
 								{farmer} Current annual yield of{" "}
-								{(getApproxAPY(null, totalStake, isEarly) * 100).toFixed(2)}%{" "}
-								{farmer}
+								{(poolStats.totalAPY * 100).toFixed(2)}% {farmer}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
