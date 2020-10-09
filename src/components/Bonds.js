@@ -7,20 +7,20 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	TableBody,
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { UNBOND_DAYS, ZERO } from "../helpers/constants"
 import {
 	formatADXPretty,
 	getApproxAPY,
-	formatDate
+	formatDate,
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
 
-export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
+export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	// Render all stats cards + bond table
-	const bondStatus = bond => {
+	const bondStatus = (bond) => {
 		if (bond.status === "UnbondRequested") {
 			const willUnlock = bond.willUnlock.getTime()
 			const now = Date.now()
@@ -33,13 +33,13 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 		}
 		if (bond.status === "Active") {
 			return `Active, earning ${(
-				getApproxAPY(bond, stats.totalStake) * 100
+				getApproxAPY(bond, stats.totalStakeTom) * 100
 			).toFixed(2)}% APY`
 		}
 		return bond.status
 	}
 
-	const renderBondRow = bond => {
+	const renderBondRow = (bond) => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
 		const created = new Date(
@@ -95,31 +95,22 @@ export default function Dashboard({ stats, onRequestUnbond, onUnbond }) {
 			</Box>
 		)
 
-	const headerCellStyle = { fontWeight: "bold" }
 	return (
 		<Box>
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
-							<TableCell style={headerCellStyle}>Bond amount</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Pool
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Created
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Status
-							</TableCell>
-							<TableCell style={headerCellStyle} align="right">
-								Actions
-							</TableCell>
+							<TableCell>Bond amount</TableCell>
+							<TableCell align="right">Pool</TableCell>
+							<TableCell align="right">Created</TableCell>
+							<TableCell align="right">Status</TableCell>
+							<TableCell align="right">Actions</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{[...(stats.userBonds || [])]
-							.filter(x => x.status !== "Unbonded")
+							.filter((x) => x.status !== "Unbonded")
 							.reverse()
 							.map(renderBondRow)}
 					</TableBody>

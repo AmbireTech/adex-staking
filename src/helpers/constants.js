@@ -13,6 +13,8 @@ export const STAKING_RULES_URL = null
 
 export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
+export const ADDR_ADX_LOYALTY_TOKEN =
+	"0xd9A4cB9dc9296e111c66dFACAb8Be034EE2E1c2C"
 
 export const MAX_UINT = bigNumberify(
 	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
@@ -24,7 +26,7 @@ export const MIN_BALANCE_FOR_GASLESS_TXNS = bigNumberify(
 
 export const DEFAULT_BOND = {
 	poolId: "",
-	amount: ZERO
+	amount: ZERO,
 }
 
 export const POOLS = [
@@ -33,13 +35,14 @@ export const POOLS = [
 		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
 		selectable: true,
 		minStakingAmount: "0.0",
-		rewardPolicy:
-			'The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.',
+		rewardPolicy: `The "Validator Tom" pool will distribute its fee earnings proportionally to each staker. 
+		The fee earnings will be 7% of the total volume, which you can track on our Explorer. 
+		There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.`,
 		slashPolicy: "No slashing.",
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
 		estimatedAnnualADXYield: 15103448.2758,
-		estimatedAnnualADXEarlyYield: 12166666.6666
+		estimatedAnnualADXEarlyYield: 12166666.6666,
 	},
 	{
 		label: "Validator Jerry",
@@ -47,8 +50,25 @@ export const POOLS = [
 		selectable: false,
 		minStakingAmount: 0,
 		rewardPolicy: "",
-		slashPolicy: ""
-	}
+		slashPolicy: "",
+	},
+]
+
+export const DEPOSIT_POOLS = [
+	{
+		label: "Loyalty Pool",
+		id: id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
+		selectable: true,
+		minStakingAmount: "0.0",
+		rewardPolicy: `By depositing ADX you receive ADX-LOYALTY, 
+		which automatically incurs new rewards in ADX based on elastic issuance, 
+		while also allowing you to participate in AdEx governance.`,
+		slashPolicy: "No slashing.",
+		url:
+			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
+		confirmationLabel: null,
+		confirmationUrl: "https://www.adex.network/tos/",
+	},
 ]
 
 export const METAMASK = "Metamask"
@@ -60,13 +80,13 @@ export const Wallets = [
 	{
 		title: `Connect with ${METAMASK}`,
 		name: METAMASK,
-		icon: metamaskLogo
+		icon: metamaskLogo,
 	},
 	{
 		title: `Connect with ${WALLET_CONNECT}`,
 		name: WALLET_CONNECT,
-		icon: walletconnectLogo
-	}
+		icon: walletconnectLogo,
+	},
 	// {
 	// 	title: `Connect with ${TREZOR}`,
 	// 	name: TREZOR,

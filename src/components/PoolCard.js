@@ -1,17 +1,17 @@
-import React from "react"
+import React, { Fragment } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	Button,
 	CircularProgress,
 	Typography,
-	SvgIcon
+	SvgIcon,
 } from "@material-ui/core"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
 
-const useStyles = makeStyles(theme => {
+const useStyles = makeStyles((theme) => {
 	return {
 		iconBox: {
 			borderRadius: "100%",
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => {
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
-			justifyContent: "center"
+			justifyContent: "center",
 		},
 		overlay: {
 			position: "absolute",
@@ -32,19 +32,19 @@ const useStyles = makeStyles(theme => {
 			top: 0,
 			right: 0,
 			bottom: 0,
-			backgroundColor: theme.palette.overlay
+			backgroundColor: theme.palette.overlay,
 		},
 		loading: {
 			position: "absolute",
 			width: "100%",
 			height: "100%",
 			top: 0,
-			left: 0
+			left: 0,
 		},
 		comingSoon: {
 			width: 160,
-			height: "auto"
-		}
+			height: "auto",
+		},
 	}
 })
 
@@ -66,7 +66,9 @@ export default function PoolCard({
 	lockupPeriod,
 	loaded,
 	actions,
-	comingSoon
+	comingSoon,
+	actionBtn,
+	extraData = [],
 }) {
 	const classes = useStyles()
 
@@ -183,6 +185,55 @@ export default function PoolCard({
 						mb={3}
 					/>
 
+					{extraData.map((data) => (
+						<Fragment key={data.id}>
+							<CardRow
+								color="text.main"
+								fontWeight={"fontWeightRegular"}
+								fontSize={14}
+								text={data.title}
+								infoText={data.titleInfo}
+								justify="center"
+							/>
+
+							{data.importantValue && (
+								<CardRow
+									color="warning.main"
+									fontWeight={"fontWeightBold"}
+									fontSize={20}
+									text={data.importantValue}
+									isAmountText
+									infoText={data.valueInfo}
+									justify="center"
+								/>
+							)}
+
+							{data.normalValue && (
+								<CardRow
+									color="text.primary"
+									fontWeight={"fontWeightRegular"}
+									fontSize={14}
+									text={data.normalValue}
+									infoText={data.valueInfo}
+									justify="center"
+									mb={3}
+								/>
+							)}
+
+							{data.extra && (
+								<CardRow
+									color="text.primary"
+									fontWeight={"fontWeightRegular"}
+									fontSize={14}
+									text={data.extra}
+									infoText={data.extrInfo}
+									justify="center"
+									mb={3}
+								/>
+							)}
+						</Fragment>
+					))}
+
 					<Tooltip
 						disableFocusListener={!disabled}
 						disableHoverListener={!disabled}
@@ -190,17 +241,20 @@ export default function PoolCard({
 						title={disabled ? disabledInfo : ""}
 					>
 						<div>
-							<Button
-								id={`stake-pool-${poolId}`}
-								fullWidth
-								variant="contained"
-								disableElevation
-								color="secondary"
-								onClick={onStakeBtnClick}
-								disabled={disabled}
-							>
-								{"Stake"}
-							</Button>
+							{actionBtn || (
+								<Button
+									id={`stake-pool-${poolId}`}
+									fullWidth
+									variant="contained"
+									disableElevation
+									color="secondary"
+									size="large"
+									onClick={onStakeBtnClick}
+									disabled={disabled}
+								>
+									{"Stake"}
+								</Button>
+							)}
 						</div>
 					</Tooltip>
 				</Box>

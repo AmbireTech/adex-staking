@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { Box, Typography } from "@material-ui/core"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
+import Deposits from "./Deposits"
 import SectionHeader from "./SectionHeader"
 
 const Stakings = () => {
@@ -10,7 +11,7 @@ const Stakings = () => {
 		setToUnbond,
 		onUnbond,
 		setToRestake,
-		onClaimRewards
+		onClaimRewards,
 	} = useContext(AppContext)
 
 	return (
@@ -22,11 +23,6 @@ const Stakings = () => {
 						{"BONDS"}
 					</Typography>
 				</Box>
-				<Typography variant="body2" gutterBottom>
-					{`This table will show all your individual ADX deposits in validator pools (bonds), along with 
-                    information as status, amount and current APY. By using the action buttons, you will be 
-                    able to request unbonding and withdraw your ADX after the 30 day lock-up period.`}
-				</Typography>
 				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
 					<Box p={3}>
 						{Bonds({
@@ -34,8 +30,21 @@ const Stakings = () => {
 							onRequestUnbond: setToUnbond,
 							onUnbond,
 							onClaimRewards,
-							onRestake: setToRestake
+							onRestake: setToRestake,
 						})}
+					</Box>
+				</Box>
+			</Box>
+			<Box mt={2}>
+				<Box color="text.main">
+					<Typography variant="h5" gutterBottom>
+						{"DEPOSITS"}
+					</Typography>
+				</Box>
+
+				<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
+					<Box p={3}>
+						<Deposits />
 					</Box>
 				</Box>
 			</Box>
