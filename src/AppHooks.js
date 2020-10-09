@@ -104,20 +104,18 @@ export default function Root() {
 				}
 			})
 
-	const refreshPrices = () =>
-		fetch(PRICES_API_URL)
-			.then(r => r.json())
-			.then(setPrices)
-			.catch(console.error)
-
 	useEffect(() => {
 		refreshStats()
-		refreshPrices()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
 		return () => clearInterval(intvl)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
+
+	useEffect(() => {
+		setPrices(stats.prices)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [stats])
 
 	useEffect(() => {
 		setChosenWalletType({ name: chosenWalletTypeName, library, account })
