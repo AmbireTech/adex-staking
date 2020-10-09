@@ -17,7 +17,7 @@ import {
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
-import { ADEX_RELAYER_HOST } from "../helpers/constants"
+import { ADEX_RELAYER_HOST, PRICES_API_URL } from "../helpers/constants"
 import { getSigner, defaultProvider } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
@@ -68,7 +68,8 @@ export const EMPTY_STATS = {
 	canExecuteGasless: false,
 	canExecuteGaslessError: null,
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
-	tomPoolStats: POOL_EMPTY_STATS
+	tomPoolStats: POOL_EMPTY_STATS,
+	prices: {}
 }
 
 const sumRewards = all =>
@@ -79,7 +80,7 @@ export const isTomChannelId = channel =>
 		val => id(`validator:${val}`) === POOLS[0].id
 	)
 
-export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
+export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 	const { periodEnd, stats = {} } = channel
 
 	const {
@@ -110,14 +111,22 @@ export const getIncentiveChannelCurrentAPY = ({ channel, totalStake }) => {
 	return apy.toNumber() / precision
 }
 
-export const getValidatorFeesAPY = ({ channel, totalStake }) => {
-	const { periodStart, periodEnd, channelArgs } = channel
-
+export function getValidatorFeesAPY({ channel, prices, totalStake }) {
+	const { periodStart, periodEnd, channelArgs, spec = {} } = channel
 	const { tokenAmount } = channelArgs
-	// TODO: get ADX/DAI price
-	const rewardInADXvalue = totalStake.div(6)
+	const { currentTotalActiveStake } = spec
+
+	const totalActiveStaked = bigNumberify(
+		currentTotalActiveStake || totalStake || 0
+	)
+	const pricePrecision = 1_000_00
+
+	const totalStakeInDaiValue = bigNumberify(totalActiveStaked)
+		.mul(Math.floor(bigNumberify((prices.USD || 0.2) * pricePrecision)))
+		.div(pricePrecision)
 
 	const toDistribute = bigNumberify(tokenAmount)
+
 	const distributionSeconds = Math.floor(
 		(new Date(periodEnd) - new Date(periodStart)) / 1000
 	)
@@ -129,9 +138,19 @@ export const getValidatorFeesAPY = ({ channel, totalStake }) => {
 				.mul(1000)
 				.div(distributionSeconds)
 		)
-		.div(rewardInADXvalue)
+		.div(totalStakeInDaiValue)
 
 	return apy.toNumber() / (1000 * 1000)
+}
+
+export async function getPrices() {
+	try {
+		const res = await fetch(PRICES_API_URL)
+		return res.json()
+	} catch (err) {
+		console.error(err)
+		return {}
+	}
 }
 
 export async function loadStats(chosenWalletType) {
@@ -143,13 +162,13 @@ export async function loadStats(chosenWalletType) {
 	return { ...userStats, ...totalStake, totalStakeTom: totalStake }
 }
 
-export async function loadActivePoolsStats() {
-	const tomPoolStats = await getPoolStats(POOLS[0])
+export async function loadActivePoolsStats(prices) {
+	const tomPoolStats = await getPoolStats(POOLS[0], prices)
 
 	return { tomPoolStats }
 }
 
-export async function getPoolStats(pool) {
+export async function getPoolStats(pool, prices) {
 	const rewardChannels = await getRewardChannels(pool)
 	const totalStake = await Token.balanceOf(ADDR_STAKING)
 
@@ -178,7 +197,8 @@ export async function getPoolStats(pool) {
 		: 0
 	const lastDaiFeesAPY = getValidatorFeesAPY({
 		channel: lastFeeRewardChannel,
-		totalStake
+		totalStake,
+		prices
 	})
 
 	const stats = {
@@ -193,11 +213,19 @@ export async function getPoolStats(pool) {
 }
 
 export async function loadUserStats(chosenWalletType) {
+	const prices = await getPrices()
+
 	if (!chosenWalletType.name) {
 		const loyaltyPoolStats = await loadUserLoyaltyPoolsStats()
-		const poolStats = await loadActivePoolsStats()
+		const poolStats = await loadActivePoolsStats(prices)
 
-		return { ...EMPTY_STATS, loyaltyPoolStats, ...poolStats, loaded: true }
+		return {
+			...EMPTY_STATS,
+			loyaltyPoolStats,
+			...poolStats,
+			prices,
+			loaded: true
+		}
 	}
 
 	const signer = await getSigner(chosenWalletType)
@@ -217,7 +245,7 @@ export async function loadUserStats(chosenWalletType) {
 		getRewards(addr),
 		getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
-		loadActivePoolsStats()
+		loadActivePoolsStats(prices)
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -265,7 +293,8 @@ export async function loadUserStats(chosenWalletType) {
 		canExecuteGasless,
 		canExecuteGaslessError,
 		loyaltyPoolStats,
-		tomPoolStats
+		tomPoolStats,
+		prices
 	}
 }
 
