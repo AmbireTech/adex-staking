@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits, commify } from "ethers/utils"
+import { formatUnits, parseUnits, commify, bigNumberify } from "ethers/utils"
 
 export function formatADX(num) {
 	return formatUnits(num, 18)
@@ -14,6 +14,21 @@ export function formatDAI(num) {
 
 export function formatDAIPretty(num) {
 	return commify(formatUnits(num.div("10000000000000000"), 2))
+}
+
+export function formatAmountPretty(num, currency) {
+	if (!num) {
+		return num
+	}
+
+	switch (currency) {
+		case "DAI":
+			return formatDAIPretty(bigNumberify(num))
+		case "ADX":
+			return formatADXPretty(bigNumberify(num))
+		default:
+			return num.toLocaleString(10)
+	}
 }
 
 export function parseADX(n) {
