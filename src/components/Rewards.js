@@ -7,7 +7,8 @@ import {
 	TableContainer,
 	TableHead,
 	TableBody,
-	Typography
+	Typography,
+	Checkbox
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 
@@ -15,9 +16,10 @@ import { formatAmountPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 
 export default function Rewards() {
-	const [rewards, setRewards] = useState([])
 	const { stats, chosenWalletType } = useContext(AppContext)
+	const [rewards, setRewards] = useState([])
 	const { loyaltyPoolStats, tomPoolStats } = stats
+	const [selected, setSelected] = useState({})
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
@@ -37,6 +39,7 @@ export default function Rewards() {
 
 		if (tomUserDataLoaded && loPoUserDataLoaded) {
 			const loPoReward = {
+				id: "loyalty_pool",
 				name: "Loyalty pool deposit",
 				amount: null,
 				outstandingReward: loPoRewardADX,
@@ -46,14 +49,16 @@ export default function Rewards() {
 
 			const rewards = tomRewardChannels.map(channel => {
 				const rewardData = {
-					name: `Tom - ${channel.type} 
-						${
-							channel.type === "fees"
-								? new Date(channel.periodEnd).toLocaleString("default", {
-										month: "long"
-								  })
-								: ""
-						} `,
+					id: `tom_${channel.type}_${new Date(
+						channel.periodStart
+					).getTime()}_${new Date(channel.periodEnd).getTime()}`,
+					name: `Tom - ${channel.type} ${
+						channel.type === "fees"
+							? new Date(channel.periodEnd).toLocaleString("default", {
+									month: "long"
+							  })
+							: ""
+					} `,
 					amount: channel.amount,
 					outstandingReward: channel.outstandingReward,
 					currency: channel.type === "fees" ? "DAI" : "ADX",
@@ -69,9 +74,27 @@ export default function Rewards() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loyaltyPoolStats, tomPoolStats])
 
-	const renderRewardRow = reward => {
+	const onSelectChange = (id, value) => {
+		const newSelected = { ...selected }
+
+		newSelected[id] = value
+
+		setSelected(newSelected)
+	}
+
+	console.log("rewards", rewards)
+	console.log("selected", selected)
+
+	const renderRewardRow = (reward, selected) => {
 		return (
-			<TableRow key={reward.name}>
+			<TableRow key={reward.id}>
+				<TableCell>
+					<Checkbox
+						checked={!!selected[reward.id]}
+						onChange={ev => onSelectChange(reward.id, !!ev.target.checked)}
+						inputProps={{ "aria-label": "primary checkbox" }}
+					/>
+				</TableCell>
 				<TableCell>
 					<Box>{reward.name}</Box>
 				</TableCell>
@@ -108,14 +131,17 @@ export default function Rewards() {
 						<Table aria-label="Rewards table">
 							<TableHead>
 								<TableRow>
-									<TableCell>Reward nae</TableCell>
+									<TableCell></TableCell>
+									<TableCell>Reward name</TableCell>
 									<TableCell align="right">Total rewards</TableCell>
 									<TableCell align="right">Unclaimed rewards</TableCell>
 									<TableCell align="right">Current APY</TableCell>
 									<TableCell align="right">Actions</TableCell>
 								</TableRow>
 							</TableHead>
-							<TableBody>{[...(rewards || [])].map(renderRewardRow)}</TableBody>
+							<TableBody>
+								{[...(rewards || [])].map(r => renderRewardRow(r, selected))}
+							</TableBody>
 						</Table>
 					</TableContainer>
 
