@@ -14,6 +14,7 @@ import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
 import Stakings from "./Stakings"
 import Gasless from "./Gasless"
+import Rewards from "./Rewards"
 import Pools from "./Pools"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
@@ -123,6 +124,9 @@ export default function Root() {
 						</Route>
 						<Route path="/gasless">
 							<Gasless />
+						</Route>
+						<Route path="/rewards">
+							<Rewards />
 						</Route>
 						<Route path="/">
 							<Pools />

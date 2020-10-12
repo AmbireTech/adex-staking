@@ -11,14 +11,17 @@ import {
 import clsx from "clsx"
 import Anchor from "./Anchor"
 import logo from "./../resources/staking-logo.svg"
-import DashboardIcon from "@material-ui/icons/Dashboard"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
 import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
-import { HomeSharp as HomeIcon } from "@material-ui/icons"
+import {
+	HomeSharp as HomeIcon,
+	DashboardSharp as DashboardIcon,
+	RedeemSharp as RewardIcon
+} from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 
@@ -229,6 +232,17 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={"Gasless Staking"} />
+						</RRListItem>
+						<RRListItem
+							id="side-nav-link-rewards"
+							button
+							to={{ pathname: "/rewards" }}
+							className={clsx({ [classes.active]: path === "/rewards" })}
+						>
+							<ListItemIcon color="inherit">
+								<RewardIcon />
+							</ListItemIcon>
+							<ListItemText primary={"Rewards"} />
 						</RRListItem>
 					</List>
 				</Box>
