@@ -86,7 +86,8 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		...poolData,
 		balanceLpToken,
 		balanceLpADX,
-		loaded: true
+		loaded: true,
+		userDataLoaded: true
 	}
 
 	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
