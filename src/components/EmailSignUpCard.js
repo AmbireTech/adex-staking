@@ -11,6 +11,7 @@ import {
 	TextField
 } from "@material-ui/core"
 import { CardRow } from "./cardCommon"
+import { ExternalAnchor } from "./Anchor"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
 import { validateEmail } from "./../helpers/validation"
 import {
@@ -43,6 +44,10 @@ const useStyles = makeStyles(theme => {
 		gdprCheckbox: ({ errors }) => ({
 			fontSize: 10,
 			color: errors.gdpr ? theme.palette.error.main : theme.palette.text.main
+		}),
+		tosCheckbox: ({ errors }) => ({
+			fontSize: 10,
+			color: errors.tos ? theme.palette.error.main : theme.palette.text.main
 		})
 	}
 })
@@ -52,9 +57,11 @@ export default function EmailSignUp(props) {
 	const [mauticState, setMauticState] = useState({})
 	const [waiting, setWaiting] = useState(false)
 	const [gdpr, setGDPR] = useState(false)
+	const [tos, setTos] = useState(false)
 	const [errors, setErrors] = useState({
 		email: false,
-		gdpr: false
+		gdpr: false,
+		tos: false
 	})
 	const classes = useStyles({ errors })
 
@@ -65,13 +72,14 @@ export default function EmailSignUp(props) {
 	const handleValidationErrors = () => {
 		setErrors({
 			email: !validateEmail(email),
-			gdpr: !gdpr
+			gdpr: !gdpr,
+			tos: !tos
 		})
 	}
 
 	const handleSubmit = async () => {
 		handleValidationErrors()
-		if (validateEmail(email) && gdpr) {
+		if (validateEmail(email) && gdpr && tos) {
 			console.log("success")
 			setWaiting(true)
 			try {
@@ -144,7 +152,7 @@ export default function EmailSignUp(props) {
 					</Box>
 					<Box width={1} mt={2}>
 						<TextField
-							id="standard-helperText"
+							id={"email-signup-email-input"}
 							label="Email"
 							variant="filled"
 							color="secondary"
@@ -165,11 +173,38 @@ export default function EmailSignUp(props) {
 						<FormControl error={errors.gdpr}>
 							<FormGroup>
 								<FormControlLabel
+									id={"email-signup-gdpr-checkbox"}
 									onChange={e => setGDPR(e.target.checked)}
 									name="gdpr"
 									classes={{ label: classes.gdprCheckbox }}
 									control={<Checkbox size="small" name="checkedA" />}
 									label={`Yes, I want AdEx Network to send me news and other related content`}
+								/>
+							</FormGroup>
+						</FormControl>
+					</Box>
+					<Box mt={1} width={1}>
+						<FormControl error={errors.tos}>
+							<FormGroup>
+								<FormControlLabel
+									id={"email-signup-tos-checkbox"}
+									onChange={e => setTos(e.target.checked)}
+									name="tos"
+									classes={{ label: classes.tosCheckbox }}
+									control={<Checkbox size="small" name="checkedA" />}
+									label={
+										<Box>
+											{`I agree to the promotional `}
+											<ExternalAnchor
+												color="secondary"
+												id={"email-signup-tos-check"}
+												target="_blank"
+												href={`https://www.adex.network/blog/subscribe-and-win-5000-adx/`}
+											>
+												{`Terms and conditions`}
+											</ExternalAnchor>
+										</Box>
+									}
 								/>
 							</FormGroup>
 						</FormControl>
