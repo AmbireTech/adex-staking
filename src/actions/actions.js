@@ -143,6 +143,15 @@ export function getValidatorFeesAPY({ channel, prices, totalStake }) {
 	return apy.toNumber() / (1000 * 1000)
 }
 
+function getChannelAPY({ channel, prices, totalStake }) {
+	if (channel.type === "fees") {
+		return getValidatorFeesAPY({ channel, prices, totalStake })
+	}
+	if (channel.type === "incentive") {
+		return getIncentiveChannelCurrentAPY({ channel, totalStake })
+	}
+}
+
 export async function getPrices() {
 	try {
 		const res = await fetch(PRICES_API_URL)
@@ -202,6 +211,7 @@ export async function getPoolStats(pool, prices) {
 	})
 
 	const stats = {
+		...POOL_EMPTY_STATS,
 		currentAdxIncentiveAPY,
 		lastDaiFeesAPY,
 		totalAPY: currentAdxIncentiveAPY + lastDaiFeesAPY,
@@ -214,6 +224,7 @@ export async function getPoolStats(pool, prices) {
 
 export async function loadUserStats(chosenWalletType) {
 	const prices = await getPrices()
+	const totalStake = await Token.balanceOf(ADDR_STAKING)
 
 	if (!chosenWalletType.name) {
 		const loyaltyPoolStats = await loadUserLoyaltyPoolsStats()
@@ -236,13 +247,13 @@ export async function loadUserStats(chosenWalletType) {
 
 	const [
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
-		rewardChannels,
+		tomPoolUserRewardChannels,
 		{ canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
 		poolsStats
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr),
-		getRewards(addr),
+		getRewards(addr, POOLS[0], prices, totalStake),
 		getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices)
@@ -255,24 +266,28 @@ export async function loadUserStats(chosenWalletType) {
 		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
-	const adxRewardsChannels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr === ADDR_ADX
-	)
-	const tomAdxRewardsChannels = [...adxRewardsChannels].filter(x =>
-		isTomChannelId(x)
+	const tomAdxRewardsChannels = tomPoolUserRewardChannels.filter(
+		x => x.type === "incentive"
 	)
 
-	const totalRewardADX = sumRewards(adxRewardsChannels)
 	const tomRewardADX = sumRewards(tomAdxRewardsChannels)
 
-	const daiRewardsChannels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr !== ADDR_ADX
+	const tomPoolDaiRewardsChannels = tomPoolUserRewardChannels.filter(
+		x => x.type === "fees"
 	)
 
-	const totalRewardDAI = sumRewards(daiRewardsChannels)
+	const tomRewardDAI = sumRewards(tomPoolDaiRewardsChannels)
+
+	const tomPoolStatsWithUserData = {
+		...tomPoolStats,
+		userRewardsADX: tomRewardADX,
+		userRewardsDAI: tomRewardDAI,
+		userDataLoaded: true,
+		rewardChannels: tomPoolUserRewardChannels
+	}
 
 	const totalBalanceADX = userBalance
-		.add(totalRewardADX)
+		.add(tomRewardADX)
 		.add(userTotalStake)
 		.add(loyaltyPoolStats.balanceLpADX)
 
@@ -282,9 +297,9 @@ export async function loadUserStats(chosenWalletType) {
 		userBonds,
 		userBalance, // ADX on wallet
 		loaded: true,
-		rewardChannels,
-		totalRewardADX,
-		totalRewardDAI,
+		rewardChannels: tomAdxRewardsChannels,
+		totalRewardADX: tomRewardADX,
+		totalRewardDAI: tomRewardDAI,
 		tomRewardADX,
 		userTotalStake,
 		totalBalanceADX, // Wallet + Stake + Reward
@@ -293,7 +308,7 @@ export async function loadUserStats(chosenWalletType) {
 		canExecuteGasless,
 		canExecuteGaslessError,
 		loyaltyPoolStats,
-		tomPoolStats,
+		tomPoolStats: tomPoolStatsWithUserData,
 		prices
 	}
 }
@@ -364,9 +379,8 @@ export async function getRewardChannels(rewardPool) {
 	return rewardChannels
 }
 
-export async function getRewards(addr) {
+export async function getRewards(addr, rewardPool, prices, totalStake) {
 	const identityAddr = getUserIdentity(addr).addr
-	const rewardPool = POOLS[0]
 	const rewardChannels = await getRewardChannels(rewardPool)
 	const validUntil = Math.floor(Date.now() / 1000)
 	const forUser = await Promise.all(
@@ -385,7 +399,16 @@ export async function getRewards(addr) {
 				claimFrom,
 				proof: balanceTree.getProof(claimFrom),
 				stateRoot: balanceTree.mTree.getRoot(),
-				amount: rewardChannel.balances[claimFrom]
+				amount: rewardChannel.balances[claimFrom],
+				type:
+					rewardChannel.channelArgs.tokenAddr === ADDR_ADX
+						? "incentive"
+						: "fees",
+				currentAPY: getChannelAPY({
+					channel: rewardChannel,
+					prices,
+					totalStake
+				})
 			}
 		})
 	)
