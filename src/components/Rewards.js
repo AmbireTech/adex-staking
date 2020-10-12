@@ -6,8 +6,11 @@ import {
 	Table,
 	TableContainer,
 	TableHead,
-	TableBody
+	TableBody,
+	Typography
 } from "@material-ui/core"
+import { Alert } from "@material-ui/lab"
+
 import { formatAmountPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 
@@ -93,22 +96,37 @@ export default function Rewards() {
 	}
 
 	return (
-		<Box>
-			<Box>
-				<TableContainer xs={12}>
-					<Table aria-label="Rewards table">
-						<TableHead>
-							<TableRow>
-								<TableCell>Reward nae</TableCell>
-								<TableCell align="right">Total rewards</TableCell>
-								<TableCell align="right">Unclaimed rewards</TableCell>
-								<TableCell align="right">Current APY</TableCell>
-								<TableCell align="right">Actions</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>{[...(rewards || [])].map(renderRewardRow)}</TableBody>
-					</Table>
-				</TableContainer>
+		<Box mt={2}>
+			<Box color="text.main">
+				<Typography variant="h5" gutterBottom>
+					{"REWARDS"}
+				</Typography>
+			</Box>
+			<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
+				<Box p={3}>
+					<TableContainer xs={12}>
+						<Table aria-label="Rewards table">
+							<TableHead>
+								<TableRow>
+									<TableCell>Reward nae</TableCell>
+									<TableCell align="right">Total rewards</TableCell>
+									<TableCell align="right">Unclaimed rewards</TableCell>
+									<TableCell align="right">Current APY</TableCell>
+									<TableCell align="right">Actions</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>{[...(rewards || [])].map(renderRewardRow)}</TableBody>
+						</Table>
+					</TableContainer>
+
+					{(!stats.loaded || !rewards.length) && (
+						<Box mt={2}>
+							<Alert variant="filled" severity="info">
+								{`This table will show all your rewards`}
+							</Alert>
+						</Box>
+					)}
+				</Box>
 			</Box>
 		</Box>
 	)
