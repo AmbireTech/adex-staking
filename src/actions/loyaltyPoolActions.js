@@ -187,7 +187,7 @@ export async function onLoyaltyPoolWithdraw(
 	const { balanceLpADX, balanceLpToken } = stats.loyaltyPoolStats
 
 	if (!withdrawAmountADX) throw new Error("No withdraw amount provided")
-	if (balanceLpADX.isZero()) throw new Error("Can not deposit 0 ADX")
+	if (balanceLpADX.isZero()) throw new Error("Can not withdraw 0 ADX")
 	if (withdrawAmountADX.gt(balanceLpADX)) throw new Error("amount too large")
 
 	const signer = await getSigner(chosenWalletType)
