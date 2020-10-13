@@ -47,7 +47,8 @@ export const POOL_EMPTY_STATS = {
 	userRewardsDAI: ZERO,
 	loaded: false,
 	userDataLoaded: false,
-	rewardChannels: []
+	rewardChannels: [],
+	userBonds: []
 }
 
 export const EMPTY_STATS = {
@@ -252,7 +253,7 @@ export async function loadUserStats(chosenWalletType) {
 		loyaltyPoolStats,
 		poolsStats
 	] = await Promise.all([
-		loadBondStats(addr, identityAddr),
+		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
 		getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
@@ -283,7 +284,8 @@ export async function loadUserStats(chosenWalletType) {
 		userRewardsADX: tomRewardADX,
 		userRewardsDAI: tomRewardDAI,
 		userDataLoaded: true,
-		rewardChannels: tomPoolUserRewardChannels
+		rewardChannels: tomPoolUserRewardChannels,
+		userBonds
 	}
 
 	const totalBalanceADX = userBalance
