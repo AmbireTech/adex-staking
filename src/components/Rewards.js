@@ -13,10 +13,11 @@ import {
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import Tooltip from "./Tooltip"
-import { formatAmountPretty } from "../helpers/formatting"
+import { formatAmountPretty, formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
-import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS, ZERO, UNBOND_DAYS } from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
+import ConfirmationDialog from "./ConfirmationDialog"
 
 const getTotalSelectedOutstandingRewards = (rewards, selected) => {
 	return rewards
@@ -36,6 +37,9 @@ export default function Rewards() {
 	const { loyaltyPoolStats, tomPoolStats } = stats
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
+	const [reStakeOpen, setReStakeOpen] = useState(false)
+	// TODO: Claim confirm dialog
+	// const [claimOpen, setClaimOpen] = useState(false)
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
@@ -43,14 +47,14 @@ export default function Rewards() {
 		? "Loading data"
 		: !rewards.length
 		? "No rewards"
-		: !Object.keys(selected).length
+		: !Object.values(selected).filter(x => x).length
 		? "Nothing selected"
 		: ""
 
 	const disableReStakeMsg = !!disableActionsMsg
 		? disableActionsMsg
-		: !Object.keys(selected).every(x => x.startsWith("tom_"))
-		? "Rewards with not supported re-stake selected"
+		: Object.keys(selected).some(x => !x.startsWith("tom_incentive"))
+		? "Not supported rewards selected - only ADX incentive rewards can be re-staked"
 		: ""
 
 	useEffect(() => {
@@ -213,6 +217,7 @@ export default function Rewards() {
 							<Tooltip title={disableActionsMsg}>
 								<Box display="inline-block">
 									<Button
+										id="btn-rewards-page-claim"
 										variant="contained"
 										color="primary"
 										onClick={onClaim}
@@ -227,9 +232,10 @@ export default function Rewards() {
 							<Tooltip title={disableReStakeMsg}>
 								<Box display="inline-block">
 									<Button
+										id="btn-rewards-page-re-stake"
 										variant="contained"
 										color="secondary"
-										onClick={onReStake}
+										onClick={() => setReStakeOpen(true)}
 										disabled={!!disableReStakeMsg}
 									>
 										{`RE-STAKE`}
@@ -266,6 +272,29 @@ export default function Rewards() {
 						</Box>
 					)}
 				</Box>
+
+				{ConfirmationDialog({
+					isOpen: reStakeOpen,
+					onDeny: () => setReStakeOpen(false),
+					onConfirm: () => {
+						onReStake()
+					},
+					confirmActionName: "Re-stake",
+					content: (
+						<>
+							Are you sure you want to re-stake your earnings of{" "}
+							{formatADXPretty(totalAmountsSelected["ADX"] || ZERO)} ADX?
+							<br />
+							<br />
+							Please be aware that this means that this amount will be locked up
+							for at least {UNBOND_DAYS} days.
+							<br />
+							{!stats.userBonds.find(x => x.status === "Active")
+								? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+								: ""}
+						</>
+					)
+				})}
 			</Box>
 		</Box>
 	)
