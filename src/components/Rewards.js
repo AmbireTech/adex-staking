@@ -16,7 +16,7 @@ import Tooltip from "./Tooltip"
 import { formatAmountPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
-import { getWithdrawActionBySelectedRewardChannels } from "../actions"
+import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
 
 const getTotalSelectedOutstandingRewards = (rewards, selected) => {
 	return rewards
@@ -131,6 +131,19 @@ export default function Rewards() {
 		}
 	}
 
+	const onReStake = async () => {
+		await wrapDoingTxns(
+			restake.bind(null, chosenWalletType, {
+				// NOTE: now only tom channels are valid for re-stake at the moment
+				// TODO: update when more pools
+				rewardChannels: rewards
+					.filter(x => selected[x.id])
+					.map(x => x.rewardChannel),
+				userBonds: tomPoolStats.userBonds
+			})
+		)()
+	}
+
 	const renderRewardRow = (reward, selected) => {
 		return (
 			<TableRow key={reward.id}>
@@ -194,6 +207,7 @@ export default function Rewards() {
 							</Fragment>
 						)}
 					</Box>
+					{/* TODO: Confirm */}
 					<Box display="flex" flexDirection="row">
 						<Box m={1}>
 							<Tooltip title={disableActionsMsg}>
@@ -215,6 +229,7 @@ export default function Rewards() {
 									<Button
 										variant="contained"
 										color="secondary"
+										onClick={onReStake}
 										disabled={!!disableReStakeMsg}
 									>
 										{`RE-STAKE`}
