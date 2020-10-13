@@ -234,12 +234,7 @@ export default function PoolCard({
 						</Fragment>
 					))}
 
-					<Tooltip
-						disableFocusListener={!disabled}
-						disableHoverListener={!disabled}
-						disableTouchListener={!disabled}
-						title={disabled ? disabledInfo : ""}
-					>
+					<Tooltip title={disabled ? disabledInfo : ""}>
 						<div>
 							{actionBtn || (
 								<Button

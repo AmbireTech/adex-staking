@@ -12,7 +12,7 @@ import {
 	Button
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-
+import Tooltip from "./Tooltip"
 import { formatAmountPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
@@ -40,6 +40,18 @@ export default function Rewards() {
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
 		: !loyaltyPoolStats.loaded || !tomPoolStats.loaded
+		? "Loading data"
+		: !rewards.length
+		? "No rewards"
+		: !Object.keys(selected).length
+		? "Nothing selected"
+		: ""
+
+	const disableReStakeMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !Object.keys(selected).every(x => x.startsWith("tom_"))
+		? "Rewards with not supported re-stake selected"
+		: ""
 
 	useEffect(() => {
 		const {
@@ -105,9 +117,6 @@ export default function Rewards() {
 		setTotalAmountsSelected(totalAmountSelected)
 		setSelected(newSelected)
 	}
-
-	console.log("rewards", rewards)
-	console.log("selected", selected)
 
 	const onClaim = async () => {
 		const selectedRewards = rewards.filter(r => selected[r.id])
@@ -187,14 +196,31 @@ export default function Rewards() {
 					</Box>
 					<Box display="flex" flexDirection="row">
 						<Box m={1}>
-							<Button variant="contained" color="primary" onClick={onClaim}>
-								Claim
-							</Button>
+							<Tooltip title={disableActionsMsg}>
+								<Box display="inline-block">
+									<Button
+										variant="contained"
+										color="primary"
+										onClick={onClaim}
+										disabled={!!disableActionsMsg}
+									>
+										{`Claim`}
+									</Button>
+								</Box>
+							</Tooltip>
 						</Box>
 						<Box m={1}>
-							<Button variant="contained" color="secondary">
-								RE-STAKE
-							</Button>
+							<Tooltip title={disableReStakeMsg}>
+								<Box display="inline-block">
+									<Button
+										variant="contained"
+										color="secondary"
+										disabled={!!disableReStakeMsg}
+									>
+										{`RE-STAKE`}
+									</Button>
+								</Box>
+							</Tooltip>
 						</Box>
 					</Box>
 				</Box>
