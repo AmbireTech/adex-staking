@@ -408,7 +408,8 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 					channel: rewardChannel,
 					prices,
 					totalStake
-				})
+				}),
+				poolId: rewardPool.id
 			}
 		})
 	)
