@@ -53,7 +53,9 @@ export default function Rewards() {
 
 	const disableReStakeMsg = !!disableActionsMsg
 		? disableActionsMsg
-		: Object.keys(selected).some(x => !x.startsWith("tom_incentive"))
+		: Object.entries(selected).some(
+				([id, isSelected]) => isSelected && !id.startsWith("tom_incentive")
+		  )
 		? "Not supported rewards selected - only ADX incentive rewards can be re-staked"
 		: ""
 
