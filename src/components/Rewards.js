@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { Fragment, useContext, useEffect, useState } from "react"
 import {
 	TableRow,
 	TableCell,
@@ -8,18 +8,34 @@ import {
 	TableHead,
 	TableBody,
 	Typography,
-	Checkbox
+	Checkbox,
+	Button
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 
 import { formatAmountPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
+import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { getWithdrawActionBySelectedRewardChannels } from "../actions"
+
+const getTotalSelectedOutstandingRewards = (rewards, selected) => {
+	return rewards
+		.filter(r => selected[r.id])
+		.reduce((amounts, r) => {
+			amounts[r.currency] = (amounts[r.currency] || ZERO).add(
+				r.outstandingReward
+			)
+
+			return amounts
+		}, {})
+}
 
 export default function Rewards() {
-	const { stats, chosenWalletType } = useContext(AppContext)
+	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 	const [rewards, setRewards] = useState([])
 	const { loyaltyPoolStats, tomPoolStats } = stats
 	const [selected, setSelected] = useState({})
+	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
@@ -44,7 +60,8 @@ export default function Rewards() {
 				amount: null,
 				outstandingReward: loPoRewardADX,
 				currency: "ADX",
-				currentAPY: loPoCurrentAPY
+				currentAPY: loPoCurrentAPY,
+				poolId: DEPOSIT_POOLS[0].id
 			}
 
 			const rewards = tomRewardChannels.map(channel => {
@@ -62,7 +79,9 @@ export default function Rewards() {
 					amount: channel.amount,
 					outstandingReward: channel.outstandingReward,
 					currency: channel.type === "fees" ? "DAI" : "ADX",
-					currentAPY: channel.currentAPY
+					currentAPY: channel.currentAPY,
+					poolId: channel.poolId,
+					rewardChannel: channel
 				}
 
 				return rewardData
@@ -76,20 +95,39 @@ export default function Rewards() {
 
 	const onSelectChange = (id, value) => {
 		const newSelected = { ...selected }
-
 		newSelected[id] = value
 
+		const totalAmountSelected = getTotalSelectedOutstandingRewards(
+			rewards,
+			newSelected
+		)
+
+		setTotalAmountsSelected(totalAmountSelected)
 		setSelected(newSelected)
 	}
 
 	console.log("rewards", rewards)
 	console.log("selected", selected)
 
+	const onClaim = async () => {
+		const selectedRewards = rewards.filter(r => selected[r.id])
+		const actions = getWithdrawActionBySelectedRewardChannels(
+			selectedRewards,
+			chosenWalletType,
+			stats
+		)
+
+		for (let i = 0; i < actions.length; i++) {
+			await wrapDoingTxns(actions[i])()
+		}
+	}
+
 	const renderRewardRow = (reward, selected) => {
 		return (
 			<TableRow key={reward.id}>
 				<TableCell>
 					<Checkbox
+						disabled={reward.outstandingReward.isZero()}
 						checked={!!selected[reward.id]}
 						onChange={ev => onSelectChange(reward.id, !!ev.target.checked)}
 						inputProps={{ "aria-label": "primary checkbox" }}
@@ -126,7 +164,41 @@ export default function Rewards() {
 				</Typography>
 			</Box>
 			<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
-				<Box p={3}>
+				<Box
+					p={2}
+					display="flex"
+					flexDirection="row"
+					justifyContent="space-between"
+				>
+					<Box m={1}>
+						{!!Object.keys(totalAmountsSelected).length && (
+							<Fragment>
+								<Typography type="h5">{`Total selected:`}</Typography>
+								<Typography type="h4">
+									{Object.entries(totalAmountsSelected)
+										.map(
+											([currency, amount]) =>
+												`${formatAmountPretty(amount, currency)} ${currency}`
+										)
+										.join("; ")}
+								</Typography>
+							</Fragment>
+						)}
+					</Box>
+					<Box display="flex" flexDirection="row">
+						<Box m={1}>
+							<Button variant="contained" color="primary" onClick={onClaim}>
+								Claim
+							</Button>
+						</Box>
+						<Box m={1}>
+							<Button variant="contained" color="secondary">
+								RE-STAKE
+							</Button>
+						</Box>
+					</Box>
+				</Box>
+				<Box p={2}>
 					<TableContainer xs={12}>
 						<Table aria-label="Rewards table">
 							<TableHead>
