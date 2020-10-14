@@ -43,10 +43,11 @@ export async function loadLoyaltyPoolData() {
 	return {
 		poolTotalStaked,
 		poolDepositsLimit,
-		currentAPY: currentAPY
-			.mul(100)
-			.div(ADX_LP_TOKEN_DECIMALS_MUL)
-			.toNumber()
+		currentAPY:
+			currentAPY
+				.mul(1000)
+				.div(ADX_LP_TOKEN_DECIMALS_MUL)
+				.toNumber() / 1000
 	}
 }
 

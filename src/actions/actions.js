@@ -144,11 +144,11 @@ export function getValidatorFeesAPY({ channel, prices, totalStake }) {
 	return apy.toNumber() / (1000 * 1000)
 }
 
-function getChannelAPY({ channel, prices, totalStake }) {
-	if (channel.type === "fees") {
+function getChannelAPY({ channel, prices, totalStake, type }) {
+	if (type === "fees") {
 		return getValidatorFeesAPY({ channel, prices, totalStake })
 	}
-	if (channel.type === "incentive") {
+	if (type === "incentive") {
 		return getIncentiveChannelCurrentAPY({ channel, totalStake })
 	}
 }
@@ -395,6 +395,9 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 				rewardChannel.balances[claimFrom]
 			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
 			if (outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD)) return null
+			const type =
+				rewardChannel.channelArgs.tokenAddr === ADDR_ADX ? "incentive" : "fees"
+
 			return {
 				...rewardChannel,
 				outstandingReward,
@@ -402,14 +405,12 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 				proof: balanceTree.getProof(claimFrom),
 				stateRoot: balanceTree.mTree.getRoot(),
 				amount: rewardChannel.balances[claimFrom],
-				type:
-					rewardChannel.channelArgs.tokenAddr === ADDR_ADX
-						? "incentive"
-						: "fees",
+				type,
 				currentAPY: getChannelAPY({
 					channel: rewardChannel,
 					prices,
-					totalStake
+					totalStake,
+					type
 				}),
 				poolId: rewardPool.id
 			}

@@ -203,7 +203,9 @@ export default function Rewards() {
 					{formatAmountPretty(reward.outstandingReward, reward.currency)}{" "}
 					{reward.currency}
 				</TableCell>
-				<TableCell align="right">{reward.currentAPY}</TableCell>
+				<TableCell align="right">{`${(reward.currentAPY * 100).toFixed(
+					2
+				)} %`}</TableCell>
 			</TableRow>
 		)
 	}

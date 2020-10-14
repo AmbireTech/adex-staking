@@ -28,7 +28,7 @@ const Pools = () => {
 	const tomAPY = tomPoolStats.totalAPY * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
-	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY
+	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY * 100
 
 	return (
 		<Box>
