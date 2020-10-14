@@ -30,7 +30,7 @@ export function Info({ title }) {
 	)
 }
 
-function AmountText({ text = "", fontSize }) {
+function AmountTextSingle({ text = "", fontSize }) {
 	const decimalSeparatorSplit = text.split(".")
 
 	if (decimalSeparatorSplit.length > 1) {
@@ -60,6 +60,21 @@ function AmountText({ text = "", fontSize }) {
 	} else {
 		return text
 	}
+}
+
+function AmountText({ text = "", fontSize }) {
+	const multipleAmountsSplit = text
+		.split(";")
+		.map(x => x.trim())
+		.filter(x => !!x)
+
+	return (
+		<Fragment>
+			{multipleAmountsSplit
+				.map((x, i) => <AmountTextSingle text={x} fontSize={fontSize} />)
+				.reduce((prev, curr) => [prev, "; ", curr])}
+		</Fragment>
+	)
 }
 
 export function CardRow({
