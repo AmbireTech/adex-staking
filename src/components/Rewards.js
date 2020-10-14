@@ -38,8 +38,9 @@ export default function Rewards() {
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
 	const [reStakeOpen, setReStakeOpen] = useState(false)
-	// TODO: Claim confirm dialog
-	// const [claimOpen, setClaimOpen] = useState(false)
+	const [claimOpen, setClaimOpen] = useState(false)
+
+	const selectedRewards = rewards.filter(x => selected[x.id])
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
@@ -47,15 +48,13 @@ export default function Rewards() {
 		? "Loading data"
 		: !rewards.length
 		? "No rewards"
-		: !Object.values(selected).filter(x => x).length
+		: !selectedRewards.length
 		? "Nothing selected"
 		: ""
 
 	const disableReStakeMsg = !!disableActionsMsg
 		? disableActionsMsg
-		: Object.entries(selected).some(
-				([id, isSelected]) => isSelected && !id.startsWith("tom_incentive")
-		  )
+		: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
 		? "Not supported rewards selected - only ADX incentive rewards can be re-staked"
 		: ""
 
@@ -125,7 +124,7 @@ export default function Rewards() {
 	}
 
 	const onClaim = async () => {
-		const selectedRewards = rewards.filter(r => selected[r.id])
+		setSelected({})
 		const actions = getWithdrawActionBySelectedRewardChannels(
 			selectedRewards,
 			chosenWalletType,
@@ -138,17 +137,23 @@ export default function Rewards() {
 	}
 
 	const onReStake = async () => {
+		setSelected({})
 		await wrapDoingTxns(
 			restake.bind(null, chosenWalletType, {
 				// NOTE: now only tom channels are valid for re-stake at the moment
 				// TODO: update when more pools
-				rewardChannels: rewards
-					.filter(x => selected[x.id])
-					.map(x => x.rewardChannel),
+				rewardChannels: selectedRewards.map(x => x.rewardChannel),
 				userBonds: tomPoolStats.userBonds
 			})
 		)()
 	}
+
+	const totalSelectedLabel = Object.entries(totalAmountsSelected)
+		.map(
+			([currency, amount]) =>
+				`${formatAmountPretty(amount, currency)} ${currency}`
+		)
+		.join("; ")
 
 	const renderRewardRow = (reward, selected) => {
 		return (
@@ -202,14 +207,7 @@ export default function Rewards() {
 						{!!Object.keys(totalAmountsSelected).length && (
 							<Fragment>
 								<Typography type="h5">{`Total selected:`}</Typography>
-								<Typography type="h4">
-									{Object.entries(totalAmountsSelected)
-										.map(
-											([currency, amount]) =>
-												`${formatAmountPretty(amount, currency)} ${currency}`
-										)
-										.join("; ")}
-								</Typography>
+								<Typography type="h4">{totalSelectedLabel}</Typography>
 							</Fragment>
 						)}
 					</Box>
@@ -222,7 +220,7 @@ export default function Rewards() {
 										id="btn-rewards-page-claim"
 										variant="contained"
 										color="primary"
-										onClick={onClaim}
+										onClick={() => setClaimOpen(true)}
 										disabled={!!disableActionsMsg}
 									>
 										{`Claim`}
@@ -279,21 +277,65 @@ export default function Rewards() {
 					isOpen: reStakeOpen,
 					onDeny: () => setReStakeOpen(false),
 					onConfirm: () => {
+						setReStakeOpen(false)
 						onReStake()
 					},
 					confirmActionName: "Re-stake",
 					content: (
 						<>
-							Are you sure you want to re-stake your earnings of{" "}
-							{formatADXPretty(totalAmountsSelected["ADX"] || ZERO)} ADX?
-							<br />
-							<br />
-							Please be aware that this means that this amount will be locked up
-							for at least {UNBOND_DAYS} days.
-							<br />
-							{!stats.userBonds.find(x => x.status === "Active")
-								? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
-								: ""}
+							<Box mb={1}>
+								<Typography>
+									{`Are you sure you want to re-stake your earnings of 
+									${formatADXPretty(totalAmountsSelected["ADX"] || ZERO)} ADX?`}
+								</Typography>
+							</Box>
+							<Box mb={1}>
+								<Typography>
+									{`Please be aware that this means that this amount will be locked up
+									for at least ${UNBOND_DAYS} days.`}
+								</Typography>
+							</Box>
+							<Box mb={1}>
+								<Typography>
+									{!tomPoolStats.userBonds.find(x => x.status === "Active")
+										? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+										: ""}
+								</Typography>
+							</Box>
+						</>
+					)
+				})}
+
+				{ConfirmationDialog({
+					isOpen: claimOpen,
+					onDeny: () => setClaimOpen(false),
+					onConfirm: () => {
+						setClaimOpen(false)
+						onClaim()
+					},
+					confirmActionName: "Claim",
+					content: (
+						<>
+							<Box mb={1}>
+								<Typography>
+									{"You are about to claim your earnings of "}
+								</Typography>
+							</Box>
+							{selectedRewards.map(reward => (
+								<Box key={reward.id}>
+									{reward.name}
+									{": "}
+									{formatAmountPretty(
+										reward.outstandingReward,
+										reward.currency
+									)}{" "}
+									{reward.currency}
+								</Box>
+							))}
+
+							<Box mt={1}>
+								<Typography>{`For total of: ${totalSelectedLabel}`}</Typography>
+							</Box>
 						</>
 					)
 				})}
