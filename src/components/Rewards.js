@@ -18,10 +18,11 @@ import AppContext from "../AppContext"
 import { DEPOSIT_POOLS, ZERO, UNBOND_DAYS } from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
 import ConfirmationDialog from "./ConfirmationDialog"
+import StatsCard from "./StatsCard"
 
 const getTotalSelectedOutstandingRewards = (rewards, selected) => {
 	return rewards
-		.filter(r => selected[r.id])
+		.filter(r => (selected === "all" ? true : selected[r.id]))
 		.reduce((amounts, r) => {
 			amounts[r.currency] = (amounts[r.currency] || ZERO).add(
 				r.outstandingReward
@@ -30,6 +31,14 @@ const getTotalSelectedOutstandingRewards = (rewards, selected) => {
 			return amounts
 		}, {})
 }
+
+const totalAmountsLabel = amounts =>
+	Object.entries(amounts)
+		.map(
+			([currency, amount]) =>
+				`${formatAmountPretty(amount, currency)} ${currency}`
+		)
+		.join("; ")
 
 export default function Rewards() {
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
@@ -40,11 +49,14 @@ export default function Rewards() {
 	const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [claimOpen, setClaimOpen] = useState(false)
 
+	const totalRewardsAmounts = getTotalSelectedOutstandingRewards(rewards, "all")
+
 	const selectedRewards = rewards.filter(x => selected[x.id])
+	const loaded = loyaltyPoolStats.loaded && tomPoolStats.loaded
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
-		: !loyaltyPoolStats.loaded || !tomPoolStats.loaded
+		: !loaded
 		? "Loading data"
 		: !rewards.length
 		? "No rewards"
@@ -148,13 +160,9 @@ export default function Rewards() {
 		)()
 	}
 
-	const totalSelectedLabel = Object.entries(totalAmountsSelected)
-		.map(
-			([currency, amount]) =>
-				`${formatAmountPretty(amount, currency)} ${currency}`
-		)
-		.join("; ")
+	const totalSelectedLabel = totalAmountsLabel(totalAmountsSelected)
 
+	const totalRewardsLabel = totalAmountsLabel(totalRewardsAmounts)
 	const renderRewardRow = (reward, selected) => {
 		return (
 			<TableRow key={reward.id}>
@@ -196,7 +204,17 @@ export default function Rewards() {
 					{"REWARDS"}
 				</Typography>
 			</Box>
-			<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
+			<Box display="flex" flexDirection="row">
+				<Box m={2} p={2} bgcolor="background.darkerPaper" boxShadow={25}>
+					{StatsCard({
+						loaded,
+						title: "Total rewards",
+						subtitle: totalRewardsLabel
+						// extra: getADXInUSDFormatted(prices, stats.userBalance)
+					})}
+				</Box>
+			</Box>
+			<Box m={2} bgcolor="background.darkerPaper" boxShadow={25}>
 				<Box
 					p={2}
 					display="flex"
