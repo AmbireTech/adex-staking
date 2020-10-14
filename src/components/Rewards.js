@@ -24,7 +24,7 @@ import {
 import AppContext from "../AppContext"
 import { DEPOSIT_POOLS, ZERO, UNBOND_DAYS } from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
-import { ReactComponent as Gift } from "./../resources/gift-ic.svg"
+import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
 
@@ -227,7 +227,7 @@ export default function Rewards() {
 				>
 					<Box m={1} fontSize={55}>
 						<SvgIcon fontSize="inherit" color="primary">
-							<Gift width="100%" height="100%" />
+							<GiftIcon width="100%" height="100%" />
 						</SvgIcon>
 					</Box>
 					<Box m={1}>

@@ -19,11 +19,11 @@ import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import {
 	HomeSharp as HomeIcon,
-	DashboardSharp as DashboardIcon,
-	RedeemSharp as RewardIcon
+	DashboardSharp as DashboardIcon
 } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
+import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -240,7 +240,9 @@ function SideNav({
 							className={clsx({ [classes.active]: path === "/rewards" })}
 						>
 							<ListItemIcon color="inherit">
-								<RewardIcon />
+								<SvgIcon color="inherit">
+									<GiftIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={"Rewards"} />
 						</RRListItem>
