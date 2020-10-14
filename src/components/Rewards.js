@@ -9,23 +9,31 @@ import {
 	TableBody,
 	Typography,
 	Checkbox,
-	Button
+	Button,
+	SvgIcon
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import Tooltip from "./Tooltip"
-import { formatAmountPretty, formatADXPretty } from "../helpers/formatting"
+import {
+	formatAmountPretty,
+	formatADXPretty,
+	getDAIInUSD,
+	getADXInUSD,
+	getUSDFormatted
+} from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { DEPOSIT_POOLS, ZERO, UNBOND_DAYS } from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
+import { ReactComponent as Gift } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
 
-const getTotalSelectedOutstandingRewards = (rewards, selected) => {
+const getTotalSelectedRewards = (rewards, selected, getTotal) => {
 	return rewards
 		.filter(r => (selected === "all" ? true : selected[r.id]))
 		.reduce((amounts, r) => {
 			amounts[r.currency] = (amounts[r.currency] || ZERO).add(
-				r.outstandingReward
+				r[getTotal ? "amount" : "outstandingReward"] || ZERO
 			)
 
 			return amounts
@@ -41,7 +49,9 @@ const totalAmountsLabel = amounts =>
 		.join("; ")
 
 export default function Rewards() {
-	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+	const { stats, chosenWalletType, wrapDoingTxns, prices } = useContext(
+		AppContext
+	)
 	const [rewards, setRewards] = useState([])
 	const { loyaltyPoolStats, tomPoolStats } = stats
 	const [selected, setSelected] = useState({})
@@ -49,10 +59,19 @@ export default function Rewards() {
 	const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [claimOpen, setClaimOpen] = useState(false)
 
-	const totalRewardsAmounts = getTotalSelectedOutstandingRewards(rewards, "all")
+	const totalRewardsAmounts = getTotalSelectedRewards(rewards, "all", true)
+	const totalOutstandingRewardsAmounts = getTotalSelectedRewards(rewards, "all")
+
+	const totalRewardsInUsd =
+		getADXInUSD(prices, totalRewardsAmounts["ADX"] || ZERO) +
+		getDAIInUSD(totalRewardsAmounts["DAI"] || ZERO)
+
+	const totalOutstandingRewardsInUsd =
+		getADXInUSD(prices, totalOutstandingRewardsAmounts["ADX"] || ZERO) +
+		getDAIInUSD(totalOutstandingRewardsAmounts["DAI"] || ZERO)
 
 	const selectedRewards = rewards.filter(x => selected[x.id])
-	const loaded = loyaltyPoolStats.loaded && tomPoolStats.loaded
+	const loaded = loyaltyPoolStats.userDataLoaded && tomPoolStats.userDataLoaded
 
 	const disableActionsMsg = !chosenWalletType.name
 		? "Connect wallet"
@@ -86,7 +105,7 @@ export default function Rewards() {
 			const loPoReward = {
 				id: "loyalty_pool",
 				name: "Loyalty pool deposit",
-				amount: null,
+				amount: loPoRewardADX,
 				outstandingReward: loPoRewardADX,
 				currency: "ADX",
 				currentAPY: loPoCurrentAPY,
@@ -126,10 +145,7 @@ export default function Rewards() {
 		const newSelected = { ...selected }
 		newSelected[id] = value
 
-		const totalAmountSelected = getTotalSelectedOutstandingRewards(
-			rewards,
-			newSelected
-		)
+		const totalAmountSelected = getTotalSelectedRewards(rewards, newSelected)
 
 		setTotalAmountsSelected(totalAmountSelected)
 		setSelected(newSelected)
@@ -161,8 +177,10 @@ export default function Rewards() {
 	}
 
 	const totalSelectedLabel = totalAmountsLabel(totalAmountsSelected)
+	const totalRewardsLabel = totalAmountsLabel(totalRewardsAmounts) || "0.00"
+	const totalOutstandingRewardsLabel =
+		totalAmountsLabel(totalOutstandingRewardsAmounts) || "0.00"
 
-	const totalRewardsLabel = totalAmountsLabel(totalRewardsAmounts)
 	const renderRewardRow = (reward, selected) => {
 		return (
 			<TableRow key={reward.id}>
@@ -186,35 +204,55 @@ export default function Rewards() {
 					{reward.currency}
 				</TableCell>
 				<TableCell align="right">{reward.currentAPY}</TableCell>
-				<TableCell align="right">
-					{/* {reward.actions.map((action, index) => (
-						<Box key={index} display="inline-block" m={0.5}>
-							{action}
-						</Box>
-					))} */}
-				</TableCell>
 			</TableRow>
 		)
 	}
 
 	return (
 		<Box mt={2}>
-			<Box color="text.main">
+			<Box m={1} color="text.main">
 				<Typography variant="h5" gutterBottom>
 					{"REWARDS"}
 				</Typography>
 			</Box>
 			<Box display="flex" flexDirection="row">
-				<Box m={2} p={2} bgcolor="background.darkerPaper" boxShadow={25}>
-					{StatsCard({
-						loaded,
-						title: "Total rewards",
-						subtitle: totalRewardsLabel
-						// extra: getADXInUSDFormatted(prices, stats.userBalance)
-					})}
+				<Box
+					m={1}
+					p={2}
+					bgcolor="background.darkerPaper"
+					boxShadow={25}
+					display="flex"
+					flexDirection="row"
+					alignItems="center"
+				>
+					<Box m={1} fontSize={55}>
+						<SvgIcon fontSize="inherit" color="primary">
+							<Gift width="100%" height="100%" />
+						</SvgIcon>
+					</Box>
+					<Box m={1}>
+						{StatsCard({
+							loaded,
+							title: "Total rewards",
+							subtitle: totalRewardsLabel,
+							extra: getUSDFormatted(totalRewardsInUsd)
+						})}
+					</Box>
+				</Box>
+
+				<Box m={1} p={2} bgcolor="background.darkerPaper" boxShadow={25}>
+					<Box m={1}>
+						{StatsCard({
+							loaded,
+							title: "Unclaimed rewards",
+							subtitle: totalOutstandingRewardsLabel,
+							extra: getUSDFormatted(totalOutstandingRewardsInUsd)
+						})}
+					</Box>
 				</Box>
 			</Box>
-			<Box m={2} bgcolor="background.darkerPaper" boxShadow={25}>
+
+			<Box m={1} bgcolor="background.darkerPaper" boxShadow={25}>
 				<Box
 					p={2}
 					display="flex"
@@ -273,7 +311,6 @@ export default function Rewards() {
 									<TableCell align="right">Total rewards</TableCell>
 									<TableCell align="right">Unclaimed rewards</TableCell>
 									<TableCell align="right">Current APY</TableCell>
-									<TableCell align="right">Actions</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
