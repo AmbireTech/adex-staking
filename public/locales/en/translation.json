@@ -8,7 +8,17 @@
     "homePageAndCalculator": "Home page & Calculator",
     "termsAndConditions": "Terms and conditions",
     "claim": "Claim",
-    "reStake": "Re-stake"
+    "reStake": "Re-stake",
+    "tom": "Tom",
+    "loPo": "Loyalty Pool",
+    "liPo": "Liquidity Pool",
+    "totalStaked": "Total Staked",
+    "unbondPeriod": "Unbond period",
+    "noUnbondPeriod": "No unbond period",
+    "totalDeposit": "Total deposit",
+    "deposit": "Deposit",
+    "stake": "Stake",
+    "addNewDeposit": "Add new deposit"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -18,5 +28,15 @@
     "activeStakeInfo": "Active, earning {{apy}} % APY",
     "unclaimed": "Unclaimed rewards",
     "total": "Total"
+  },
+  "pools": {
+    "currentDailyYield": "Current daily yield {{yield}}",
+    "connectWalletToStake": "Connect wallet to stake",
+    "connectWalletToDeposit": "Connect wallet to deposit",
+    "lockupPeriodInfo": "The unbond period is the amount you must wait before withdrawing your ADX tokens. From the moment you request unbonding, the {{count}} day start counting. During those days, you won't receive staking rewards.",
+    "lockupPeriodInfo_plural": "The unbond period is the amount you must wait before withdrawing your ADX tokens. From the moment you request unbonding, the {{count}} days start counting. During those days, you won't receive staking rewards.",
+    "totalDepositsLimit": "Total deposits limit",
+    "currentAPYLabel": "Current annual yield (APY)",
+    "weeklyYield": "Weekly yield {{yield}}"
   }
 }

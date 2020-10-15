@@ -11,10 +11,12 @@ import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
+import { useTranslation, Trans } from "react-i18next"
 
 const DepositsDialog = WithDialog(DepositForm)
 
 const Pools = () => {
+	const { t } = useTranslation()
 	const {
 		stats,
 		setNewBondOpen,
@@ -32,7 +34,7 @@ const Pools = () => {
 
 	return (
 		<Box>
-			<SectionHeader title={"Pools"} />
+			<SectionHeader title={t("common.pools")} />
 			<Box mt={4}>
 				<Box
 					display="flex"
@@ -49,7 +51,7 @@ const Pools = () => {
 								<TomIcon width="100%" height="100%" />
 							</SvgIcon>
 						}
-						name={"Tom"}
+						name={t("common.tom")}
 						totalStakedADX={`${formatADXPretty(stats.totalStakeTom)} ADX`}
 						totalStakedUSD={`${getADXInUSDFormatted(
 							prices,
@@ -58,7 +60,12 @@ const Pools = () => {
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(tomAPY / 365).toFixed(4)} %`
+							<Trans
+								i18nKey="pools.currentDailyYield"
+								values={{
+									yield: (tomAPY / 365).toFixed(4)
+								}}
+							/>
 						]}
 						onStakeBtnClick={() => {
 							setNewBondPool(POOLS[0].id)
@@ -66,13 +73,11 @@ const Pools = () => {
 						}}
 						loading={!stats.loaded}
 						disabled={!canStake}
-						disabledInfo={"Connect wallet to stake"}
-						lockupPeriodTitle={"Unbond period"}
-						lockupPeriodInfo={`The unbond period is the amount 
-							you must wait before withdrawing your ADX tokens. 
-							From the moment you request unbonding, the ${UNBOND_DAYS} days start counting. 
-							During those days, you won't receive staking rewards.`}
-						lockupPeriod={`${UNBOND_DAYS} days`}
+						disabledInfo={t("pools.connectWalletToStake")}
+						lockupPeriodTitle={t("common.unbondPeriod")}
+						lockupPeriodInfo={
+							<Trans i18nKey="pools.lockupPeriodInfo" count={UNBOND_DAYS} />
+						}
 					/>
 
 					<PoolCard
@@ -82,7 +87,7 @@ const Pools = () => {
 								<LoyaltyIcon width="100%" height="100%" />
 							</SvgIcon>
 						}
-						name={"Loyalty pool"}
+						name={t("common.loPo")}
 						totalStakedADX={`${formatADXPretty(
 							loyaltyPoolStats.poolTotalStaked
 						)} ADX`}
@@ -93,21 +98,26 @@ const Pools = () => {
 						currentAPY={`${loyaltyPoolAPY.toFixed(2)} %`}
 						weeklyYield={`${(loyaltyPoolAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							`Current daily yield ${(loyaltyPoolAPY / 365).toFixed(4)} %`
+							<Trans
+								i18nKey="pools.currentDailyYield"
+								values={{
+									yield: (loyaltyPoolAPY / 365).toFixed(4)
+								}}
+							/>
 						]}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
 						}}
 						loading={!loyaltyPoolStats.loaded}
 						disabled={!canStake}
-						disabledInfo={"Connect wallet to deposit"}
-						lockupPeriodTitle={"Unbond period"}
-						lockupPeriodInfo={`No unbond period`}
-						lockupPeriod={`No unbond period`}
+						disabledInfo={t("pools.connectWalletToDeposit")}
+						lockupPeriodTitle={t("common.unbondPeriod")}
+						lockupPeriodInfo={t("common.noUnbondPeriod")}
+						lockupPeriod={t("common.noUnbondPeriod")}
 						extraData={[
 							{
 								id: "loyalty-pool-deposits-limit",
-								title: "Total deposits limit",
+								title: t("pools.totalDepositsLimit"),
 								titleInfo: "",
 								normalValue: "25 000 000 ADX",
 								importantValue: "",
@@ -120,8 +130,8 @@ const Pools = () => {
 							<DepositsDialog
 								fullWidth
 								id="loyalty-pool-deposit-form-card"
-								title="Add new deposit"
-								btnLabel="Deposit"
+								title={t("common.addNewDeposit")}
+								btnLabel={t("common.deposit")}
 								color="secondary"
 								size="large"
 								variant="contained"
@@ -138,7 +148,7 @@ const Pools = () => {
 								<LiquidityIcon />
 							</SvgIcon>
 						}
-						name={"Liquidity pool"}
+						name={t("common.liPo")}
 						loading={!stats.loaded}
 						comingSoon
 					/>
