@@ -4,8 +4,10 @@ import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
 import SectionHeader from "./SectionHeader"
+import { useTranslation } from "react-i18next"
 
 const Stakings = () => {
+	const { t } = useTranslation()
 	const {
 		stats,
 		setToUnbond,
@@ -16,11 +18,11 @@ const Stakings = () => {
 
 	return (
 		<Box>
-			<SectionHeader title={"Staked ADX"} />
+			<SectionHeader title={t("common.staked")} />
 			<Box mt={2}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
-						{"BONDS"}
+						{t("common.bonds")}
 					</Typography>
 				</Box>
 				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
@@ -38,7 +40,7 @@ const Stakings = () => {
 			<Box mt={2}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
-						{"DEPOSITS"}
+						{t("common.deposits")}
 					</Typography>
 				</Box>
 

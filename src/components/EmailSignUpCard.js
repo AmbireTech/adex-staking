@@ -155,7 +155,7 @@ export default function EmailSignUp(props) {
 										></Typography>
 									)
 								}}
-							></Trans>
+							/>
 						</Typography>{" "}
 					</Box>
 					<Box width={1} mt={2}>
@@ -212,7 +212,7 @@ export default function EmailSignUp(props) {
 														/>
 													)
 												}}
-											></Trans>
+											/>
 										</Box>
 									}
 								/>

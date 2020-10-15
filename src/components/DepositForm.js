@@ -28,8 +28,10 @@ import {
 } from "@material-ui/core"
 import { themeMUI } from "../themeMUi"
 import AppContext from "../AppContext"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function DepositForm({ depositPool, closeDialog, withdraw }) {
+	const { t } = useTranslation()
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
 	const [actionAmount, setActionAmount] = useState("0.0")
@@ -71,7 +73,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 
 		if (!isValidNumberString(userInputAmount)) {
 			setAmountErr(true)
-			setAmountErrText("Invalid amount input!")
+			setAmountErrText(t("errors.invalidAmountInput"))
 			return
 		}
 
@@ -82,14 +84,12 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 			: ZERO
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
-			setAmountErrText("Insufficient ADX amount!")
+			setAmountErrText(t("errors.lowADXAmount"))
 			return
 		}
 		if (poolToValidate && amountBN.lte(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(
-				"ADX amount less than minimum required for selected pool!"
-			)
+			setAmountErrText(t("errors.lessDanMinPoolADX"))
 			return
 		}
 
@@ -101,9 +101,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 			amountBN.add(poolStats.poolTotalStaked).gt(poolStats.poolDepositsLimit)
 		) {
 			setAmountErr(true)
-			setAmountErrText(
-				"ADX amount too large - will go over the pool total deposits limit!"
-			)
+			setAmountErrText(t("errors.amountOverPoolLimit"))
 			return
 		}
 
@@ -138,7 +136,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						fullWidth
 						id={`new-${actionName}-form-amount-field`}
 						required
-						label="ADX amount"
+						label={t("deposits.labelADXAmount")}
 						type="text"
 						value={actionAmount}
 						error={amountErr}
@@ -156,30 +154,36 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								onAmountChange(formatADX(maxAmount))
 							}}
 						>
-							{`Max amount: ${formatADXPretty(maxAmount)} ADX`}
+							<Trans
+								i18nKey="common.maxAmountBtn"
+								values={{
+									amount: formatADXPretty(maxAmount),
+									currency: "ADX"
+								}}
+							/>
 						</Button>
 					</Box>
 				</Grid>
 				<Grid item xs={12} sm={6}>
 					<FormControl fullWidth required>
-						<InputLabel>Pool</InputLabel>
+						<InputLabel>{t("common.pool")}</InputLabel>
 						<Select
 							id={`new-${actionName}-form-pool-select`}
 							value={newDepositPool}
 							onChange={ev => updatePool(ev.target.value)}
 						>
 							<MenuItem value={""}>
-								<em>None</em>
+								<em>{t("common.none")}</em>
 							</MenuItem>
 							{DEPOSIT_POOLS.map(({ label, id }) => (
 								<MenuItem
 									id={`new-${actionName}-form-values-${toIdAttributeString(
-										label
+										t(label)
 									)}`}
 									key={id}
 									value={id}
 								>
-									{label}
+									{t(label)}
 								</MenuItem>
 							))}
 						</Select>
@@ -188,12 +192,20 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 				{activePool ? (
 					<Grid item xs={12}>
 						<Grid item xs={12}>
-							<Typography variant="h6">Pool reward policy:</Typography>
-							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
+							<Typography variant="h6">
+								{t("common.poolRewardPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.rewardPolicy)}
+							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="h6">Pool slashing policy:</Typography>
-							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+							<Typography variant="h6">
+								{t("common.poolSlashingPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.slashPolicy)}
+							</Typography>
 						</Grid>
 					</Grid>
 				) : (
@@ -203,7 +215,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
-							label={confirmationLabel}
+							label={t(confirmationLabel)}
 							control={
 								<Checkbox
 									id={`new-${actionName}-form-tos-check`}
@@ -228,7 +240,21 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 							variant="contained"
 							onClick={onAction}
 						>
-							{withdraw ? "Withdraw ADX" : "DEPOSIT ADX"}
+							{withdraw ? (
+								<Trans
+									i18nKey="common.withdrawCurrency"
+									values={{
+										currency: "ADX"
+									}}
+								/>
+							) : (
+								<Trans
+									i18nKey="common.depositCurrency"
+									values={{
+										currency: "ADX"
+									}}
+								/>
+							)}
 						</Button>
 					</FormControl>
 				</Grid>

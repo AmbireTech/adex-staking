@@ -1,9 +1,12 @@
 {
   "common": {
     "connectWallet": "Connect Wallet",
+    "loadingData": "Loading data",
+    "pool": "Pool",
     "pools": "Pools",
     "staked": "Staked",
     "gaslessStaking": "Gasless Staking",
+    "reward": "Reward",
     "rewards": "Rewards",
     "homePageAndCalculator": "Home page & Calculator",
     "termsAndConditions": "Terms and conditions",
@@ -17,8 +20,23 @@
     "noUnbondPeriod": "No unbond period",
     "totalDeposit": "Total deposit",
     "deposit": "Deposit",
+    "deposits": "Deposits",
+    "withdraw": "Withdraw",
     "stake": "Stake",
-    "addNewDeposit": "Add new deposit"
+    "bond": "Bond",
+    "bonds": "Bonds",
+    "addNewDeposit": "Add new deposit",
+    "balance": "Balance",
+    "balances": "Balances",
+    "action": "Action",
+    "actions": "Actions",
+    "unknown": "Unknown",
+    "maxAmountBtn": "Max amount: {{amount}} {{currency}}",
+    "none": "None",
+    "poolRewardPolicy": "Pool reward policy",
+    "poolSlashingPolicy": "Pool slashing policy",
+    "withdrawCurrency": "Withdraw {{currency}}",
+    "depositCurrency": "Deposit {{currency}}"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -37,7 +55,9 @@
     "lockupPeriodInfo_plural": "The unbond period is the amount you must wait before withdrawing your ADX tokens. From the moment you request unbonding, the {{count}} days start counting. During those days, you won't receive staking rewards.",
     "totalDepositsLimit": "Total deposits limit",
     "currentAPYLabel": "Current annual yield (APY)",
-    "weeklyYield": "Weekly yield {{yield}}"
+    "weeklyYield": "Weekly yield {{yield}}",
+    "loPoRewardPolicy": "By depositing ADX you receive ADX-LOYALTY, which automatically incurs new rewards in ADX based on elastic issuance, while also allowing you to participate in AdEx governance.",
+    "loPoSlashPolicy": "No slashing."
   },
   "email": {
     "subscribe": "Subscribe for AdEx News &",
@@ -49,5 +69,16 @@
     "promotionTerms": "I agree to the promotional <externalLink> Terms and conditions </externalLink> ",
     "submitting": "Submitting...",
     "submitBtnLabel": "Sure, I'm in"
+  },
+  "deposits": {
+    "withdrawLoPo": "Withdraw from Loyalty pool",
+    "depositsLimitReached": "Pool deposits limit reached",
+    "labelADXAmount": "ADX amount"
+  },
+  "errors": {
+    "invalidAmountInput": "Invalid amount input!",
+    "lowADXAmount": "Insufficient ADX amount!",
+    "lessDanMinPoolADX": "ADX amount less than minimum required for selected pool!",
+    "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!"
   }
 }

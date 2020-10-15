@@ -56,14 +56,12 @@ export const POOLS = [
 
 export const DEPOSIT_POOLS = [
 	{
-		label: "Loyalty Pool",
+		label: "common.loPo",
 		id: id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
 		selectable: true,
 		minStakingAmount: "0.0",
-		rewardPolicy: `By depositing ADX you receive ADX-LOYALTY, 
-		which automatically incurs new rewards in ADX based on elastic issuance, 
-		while also allowing you to participate in AdEx governance.`,
-		slashPolicy: "No slashing.",
+		rewardPolicy: "pools.loPoRewardPolicy",
+		slashPolicy: "pools.loPoSlashPolicy",
 		url:
 			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
 		confirmationLabel: null,
