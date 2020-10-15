@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core"
 import {
 	NoEthereumProviderError,
@@ -8,7 +8,6 @@ import {
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-connector"
 import { getSigner } from "./ethereum"
 import {
-	PRICES_API_URL,
 	WALLET_CONNECT,
 	METAMASK,
 	TREZOR,
@@ -93,7 +92,7 @@ export default function Root() {
 
 	useInactiveListener(!!connectWallet)
 
-	const refreshStats = () =>
+	const refreshStats = useCallback(() => {
 		loadStats(chosenWalletType)
 			.then(setStats)
 			.catch(e => {
@@ -103,12 +102,20 @@ export default function Root() {
 					setSnackbarErr("Error! User denied authorization!")
 				}
 			})
+	}, [chosenWalletType])
 
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
-		return () => clearInterval(intvl)
 
+		return () => clearInterval(intvl)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [refreshStats])
+
+	useEffect(() => {
+		if (chosenWalletType.name && chosenWalletType.library) {
+			refreshStats()
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
 
@@ -116,11 +123,6 @@ export default function Root() {
 		setPrices(stats.prices)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
-
-	useEffect(() => {
-		setChosenWalletType({ name: chosenWalletTypeName, library, account })
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletTypeName, library, account])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
@@ -187,11 +189,7 @@ export default function Root() {
 
 				if (signer) {
 					setChosenWalletType(newWalletType)
-				} else {
-					setChosenWalletType({})
 				}
-			} else {
-				setChosenWalletType({})
 			}
 		}
 
