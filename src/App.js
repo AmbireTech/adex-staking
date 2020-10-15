@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense } from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { themeMUI } from "./themeMUi"
@@ -8,6 +8,7 @@ import { Web3Provider } from "ethers/providers"
 import Root from "./components/Root"
 import AppContext from "./AppContext"
 import useApp from "./AppHooks"
+import Loading from "./components/Loading"
 import "./App.css"
 
 const App = () => {
@@ -27,7 +28,9 @@ const App = () => {
 }
 
 export default () => (
-	<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
-		<App />
-	</Web3ReactProvider>
+	<Suspense fallback={<Loading />}>
+		<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
+			<App />
+		</Web3ReactProvider>
+	</Suspense>
 )
