@@ -5,5 +5,12 @@
   "gaslessStaking": "Gasless Staking",
   "rewards": "Rewards",
   "homePageAndCalculator": "Home page & Calculator",
-  "termsAndConditions": "Terms and conditions"
+  "termsAndConditions": "Terms and conditions",
+  "userData": {
+    "myAdxBalance": "MY ADX BALANCE",
+    "onWallet": "Available on wallet",
+    "onWalletInfo": "Amount available on your wallet",
+    "activeStake": "Active Stake",
+    "activeStakeInfo": "Active, earning {{apy}} % APY"
+  }
 }
