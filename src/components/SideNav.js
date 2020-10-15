@@ -123,7 +123,7 @@ function SideNav({
 	onRestake,
 	setConnectWallet
 }) {
-	const { t } = useTranslation("common")
+	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()
 	const path = location.pathname
@@ -206,7 +206,7 @@ function SideNav({
 							<ListItemIcon color="inherit">
 								<DashboardIcon />
 							</ListItemIcon>
-							<ListItemText primary={t("Pools")} />
+							<ListItemText primary={t("pools")} />
 						</RRListItem>
 
 						<RRListItem
