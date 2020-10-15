@@ -181,7 +181,7 @@ function SideNav({
 									onClick={() => setConnectWallet(true)}
 									style={{ cursor: "pointer" }}
 								>
-									{t("connectWallet")}
+									{t("common.connectWallet")}
 								</Box>
 							)}
 						</Box>
@@ -206,7 +206,7 @@ function SideNav({
 							<ListItemIcon color="inherit">
 								<DashboardIcon />
 							</ListItemIcon>
-							<ListItemText primary={t("pools")} />
+							<ListItemText primary={t("common.pools")} />
 						</RRListItem>
 
 						<RRListItem
@@ -220,7 +220,7 @@ function SideNav({
 									<StakingIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={t("staked")} />
+							<ListItemText primary={t("common.staked")} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-gasless"
@@ -233,7 +233,7 @@ function SideNav({
 									<GaslessIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={t("gaslessStaking")} />
+							<ListItemText primary={t("common.gaslessStaking")} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-rewards"
@@ -246,7 +246,7 @@ function SideNav({
 									<GiftIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={t("rewards")} />
+							<ListItemText primary={t("common.rewards")} />
 						</RRListItem>
 					</List>
 				</Box>
@@ -267,7 +267,7 @@ function SideNav({
 								<HomeIcon color="inherit" />
 							</SvgIcon>
 						</ListItemIcon>
-						<ListItemText primary={t("homePageAndCalculator")} />
+						<ListItemText primary={t("common.homePageAndCalculator")} />
 					</RRListItem>
 					<Divider />
 					<ListItem>
@@ -292,7 +292,7 @@ function SideNav({
 										target="_blank"
 										href={`https://adex.network/tos`}
 									>
-										{t("termsAndConditions")}
+										{t("common.termsAndConditions")}
 									</Anchor>
 								</small>
 							</div>
