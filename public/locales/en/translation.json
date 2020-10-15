@@ -38,5 +38,16 @@
     "totalDepositsLimit": "Total deposits limit",
     "currentAPYLabel": "Current annual yield (APY)",
     "weeklyYield": "Weekly yield {{yield}}"
+  },
+  "email": {
+    "subscribe": "Subscribe for AdEx News &",
+    "win": "win <strong>{{rewards}}</strong> ADX! ",
+    "email": "Email",
+    "validEmail": "Please provide a valid email!",
+    "bestEmail": "Please provide your best email",
+    "gdprLabel": "Yes, I want AdEx Network to send me news and other related content",
+    "promotionTerms": "I agree to the promotional <externalLink> Terms and conditions </externalLink> ",
+    "submitting": "Submitting...",
+    "submitBtnLabel": "Sure, I'm in"
   }
 }
