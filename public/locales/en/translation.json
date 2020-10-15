@@ -6,11 +6,17 @@
   "rewards": "Rewards",
   "homePageAndCalculator": "Home page & Calculator",
   "termsAndConditions": "Terms and conditions",
+  "common": {
+    "claim": "Claim",
+    "reStake": "Re-stake"
+  },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
     "onWallet": "Available on wallet",
     "onWalletInfo": "Amount available on your wallet",
     "activeStake": "Active Stake",
-    "activeStakeInfo": "Active, earning {{apy}} % APY"
+    "activeStakeInfo": "Active, earning {{apy}} % APY",
+    "unclaimed": "Unclaimed rewards",
+    "total": "Total"
   }
 }
