@@ -151,5 +151,14 @@
     "sourceCode": "Source Code",
     "audits": "Audits",
     "whereToBuy": "Where to buy ADX"
+  },
+  "legacy": {
+    "p1":"The ADX token completed a <external> successful upgrade </external> to a new smart contract. You are currently holding <strong> {{amount}} </strong> legacy AD",
+    "p2": "Starting August 21st 2020, the legacy ADX will be deprecated and will no longer be traded on exchanges or used for staking.",
+    "p3": "We recommend that you swap your legacy ADX right now by clicking the <i><strong>Swap now</strong></i> button and signing the {{wallet}} transactions",
+    "p4": "<farmer></farmer> After this, you can stake your ADX to earn up to 150% APY (annual percentage yield) with no slashing risk <external> read more </external>. <farmer></farmer>",
+    "swapInProgress": "Token swap is in progress! It will be completed once all your pending transactions have been confirmed.",
+    "swapNow": "Swap now",
+    "adxToUpgrade": "ADX Token upgrade"
   }
 }

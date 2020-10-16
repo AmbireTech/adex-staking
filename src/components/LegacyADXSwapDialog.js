@@ -4,9 +4,11 @@ import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 import { formatUnits } from "ethers/utils"
 import ConfirmationDialog from "./ConfirmationDialog"
+import { ExternalAnchor } from "./Anchor"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 import { defaultProvider } from "./../ethereum"
+import { useTranslation, Trans } from "react-i18next"
 
 const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 
@@ -18,6 +20,7 @@ export default function LegacyADXSwapDialog(
 	wrapDoingTxns,
 	chosenWalletType
 ) {
+	const { t } = useTranslation()
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
 	const [isSwapInPrg, setSwapInPrg] = useState(false)
@@ -41,43 +44,55 @@ export default function LegacyADXSwapDialog(
 	const content = (
 		<div>
 			<p>
-				The ADX token completed a{" "}
-				<a
-					target="_blank"
-					rel="noopener noreferrer"
-					href="https://www.adex.network/blog/token-upgrade-defi-features/"
-				>
-					successful upgrade
-				</a>{" "}
-				to a new smart contract. You are currently holding{" "}
-				<b>{amount.gt(ZERO) ? formatUnits(amount, 4) : ""} legacy ADX</b>.
+				<Trans
+					i18nKey="legacy.p1"
+					values={{
+						amount: amount.gt(ZERO) ? formatUnits(amount, 4) : ""
+					}}
+					components={{
+						external: (
+							<ExternalAnchor
+								color="inherit"
+								id="new-bond-form-adex-network-tos"
+								target="_blank"
+								href={`https://www.adex.network/blog/token-upgrade-defi-features/`}
+							/>
+						)
+					}}
+				/>
+			</p>
+			<p>
+				<b>{t("legacy.p2")}</b>
+			</p>
+			<p>
+				<Trans
+					i18nKey="legacy.p3"
+					values={{
+						wallet: chosenWalletType.name || "MetaMask"
+					}}
+				/>
 			</p>
 			<p>
 				<b>
-					Starting August 21st 2020, the legacy ADX will be deprecated and will
-					no longer be traded on exchanges or used for staking.
-				</b>
-			</p>
-			<p>
-				We recommend that you swap your legacy ADX right now by clicking the{" "}
-				<i>
-					<b>Swap now</b>
-				</i>{" "}
-				{`button and signing the ${chosenWalletType.name ||
-					"MetaMask"} transactions.`}
-			</p>
-			<p>
-				<b>
-					{farmer} After this, you can stake your ADX to earn up to 150% APY
-					(annual percentage yield) with no slashing risk (
-					<a
-						target="_blank"
-						rel="noopener noreferrer"
-						href="https://www.adex.network/blog/new-token-economics-and-staking/"
-					>
-						read more
-					</a>
-					). {farmer}
+					<Trans
+						i18nKey="legacy.p4"
+						values={{
+							amount: amount.gt(ZERO) ? formatUnits(amount, 4) : ""
+						}}
+						components={{
+							farmer,
+							external: (
+								<ExternalAnchor
+									color="inherit"
+									id="new-bond-form-adex-network-tos"
+									target="_blank"
+									href={
+										"https://www.adex.network/blog/new-token-economics-and-staking/"
+									}
+								/>
+							)
+						}}
+					/>
 				</b>
 			</p>
 		</div>
@@ -95,8 +110,8 @@ export default function LegacyADXSwapDialog(
 			await Promise.all(txns.map(x => x.wait()))
 			setSwapInPrg(false)
 		},
-		confirmActionName: "Swap now",
-		title: "ADX Token upgrade",
+		confirmActionName: t("legacy.swapNow"),
+		title: t("legacy.adxToUpgrade"),
 		content
 	})
 	return (
@@ -104,8 +119,7 @@ export default function LegacyADXSwapDialog(
 			{dialog}
 			<Snackbar open={isSwapInPrg}>
 				<MuiAlert elevation={6} variant="filled" severity="success">
-					Token swap is in progress! It will be completed once all your pending
-					transactions have been confirmed.
+					{t("legacy.swapInProgress")}
 				</MuiAlert>
 			</Snackbar>
 		</>
