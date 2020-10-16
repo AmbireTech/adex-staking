@@ -31,6 +31,7 @@ import NewGaslessBondForm from "./NewGaslessBondForm"
 import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
 import ConfirmationDialog from "./ConfirmationDialog"
+import { useTranslation, Trans } from "react-i18next"
 
 const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
@@ -68,8 +69,8 @@ const useStyles = makeStyles(theme => {
 })
 
 const Gasless = () => {
+	const { t } = useTranslation()
 	const classes = useStyles()
-
 	const [bondOpen, setBondOpen] = useState(false)
 	const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [bond, setBond] = useState({})
@@ -87,7 +88,7 @@ const Gasless = () => {
 		identityAddr,
 		loaded,
 		canExecuteGasless,
-		canExecuteGaslessError,
+		canExecuteGaslessError: canExecuteGaslessErrorKey,
 		tomRewardADX,
 		userBonds
 	} = stats
@@ -97,14 +98,27 @@ const Gasless = () => {
 	const walletConnected = identityAddr && loaded
 	const disabled = !walletConnected || !canExecuteGasless
 	const disableReStake = disabled || !hasEnoughForReStake
-	const canExecuteGaslessReStakeError = (canExecuteGaslessError || "")
+	const canExecuteGaslessReStakeErrorKey = (canExecuteGaslessErrorKey || "")
 		.toLowerCase()
 		.includes("needs to have at least")
-		? `Insufficient gasless address balance`
-		: canExecuteGaslessError ||
-		  `Not enough rewards (min rewards for gasless re-stake ${formatADXPretty(
-				MIN_GASLESS_RE_STAKE_REWARDS
-		  )} ADX)`
+		? "errors.insufficientGaslessAddrBalance"
+		: canExecuteGaslessErrorKey || (
+				<Trans
+					i18nKey="errors.minGaslessReStake"
+					values={{
+						amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
+						currency: "ADX"
+					}}
+				/>
+		  )
+
+	const canExecuteGaslessReStakeError = !!canExecuteGaslessReStakeErrorKey
+		? t(canExecuteGaslessReStakeErrorKey)
+		: ""
+	const canExecuteGaslessError = !!canExecuteGaslessErrorKey
+		? t(canExecuteGaslessErrorKey)
+		: ""
+
 	const showReStake =
 		walletConnected &&
 		userBonds &&
@@ -118,7 +132,12 @@ const Gasless = () => {
 	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
 			addSnack(
-				`Gasless transactions ${res.txId} sent!`,
+				<Trans
+					i18nKey="gasless.txSent"
+					values={{
+						txId: res.txId
+					}}
+				/>,
 				"success",
 				20000,
 				<ExternalAnchor
@@ -127,7 +146,7 @@ const Gasless = () => {
 					target="_blank"
 					href={`https://etherscan.io/tx/${res.txId}`}
 				>
-					See on Etherscan
+					{t("common.seeOnEtherscan")}
 				</ExternalAnchor>
 			)
 		}
@@ -161,7 +180,7 @@ const Gasless = () => {
 	return (
 		<Box>
 			<SectionHeader
-				title={"Gasless Staking"}
+				title={t("gasless.staking")}
 				actions={
 					<Box
 						color="text.main"
@@ -188,7 +207,7 @@ const Gasless = () => {
 						>
 							<Box>
 								<Typography component="div" variant="h5">
-									{"Gasless account address"}
+									{t("gasless.accountAddr")}
 								</Typography>
 							</Box>
 							<Box
@@ -217,8 +236,7 @@ const Gasless = () => {
 										classes={{ root: classes.address }}
 										{...(!identityAddr ? { style: { cursor: "pointer" } } : {})}
 									>
-										{identityAddr ||
-											"connect wallet to see gasless staking address"}
+										{identityAddr || t("gasless.connectWalletToSeeAddr")}
 									</Box>
 									{identityAddr && (
 										<Box m={1}>
@@ -229,7 +247,12 @@ const Gasless = () => {
 												onClick={() => {
 													copy(identityAddr)
 													addSnack(
-														`Gasless Staking address ${identityAddr} copied to clipboard`,
+														<Trans
+															i18nKey="gasless.copiedToClipboard"
+															values={{
+																identityAddr
+															}}
+														/>,
 														"success"
 													)
 												}}
@@ -240,32 +263,29 @@ const Gasless = () => {
 									)}
 								</Box>
 								<Box m={1}>
-									<Tooltip
-										title={`
-												This is the address of your gasless account: 
-												it's an automatically calculated (CREATE2) smart contract
-												address that will be created once the first transaction is issued.
-												`}
-									>
+									<Tooltip title={t("gasless.addrTooltip")}>
 										<HelpIcon color="primary" />
 									</Tooltip>
 								</Box>
 							</Box>
 							<Box className={classes.bullets}>
 								<Typography variant="h6" gutterBottom>
-									{" • "} Deposit ADX to this address. When there's a minimum of{" "}
-									<strong>{`${formatADXPretty(
-										MIN_BALANCE_FOR_GASLESS_TXNS
-									)} ADX`}</strong>{" "}
-									deposited, you can click "Stake" and that amount will be
-									staked without gas fees.
+									{" • "}
+									<Trans
+										i18nKey="gasless.bullet1"
+										values={{
+											minBalance: formatADXPretty(MIN_BALANCE_FOR_GASLESS_TXNS),
+											currency: "ADX"
+										}}
+									/>
 								</Typography>
 								<Typography variant="h6" gutterBottom>
-									{" • "} You can send ADX from wallets and exchanges as many
-									times as you want before clicking "Stake".
+									{" • "}
+									<Trans i18nKey="gasless.bullet2" />
 								</Typography>
 								<Typography variant="h6" gutterBottom>
-									{" • "} Gasless staking is limited to one stake in 12 hours.
+									{" • "}
+									<Trans i18nKey="gasless.bullet3" count={12} />
 								</Typography>
 							</Box>
 							<Box display="flex" flexDirection="row" flexWrap="wrap">
@@ -276,13 +296,12 @@ const Gasless = () => {
 												{StatsCard({
 													size: "large",
 													loaded,
-													title: "ADX BALANCE ON GASLESS ADDRESS",
+													title: t("gasless.adxBalanceOnAddr"),
 													subtitle: userIdentityBalance
 														? formatADXPretty(userIdentityBalance) + " ADX"
 														: "",
 													extra:
-														canExecuteGaslessError ||
-														"✅ Ready for gasless stake"
+														canExecuteGaslessError || t("gasless.readyForStake")
 												})}
 											</Box>
 										</Box>
@@ -293,7 +312,7 @@ const Gasless = () => {
 											title={
 												walletConnected
 													? canExecuteGaslessError || ""
-													: "Connect wallet"
+													: t("common.connectWallet")
 											}
 										>
 											<Box display="inline-block">
@@ -307,7 +326,7 @@ const Gasless = () => {
 													onClick={() => setBondOpen(true)}
 													disabled={disabled}
 												>
-													{"Stake"}
+													{t("common.stake")}
 												</Button>
 											</Box>
 										</Tooltip>
@@ -320,13 +339,13 @@ const Gasless = () => {
 												{StatsCard({
 													size: "large",
 													loaded,
-													title: "ADX REWARDS READY FOR RE-STAKE",
+													title: t("gasless.rewardsReadyForReStake"),
 													subtitle: tomRewardADX
 														? formatADXPretty(tomRewardADX) + " ADX"
 														: "",
 													extra:
 														canExecuteGaslessReStakeError ||
-														"✅ Ready for gasless re-stake"
+														t("gasless.readyForReStake")
 												})}
 											</Box>
 										</Box>
@@ -337,7 +356,7 @@ const Gasless = () => {
 													title={
 														walletConnected
 															? canExecuteGaslessReStakeError || ""
-															: "Connect wallet"
+															: t("common.connectWallet")
 													}
 												>
 													<Box display="inline-block">
@@ -351,7 +370,7 @@ const Gasless = () => {
 															onClick={() => setReStakeOpen(true)}
 															disabled={disableReStake}
 														>
-															{"RE-STAKE REWARDS"}
+															{t("gasless.reStakeRewards")}
 														</Button>
 													</Box>
 												</Tooltip>
@@ -363,18 +382,19 @@ const Gasless = () => {
 							<Box mt={2}>
 								{!disabled && (
 									<Box mt={2}>
-										{`Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient.
-										Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load.
-
-										You can see all transactions of your gasless address `}
-										<ExternalAnchor
-											color="inherit"
-											id="new-bond-form-adex-network-tos"
-											target="_blank"
-											href={`https://etherscan.io/address/${identityAddr}`}
-										>
-											{" HERE"}
-										</ExternalAnchor>
+										<Trans
+											i18nKey="gasless.info"
+											components={{
+												external: (
+													<ExternalAnchor
+														color="inherit"
+														id="new-bond-form-adex-network-tos"
+														target="_blank"
+														href={`https://etherscan.io/address/${identityAddr}`}
+													/>
+												)
+											}}
+										/>
 									</Box>
 								)}
 							</Box>
@@ -407,20 +427,22 @@ const Gasless = () => {
 					onConfirm: () => {
 						onReStake()
 					},
-					confirmActionName: "Re-stake",
+					confirmActionName: t("common.reStake"),
 					content: (
-						<>
-							Are you sure you want to re-stake your earnings of{" "}
-							{formatADXPretty(tomRewardADX ? tomRewardADX : ZERO)} ADX?
-							<br />
-							<br />
-							Please be aware that this means that this amount will be locked up
-							for at least {UNBOND_DAYS} days.
-							<br />
-							{!stats.userBonds.find(x => x.status === "Active")
-								? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
-								: ""}
-						</>
+						<Trans
+							i18nKey="dialogs.reStakeConfirmation"
+							values={{
+								amount: formatADXPretty(tomRewardADX ? tomRewardADX : ZERO),
+								currency: "ADX",
+								unbondDays: UNBOND_DAYS,
+								extraInfo: !stats.userBonds.find(x => x.status === "Active")
+									? t("dialogs.reActivatingInfo")
+									: ""
+							}}
+							components={{
+								box: <Box mb={2}></Box>
+							}}
+						/>
 					)
 				})}
 			</Box>

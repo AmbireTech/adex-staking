@@ -41,7 +41,10 @@
     "depositCurrency": "Deposit {{currency}}",
     "areYouSure": "Are you sure?",
     "ok": "Ok",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "created": "Created",
+    "status": "Status",
+    "seeOnEtherscan": "See on Etherscan"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -80,6 +83,34 @@
     "depositsLimitReached": "Pool deposits limit reached",
     "labelADXAmount": "ADX amount"
   },
+  "bonds": {
+    "bondAmount": "Bond amount",
+    "canUnbond": "Can unbond",
+    "canUnbondIn": "Can unbond in {{count}} day",
+    "canUnbondIn_plural": "Can unbond in {{count}} days",
+    "requestUnbond": "Request Unbond",
+    "bondExplanationMsg": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} day lock-up period.",
+    "bondExplanationMsg_plural": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} days lock-up period."
+  },
+  "gasless": {
+    "staking": "Gasless Staking",
+    "accountAddr": "Gasless account address",
+    "txSent": "Gasless transactions {{txId}} sent!",
+    "connectWalletToSeeAddr": "connect wallet to see gasless staking address",
+    "copiedToClipboard": "Gasless Staking address {{identityAddr}} copied to clipboard",
+    "addrTooltip": "This is the address of your gasless account: it's an automatically calculated (CREATE2) smart contract address that will be created once the first transaction is issued.",
+    "bullet1": "Deposit ADX to this address.When there's a minimum of <strong> {{minBalance}} {{currency}} </strong> deposited, you can click \"Stake\" and that amount will be staked without gas fees.",
+    "bullet2": "You can send ADX from wallets and exchanges as many times as you want before clicking \"Stake\".",
+    "bullet3": "Gasless staking is limited to one stake in {{count}} hour",
+    "bullet3_plural": "Gasless staking is limited to one stake in {{count}} hours",
+    "adxBalanceOnAddr": "ADX BALANCE ON GASLESS ADDRESS",
+    "readyForStake": "✅ Ready for gasless stake",
+    "readyForReStake": "✅ Ready for gasless re-stake",
+    "rewardsReadyForReStake": "ADX REWARDS READY FOR RE-STAKE",
+    "reStakeRewards": "RE-STAKE REWARDS",
+    "info": "Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient. Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load. You can see all transactions of your gasless address <external> HERE </external>"
+   
+  },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
     "lowADXAmount": "Insufficient ADX amount!",
@@ -97,7 +128,9 @@
     "gaslessStakingTempOff": "Gasless staking temporary unavailable",
     "noChannelsToEarnFrom": "No channels to earn from",
     "noActiveBonds": "You have no active bonds",
-    "relayerInternal": "Relayer: internal error"
+    "relayerInternal": "Relayer: internal error",
+    "insufficientGaslessAddrBalance": "Insufficient gasless address balance",
+    "minGaslessReStake": "Not enough rewards (min rewards for gasless re-stake {{amount}} {{currency}} "
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
@@ -105,8 +138,10 @@
     "signAllTransactions": "Please sign all pending MetaMask actions!"
   },
   "dialogs": {
+    "selectWallet": "Select Wallet",
+    "connectWith": "Connect with {{wallet}}",
     "bondConfirmation": "<box> Are you sure you want to request unbonding of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to withdraw your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> </ol>",
-    "reStakeConfirmation": "<box> Are you sure you want to stake your earnings of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
+    "reStakeConfirmation": "<box> Are you sure you want to re-stake your earnings of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
     "reActivatingInfo": "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
   }
 }
