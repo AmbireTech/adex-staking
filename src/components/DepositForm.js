@@ -136,7 +136,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						fullWidth
 						id={`new-${actionName}-form-amount-field`}
 						required
-						label={t("deposits.labelADXAmount")}
+						label={t("common.labelADXAmount")}
 						type="text"
 						value={actionAmount}
 						error={amountErr}

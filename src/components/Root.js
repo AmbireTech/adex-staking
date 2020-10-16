@@ -197,7 +197,6 @@ export default function Root() {
 
 					{ChooseWallet({
 						open: !!connectWallet,
-						content: "",
 						handleClose: () => {
 							setConnectWallet(null)
 						},
