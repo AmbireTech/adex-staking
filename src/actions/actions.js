@@ -432,7 +432,7 @@ export async function getGaslessInfo(addr) {
 		console.error(err)
 		return {
 			canExecuteGasless: false,
-			canExecuteGaslessError: "Gasless staking temporary unavailable"
+			canExecuteGaslessError: "errors.gaslessStakingTempOff"
 		}
 	}
 }
@@ -445,10 +445,10 @@ export async function createNewBond(
 ) {
 	if (!poolId) return
 	if (!stats.userBalance) return
-	if (amount.gt(stats.userBalance)) throw new Error("amount too large")
+	if (amount.gt(stats.userBalance)) throw new Error("errors.amountTooLarge")
 
 	const signer = await getSigner(chosenWalletType)
-	if (!signer) throw new Error("failed to get signer")
+	if (!signer) throw new Error("errors.failedToGetSigner")
 
 	const walletAddr = await signer.getAddress()
 	const { addr } = getUserIdentity(walletAddr)
@@ -524,7 +524,7 @@ export async function onUnbondOrRequest(
 	const bond = [amount, poolId, nonce || ZERO]
 	if (isUnbond) {
 		const signer = await getSigner(chosenWalletType)
-		if (!signer) throw new Error("failed to get signer")
+		if (!signer) throw new Error("errors.failedToGetSigner")
 		const walletAddr = await signer.getAddress()
 		await executeOnIdentity(chosenWalletType, [
 			[Staking.address, Staking.interface.functions.unbond.encode([bond])],
@@ -545,7 +545,7 @@ export async function onUnbondOrRequest(
 
 export async function claimRewards(chosenWalletType, rewardChannels) {
 	const signer = await getSigner(chosenWalletType)
-	if (!signer) throw new Error("failed to get signer")
+	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 
 	// @TODO: this is obsolete, it should be removed at some point (when no more DAI rewards on wallets are left)
@@ -609,7 +609,7 @@ export async function restake(
 			x.channelArgs.tokenAddr === ADDR_ADX &&
 			(gasless ? isTomChannelId(x) : true)
 	)
-	if (!channels.length) throw new Error("no channels to earn from")
+	if (!channels.length) throw new Error("errors.noChannelsToEarnFrom")
 
 	// @TODO how does the user determine the pool here? For now there's only one, but after?
 	const collected = channels
@@ -618,7 +618,7 @@ export async function restake(
 	const userBond =
 		userBonds.find(x => x.status === "Active") ||
 		userBonds.find(x => x.status === "UnbondRequested")
-	if (!userBond) throw new Error("You have no active bonds")
+	if (!userBond) throw new Error("errors.noActiveBonds")
 	const { amount, poolId, nonce } = userBond
 	const bond = [amount, poolId, nonce]
 	const newBond = [amount.add(collected), poolId, nonce]
@@ -669,7 +669,7 @@ export async function executeOnIdentity(
 	gasless
 ) {
 	const signer = await getSigner(chosenWalletType)
-	if (!signer) throw new Error("failed to get signer")
+	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
@@ -703,7 +703,7 @@ export async function executeOnIdentity(
 			}),
 			headers: { "Content-Type": "application/json" }
 		})
-		if (res.status === 500) throw new Error("Relayer: internal error")
+		if (res.status === 500) throw new Error("errors.relayerInternal")
 		return res.json()
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))

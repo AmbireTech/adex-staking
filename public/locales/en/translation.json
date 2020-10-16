@@ -90,9 +90,14 @@
     "noWithdrawAmount": "No withdraw amount provided",
     "zeroDeposit": "Can not deposit 0 ADX",
     "amountTooLarge": "Amount too large",
+    "failedToGetSigner": "Failed to get signer",
     "authDeniedByUser": "Error! User denied authorization!",
     "unexpectedError": "Error! Unspecified error occurred.",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "gaslessStakingTempOff": "Gasless staking temporary unavailable",
+    "noChannelsToEarnFrom": "No channels to earn from",
+    "noActiveBonds": "You have no active bonds",
+    "relayerInternal": "Relayer: internal error"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
