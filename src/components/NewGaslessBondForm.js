@@ -14,12 +14,14 @@ import {
 import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
 import StatsCard from "./StatsCard"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function NewGaslessBondForm({
 	bond = {},
 	onStake,
 	chosenWalletType
 }) {
+	const { t } = useTranslation()
 	const activePool = getPool(bond.poolId) || {}
 	const [confirmation, setConfirmation] = useState(false)
 
@@ -28,29 +30,31 @@ export default function NewGaslessBondForm({
 		setConfirmation(false)
 	}
 
-	const stakingRulesFrag = STAKING_RULES_URL ? (
-		<>
-			&nbsp;and{" "}
-			<a target="_blank" rel="noopener noreferrer" href={STAKING_RULES_URL}>
-				staking conditions
-			</a>
-		</>
-	) : (
-		<></>
-	)
 	const confirmationLabel = (
-		<>
-			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
-			am familiar with the&nbsp;
-			<ExternalAnchor
-				id="new-bond-form-adex-network-tos"
-				target="_blank"
-				href="https://www.adex.network/tos/"
-			>
-				Terms and conditions
-			</ExternalAnchor>
-			{stakingRulesFrag}.
-		</>
+		<Trans
+			i18nKey="bonds.confirmationLabel"
+			values={{
+				unbondDays: UNBOND_DAYS
+			}}
+			components={{
+				e1: (
+					<ExternalAnchor
+						id="new-bond-form-adex-network-tos"
+						target="_blank"
+						href="https://www.adex.network/tos/"
+					/>
+				),
+				e2: STAKING_RULES_URL ? (
+					<ExternalAnchor
+						id="new-bond-form-adex-staking-rules"
+						target="_blank"
+						href={STAKING_RULES_URL}
+					/>
+				) : (
+					<></>
+				)
+			}}
+		/>
 	)
 
 	return (
@@ -64,35 +68,48 @@ export default function NewGaslessBondForm({
 			bgcolor="background.paper"
 			overflow="auto"
 		>
-			<h2>Create a bond - gasless</h2>
+			<Typography variant="h2">{t("gaslsess.createNewBond")}</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Box mb={1.5}>
 						{StatsCard({
 							size: "large",
 							loaded: true,
-							title: "ADX BALANCE ON GASLESS ADDRESS",
+							title: t("gasless.adxBalanceOnAddr"),
 							subtitle: bond.amount
 								? formatADXPretty(bond.amount) + " ADX"
 								: "",
-							extra: `Pool: ${activePool.label}`
+							extra: (
+								<Trans
+									i18nKey="common.poolWithName"
+									values={{
+										name: activePool.label
+									}}
+								/>
+							)
 						})}
 					</Box>
 				</Grid>
 
-				{activePool ? (
+				{!!activePool && (
 					<Grid item xs={12}>
 						<Grid item xs={12}>
-							<Typography variant="h6">Pool reward policy:</Typography>
-							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
+							<Typography variant="h6">
+								{t("common.poolRewardPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.rewardPolicy)}
+							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="h6">Pool slashing policy:</Typography>
-							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+							<Typography variant="h6">
+								{t("common.poolSlashingPolicy")}
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.slashPolicy)}
+							</Typography>
 						</Grid>
 					</Grid>
-				) : (
-					""
 				)}
 				<Grid item xs={12}>
 					<FormControlLabel
@@ -117,7 +134,7 @@ export default function NewGaslessBondForm({
 							variant="contained"
 							onClick={onAction}
 						>
-							Stake ADX
+							{t("bonds.stakeADX")}
 						</Button>
 					</FormControl>
 				</Grid>
