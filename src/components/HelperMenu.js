@@ -1,8 +1,10 @@
 import React, { useState } from "react"
 import { Button, Menu, Link, MenuItem } from "@material-ui/core"
 import HelpIcon from "@material-ui/icons/HelpOutline"
+import { useTranslation } from "react-i18next"
 
 export const Help = () => {
+	const { t } = useTranslation()
 	const [menuEl, setMenuEl] = useState(null)
 	const openHelpMenu = ev => {
 		setMenuEl(ev.currentTarget)
@@ -18,7 +20,7 @@ export const Help = () => {
 				startIcon={<HelpIcon size="large" />}
 				onClick={openHelpMenu}
 			>
-				Help
+				{t("help.help")}
 			</Button>
 			<Menu
 				id="help-menu-menu"
@@ -36,7 +38,7 @@ export const Help = () => {
 					href="https://www.adex.network/tos"
 					target="_blank"
 				>
-					<MenuItem onClick={closeHelpMenu}>Terms of Service</MenuItem>
+					<MenuItem onClick={closeHelpMenu}>{t("common.tos")}</MenuItem>
 				</Link>
 				<Link
 					id="help-menu-external-link-adex-network-staking-user-guide"
@@ -44,7 +46,7 @@ export const Help = () => {
 					href="https://help.adex.network/hc/en-us/categories/360002707720-Staking"
 					target="_blank"
 				>
-					<MenuItem onClick={closeHelpMenu}>User Guide</MenuItem>
+					<MenuItem onClick={closeHelpMenu}>{t("help.userGuide")}</MenuItem>
 				</Link>
 				<Link
 					id="help-menu-external-link-adex-network-staking-source-code"
@@ -52,7 +54,7 @@ export const Help = () => {
 					href="https://github.com/adexnetwork/adex-protocol-eth"
 					target="_blank"
 				>
-					<MenuItem onClick={closeHelpMenu}>Source Code</MenuItem>
+					<MenuItem onClick={closeHelpMenu}>{t("help.sourceCode")}</MenuItem>
 				</Link>
 				<Link
 					id="help-menu-external-link-adex-network-audits"
@@ -60,7 +62,7 @@ export const Help = () => {
 					href="https://github.com/adexnetwork/adex-protocol-eth#audits"
 					target="_blank"
 				>
-					<MenuItem onClick={closeHelpMenu}>Audits</MenuItem>
+					<MenuItem onClick={closeHelpMenu}>{t("help.audits")}</MenuItem>
 				</Link>
 				<Link
 					id="help-menu-external-link-adex-wher-to-buy-markets"
@@ -68,7 +70,7 @@ export const Help = () => {
 					href="https://coinmarketcap.com/currencies/adx-net/markets/"
 					target="_blank"
 				>
-					<MenuItem onClick={closeHelpMenu}>Where to buy ADX</MenuItem>
+					<MenuItem onClick={closeHelpMenu}>{t("help.whereToBuy")}</MenuItem>
 				</Link>
 			</Menu>
 		</>

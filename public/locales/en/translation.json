@@ -44,7 +44,8 @@
     "cancel": "Cancel",
     "created": "Created",
     "status": "Status",
-    "seeOnEtherscan": "See on Etherscan"
+    "seeOnEtherscan": "See on Etherscan",
+    "tos": "Terms of service"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -143,5 +144,12 @@
     "bondConfirmation": "<box> Are you sure you want to request unbonding of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to withdraw your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> </ol>",
     "reStakeConfirmation": "<box> Are you sure you want to re-stake your earnings of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
     "reActivatingInfo": "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
+  },
+  "help": {
+    "help": "help",
+    "userGuide": "User Guide",
+    "sourceCode": "Source Code",
+    "audits": "Audits",
+    "whereToBuy": "Where to buy ADX"
   }
 }
