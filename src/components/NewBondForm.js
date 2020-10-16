@@ -74,7 +74,9 @@ export default function NewBondForm({
 						target="_blank"
 						href={STAKING_RULES_URL}
 					/>
-				) : null
+				) : (
+					<></>
+				)
 			}}
 		/>
 	)
@@ -118,12 +120,6 @@ export default function NewBondForm({
 		setBond({ ...bond, poolId: newBondPool })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newBondPool])
-
-	const farmer = (
-		<span role="img" aria-label="farmer">
-			🌾
-		</span>
-	)
 
 	return (
 		<Box
@@ -200,36 +196,56 @@ export default function NewBondForm({
 						</Select>
 					</FormControl>
 				</Grid>
-				{activePool ? (
+				{!!activePool && (
 					<Grid item xs={12}>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolRewardPolicy")}:
 							</Typography>
-							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
+							<Typography variant="body1">
+								{t(activePool.rewardPolicy)}
+							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">
 								{t("common.poolSlashingPolicy")}:
 							</Typography>
-							<Typography variant="body1">{activePool.slashPolicy}</Typography>
+							<Typography variant="body1">
+								{t(activePool.slashPolicy)}
+							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
 							<Typography variant="body1">
-								{farmer} Current annual yield of{" "}
-								{(poolStats.totalAPY * 100).toFixed(2)}% {farmer}
+								<Trans
+									i18nKey="bonds.currentYield"
+									values={{
+										apy: (poolStats.totalAPY * 100).toFixed(2),
+										sign: "%"
+									}}
+									components={{
+										farmer: (
+											<span role="img" aria-label="farmer">
+												🌾
+											</span>
+										)
+									}}
+								/>
 							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
-								<b>{`Please sign ALL ${chosenWalletType.name ||
-									"Metamask"} transactions that pop up`}</b>
+								<strong>
+									<Trans
+										i18nKey="messages.signAllTransactions"
+										values={{
+											wallet: chosenWalletType.name || ""
+										}}
+									/>
+								</strong>
 							</Typography>
 						</Grid>
 					</Grid>
-				) : (
-					""
 				)}
 				<Grid item xs={12}>
 					<FormControlLabel
@@ -263,7 +279,7 @@ export default function NewBondForm({
 							variant="contained"
 							onClick={onAction}
 						>
-							Stake ADX
+							{t("bonds.stakeADX")}
 						</Button>
 					</FormControl>
 				</Grid>
