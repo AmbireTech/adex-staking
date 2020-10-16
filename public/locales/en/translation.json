@@ -25,6 +25,8 @@
     "stake": "Stake",
     "bond": "Bond",
     "bonds": "Bonds",
+    "unbond": "Unbond",
+    "unbonds": "Unbonds",
     "addNewDeposit": "Add new deposit",
     "balance": "Balance",
     "balances": "Balances",
@@ -36,7 +38,10 @@
     "poolRewardPolicy": "Pool reward policy",
     "poolSlashingPolicy": "Pool slashing policy",
     "withdrawCurrency": "Withdraw {{currency}}",
-    "depositCurrency": "Deposit {{currency}}"
+    "depositCurrency": "Deposit {{currency}}",
+    "areYouSure": "Are you sure?",
+    "ok": "Ok",
+    "cancel": "Cancel"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -79,6 +84,24 @@
     "invalidAmountInput": "Invalid amount input!",
     "lowADXAmount": "Insufficient ADX amount!",
     "lessDanMinPoolADX": "ADX amount less than minimum required for selected pool!",
-    "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!"
+    "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!",
+    "statsNotProvided": "Stats not provided",
+    "noDepositAmount": "No deposit amount provided",
+    "noWithdrawAmount": "No withdraw amount provided",
+    "zeroDeposit": "Can not deposit 0 ADX",
+    "amountTooLarge": "Amount too large",
+    "authDeniedByUser": "Error! User denied authorization!",
+    "unexpectedError": "Error! Unspecified error occurred.",
+    "unknownError": "Unknown error"
+  },
+  "messages": {
+    "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
+    "connectToMainnet": "Please, connect to mainnet ethereum network.",
+    "signAllTransactions": "Please sign all pending MetaMask actions!"
+  },
+  "dialogs": {
+    "bondConfirmation": "<box> Are you sure you want to request unbonding of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to withdraw your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> </ol>",
+    "reStakeConfirmation": "<box> Are you sure you want to stake your earnings of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
+    "reActivatingInfo": "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
   }
 }

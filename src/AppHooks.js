@@ -79,9 +79,7 @@ export default function Root() {
 	const [toRestake, setToRestake] = useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [openDoingTx, setOpenDoingTx] = useState(false)
-	const [snackbarErr, setSnackbarErr] = useState(
-		"Error! Unspecified error occured."
-	)
+	const [snackbarErr, setSnackbarErr] = useState("errors.unexpectedError")
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
 	const [chosenWalletTypeName, setChosenWalletTypeName] = useState(null)
@@ -99,7 +97,7 @@ export default function Root() {
 				console.error("loadStats", e)
 				setOpenErr(true)
 				if (e.code === 4001) {
-					setSnackbarErr("Error! User denied authorization!")
+					setSnackbarErr("errors.authDeniedByUser")
 				}
 			})
 	}, [chosenWalletType])
@@ -154,7 +152,7 @@ export default function Root() {
 			console.error(e)
 			setOpenDoingTx(false)
 			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
+			setSnackbarErr(e.message || "errors.unknownError")
 		}
 	}
 	const onRequestUnbond = wrapDoingTxns(
