@@ -360,7 +360,6 @@ export async function loadBondStats(addr, identityAddr) {
 export async function getRewardChannels(rewardPool) {
 	const resp = await fetch(`${rewardPool.url}/fee-rewards`)
 	const rewardChannels = await resp.json()
-
 	return rewardChannels
 }
 
@@ -522,6 +521,7 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	const walletAddr = await signer.getAddress()
 
 	// @TODO: this is obsolete, it should be removed at some point (when no more DAI rewards on wallets are left)
+	/*
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	const legacyChannels = rewardChannels.filter(
 		channel => channel.claimFrom === walletAddr
@@ -536,6 +536,7 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 			channel.amount
 		)
 	}
+	*/
 
 	const identityChannels = rewardChannels.filter(
 		channel => channel.claimFrom !== walletAddr
