@@ -68,7 +68,7 @@ export default function NewGaslessBondForm({
 			bgcolor="background.paper"
 			overflow="auto"
 		>
-			<Typography variant="h2">{t("gaslsess.createNewBond")}</Typography>
+			<Typography variant="h2">{t("gasless.createNewBond")}</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Box mb={1.5}>
