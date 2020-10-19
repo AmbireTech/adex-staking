@@ -3,11 +3,23 @@ import { Box } from "@material-ui/core"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 	const { t } = useTranslation()
-	const { tomPoolStats } = stats
+	const {
+		tomPoolStats,
+		rewardChannels,
+		connectedWalletAddress,
+		totalRewardADX,
+		totalRewardDAI,
+		userBonds
+	} = stats
+
+	const identityChannels = rewardChannels.filter(
+		channel => channel.claimFrom !== connectedWalletAddress
+	)
+
 	return (
 		<Box width={1}>
 			<Box mb={1.5}>
@@ -56,10 +68,10 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 			<Box>
 				{RewardCard({
 					prices,
-					rewardChannels: stats.rewardChannels,
-					userBonds: stats.userBonds,
-					totalRewardADX: stats.totalRewardADX,
-					totalRewardDAI: stats.totalRewardDAI,
+					rewardChannels: identityChannels,
+					userBonds,
+					totalRewardADX,
+					totalRewardDAI,
 					onClaimRewards,
 					onRestake
 				})}
