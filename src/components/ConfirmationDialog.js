@@ -14,14 +14,16 @@ export default function ConfirmationDialog({
 	onDeny,
 	onConfirm,
 	content,
-	title = "common.areYouSure",
+	title,
 	confirmActionName
 }) {
 	const { t } = useTranslation()
 
 	return (
 		<Dialog open={isOpen} onClose={onDeny}>
-			<DialogTitle id="alert-dialog-title">{t(title)}</DialogTitle>
+			<DialogTitle id="alert-dialog-title">
+				{title || t("common.areYouSure")}
+			</DialogTitle>
 			<DialogContent>{content}</DialogContent>
 			<DialogActions>
 				<Button

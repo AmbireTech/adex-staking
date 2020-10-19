@@ -81,7 +81,7 @@ export default function Rewards() {
 		: !loaded
 		? t("common.loadingData")
 		: !rewards.length
-		? t("common.noRewards")
+		? t("rewards.noRewards")
 		: !selectedRewards.length
 		? t("common.noSelection")
 		: ""
