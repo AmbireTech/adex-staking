@@ -15,22 +15,22 @@ const App = () => {
 	const appHooks = useApp()
 	return (
 		<React.Fragment>
-			<MuiThemeProvider theme={themeMUI}>
-				<CssBaseline />
-				<AppContext.Provider value={appHooks}>
-					<Router>
-						<Root />
-					</Router>
-				</AppContext.Provider>
-			</MuiThemeProvider>
+			<AppContext.Provider value={appHooks}>
+				<Router>
+					<Root />
+				</Router>
+			</AppContext.Provider>
 		</React.Fragment>
 	)
 }
 
 export default () => (
-	<Suspense fallback={<Loading />}>
-		<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
-			<App />
-		</Web3ReactProvider>
-	</Suspense>
+	<MuiThemeProvider theme={themeMUI}>
+		<CssBaseline />
+		<Suspense fallback={<Loading />}>
+			<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
+				<App />
+			</Web3ReactProvider>
+		</Suspense>
+	</MuiThemeProvider>
 )

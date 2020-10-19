@@ -52,6 +52,7 @@ export const POOL_EMPTY_STATS = {
 }
 
 export const EMPTY_STATS = {
+	connectedWalletAddress: null,
 	loaded: false,
 	userBonds: [],
 	userBalance: ZERO,
@@ -192,19 +193,24 @@ export async function getPoolStats(pool, prices) {
 		x => x.channelArgs.tokenAddr !== ADDR_ADX
 	)
 
-	const currentActiveIncentiveChannel = adxIncentiveRewardsChannels.sort(
+	const currentActiveIncentiveChannels = adxIncentiveRewardsChannels.sort(
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
-	)[0]
+	)
+
 	const lastFeeRewardChannel = feeRewardsChannels.sort(
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
 	)[0]
 
-	const currentAdxIncentiveAPY = currentActiveIncentiveChannel
-		? getIncentiveChannelCurrentAPY({
-				channel: currentActiveIncentiveChannel,
+	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
+		(totalAPY, channel) =>
+			totalAPY +
+			getIncentiveChannelCurrentAPY({
+				channel,
 				totalStake
-		  })
-		: 0
+			}),
+		0
+	)
+
 	const lastDaiFeesAPY = getValidatorFeesAPY({
 		channel: lastFeeRewardChannel,
 		totalStake,
@@ -393,9 +399,12 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 			const outstandingReward = bigNumberify(
 				rewardChannel.balances[claimFrom]
 			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
-			if (outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD)) return null
 			const type =
 				rewardChannel.channelArgs.tokenAddr === ADDR_ADX ? "incentive" : "fees"
+
+			// Min threshold only for fees channels
+			if (type === "fees" && outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD))
+				return null
 
 			return {
 				...rewardChannel,
@@ -548,7 +557,6 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	const walletAddr = await signer.getAddress()
 
 	// @TODO: this is obsolete, it should be removed at some point (when no more DAI rewards on wallets are left)
-	/*
 	const coreWithSigner = new Contract(ADDR_CORE, CoreABI, signer)
 	const legacyChannels = rewardChannels.filter(
 		channel => channel.claimFrom === walletAddr
@@ -563,7 +571,6 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 			channel.amount
 		)
 	}
-	*/
 
 	const identityChannels = rewardChannels.filter(
 		channel => channel.claimFrom !== walletAddr
