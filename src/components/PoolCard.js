@@ -161,12 +161,7 @@ export default function PoolCard({
 						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
-						text={
-							<Trans
-								i18nKey="pools.currentDailyYield"
-								values={{ yield: weeklyYield }}
-							/>
-						}
+						text={t("pools.currentDailyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
 						justify="center"
 						mb={3}

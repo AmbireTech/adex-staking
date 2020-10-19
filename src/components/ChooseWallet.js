@@ -42,14 +42,9 @@ export default function ChooseWallet({
 							<Avatar src={icon} />
 						</ListItemIcon>
 						<ListItemText
-							primary={
-								<Trans
-									i18nKey="dialogs.connectWith"
-									values={{
-										wallet: name
-									}}
-								/>
-							}
+							primary={t("dialogs.connectWith", {
+								wallet: name
+							})}
 						/>
 					</ListItem>
 				))}

@@ -154,13 +154,10 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								onAmountChange(formatADX(maxAmount))
 							}}
 						>
-							<Trans
-								i18nKey="common.maxAmountBtn"
-								values={{
-									amount: formatADXPretty(maxAmount),
-									currency: "ADX"
-								}}
-							/>
+							{t("common.maxAmountBtn", {
+								amount: formatADXPretty(maxAmount),
+								currency: "ADX"
+							})}
 						</Button>
 					</Box>
 				</Grid>
@@ -240,21 +237,9 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 							variant="contained"
 							onClick={onAction}
 						>
-							{withdraw ? (
-								<Trans
-									i18nKey="common.withdrawCurrency"
-									values={{
-										currency: "ADX"
-									}}
-								/>
-							) : (
-								<Trans
-									i18nKey="common.depositCurrency"
-									values={{
-										currency: "ADX"
-									}}
-								/>
-							)}
+							{withdraw
+								? t("common.withdrawCurrency", { currency: "ADX" })
+								: t("common.depositCurrency", { currency: "ADX" })}
 						</Button>
 					</FormControl>
 				</Grid>

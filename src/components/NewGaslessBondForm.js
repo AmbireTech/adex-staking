@@ -79,14 +79,9 @@ export default function NewGaslessBondForm({
 							subtitle: bond.amount
 								? formatADXPretty(bond.amount) + " ADX"
 								: "",
-							extra: (
-								<Trans
-									i18nKey="common.poolWithName"
-									values={{
-										name: activePool.label
-									}}
-								/>
-							)
+							extra: t("common.poolWithName", {
+								name: activePool.label
+							})
 						})}
 					</Box>
 				</Grid>

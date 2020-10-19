@@ -102,18 +102,13 @@ const Gasless = () => {
 		.toLowerCase()
 		.includes("needs to have at least")
 		? "errors.insufficientGaslessAddrBalance"
-		: canExecuteGaslessErrorKey || (
-				<Trans
-					i18nKey="errors.minGaslessReStake"
-					values={{
-						amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
-						currency: "ADX"
-					}}
-				/>
-		  )
+		: canExecuteGaslessErrorKey || "errors.minGaslessReStake"
 
 	const canExecuteGaslessReStakeError = !!canExecuteGaslessReStakeErrorKey
-		? t(canExecuteGaslessReStakeErrorKey)
+		? t(canExecuteGaslessReStakeErrorKey, {
+				amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
+				currency: "ADX"
+		  })
 		: ""
 	const canExecuteGaslessError = !!canExecuteGaslessErrorKey
 		? t(canExecuteGaslessErrorKey)
@@ -132,12 +127,7 @@ const Gasless = () => {
 	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
 			addSnack(
-				<Trans
-					i18nKey="gasless.txSent"
-					values={{
-						txId: res.txId
-					}}
-				/>,
+				t("gasless.txSent", { txId: res.txId }),
 				"success",
 				20000,
 				<ExternalAnchor
@@ -247,12 +237,7 @@ const Gasless = () => {
 												onClick={() => {
 													copy(identityAddr)
 													addSnack(
-														<Trans
-															i18nKey="gasless.copiedToClipboard"
-															values={{
-																identityAddr
-															}}
-														/>,
+														t("gasless.copiedToClipboard", { identityAddr }),
 														"success"
 													)
 												}}
@@ -271,21 +256,18 @@ const Gasless = () => {
 							<Box className={classes.bullets}>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									<Trans
-										i18nKey="gasless.bullet1"
-										values={{
-											minBalance: formatADXPretty(MIN_BALANCE_FOR_GASLESS_TXNS),
-											currency: "ADX"
-										}}
-									/>
+									{t("gasless.bullet1", {
+										minBalance: formatADXPretty(MIN_BALANCE_FOR_GASLESS_TXNS),
+										currency: "ADX"
+									})}
 								</Typography>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									<Trans i18nKey="gasless.bullet2" />
+									{t("gasless.bullet2")}
 								</Typography>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									<Trans i18nKey="gasless.bullet3" count={12} />
+									{t("gasless.bullet3", { count: 12 })}
 								</Typography>
 							</Box>
 							<Box display="flex" flexDirection="row" flexWrap="wrap">

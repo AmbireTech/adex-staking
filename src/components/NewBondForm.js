@@ -162,13 +162,10 @@ export default function NewBondForm({
 								updateStakingAmountBN(maxAmount)
 							}}
 						>
-							<Trans
-								i18nKey="common.maxAmountBtn"
-								values={{
-									amount: formatADXPretty(maxAmount),
-									currency: "ADX"
-								}}
-							/>
+							{t("common.maxAmountBtn", {
+								amount: formatADXPretty(maxAmount),
+								currency: "ADX"
+							})}
 						</Button>
 					</Box>
 				</Grid>
@@ -236,12 +233,9 @@ export default function NewBondForm({
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
 								<strong>
-									<Trans
-										i18nKey="messages.signAllTransactions"
-										values={{
-											wallet: chosenWalletType.name || ""
-										}}
-									/>
+									{t("messages.signAllTransactions", {
+										wallet: chosenWalletType.name || ""
+									})}
 								</strong>
 							</Typography>
 						</Grid>

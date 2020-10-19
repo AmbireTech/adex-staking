@@ -29,7 +29,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 			const now = Date.now()
 			if (willUnlock > now) {
 				const days = Math.ceil((willUnlock - now) / 86400000)
-				return <Trans i18nKey="bonds.canUnbondIn" count={days} />
+				return t("bonds.canUnbondIn", { count: days })
 			} else {
 				return t("bonds.canUnbond")
 			}
@@ -110,7 +110,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 			{!stats.loaded || stats.userBonds.length ? null : (
 				<Box mt={2}>
 					<Alert variant="filled" severity="info">
-						<Trans i18nKey="bonds.bondExplanationMsg" count={UNBOND_DAYS} />
+						{t("bonds.bondExplanationMsg", { count: UNBOND_DAYS })}
 					</Alert>
 				</Box>
 			)}

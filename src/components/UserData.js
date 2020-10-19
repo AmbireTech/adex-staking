@@ -45,14 +45,9 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				{StatsCard({
 					loaded: stats.loaded,
 					title: t("userData.activeStake"),
-					titleInfo: (
-						<Trans
-							i18nKey="userData.activeStakeInfo"
-							values={{
-								apy: (tomPoolStats.totalAPY * 100).toFixed(2)
-							}}
-						/>
-					),
+					titleInfo: t("userData.activeStakeInfo", {
+						apy: (tomPoolStats.totalAPY * 100).toFixed(2)
+					}),
 					subtitle: formatADXPretty(stats.userTotalStake) + " ADX",
 					extra: getADXInUSDFormatted(prices, stats.userTotalStake)
 				})}

@@ -280,12 +280,9 @@ export default function Root() {
 							<Box>
 								<Alert severity="info">
 									<Box id="info-doingTx" p={2}>
-										<Trans
-											i18nKey="messages.signAllTransactions"
-											values={{
-												wallet: chosenWalletType.name || ""
-											}}
-										/>
+										{t("messages.signAllTransactions", {
+											wallet: chosenWalletType.name || ""
+										})}
 									</Box>
 								</Alert>
 							</Box>

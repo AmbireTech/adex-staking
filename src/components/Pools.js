@@ -60,12 +60,9 @@ const Pools = () => {
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							<Trans
-								i18nKey="pools.currentDailyYield"
-								values={{
-									yield: (tomAPY / 365).toFixed(4)
-								}}
-							/>
+							t("pools.currentDailyYield", {
+								yield: (tomAPY / 365).toFixed(4)
+							})
 						]}
 						onStakeBtnClick={() => {
 							setNewBondPool(POOLS[0].id)
@@ -75,9 +72,9 @@ const Pools = () => {
 						disabled={!canStake}
 						disabledInfo={t("pools.connectWalletToStake")}
 						lockupPeriodTitle={t("common.unbondPeriod")}
-						lockupPeriodInfo={
-							<Trans i18nKey="pools.lockupPeriodInfo" count={UNBOND_DAYS} />
-						}
+						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
+							count: UNBOND_DAYS
+						})}
 					/>
 
 					<PoolCard
@@ -98,12 +95,9 @@ const Pools = () => {
 						currentAPY={`${loyaltyPoolAPY.toFixed(2)} %`}
 						weeklyYield={`${(loyaltyPoolAPY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
-							<Trans
-								i18nKey="pools.currentDailyYield"
-								values={{
-									yield: (loyaltyPoolAPY / 365).toFixed(4)
-								}}
-							/>
+							t("pools.currentDailyYield", {
+								yield: (loyaltyPoolAPY / 365).toFixed(4)
+							})
 						]}
 						onStakeBtnClick={() => {
 							setNewBondOpen(true)
