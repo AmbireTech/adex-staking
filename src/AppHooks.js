@@ -95,11 +95,16 @@ export default function Root() {
 
 	const refreshStats = useCallback(async () => {
 		const newPrices = await getPrices()
+		const updatePrices =
+			newPrices && JSON.stringify(newPrices) !== JSON.stringify(prices)
 
 		try {
-			const newStats = await loadStats(chosenWalletType, newPrices || prices)
+			const newStats = await loadStats(
+				chosenWalletType,
+				updatePrices ? newPrices : prices
+			)
 			setStats(newStats)
-			if (newPrices && JSON.stringify(newPrices) !== JSON.stringify(prices)) {
+			if (updatePrices) {
 				setPrices(newPrices)
 			}
 		} catch (e) {
