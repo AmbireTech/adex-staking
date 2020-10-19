@@ -89,7 +89,7 @@ export default function Rewards() {
 	const disableReStakeMsg = !!disableActionsMsg
 		? disableActionsMsg
 		: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
-		? t("common.reStakeUnsupportedSelected")
+		? t("rewards.reStakeUnsupportedSelected")
 		: ""
 
 	useEffect(() => {

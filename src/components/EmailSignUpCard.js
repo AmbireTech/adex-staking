@@ -144,7 +144,7 @@ export default function EmailSignUp(props) {
 							<Trans
 								i18nKey="email.win"
 								values={{
-									rewards: "5x2000"
+									rewards: "5x1,000"
 								}}
 								components={{
 									strong: (
