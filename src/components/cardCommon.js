@@ -44,13 +44,13 @@ function AmountTextSingle({ text = "", fontSize }) {
 				<Box
 					component="div"
 					display="inline"
-					style={{ opacity: "0.6" }}
-					fontSize={fontSize * 0.83}
+					style={{ opacity: "0.69" }}
+					fontSize={fontSize * 0.69}
 				>
 					{decimalsSplit[0]}
 				</Box>
 				{decimalsSplit[1] && (
-					<Box component="div" display="inline" fontSize={fontSize * 0.83}>
+					<Box component="div" display="inline" fontSize={fontSize * 1}>
 						{" "}
 						{decimalsSplit[1]}
 					</Box>
@@ -71,7 +71,13 @@ function AmountText({ text = "", fontSize }) {
 	return (
 		<Fragment>
 			{multipleAmountsSplit
-				.map((x, i) => <AmountTextSingle text={x} fontSize={fontSize} />)
+				.map((x, i) => (
+					<AmountTextSingle
+						key={i + x.toString()}
+						text={x}
+						fontSize={fontSize}
+					/>
+				))
 				.reduce((prev, curr) => [prev, "; ", curr])}
 		</Fragment>
 	)
