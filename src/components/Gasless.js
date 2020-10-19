@@ -256,18 +256,26 @@ const Gasless = () => {
 							<Box className={classes.bullets}>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									{t("gasless.bullet1", {
-										minBalance: formatADXPretty(MIN_BALANCE_FOR_GASLESS_TXNS),
-										currency: "ADX"
-									})}
+									<Trans
+										i18nKey="gasless.bullet1"
+										values={{
+											minBalance: formatADXPretty(MIN_BALANCE_FOR_GASLESS_TXNS),
+											currency: "ADX"
+										}}
+									/>
 								</Typography>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									{t("gasless.bullet2")}
+									<Trans i18nKey="gasless.bullet2" />
 								</Typography>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
-									{t("gasless.bullet3", { count: 12 })}
+									<Trans
+										i18nKey="gasless.bullet3"
+										values={{
+											count: 12
+										}}
+									/>
 								</Typography>
 							</Box>
 							<Box display="flex" flexDirection="row" flexWrap="wrap">
