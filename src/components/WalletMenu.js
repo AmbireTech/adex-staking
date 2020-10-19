@@ -6,6 +6,7 @@ import { AccountBalanceWalletSharp as AccountBalanceWalletIcon } from "@material
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
 import copy from "copy-to-clipboard"
+import { useTranslation } from "react-i18next"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export const Wallet = () => {
+	const { t } = useTranslation()
 	const classes = useStyles()
 
 	const { setConnectWallet, chosenWalletType, addSnack, account } = useContext(
@@ -47,14 +49,14 @@ export const Wallet = () => {
 					disabled={chosenWalletType.name && !account}
 				>
 					<AccountBalanceWalletIcon className={classes.fabIcon} />
-					{"Connect Wallet"}
+					{t("common.connectWallet")}
 				</Fab>
 			) : (
 				<Chip
 					id="wallet-address-top-bar-copy"
 					onClick={() => {
 						copy(account)
-						addSnack(`Address ${account} copied to clipboard`, "success")
+						addSnack(t("messages.addrCopied", { account }), "success")
 					}}
 					clickable
 					classes={{ root: classes.chipRoot, icon: classes.chipIcon }}

@@ -146,11 +146,11 @@ export async function onLoyaltyPoolDeposit(
 	chosenWalletType,
 	adxDepositAmount
 ) {
-	if (!stats) throw new Error("Stats not provided")
-	if (!adxDepositAmount) throw new Error("No deposit amount provided")
-	if (adxDepositAmount.isZero()) throw new Error("Can not deposit 0 ADX")
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!adxDepositAmount) throw new Error("errors.noDepositAmount")
+	if (adxDepositAmount.isZero()) throw new Error("errors.zeroDeposit")
 	if (adxDepositAmount.gt(stats.userBalance))
-		throw new Error("amount too large")
+		throw new Error("errors.amountTooLarge")
 
 	const signer = await getSigner(chosenWalletType)
 	const walletAddr = await signer.getAddress()
@@ -183,13 +183,14 @@ export async function onLoyaltyPoolWithdraw(
 	chosenWalletType,
 	withdrawAmountADX
 ) {
-	if (!stats) throw new Error("Stats not provided")
+	if (!stats) throw new Error("errors.statsNotProvided")
 
 	const { balanceLpADX, balanceLpToken } = stats.loyaltyPoolStats
 
-	if (!withdrawAmountADX) throw new Error("No withdraw amount provided")
-	if (balanceLpADX.isZero()) throw new Error("Can not withdraw 0 ADX")
-	if (withdrawAmountADX.gt(balanceLpADX)) throw new Error("amount too large")
+	if (!withdrawAmountADX) throw new Error("errors.noWithdrawAmount")
+	if (balanceLpADX.isZero()) throw new Error("errors.zeroDeposit")
+	if (withdrawAmountADX.gt(balanceLpADX))
+		throw new Error("errors.amountTooLarge")
 
 	const signer = await getSigner(chosenWalletType)
 

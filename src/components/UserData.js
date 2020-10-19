@@ -2,13 +2,11 @@ import React from "react"
 import { Box } from "@material-ui/core"
 import RewardCard from "./RewardCard"
 import StatsCard from "./StatsCard"
-import {
-	formatADXPretty,
-	getApproxAPY,
-	getADXInUSDFormatted
-} from "../helpers/formatting"
+import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
+	const { t } = useTranslation()
 	const { tomPoolStats } = stats
 	return (
 		<Box width={1}>
@@ -16,7 +14,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				{StatsCard({
 					size: "large",
 					loaded: stats.loaded,
-					title: "MY ADX BALANCE",
+					title: t("userData.myAdxBalance"),
 					subtitle: stats.totalBalanceADX
 						? formatADXPretty(stats.totalBalanceADX) + " ADX"
 						: "",
@@ -34,8 +32,8 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 			<Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: "Available on wallet",
-					titleInfo: "Amount available on your wallet",
+					title: t("userData.onWallet"),
+					titleInfo: t("userData.onWalletInfo"),
 					subtitle: stats.userBalance
 						? formatADXPretty(stats.userBalance) + " ADX"
 						: "",
@@ -46,10 +44,10 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 			<Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: "Active Stake",
-					titleInfo: `Active, earning ${(tomPoolStats.totalAPY * 100).toFixed(
-						2
-					)}% APY`,
+					title: t("userData.activeStake"),
+					titleInfo: t("userData.activeStakeInfo", {
+						apy: (tomPoolStats.totalAPY * 100).toFixed(2)
+					}),
 					subtitle: formatADXPretty(stats.userTotalStake) + " ADX",
 					extra: getADXInUSDFormatted(prices, stats.userTotalStake)
 				})}

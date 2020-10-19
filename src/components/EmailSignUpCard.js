@@ -18,6 +18,7 @@ import {
 	extractJSONResponseFromHTML,
 	submitFormToMautic
 } from "../mauticActions"
+import { useTranslation, Trans } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -53,6 +54,8 @@ const useStyles = makeStyles(theme => {
 })
 
 export default function EmailSignUp(props) {
+	const { t } = useTranslation()
+
 	const [email, setEmail] = useState("")
 	const [mauticState, setMauticState] = useState({})
 	const [waiting, setWaiting] = useState(false)
@@ -80,7 +83,6 @@ export default function EmailSignUp(props) {
 	const handleSubmit = async () => {
 		handleValidationErrors()
 		if (validateEmail(email) && gdpr && tos) {
-			console.log("success")
 			setWaiting(true)
 			try {
 				const HTMLResponse = await submitFormToMautic({ ...props, email })
@@ -134,26 +136,32 @@ export default function EmailSignUp(props) {
 						color="white"
 						fontWeight={"fontWeightBold"}
 						fontSize={16}
-						text={"Subscribe for AdEx News &"}
+						text={t("email.subscribe")}
 						justify="center"
 					/>
 					<Box color="warning.main" fontWeight={"fontWeightBold"}>
 						<Typography component="span" variant="h6">
-							win
-							<Typography
-								className={classes.bold}
-								component="span"
-								variant="h5"
-							>
-								{` 5x1000 `}
-							</Typography>
-							ADX!
+							<Trans
+								i18nKey="email.win"
+								values={{
+									rewards: "5x2000"
+								}}
+								components={{
+									strong: (
+										<Typography
+											className={classes.bold}
+											component="span"
+											variant="h5"
+										></Typography>
+									)
+								}}
+							/>
 						</Typography>{" "}
 					</Box>
 					<Box width={1} mt={2}>
 						<TextField
 							id={"email-signup-email-input"}
-							label="Email"
+							label={t("email.email")}
 							variant="filled"
 							color="secondary"
 							onBlur={e =>
@@ -161,9 +169,7 @@ export default function EmailSignUp(props) {
 							}
 							onChange={e => setEmail(e.target.value)}
 							helperText={
-								errors.email
-									? "Please provide a valid email!"
-									: "Please provide your best email"
+								errors.email ? t("email.validEmail") : t("email.bestEmail")
 							}
 							error={errors.email}
 							fullWidth
@@ -178,7 +184,7 @@ export default function EmailSignUp(props) {
 									name="gdpr"
 									classes={{ label: classes.gdprCheckbox }}
 									control={<Checkbox size="small" name="checkedA" />}
-									label={`Yes, I want AdEx Network to send me news and other related content`}
+									label={t("email.gdprLabel")}
 								/>
 							</FormGroup>
 						</FormControl>
@@ -194,15 +200,19 @@ export default function EmailSignUp(props) {
 									control={<Checkbox size="small" name="checkedA" />}
 									label={
 										<Box>
-											{`I agree to the promotional `}
-											<ExternalAnchor
-												color="secondary"
-												id={"email-signup-tos-check"}
-												target="_blank"
-												href={`https://www.adex.network/blog/subscribe-and-win-5000-adx/`}
-											>
-												{`Terms and conditions`}
-											</ExternalAnchor>
+											<Trans
+												i18nKey="email.promotionTerms"
+												components={{
+													externalLink: (
+														<ExternalAnchor
+															color="secondary"
+															id={"email-signup-tos-check"}
+															target="_blank"
+															href={`https://www.adex.network/blog/subscribe-and-win-5000-adx/`}
+														/>
+													)
+												}}
+											/>
 										</Box>
 									}
 								/>
@@ -212,14 +222,14 @@ export default function EmailSignUp(props) {
 					<Box width={1} mt={2} display="flex" justifyContent="center">
 						<Button
 							type="submit"
-							id={`sign-up`}
+							id={`sign-up-email`}
 							disabled={waiting}
 							className={classes.singUp}
 							onClick={() => handleSubmit()}
 							variant="contained"
 							color="secondary"
 						>
-							{waiting ? "Submitting..." : "Sure, I'm in"}
+							{waiting ? t("email.submitting") : t("email.submitBtnLabel")}
 						</Button>
 					</Box>
 				</>

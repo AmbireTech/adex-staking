@@ -16,6 +16,7 @@ import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+import { useTranslation } from "react-i18next"
 
 const iconByPoolId = poolId => {
 	switch (poolId) {
@@ -45,6 +46,7 @@ const useStyles = makeStyles(theme => {
 })
 
 const getLoyaltyPoolDeposit = ({
+	t,
 	stats,
 	disabledDepositsMsg,
 	disabledWithdrawsMsg
@@ -52,7 +54,7 @@ const getLoyaltyPoolDeposit = ({
 	const { loyaltyPoolStats } = stats
 	return {
 		poolId: "adex-loyalty-pool",
-		label: "Loyalty Pool",
+		label: t("common.loPo"),
 		balance: `
 		${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY
 		(= ${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ADX)
@@ -60,13 +62,13 @@ const getLoyaltyPoolDeposit = ({
 		reward: `${
 			loyaltyPoolStats.rewardADX
 				? formatADXPretty(loyaltyPoolStats.rewardADX)
-				: "Unknown"
+				: t("common.unknown")
 		} ADX`,
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
-				title="Add new deposit"
-				btnLabel="Deposit"
+				title={t("common.addNewDeposit")}
+				btnLabel={t("common.deposit")}
 				color="secondary"
 				size="small"
 				variant="contained"
@@ -76,8 +78,8 @@ const getLoyaltyPoolDeposit = ({
 			/>,
 			<DepositsDialog
 				id="loyalty-pool-withdraw-form"
-				title="Withdraw from loyalty pool"
-				btnLabel="Withdraw"
+				title={t("deposits.withdrawLoPo")}
+				btnLabel={t("common.withdraw")}
 				color="default"
 				size="small"
 				variant="contained"
@@ -104,21 +106,19 @@ const updateDeposits = (deposits, newDeposit) => {
 }
 
 export default function Deposits() {
+	const { t } = useTranslation()
 	const classes = useStyles()
-
 	const [deposits, setDeposits] = useState([])
-
 	const { stats, chosenWalletType } = useContext(AppContext)
-
 	const { loyaltyPoolStats } = stats
 
 	// TODO: UPDATE if more deposit pools
 	const disableDepositsMsg = !chosenWalletType.name
-		? "Connect wallet"
+		? t("common.connectWallet")
 		: !loyaltyPoolStats.loaded
-		? "Loading data"
+		? t("common.loadingData")
 		: loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
-		? "Pool deposits limit reached"
+		? t("deposits.depositsLimitReached")
 		: ""
 
 	useEffect(() => {
@@ -130,10 +130,11 @@ export default function Deposits() {
 			// 		'Pool deposits limit reached' : ''
 			// 	)
 			const disabledWithdrawsMsg = !chosenWalletType.name
-				? "Connect wallet"
+				? t("common.connectWallet")
 				: ""
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				t,
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg
@@ -199,10 +200,10 @@ export default function Deposits() {
 					<Table aria-label="Bonds table">
 						<TableHead>
 							<TableRow>
-								<TableCell>Pool</TableCell>
-								<TableCell align="right">Balance</TableCell>
-								<TableCell align="right">Reward</TableCell>
-								<TableCell align="right">Actions</TableCell>
+								<TableCell>{t("common.pool")}</TableCell>
+								<TableCell align="right">{t("common.balance")}</TableCell>
+								<TableCell align="right">{t("common.reward")}</TableCell>
+								<TableCell align="right">{t("common.actions")}</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>

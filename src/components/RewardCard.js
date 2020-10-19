@@ -10,6 +10,8 @@ import {
 	getUSDFormatted
 } from "../helpers/formatting"
 
+import { useTranslation } from "react-i18next"
+
 export default function RewardCard({
 	rewardChannels,
 	userBonds,
@@ -19,7 +21,8 @@ export default function RewardCard({
 	onRestake,
 	prices
 }) {
-	const title = "Unclaimed rewards"
+	const { t } = useTranslation()
+	const title = t("userData.unclaimed")
 	const loaded = rewardChannels != null
 	if (!loaded) {
 		return StatsCard({
@@ -44,7 +47,7 @@ export default function RewardCard({
 					onClick={() => onClaimRewards(rewardChannels)}
 					disableElevation
 				>
-					claim
+					{t("common.claim")}
 				</Button>
 			</Box>
 			<Box width={1 / 2} pl={0.5}>
@@ -57,7 +60,7 @@ export default function RewardCard({
 					onClick={() => onRestake(totalRewardADX)}
 					disableElevation
 				>
-					re-stake
+					{t("common.reStake")}
 				</Button>
 			</Box>
 		</Box>
@@ -71,7 +74,7 @@ export default function RewardCard({
 		extra: `+  \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${formatDAIPretty(
 			totalRewardDAI
 		)} DAI`,
-		moreExtra: `Total \u00A0${getUSDFormatted(
+		moreExtra: `${t("userData.total")} \u00A0${getUSDFormatted(
 			getADXInUSD(prices, totalRewardADX) + getDAIInUSD(totalRewardDAI)
 		)}`
 	})

@@ -27,6 +27,7 @@ import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
+import { useTranslation, Trans } from "react-i18next"
 
 const getTotalSelectedRewards = (rewards, selected, getTotal) => {
 	return rewards
@@ -49,6 +50,8 @@ const totalAmountsLabel = amounts =>
 		.join("; ")
 
 export default function Rewards() {
+	const { t } = useTranslation()
+
 	const { stats, chosenWalletType, wrapDoingTxns, prices } = useContext(
 		AppContext
 	)
@@ -74,19 +77,19 @@ export default function Rewards() {
 	const loaded = loyaltyPoolStats.userDataLoaded && tomPoolStats.userDataLoaded
 
 	const disableActionsMsg = !chosenWalletType.name
-		? "Connect wallet"
+		? t("common.connectWallet")
 		: !loaded
-		? "Loading data"
+		? t("common.loadingData")
 		: !rewards.length
-		? "No rewards"
+		? t("rewards.noRewards")
 		: !selectedRewards.length
-		? "Nothing selected"
+		? t("common.noSelection")
 		: ""
 
 	const disableReStakeMsg = !!disableActionsMsg
 		? disableActionsMsg
 		: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
-		? "Not supported rewards selected - only ADX incentive rewards can be re-staked"
+		? t("common.reStakeUnsupportedSelected")
 		: ""
 
 	useEffect(() => {
@@ -104,7 +107,7 @@ export default function Rewards() {
 		if (tomUserDataLoaded && loPoUserDataLoaded) {
 			const loPoReward = {
 				id: "loyalty_pool",
-				name: "Loyalty pool deposit",
+				name: t("rewards.loPoReward"),
 				amount: loPoRewardADX,
 				outstandingReward: loPoRewardADX,
 				currency: "ADX",
@@ -117,13 +120,16 @@ export default function Rewards() {
 					id: `tom_${channel.type}_${new Date(
 						channel.periodStart
 					).getTime()}_${new Date(channel.periodEnd).getTime()}`,
-					name: `Tom - ${channel.type} ${
-						channel.type === "fees"
-							? new Date(channel.periodEnd).toLocaleString("default", {
-									month: "long"
-							  })
-							: ""
-					} `,
+					name: t("rewards.poolName", {
+						pool: "Tom",
+						type: t(`common.${channel.type}`),
+						extra:
+							channel.type === "fees"
+								? new Date(channel.periodEnd).toLocaleString("default", {
+										month: "long"
+								  })
+								: ""
+					}),
 					amount: channel.amount,
 					outstandingReward: channel.outstandingReward,
 					currency: channel.type === "fees" ? "DAI" : "ADX",
@@ -214,7 +220,7 @@ export default function Rewards() {
 		<Box mt={2}>
 			<Box m={1} color="text.main">
 				<Typography variant="h5" gutterBottom>
-					{"REWARDS"}
+					{t("common.rewards")}
 				</Typography>
 			</Box>
 			<Box display="flex" flexDirection="row">
@@ -235,7 +241,7 @@ export default function Rewards() {
 					<Box m={1}>
 						{StatsCard({
 							loaded,
-							title: "Total rewards",
+							title: t("rewards.total"),
 							subtitle: totalRewardsLabel,
 							extra: getUSDFormatted(totalRewardsInUsd)
 						})}
@@ -246,7 +252,7 @@ export default function Rewards() {
 					<Box m={1}>
 						{StatsCard({
 							loaded,
-							title: "Unclaimed rewards",
+							title: t("rewards.unclaimed"),
 							subtitle: totalOutstandingRewardsLabel,
 							extra: getUSDFormatted(totalOutstandingRewardsInUsd)
 						})}
@@ -264,12 +270,11 @@ export default function Rewards() {
 					<Box m={1}>
 						{!!Object.keys(totalAmountsSelected).length && (
 							<Fragment>
-								<Typography type="h5">{`Total selected:`}</Typography>
+								<Typography type="h5">{t("rewards.totalSelected")}:</Typography>
 								<Typography type="h4">{totalSelectedLabel}</Typography>
 							</Fragment>
 						)}
 					</Box>
-					{/* TODO: Confirm */}
 					<Box display="flex" flexDirection="row">
 						<Box m={1}>
 							<Tooltip title={disableActionsMsg}>
@@ -281,7 +286,7 @@ export default function Rewards() {
 										onClick={() => setClaimOpen(true)}
 										disabled={!!disableActionsMsg}
 									>
-										{`Claim`}
+										{t("common.claim")}
 									</Button>
 								</Box>
 							</Tooltip>
@@ -296,7 +301,7 @@ export default function Rewards() {
 										onClick={() => setReStakeOpen(true)}
 										disabled={!!disableReStakeMsg}
 									>
-										{`RE-STAKE`}
+										{t("common.reStake")}
 									</Button>
 								</Box>
 							</Tooltip>
@@ -309,10 +314,10 @@ export default function Rewards() {
 							<TableHead>
 								<TableRow>
 									<TableCell></TableCell>
-									<TableCell>Reward name</TableCell>
-									<TableCell align="right">Total rewards</TableCell>
-									<TableCell align="right">Unclaimed rewards</TableCell>
-									<TableCell align="right">Current APY</TableCell>
+									<TableCell>{t("rewards.name")}</TableCell>
+									<TableCell align="right">{t("rewards.total")}</TableCell>
+									<TableCell align="right">{t("rewards.unclaimed")}</TableCell>
+									<TableCell align="right">{t("common.currentAPY")}</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -324,7 +329,7 @@ export default function Rewards() {
 					{(!stats.loaded || !rewards.length) && (
 						<Box mt={2}>
 							<Alert variant="filled" severity="info">
-								{`This table will show all your rewards`}
+								{t("rewards.tableInfo")}
 							</Alert>
 						</Box>
 					)}
@@ -337,29 +342,22 @@ export default function Rewards() {
 						setReStakeOpen(false)
 						onReStake()
 					},
-					confirmActionName: "Re-stake",
+					confirmActionName: t("common.reStake"),
 					content: (
-						<>
-							<Box mb={1}>
-								<Typography>
-									{`Are you sure you want to re-stake your earnings of 
-									${formatADXPretty(totalAmountsSelected["ADX"] || ZERO)} ADX?`}
-								</Typography>
-							</Box>
-							<Box mb={1}>
-								<Typography>
-									{`Please be aware that this means that this amount will be locked up
-									for at least ${UNBOND_DAYS} days.`}
-								</Typography>
-							</Box>
-							<Box mb={1}>
-								<Typography>
-									{!tomPoolStats.userBonds.find(x => x.status === "Active")
-										? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
-										: ""}
-								</Typography>
-							</Box>
-						</>
+						<Trans
+							i18nKey="dialogs.reStakeConfirmation"
+							values={{
+								amount: formatADXPretty(totalAmountsSelected["ADX"] || ZERO),
+								currency: "ADX",
+								unbondDays: UNBOND_DAYS,
+								extraInfo: !stats.userBonds.find(x => x.status === "Active")
+									? t("dialogs.reActivatingInfo")
+									: ""
+							}}
+							components={{
+								box: <Box mb={2}></Box>
+							}}
+						/>
 					)
 				})}
 
@@ -370,13 +368,11 @@ export default function Rewards() {
 						setClaimOpen(false)
 						onClaim()
 					},
-					confirmActionName: "Claim",
+					confirmActionName: t("common.claim"),
 					content: (
 						<>
 							<Box mb={1}>
-								<Typography>
-									{"You are about to claim your earnings of "}
-								</Typography>
+								<Typography>{t("dialogs.claimConfirmation")}</Typography>
 							</Box>
 							{selectedRewards.map(reward => (
 								<Box key={reward.id}>
@@ -391,7 +387,9 @@ export default function Rewards() {
 							))}
 
 							<Box mt={1}>
-								<Typography>{`For total of: ${totalSelectedLabel}`}</Typography>
+								<Typography>
+									{t("dialogs.forTotal", { total: totalSelectedLabel })}
+								</Typography>
 							</Box>
 						</>
 					)

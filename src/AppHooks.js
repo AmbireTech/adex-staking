@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core"
 import {
 	NoEthereumProviderError,
@@ -8,7 +8,6 @@ import {
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-connector"
 import { getSigner } from "./ethereum"
 import {
-	PRICES_API_URL,
 	WALLET_CONNECT,
 	METAMASK,
 	TREZOR,
@@ -47,20 +46,20 @@ function tryGetErrMessage(error) {
 
 function getErrorMessage(error) {
 	if (error instanceof NoEthereumProviderError) {
-		return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
+		return "errors.noEthBrowserDetected"
 	} else if (error instanceof UnsupportedChainIdError) {
-		return "You're connected to an unsupported network."
+		return "errors.connectedToUnsupportedNetwork"
 	} else if (
 		error instanceof UserRejectedRequestErrorInjected ||
 		error instanceof UserRejectedRequestErrorWalletConnect
 	) {
-		return "Please authorize this website to access your Ethereum account."
+		return "errors.siteNotAuth"
 	} else if (tryGetErrMessage(error)) {
 		console.error(error)
 		return tryGetErrMessage(error)
 	} else {
 		console.error(error)
-		return "An unknown error occurred. Check the console for more details."
+		return "errors.unknownCheckConsole"
 	}
 }
 
@@ -80,9 +79,7 @@ export default function Root() {
 	const [toRestake, setToRestake] = useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [openDoingTx, setOpenDoingTx] = useState(false)
-	const [snackbarErr, setSnackbarErr] = useState(
-		"Error! Unspecified error occured."
-	)
+	const [snackbarErr, setSnackbarErr] = useState("errors.unexpectedError")
 	const [stats, setStats] = useState(EMPTY_STATS)
 	const [connectWallet, setConnectWallet] = useState(null)
 	const [chosenWalletTypeName, setChosenWalletTypeName] = useState(null)
@@ -93,22 +90,30 @@ export default function Root() {
 
 	useInactiveListener(!!connectWallet)
 
-	const refreshStats = () =>
+	const refreshStats = useCallback(() => {
 		loadStats(chosenWalletType)
 			.then(setStats)
 			.catch(e => {
 				console.error("loadStats", e)
 				setOpenErr(true)
 				if (e.code === 4001) {
-					setSnackbarErr("Error! User denied authorization!")
+					setSnackbarErr("errors.authDeniedByUser")
 				}
 			})
+	}, [chosenWalletType])
 
 	useEffect(() => {
 		refreshStats()
 		const intvl = setInterval(refreshStats, REFRESH_INTVL)
-		return () => clearInterval(intvl)
 
+		return () => clearInterval(intvl)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [refreshStats])
+
+	useEffect(() => {
+		if (chosenWalletType.name && chosenWalletType.library) {
+			refreshStats()
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
 
@@ -116,11 +121,6 @@ export default function Root() {
 		setPrices(stats.prices)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
-
-	useEffect(() => {
-		setChosenWalletType({ name: chosenWalletTypeName, library, account })
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletTypeName, library, account])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
@@ -152,7 +152,7 @@ export default function Root() {
 			console.error(e)
 			setOpenDoingTx(false)
 			setOpenErr(true)
-			setSnackbarErr(e.message || "Unknown error")
+			setSnackbarErr(e.message || "errors.unknownError")
 		}
 	}
 	const onRequestUnbond = wrapDoingTxns(
@@ -187,11 +187,7 @@ export default function Root() {
 
 				if (signer) {
 					setChosenWalletType(newWalletType)
-				} else {
-					setChosenWalletType({})
 				}
-			} else {
-				setChosenWalletType({})
 			}
 		}
 

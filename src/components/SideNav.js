@@ -24,6 +24,7 @@ import {
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
+import { useTranslation } from "react-i18next"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -122,6 +123,7 @@ function SideNav({
 	onRestake,
 	setConnectWallet
 }) {
+	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()
 	const path = location.pathname
@@ -144,7 +146,7 @@ function SideNav({
 								flexDirection="row"
 								alignItems="flex-start"
 							>
-								<img height="40vh" src={logo} alt="logo"></img>
+								<img width="200px" src={logo} alt="adex-staking-logo"></img>
 							</Box>
 						</ListItem>
 
@@ -179,7 +181,7 @@ function SideNav({
 									onClick={() => setConnectWallet(true)}
 									style={{ cursor: "pointer" }}
 								>
-									{"CONNECT WALLET"}
+									{t("common.connectWallet")}
 								</Box>
 							)}
 						</Box>
@@ -204,7 +206,7 @@ function SideNav({
 							<ListItemIcon color="inherit">
 								<DashboardIcon />
 							</ListItemIcon>
-							<ListItemText primary={"Pools"} />
+							<ListItemText primary={t("common.pools")} />
 						</RRListItem>
 
 						<RRListItem
@@ -218,7 +220,7 @@ function SideNav({
 									<StakingIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={"Staked"} />
+							<ListItemText primary={t("common.staked")} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-gasless"
@@ -231,7 +233,7 @@ function SideNav({
 									<GaslessIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={"Gasless Staking"} />
+							<ListItemText primary={t("common.gaslessStaking")} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-rewards"
@@ -244,7 +246,7 @@ function SideNav({
 									<GiftIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
-							<ListItemText primary={"Rewards"} />
+							<ListItemText primary={t("common.rewards")} />
 						</RRListItem>
 					</List>
 				</Box>
@@ -265,7 +267,7 @@ function SideNav({
 								<HomeIcon color="inherit" />
 							</SvgIcon>
 						</ListItemIcon>
-						<ListItemText primary={"Homepage & Calculator"} />
+						<ListItemText primary={t("common.homePageAndCalculator")} />
 					</RRListItem>
 					<Divider />
 					<ListItem>
@@ -290,7 +292,7 @@ function SideNav({
 										target="_blank"
 										href={`https://adex.network/tos`}
 									>
-										{"Terms and conditions"}
+										{t("common.termsAndConditions")}
 									</Anchor>
 								</small>
 							</div>

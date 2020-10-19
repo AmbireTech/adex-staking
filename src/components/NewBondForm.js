@@ -28,6 +28,7 @@ import {
 import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
 import { getPoolStatsByPoolId } from "../actions"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function NewBondForm({
 	stats,
@@ -38,6 +39,7 @@ export default function NewBondForm({
 	newBondPool,
 	setNewBondPool
 }) {
+	const { t } = useTranslation()
 	const [bond, setBond] = useState(DEFAULT_BOND)
 	const [stakingAmount, setStakingAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
@@ -52,29 +54,31 @@ export default function NewBondForm({
 		onNewBond(bond)
 	}
 
-	const stakingRulesFrag = STAKING_RULES_URL ? (
-		<>
-			&nbsp;and{" "}
-			<a target="_blank" rel="noopener noreferrer" href={STAKING_RULES_URL}>
-				staking conditions
-			</a>
-		</>
-	) : (
-		<></>
-	)
 	const confirmationLabel = (
-		<>
-			I understand I am locking up my ADX for at least {UNBOND_DAYS} days and I
-			am familiar with the&nbsp;
-			<ExternalAnchor
-				id="new-bond-form-adex-network-tos"
-				target="_blank"
-				href="https://www.adex.network/tos/"
-			>
-				Terms and conditions
-			</ExternalAnchor>
-			{stakingRulesFrag}.
-		</>
+		<Trans
+			i18nKey="bonds.confirmationLabel"
+			values={{
+				unbondDays: UNBOND_DAYS
+			}}
+			components={{
+				e1: (
+					<ExternalAnchor
+						id="new-bond-form-adex-network-tos"
+						target="_blank"
+						href="https://www.adex.network/tos/"
+					/>
+				),
+				e2: STAKING_RULES_URL ? (
+					<ExternalAnchor
+						id="new-bond-form-adex-staking-rules"
+						target="_blank"
+						href={STAKING_RULES_URL}
+					/>
+				) : (
+					<></>
+				)
+			}}
+		/>
 	)
 
 	const validateFields = params => {
@@ -84,14 +88,12 @@ export default function NewBondForm({
 			: ZERO
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
-			setAmountErrText("Insufficient ADX amount!")
+			setAmountErrText(t("errors.lowADXAmount"))
 			return
 		}
 		if (poolToValidate && amountBN.lt(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(
-				"ADX amount less than minimum required for selected pool!"
-			)
+			setAmountErrText(t("errors.lessDanMinPoolADX"))
 			return
 		}
 		setAmountErr(false)
@@ -119,12 +121,6 @@ export default function NewBondForm({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newBondPool])
 
-	const farmer = (
-		<span role="img" aria-label="farmer">
-			🌾
-		</span>
-	)
-
 	return (
 		<Box
 			width={666}
@@ -136,14 +132,14 @@ export default function NewBondForm({
 			bgcolor="background.paper"
 			overflow="auto"
 		>
-			<h2>Create a bond</h2>
+			<h2>{t("bonds.createBond")}</h2>
 			<Grid container spacing={2}>
 				<Grid item xs={12} sm={6}>
 					<TextField
 						fullWidth
 						id="new-bond-form-amount-field"
 						required
-						label="ADX amount"
+						label={t("common.labelADXAmount")}
 						type="number"
 						style={minWidthStyle}
 						value={stakingAmount}
@@ -166,13 +162,16 @@ export default function NewBondForm({
 								updateStakingAmountBN(maxAmount)
 							}}
 						>
-							{`Max amount: ${formatADXPretty(maxAmount)} ADX`}
+							{t("common.maxAmountBtn", {
+								amount: formatADXPretty(maxAmount),
+								currency: "ADX"
+							})}
 						</Button>
 					</Box>
 				</Grid>
 				<Grid item xs={12} sm={6}>
 					<FormControl fullWidth required>
-						<InputLabel>Pool</InputLabel>
+						<InputLabel>{t("common.pool")}</InputLabel>
 						<Select
 							id="new-bond-form-pool-select"
 							style={minWidthStyle}
@@ -180,7 +179,7 @@ export default function NewBondForm({
 							onChange={ev => updatePool(ev.target.value)}
 						>
 							<MenuItem value={""}>
-								<em>None</em>
+								<em>{t("common.none")}</em>
 							</MenuItem>
 							{pools.map(({ label, id }) => (
 								<MenuItem
@@ -188,38 +187,59 @@ export default function NewBondForm({
 									key={id}
 									value={id}
 								>
-									{label}
+									{t(label)}
 								</MenuItem>
 							))}
 						</Select>
 					</FormControl>
 				</Grid>
-				{activePool ? (
+				{!!activePool && (
 					<Grid item xs={12}>
 						<Grid item xs={12}>
-							<Typography variant="h6">Pool reward policy:</Typography>
-							<Typography variant="body1">{activePool.rewardPolicy}</Typography>
-						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="h6">Pool slashing policy:</Typography>
-							<Typography variant="body1">{activePool.slashPolicy}</Typography>
-						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
-							<Typography variant="h6">Pool APY:</Typography>
+							<Typography variant="h6">
+								{t("common.poolRewardPolicy")}:
+							</Typography>
 							<Typography variant="body1">
-								{farmer} Current annual yield of{" "}
-								{(poolStats.totalAPY * 100).toFixed(2)}% {farmer}
+								{t(activePool.rewardPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="h6">
+								{t("common.poolSlashingPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.slashPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
+							<Typography variant="body1">
+								<Trans
+									i18nKey="bonds.currentYield"
+									values={{
+										apy: (poolStats.totalAPY * 100).toFixed(2),
+										sign: "%"
+									}}
+									components={{
+										farmer: (
+											<span role="img" aria-label="farmer">
+												🌾
+											</span>
+										)
+									}}
+								/>
 							</Typography>
 						</Grid>
 						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
 							<Typography variant="body1">
-								<b>{`Please sign ALL ${chosenWalletType.name ||
-									"Metamask"} transactions that pop up`}</b>
+								<strong>
+									{t("messages.signAllTransactions", {
+										wallet: chosenWalletType.name || ""
+									})}
+								</strong>
 							</Typography>
 						</Grid>
 					</Grid>
-				) : (
-					""
 				)}
 				<Grid item xs={12}>
 					<FormControlLabel
@@ -253,7 +273,7 @@ export default function NewBondForm({
 							variant="contained"
 							onClick={onAction}
 						>
-							Stake ADX
+							{t("bonds.stakeADX")}
 						</Button>
 					</FormControl>
 				</Grid>

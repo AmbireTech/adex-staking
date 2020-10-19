@@ -10,23 +10,27 @@ import {
 } from "@material-ui/core"
 import { Wallets, METAMASK } from "../helpers/constants"
 import { toIdAttributeString } from "../helpers/formatting"
+import { useTranslation, Trans } from "react-i18next"
 
-export default function ChooseWalletDialog({
-	title = "Select Wallet",
+export default function ChooseWallet({
 	handleListItemClick,
 	handleClose,
 	open,
 	disableNonBrowserWallets
 }) {
+	const { t } = useTranslation()
+
 	return (
 		<Dialog
 			onClose={handleClose}
 			aria-labelledby="simple-dialog-title"
 			open={open}
 		>
-			<DialogTitle id="simple-dialog-title">{title}</DialogTitle>
+			<DialogTitle id="simple-dialog-title">
+				{t("dialogs.selectWallet")}
+			</DialogTitle>
 			<List>
-				{Wallets.map(({ icon, name = "", title }) => (
+				{Wallets.map(({ icon, name = "" }) => (
 					<ListItem
 						id={`connect-wallet-select-${toIdAttributeString(name)}`}
 						disabled={disableNonBrowserWallets && name !== METAMASK}
@@ -37,7 +41,11 @@ export default function ChooseWalletDialog({
 						<ListItemIcon>
 							<Avatar src={icon} />
 						</ListItemIcon>
-						<ListItemText primary={title} />
+						<ListItemText
+							primary={t("dialogs.connectWith", {
+								wallet: name
+							})}
+						/>
 					</ListItem>
 				))}
 			</List>

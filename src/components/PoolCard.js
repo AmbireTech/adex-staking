@@ -10,6 +10,7 @@ import {
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
+import { useTranslation, Trans } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -70,6 +71,7 @@ export default function PoolCard({
 	actionBtn,
 	extraData = []
 }) {
+	const { t } = useTranslation()
 	const classes = useStyles()
 
 	return (
@@ -110,8 +112,8 @@ export default function PoolCard({
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
-						text={"Total Staked"}
-						infoText={"Total Staked"}
+						text={t("common.totalStaked")}
+						// infoText={t('common.totalStaked')}
 						justify="center"
 					/>
 
@@ -140,7 +142,7 @@ export default function PoolCard({
 						color="text.primary"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
-						text={"Current annual yield (APY)"}
+						text={t("pools.currentAPYLabel")}
 						// infoText={"Current annual yield (APY)"}
 						justify="center"
 					/>
@@ -159,7 +161,7 @@ export default function PoolCard({
 						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
-						text={`Weekly yield ${weeklyYield}`}
+						text={t("pools.currentDailyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
 						justify="center"
 						mb={3}
@@ -247,7 +249,7 @@ export default function PoolCard({
 									onClick={onStakeBtnClick}
 									disabled={disabled}
 								>
-									{"Stake"}
+									{t("common.stake")}
 								</Button>
 							)}
 						</div>

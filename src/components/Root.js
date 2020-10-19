@@ -33,6 +33,7 @@ import AppContext from "../AppContext"
 import { createNewBond } from "../actions"
 import { ShtarvolinkiSnack } from "./../Snack"
 import clsx from "clsx"
+import { useTranslation, Trans } from "react-i18next"
 
 function Alert(props) {
 	return <MuiAlert variant="filled" {...props} />
@@ -41,6 +42,7 @@ function Alert(props) {
 const useStyles = makeStyles(styles)
 
 export default function Root() {
+	const { t } = useTranslation()
 	const classes = useStyles()
 	const [mobileOpen, setMobileOpen] = useState(false)
 	const handleDrawerToggle = () => {
@@ -147,25 +149,23 @@ export default function Root() {
 							if (toUnbond) onRequestUnbond(toUnbond)
 							setToUnbond(null)
 						},
-						confirmActionName: "Unbond",
+						confirmActionName: t("common.unbond"),
 						content: (
-							<>
-								Are you sure you want to request unbonding of{" "}
-								{formatADXPretty(toUnbond ? toUnbond.currentAmount : ZERO)} ADX?
-								<br />
-								<br />
-								Please be aware:
-								<ol>
-									<li>
-										It will take {UNBOND_DAYS} days before you will be able to
-										withdraw your ADX!
-									</li>
-									<li>
-										You will not receive staking rewards for this amount in this{" "}
-										{UNBOND_DAYS} day period.
-									</li>
-								</ol>
-							</>
+							<Trans
+								i18nKey="dialogs.bondConfirmation"
+								values={{
+									amount: formatADXPretty(
+										toUnbond ? toUnbond.currentAmount : ZERO
+									),
+									currency: "ADX",
+									unbondDays: UNBOND_DAYS
+								}}
+								components={{
+									box: <Box mb={2}></Box>,
+									ol: <ol></ol>,
+									li: <li></li>
+								}}
+							/>
 						)
 					})}
 
@@ -176,26 +176,27 @@ export default function Root() {
 							if (toRestake) onRestake()
 							setToRestake(null)
 						},
-						confirmActionName: "Re-stake",
+						confirmActionName: t("common.reStake"),
 						content: (
-							<>
-								Are you sure you want to stake your earnings of{" "}
-								{formatADXPretty(toRestake ? toRestake : ZERO)} ADX?
-								<br />
-								<br />
-								Please be aware that this means that this amount will be locked
-								up for at least {UNBOND_DAYS} days.
-								<br />
-								{!stats.userBonds.find(x => x.status === "Active")
-									? "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again."
-									: ""}
-							</>
+							<Trans
+								i18nKey="dialogs.reStakeConfirmation"
+								values={{
+									amount: formatADXPretty(toRestake ? toRestake : ZERO),
+									currency: "ADX",
+									unbondDays: UNBOND_DAYS,
+									extraInfo: !stats.userBonds.find(x => x.status === "Active")
+										? t("dialogs.reActivatingInfo")
+										: ""
+								}}
+								components={{
+									box: <Box mb={2}></Box>
+								}}
+							/>
 						)
 					})}
 
 					{ChooseWallet({
 						open: !!connectWallet,
-						content: "",
 						handleClose: () => {
 							setConnectWallet(null)
 						},
@@ -213,7 +214,7 @@ export default function Root() {
 							onClose={handleErrClose}
 							severity="error"
 						>
-							{snackbarErr}
+							{t(snackbarErr)}
 						</Alert>
 					</Snackbar>
 					<ShtarvolinkiSnack {...snackHooks} />
@@ -259,10 +260,10 @@ export default function Root() {
 							<Box>
 								<Alert severity="warning">
 									<AlertTitle id="alert-chain-warning-title">
-										{"Unsupported ethereum chain detected"}
+										{t("messages.unsupportedEthNetwork")}
 									</AlertTitle>
 									<Box id="alert-chain-description">
-										{"Please, connect to mainnet ethereum network."}
+										{t("messages.connectToMainnet")}
 									</Box>
 								</Alert>
 							</Box>
@@ -279,7 +280,9 @@ export default function Root() {
 							<Box>
 								<Alert severity="info">
 									<Box id="info-doingTx" p={2}>
-										{"Please sign all pending MetaMask actions!"}
+										{t("messages.signAllTransactions", {
+											wallet: chosenWalletType.name || ""
+										})}
 									</Box>
 								</Alert>
 							</Box>

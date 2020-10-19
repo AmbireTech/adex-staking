@@ -17,8 +17,11 @@ import {
 	formatDate
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
+	const { t } = useTranslation()
+
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
@@ -26,9 +29,9 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 			const now = Date.now()
 			if (willUnlock > now) {
 				const days = Math.ceil((willUnlock - now) / 86400000)
-				return `Can unbond in ${days} days`
+				return t("bonds.canUnbondIn", { count: days })
 			} else {
-				return "Can unbond"
+				return t("bonds.canUnbond")
 			}
 		}
 		if (bond.status === "Active") {
@@ -60,7 +63,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 							color="primary"
 							onClick={() => onRequestUnbond(bond)}
 						>
-							{"Request Unbond"}
+							{t("bonds.requestUnbond")}
 						</Button>
 					) : (
 						<Button
@@ -74,7 +77,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 							onClick={() => onUnbond(bond)}
 							color="secondary"
 						>
-							{"Unbond"}
+							{t("common.unbond")}
 						</Button>
 					)}
 				</TableCell>
@@ -82,30 +85,17 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		)
 	}
 
-	const bondExplanationMsg = `This table will show all your individual ADX deposits in validator pools (bonds), 
-	along with information as status, amount and current APY. By using the action buttons, 
-	you will be able to request unbonding and withdraw your ADX after the ${UNBOND_DAYS} day lock-up period.`
-
-	const bondExplanationFrag =
-		!stats.loaded || stats.userBonds.length ? null : (
-			<Box mt={2}>
-				<Alert variant="filled" severity="info">
-					{bondExplanationMsg}
-				</Alert>
-			</Box>
-		)
-
 	return (
 		<Box>
 			<TableContainer xs={12}>
 				<Table aria-label="Bonds table">
 					<TableHead>
 						<TableRow>
-							<TableCell>Bond amount</TableCell>
-							<TableCell align="right">Pool</TableCell>
-							<TableCell align="right">Created</TableCell>
-							<TableCell align="right">Status</TableCell>
-							<TableCell align="right">Actions</TableCell>
+							<TableCell>{t("bonds.bondAmount")}</TableCell>
+							<TableCell align="right">{t("common.pool")}</TableCell>
+							<TableCell align="right">{t("common.created")}</TableCell>
+							<TableCell align="right">{t("common.status")}</TableCell>
+							<TableCell align="right">{t("common.actions")}</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -117,7 +107,13 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 				</Table>
 			</TableContainer>
 
-			{bondExplanationFrag}
+			{!stats.loaded || stats.userBonds.length ? null : (
+				<Box mt={2}>
+					<Alert variant="filled" severity="info">
+						{t("bonds.bondExplanationMsg", { count: UNBOND_DAYS })}
+					</Alert>
+				</Box>
+			)}
 		</Box>
 	)
 }
