@@ -393,9 +393,12 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 			const outstandingReward = bigNumberify(
 				rewardChannel.balances[claimFrom]
 			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
-			if (outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD)) return null
 			const type =
 				rewardChannel.channelArgs.tokenAddr === ADDR_ADX ? "incentive" : "fees"
+
+			// Min threshold only for fees channels
+			if (type === "fees" && outstandingReward.lt(OUTSTANDING_REWARD_THRESHOLD))
+				return null
 
 			return {
 				...rewardChannel,
