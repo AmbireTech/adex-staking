@@ -193,19 +193,24 @@ export async function getPoolStats(pool, prices) {
 		x => x.channelArgs.tokenAddr !== ADDR_ADX
 	)
 
-	const currentActiveIncentiveChannel = adxIncentiveRewardsChannels.sort(
+	const currentActiveIncentiveChannels = adxIncentiveRewardsChannels.sort(
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
-	)[0]
+	)
+
 	const lastFeeRewardChannel = feeRewardsChannels.sort(
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
 	)[0]
 
-	const currentAdxIncentiveAPY = currentActiveIncentiveChannel
-		? getIncentiveChannelCurrentAPY({
-				channel: currentActiveIncentiveChannel,
+	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
+		(totalAPY, channel) =>
+			totalAPY +
+			getIncentiveChannelCurrentAPY({
+				channel,
 				totalStake
-		  })
-		: 0
+			}),
+		0
+	)
+
 	const lastDaiFeesAPY = getValidatorFeesAPY({
 		channel: lastFeeRewardChannel,
 		totalStake,
