@@ -24,6 +24,7 @@ import {
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
+import { useTranslation } from "react-i18next"
 
 const REFRESH_INTVL = 20000
 
@@ -64,6 +65,7 @@ function getErrorMessage(error) {
 }
 
 export default function Root() {
+	const { t } = useTranslation()
 	const { addSnack, ...snackHooks } = useSnack()
 	const {
 		library,
@@ -95,12 +97,16 @@ export default function Root() {
 			.then(setStats)
 			.catch(e => {
 				console.error("loadStats", e)
+				setSnackbarErr({
+					msg: "errors.loadingStats",
+					opts: { error: t(!!e ? e.message || e.toString() : "") }
+				})
 				setOpenErr(true)
 				if (e.code === 4001) {
 					setSnackbarErr("errors.authDeniedByUser")
 				}
 			})
-	}, [chosenWalletType])
+	}, [chosenWalletType, t])
 
 	useEffect(() => {
 		refreshStats()
@@ -134,8 +140,8 @@ export default function Root() {
 
 	useEffect(() => {
 		if (!!error) {
-			setOpenErr(true)
 			setSnackbarErr(getErrorMessage(error))
+			setOpenErr(true)
 			deactivate()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,8 +157,8 @@ export default function Root() {
 		} catch (e) {
 			console.error(e)
 			setOpenDoingTx(false)
-			setOpenErr(true)
 			setSnackbarErr(e.message || "errors.unknownError")
+			setOpenErr(true)
 		}
 	}
 	const onRequestUnbond = wrapDoingTxns(

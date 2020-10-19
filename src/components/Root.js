@@ -214,7 +214,7 @@ export default function Root() {
 							onClose={handleErrClose}
 							severity="error"
 						>
-							{t(snackbarErr)}
+							{t(snackbarErr.msg || snackbarErr, snackbarErr.opts || {})}
 						</Alert>
 					</Snackbar>
 					<ShtarvolinkiSnack {...snackHooks} />

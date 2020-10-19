@@ -139,6 +139,7 @@
     "failedToGetSigner": "Failed to get signer",
     "authDeniedByUser": "Error! User denied authorization!",
     "unexpectedError": "Error! Unspecified error occurred.",
+    "loadingStats": "Error loading stats. {{error}}",
     "unknownError": "Unknown error",
     "gaslessStakingTempOff": "Gasless staking temporary unavailable",
     "noChannelsToEarnFrom": "No channels to earn from",
