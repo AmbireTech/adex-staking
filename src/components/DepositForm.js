@@ -204,6 +204,25 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								{t(activePool.slashPolicy)}
 							</Typography>
 						</Grid>
+						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
+							<Typography variant="body1">
+								<Trans
+									i18nKey="bonds.currentYield"
+									values={{
+										apy: (poolStats.currentAPY * 100).toFixed(2),
+										sign: "%"
+									}}
+									components={{
+										farmer: (
+											<span role="img" aria-label="farmer">
+												🌾
+											</span>
+										)
+									}}
+								/>
+							</Typography>
+						</Grid>
 					</Grid>
 				) : (
 					""
