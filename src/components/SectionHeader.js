@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import { Fab, Box, Typography } from "@material-ui/core"
 import { AddSharp as AddIcon } from "@material-ui/icons"
 import { toIdAttributeString } from "../helpers/formatting"
+import { useTranslation } from "react-i18next"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -12,6 +13,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const SectionHeader = ({ title, actions }) => {
+	const { t } = useTranslation()
 	const classes = useStyles()
 
 	const {
@@ -51,7 +53,8 @@ const SectionHeader = ({ title, actions }) => {
 								size="medium"
 							>
 								<AddIcon className={classes.fabIcon} />
-								{"Stake your ADX"}
+
+								{t("bonds.stakeADX")}
 							</Fab>
 					  )}
 			</Box>

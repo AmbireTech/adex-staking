@@ -150,7 +150,8 @@
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
     "connectToMainnet": "Please, connect to mainnet ethereum network.",
-    "signAllTransactions": "Please sign all pending {{wallet}} actions!"
+    "signAllTransactions": "Please sign all pending {{wallet}} actions!",
+    "addrCopied": "Address {{account}} copied to clipboard"
   },
   "dialogs": {
     "selectWallet": "Select Wallet",
