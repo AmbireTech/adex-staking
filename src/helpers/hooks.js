@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core"
 import { injected } from "./connector"
 
 export function useInactiveListener(suppress) {
-	const { error, activate } = useWeb3React()
+	const { active, error, activate } = useWeb3React()
 
 	const handleConnect = () => {
 		console.log("Handling 'connect' event")
@@ -17,7 +17,7 @@ export function useInactiveListener(suppress) {
 
 	const handleAccountsChanged = accounts => {
 		console.log("Handling 'accountsChanged' event with payload KOR", accounts)
-		if (accounts.length > 0) {
+		if (active && accounts.length > 0) {
 			window.location.reload()
 		}
 	}
@@ -30,7 +30,7 @@ export function useInactiveListener(suppress) {
 	useEffect(() => {
 		const { ethereum } = window
 
-		if (ethereum && ethereum.on && !error && !suppress) {
+		if (ethereum && ethereum.on) {
 			ethereum.on("connect", handleConnect)
 			ethereum.on("chainChanged", handleChainChanged)
 			ethereum.on("accountsChanged", handleAccountsChanged)
@@ -46,5 +46,5 @@ export function useInactiveListener(suppress) {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [error, suppress])
+	}, [error, active, suppress])
 }
