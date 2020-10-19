@@ -160,14 +160,14 @@ export async function getPrices() {
 		return res.json()
 	} catch (err) {
 		console.error(err)
-		return {}
+		return null
 	}
 }
 
-export async function loadStats(chosenWalletType) {
+export async function loadStats(chosenWalletType, prices) {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
-		loadUserStats(chosenWalletType)
+		loadUserStats(chosenWalletType, prices)
 	])
 
 	return { ...userStats, ...totalStake, totalStakeTom: totalStake }
@@ -229,8 +229,7 @@ export async function getPoolStats(pool, prices) {
 	return stats
 }
 
-export async function loadUserStats(chosenWalletType) {
-	const prices = await getPrices()
+export async function loadUserStats(chosenWalletType, prices) {
 	const totalStake = await Token.balanceOf(ADDR_STAKING)
 
 	if (!chosenWalletType.name) {

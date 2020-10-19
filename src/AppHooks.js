@@ -20,7 +20,8 @@ import {
 	loadStats,
 	onUnbondOrRequest,
 	claimRewards,
-	restake
+	restake,
+	getPrices
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
@@ -92,41 +93,41 @@ export default function Root() {
 
 	useInactiveListener(!!connectWallet)
 
-	const refreshStats = useCallback(() => {
-		loadStats(chosenWalletType)
-			.then(setStats)
-			.catch(e => {
-				console.error("loadStats", e)
+	const refreshStats = useCallback(async () => {
+		const newPrices = await getPrices()
+
+		try {
+			const newStats = await loadStats(chosenWalletType, newPrices || prices)
+			setStats(newStats)
+			if (newPrices && JSON.stringify(newPrices) !== JSON.stringify(prices)) {
+				setPrices(newPrices)
+			}
+		} catch (e) {
+			console.error("loadStats", e)
+			if (e.code === 4001) {
+				setSnackbarErr("errors.authDeniedByUser")
+			} else {
 				setSnackbarErr({
 					msg: "errors.loadingStats",
 					opts: { error: t(!!e ? e.message || e.toString() : "") }
 				})
-				setOpenErr(true)
-				if (e.code === 4001) {
-					setSnackbarErr("errors.authDeniedByUser")
-				}
-			})
-	}, [chosenWalletType, t])
+			}
+
+			setOpenErr(true)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chosenWalletType, prices])
 
 	useEffect(() => {
 		refreshStats()
-		const intvl = setInterval(refreshStats, REFRESH_INTVL)
-
-		return () => clearInterval(intvl)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refreshStats])
-
-	useEffect(() => {
-		if (chosenWalletType.name && chosenWalletType.library) {
-			refreshStats()
-		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType])
 
 	useEffect(() => {
-		setPrices(stats.prices)
+		const intvl = setInterval(refreshStats, REFRESH_INTVL)
+		return () => clearInterval(intvl)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [stats])
+	}, [refreshStats])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
