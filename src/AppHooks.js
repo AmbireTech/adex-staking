@@ -46,20 +46,20 @@ function tryGetErrMessage(error) {
 
 function getErrorMessage(error) {
 	if (error instanceof NoEthereumProviderError) {
-		return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
+		return "errors.noEthBrowserDetected"
 	} else if (error instanceof UnsupportedChainIdError) {
-		return "You're connected to an unsupported network."
+		return "errors.connectedToUnsupportedNetwork"
 	} else if (
 		error instanceof UserRejectedRequestErrorInjected ||
 		error instanceof UserRejectedRequestErrorWalletConnect
 	) {
-		return "Please authorize this website to access your Ethereum account."
+		return "errors.siteNotAuth"
 	} else if (tryGetErrMessage(error)) {
 		console.error(error)
 		return tryGetErrMessage(error)
 	} else {
 		console.error(error)
-		return "An unknown error occurred. Check the console for more details."
+		return "errors.unknownCheckConsole"
 	}
 }
 
