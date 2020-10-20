@@ -253,7 +253,8 @@ export default function Rewards() {
 							loaded,
 							title: t("rewards.total"),
 							subtitle: totalRewardsLabel,
-							extra: getUSDFormatted(totalRewardsInUsd)
+							extra: getUSDFormatted(totalRewardsInUsd),
+							multilineLinesAmounts: true
 						})}
 					</Box>
 				</Box>
@@ -264,7 +265,8 @@ export default function Rewards() {
 							loaded,
 							title: t("rewards.unclaimed"),
 							subtitle: totalOutstandingRewardsLabel,
-							extra: getUSDFormatted(totalOutstandingRewardsInUsd)
+							extra: getUSDFormatted(totalOutstandingRewardsInUsd),
+							multilineLinesAmounts: true
 						})}
 					</Box>
 				</Box>

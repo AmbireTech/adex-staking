@@ -30,13 +30,13 @@ export function Info({ title }) {
 	)
 }
 
-function AmountTextSingle({ text = "", fontSize }) {
+function AmountTextSingle({ text = "", fontSize, multiline }) {
 	const decimalSeparatorSplit = text.split(".")
 
 	if (decimalSeparatorSplit.length > 1) {
 		const decimalsSplit = decimalSeparatorSplit[1].split(" ")
 		return (
-			<Box component="div" display="inline">
+			<Box component="div" display={multiline ? "block" : "inline"}>
 				<Box component="div" display="inline">
 					{decimalSeparatorSplit[0]}
 					{"."}
@@ -62,7 +62,7 @@ function AmountTextSingle({ text = "", fontSize }) {
 	}
 }
 
-export function AmountText({ text = "", fontSize }) {
+export function AmountText({ text = "", fontSize, multiline }) {
 	const multipleAmountsSplit = text
 		.split(";")
 		.map(x => x.trim())
@@ -76,9 +76,10 @@ export function AmountText({ text = "", fontSize }) {
 						key={i + x.toString()}
 						text={x}
 						fontSize={fontSize}
+						multiline={multiline}
 					/>
 				))
-				.reduce((prev, curr) => [prev, "; ", curr])}
+				.reduce((prev, curr) => [prev, multiline ? null : "; ", curr])}
 		</Fragment>
 	)
 }
@@ -91,6 +92,7 @@ export function CardRow({
 	color,
 	justify,
 	isAmountText,
+	multilineLinesAmounts,
 	...restBox
 }) {
 	return (
@@ -108,7 +110,11 @@ export function CardRow({
 				>
 					<Box style={{ wordBreak: "break-word" }}>
 						{isAmountText ? (
-							<AmountText text={text} fontSize={fontSize} />
+							<AmountText
+								text={text}
+								fontSize={fontSize}
+								multiline={multilineLinesAmounts}
+							/>
 						) : (
 							text
 						)}

@@ -14,7 +14,8 @@ export default function StatsCard({
 	moreExtra,
 	moreExtraInfo,
 	loaded,
-	actions
+	actions,
+	multilineLinesAmounts
 }) {
 	return (
 		<Box>
@@ -36,6 +37,7 @@ export default function StatsCard({
 					fontSize={size === "large" ? 21 : 17}
 					text={subtitle}
 					isAmountText
+					multilineLinesAmounts={multilineLinesAmounts}
 					infoText={subtitleInfo}
 				/>
 			)}
