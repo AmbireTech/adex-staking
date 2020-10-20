@@ -44,13 +44,13 @@ function AmountTextSingle({ text = "", fontSize }) {
 				<Box
 					component="div"
 					display="inline"
-					style={{ opacity: "0.69" }}
-					fontSize={fontSize * 0.69}
+					style={{ opacity: "0.56" }}
+					fontSize={fontSize * 0.8}
 				>
 					{decimalsSplit[0]}
 				</Box>
 				{decimalsSplit[1] && (
-					<Box component="div" display="inline" fontSize={fontSize * 1}>
+					<Box component="div" display="inline" fontSize={fontSize * 0.8}>
 						{" "}
 						{decimalsSplit[1]}
 					</Box>
