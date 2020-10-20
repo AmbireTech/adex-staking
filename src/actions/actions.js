@@ -304,7 +304,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		userBonds,
 		userBalance, // ADX on wallet
 		loaded: true,
-		rewardChannels: tomAdxRewardsChannels,
+		rewardChannels: tomPoolUserRewardChannels,
 		totalRewardADX: tomRewardADX,
 		totalRewardDAI: tomRewardDAI,
 		tomRewardADX,
