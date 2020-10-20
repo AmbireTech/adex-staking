@@ -17,7 +17,7 @@ import {
 	formatDate
 } from "../helpers/formatting"
 import { getPool, getBondId } from "../helpers/bonds"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	const { t } = useTranslation()

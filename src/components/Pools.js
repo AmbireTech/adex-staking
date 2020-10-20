@@ -11,7 +11,7 @@ import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 const DepositsDialog = WithDialog(DepositForm)
 

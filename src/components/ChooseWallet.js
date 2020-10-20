@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core"
 import { Wallets, METAMASK } from "../helpers/constants"
 import { toIdAttributeString } from "../helpers/formatting"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 export default function ChooseWallet({
 	handleListItemClick,

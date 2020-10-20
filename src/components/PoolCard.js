@@ -10,7 +10,7 @@ import {
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
 	return {
