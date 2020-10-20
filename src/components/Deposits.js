@@ -72,11 +72,14 @@ const getLoyaltyPoolDeposit = ({
 				)
 			</Fragment>
 		),
-		reward: `${
-			loyaltyPoolStats.rewardADX
-				? formatADXPretty(loyaltyPoolStats.rewardADX)
-				: t("common.unknown")
-		} ADX`,
+		reward: loyaltyPoolStats.rewardADX ? (
+			<AmountText
+				text={`${formatADXPretty(loyaltyPoolStats.rewardADX)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		) : (
+			t("common.unknown")
+		),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
