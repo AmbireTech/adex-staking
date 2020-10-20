@@ -52,7 +52,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		return (
 			<TableRow key={bondId}>
 				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
-				<TableCell align="right">{poolLabel}</TableCell>
+				<TableCell align="right">{t(poolLabel)}</TableCell>
 				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
