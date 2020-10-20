@@ -16,6 +16,7 @@ import {
 	getApproxAPY,
 	formatDate
 } from "../helpers/formatting"
+import { AmountText } from "./cardCommon"
 import { getPool, getBondId } from "../helpers/bonds"
 import { useTranslation } from "react-i18next"
 
@@ -51,7 +52,12 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		const bondId = getBondId(bond)
 		return (
 			<TableRow key={bondId}>
-				<TableCell>{formatADXPretty(bond.currentAmount)} ADX</TableCell>
+				<TableCell>
+					<AmountText
+						text={`${formatADXPretty(bond.currentAmount)} ${"ADX"}`}
+						fontSize={17}
+					/>
+				</TableCell>
 				<TableCell align="right">{t(poolLabel)}</TableCell>
 				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>

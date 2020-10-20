@@ -27,6 +27,7 @@ import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
+import { AmountText } from "./cardCommon"
 import { useTranslation, Trans } from "react-i18next"
 
 const getTotalSelectedRewards = (rewards, selected, getTotal) => {
@@ -202,12 +203,21 @@ export default function Rewards() {
 					<Box>{reward.name}</Box>
 				</TableCell>
 				<TableCell align="right">
-					{formatAmountPretty(reward.amount, reward.currency) || "N/A"}{" "}
-					{reward.currency}
+					<AmountText
+						text={`${formatAmountPretty(reward.amount, reward.currency)} ${
+							reward.currency
+						}`}
+						fontSize={17}
+					/>
 				</TableCell>
 				<TableCell align="right">
-					{formatAmountPretty(reward.outstandingReward, reward.currency)}{" "}
-					{reward.currency}
+					<AmountText
+						text={`${formatAmountPretty(
+							reward.outstandingReward,
+							reward.currency
+						)} ${reward.currency}`}
+						fontSize={17}
+					/>
 				</TableCell>
 				<TableCell align="right">{`${(reward.currentAPY * 100).toFixed(
 					2

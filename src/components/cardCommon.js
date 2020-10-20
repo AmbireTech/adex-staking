@@ -62,7 +62,7 @@ function AmountTextSingle({ text = "", fontSize }) {
 	}
 }
 
-function AmountText({ text = "", fontSize }) {
+export function AmountText({ text = "", fontSize }) {
 	const multipleAmountsSplit = text
 		.split(";")
 		.map(x => x.trim())

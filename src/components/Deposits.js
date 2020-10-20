@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { Fragment, useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	TableRow,
@@ -15,6 +15,7 @@ import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
+import { AmountText } from "./cardCommon"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { useTranslation } from "react-i18next"
 
@@ -55,10 +56,22 @@ const getLoyaltyPoolDeposit = ({
 	return {
 		poolId: "adex-loyalty-pool",
 		label: t("common.loPo"),
-		balance: `
-		${formatADXPretty(loyaltyPoolStats.balanceLpToken)} ADX-LOYALTY
-		(= ${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ADX)
-		`,
+		balance: (
+			<Fragment>
+				<AmountText
+					text={`${formatADXPretty(
+						loyaltyPoolStats.balanceLpToken
+					)} ${"ADX-LOYALTY"}`}
+					fontSize={17}
+				/>
+				(=
+				<AmountText
+					text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				)
+			</Fragment>
+		),
 		reward: `${
 			loyaltyPoolStats.rewardADX
 				? formatADXPretty(loyaltyPoolStats.rewardADX)
