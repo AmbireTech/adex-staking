@@ -482,7 +482,8 @@ export async function createNewBond(
 	}
 	// @TODO consider handling this edge case in non-gasless cases when there's some ADX on the identity
 	// or at least `if (needsDeploying && balanceOnIdentity.gt(ZERO)) throw` cause otherwise the tx would just fail
-	// because the cnstructor will bond this amount first
+	// because the constructor will bond this amount first
+	// see https://github.com/AdExNetwork/adex-staking/issues/71
 
 	// Eg bond amount is 10 but we only have 60, we need another 40
 	const needed = amount.sub(balanceOnIdentity)
