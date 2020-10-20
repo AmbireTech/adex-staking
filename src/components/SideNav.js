@@ -224,19 +224,6 @@ function SideNav({
 							<ListItemText primary={t("common.staked")} />
 						</RRListItem>
 						<RRListItem
-							id="side-nav-link-gasless"
-							button
-							to={{ pathname: "/gasless" }}
-							className={clsx({ [classes.active]: path === "/gasless" })}
-						>
-							<ListItemIcon color="inherit">
-								<SvgIcon color="inherit">
-									<GaslessIcon width="100%" height="100%" color="secondary" />
-								</SvgIcon>
-							</ListItemIcon>
-							<ListItemText primary={t("common.gaslessStaking")} />
-						</RRListItem>
-						<RRListItem
 							id="side-nav-link-rewards"
 							button
 							to={{ pathname: "/rewards" }}
@@ -248,6 +235,19 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.rewards")} />
+						</RRListItem>
+						<RRListItem
+							id="side-nav-link-gasless"
+							button
+							to={{ pathname: "/gasless" }}
+							className={clsx({ [classes.active]: path === "/gasless" })}
+						>
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<GaslessIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
+							</ListItemIcon>
+							<ListItemText primary={t("common.gaslessStaking")} />
 						</RRListItem>
 					</List>
 				</Box>
