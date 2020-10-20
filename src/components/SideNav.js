@@ -106,7 +106,8 @@ const useStyles = makeStyles(theme => {
 			top: 0,
 			right: 0,
 			bottom: 0,
-			backgroundColor: "transparent"
+			backgroundColor: "transparent",
+			textTransform: "uppercase"
 		},
 		noUserData: {
 			opacity: 0.23
@@ -170,7 +171,7 @@ function SideNav({
 							{!stats.connectedWalletAddress && (
 								<Box
 									id="side-nav-connect-wallet-overlay"
-									classes={{ root: classes.overlay }}
+									className={classes.overlay}
 									display="flex"
 									flexDirection="column"
 									alignItems="center"
