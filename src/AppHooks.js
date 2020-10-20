@@ -114,7 +114,7 @@ export default function Root() {
 			} else {
 				setSnackbarErr({
 					msg: "errors.loadingStats",
-					opts: { error: t(!!e ? e.message || e.toString() : "") }
+					opts: { error: !!e ? e.message || e.toString() : "" }
 				})
 			}
 

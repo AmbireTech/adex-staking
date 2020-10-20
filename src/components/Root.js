@@ -214,7 +214,16 @@ export default function Root() {
 							onClose={handleErrClose}
 							severity="error"
 						>
-							{t(snackbarErr.msg || snackbarErr, snackbarErr.opts || {})}
+							{t(
+								snackbarErr.msg || snackbarErr,
+								Object.entries(snackbarErr.opts || {}).reduce(
+									(opts, [key, value]) => {
+										opts[key] = t(value)
+										return opts
+									},
+									{}
+								)
+							)}
 						</Alert>
 					</Snackbar>
 					<ShtarvolinkiSnack {...snackHooks} />
