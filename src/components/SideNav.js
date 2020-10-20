@@ -275,14 +275,12 @@ function SideNav({
 						<Box>
 							<div>
 								<small>
-									{" "}
-									&copy; {new Date().getFullYear()} &nbsp;
 									<Anchor
 										id="external-link-adex-network"
 										target="_blank"
 										href={`https://adex.network`}
 									>
-										AdEx Network OÜ
+										{t("company.copy", { year: new Date().getFullYear() })}
 									</Anchor>
 								</small>
 							</div>
@@ -293,7 +291,7 @@ function SideNav({
 										target="_blank"
 										href={`https://adex.network/tos`}
 									>
-										{t("common.termsAndConditions")}
+										{t("company.terms")}
 									</Anchor>
 								</small>
 							</div>
@@ -304,7 +302,7 @@ function SideNav({
 										target="_blank"
 										href={`https://etherscan.io/address/${ADDR_ADX}`}
 									>
-										AdEx (ADX) Token
+										{t("company.adxToken")}
 									</Anchor>
 								</small>
 							</div>
@@ -315,7 +313,7 @@ function SideNav({
 										target="_blank"
 										href="https://www.adex.network/blog/adex-defi-staking-overview/"
 									>
-										v.{packageJson.version}
+										{t("company.version", { version: packageJson.version })}
 									</Anchor>
 								</small>
 							</div>
