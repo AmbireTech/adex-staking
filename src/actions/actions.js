@@ -66,8 +66,8 @@ export const EMPTY_STATS = {
 	totalBalanceADX: ZERO,
 	userWalletBalance: ZERO,
 	userIdentityBalance: ZERO,
-	canExecuteGasless: false,
-	canExecuteGaslessError: null,
+	// canExecuteGasless: false,
+	// canExecuteGaslessError: null,
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
 	tomPoolStats: POOL_EMPTY_STATS,
 	prices: {}
@@ -253,13 +253,13 @@ export async function loadUserStats(chosenWalletType, prices) {
 	const [
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
 		tomPoolUserRewardChannels,
-		{ canExecuteGasless, canExecuteGaslessError },
+		// { canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
 		poolsStats
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
-		getGaslessInfo(addr),
+		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices)
 	])
@@ -311,8 +311,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
 		userIdentityBalance,
-		canExecuteGasless,
-		canExecuteGaslessError,
+		// canExecuteGasless,
+		// canExecuteGaslessError,
 		loyaltyPoolStats,
 		tomPoolStats: tomPoolStatsWithUserData,
 		prices

@@ -25,7 +25,6 @@ import {
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
-import { useTranslation } from "react-i18next"
 
 const REFRESH_INTVL = 20000
 
@@ -66,7 +65,6 @@ function getErrorMessage(error) {
 }
 
 export default function Root() {
-	const { t } = useTranslation()
 	const { addSnack, ...snackHooks } = useSnack()
 	const {
 		library,

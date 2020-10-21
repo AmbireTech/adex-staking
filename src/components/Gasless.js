@@ -18,7 +18,7 @@ import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
-import { createNewBond, restake } from "../actions"
+import { createNewBond, restake, getGaslessInfo } from "../actions"
 import {
 	POOLS,
 	MIN_BALANCE_FOR_GASLESS_TXNS,
@@ -68,30 +68,55 @@ const useStyles = makeStyles(theme => {
 	}
 })
 
+const defaultGaslessInfo = {
+	canExecuteGasless: false,
+	canExecuteGaslessErrorKey: "common.connectWallet"
+}
+
 const Gasless = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const [bondOpen, setBondOpen] = useState(false)
 	const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [bond, setBond] = useState({})
+	const [gaslessInfo, setGaslessInfo] = useState(defaultGaslessInfo)
 
 	const {
 		stats,
 		setConnectWallet,
 		addSnack,
 		chosenWalletType,
-		wrapDoingTxns
+		wrapDoingTxns,
+		account
 	} = useContext(AppContext)
 
 	const {
 		userIdentityBalance,
 		identityAddr,
 		loaded,
-		canExecuteGasless,
-		canExecuteGaslessError: canExecuteGaslessErrorKey,
 		tomRewardADX,
 		userBonds
 	} = stats
+
+	const {
+		canExecuteGasless,
+		canExecuteGaslessError: canExecuteGaslessErrorKey
+	} = gaslessInfo
+
+	useEffect(() => {
+		async function updateGasless() {
+			console.log("account", account)
+
+			const info = await getGaslessInfo(account)
+			setGaslessInfo(info)
+		}
+
+		if (account) {
+			updateGasless()
+		} else {
+			setGaslessInfo(defaultGaslessInfo)
+		}
+	}, [account])
 
 	const hasEnoughForReStake = tomRewardADX.gte(MIN_GASLESS_RE_STAKE_REWARDS)
 
