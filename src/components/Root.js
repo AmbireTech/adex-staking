@@ -16,6 +16,7 @@ import Stakings from "./Stakings"
 import Gasless from "./Gasless"
 import Rewards from "./Rewards"
 import Pools from "./Pools"
+import StakeNowPopup from "./StakeNowPopup"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -297,6 +298,7 @@ export default function Root() {
 							</Box>
 						</Fade>
 					</Modal>
+					<StakeNowPopup />
 				</div>
 			</main>
 		</div>
