@@ -150,7 +150,10 @@
     "noEthBrowserDetected": "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.",
     "connectedToUnsupportedNetwork": "You're connected to an unsupported network.",
     "siteNotAuth": "Please authorize this website to access your Ethereum account.",
-    "unknownCheckConsole": "An unknown error occurred. Check the console for more details."
+    "unknownCheckConsole": "An unknown error occurred. Check the console for more details.",
+    "noSignerProvided": "Signer not provided",
+    "noMessageProvided": "Message not provided",
+    "signatureNotVerified": "Can not verify signature"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
