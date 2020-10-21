@@ -18,7 +18,7 @@ import {
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
 import { ADEX_RELAYER_HOST, PRICES_API_URL } from "../helpers/constants"
-import { getSigner, defaultProvider } from "../ethereum"
+import { getSigner, defaultProvider, signMessage } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
@@ -27,10 +27,9 @@ import {
 const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
-const provider = defaultProvider
-const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
-const Token = new Contract(ADDR_ADX, ERC20ABI, provider)
-const Core = new Contract(ADDR_CORE, CoreABI, provider)
+const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
+const Token = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
+const Core = new Contract(ADDR_CORE, CoreABI, defaultProvider)
 
 const MAX_SLASH = bigNumberify("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -327,12 +326,15 @@ export async function loadBondStats(addr, identityAddr) {
 		slashLogs
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
-		provider.getLogs({
+		defaultProvider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
 			topics: [null, hexZeroPad(identityAddr, 32)]
 		}),
-		provider.getLogs({ fromBlock: 0, ...Staking.filters.LogSlash(null, null) })
+		defaultProvider.getLogs({
+			fromBlock: 0,
+			...Staking.filters.LogSlash(null, null)
+		})
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -476,7 +478,7 @@ export async function createNewBond(
 	if (
 		gasless &&
 		amount.eq(balanceOnIdentity) &&
-		(await provider.getCode(addr)) === "0x"
+		(await defaultProvider.getCode(addr)) === "0x"
 	) {
 		return executeOnIdentity(chosenWalletType, [], {}, true)
 	}
@@ -682,7 +684,8 @@ export async function executeOnIdentity(
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
 
-	const needsToDeploy = (await provider.getCode(identity.address)) === "0x"
+	const needsToDeploy =
+		(await defaultProvider.getCode(identity.address)) === "0x"
 	const idNonce = needsToDeploy ? ZERO : await identity.nonce()
 	const toTuples = offset => ([to, data], i) =>
 		zeroFeeTx(
@@ -698,7 +701,7 @@ export async function executeOnIdentity(
 		)
 		const signatures = []
 		for (const tx of txnsRaw) {
-			const sig = await signer.signMessage(new Transaction(tx).hash())
+			const sig = await signMessage(signer, new Transaction(tx).hash())
 			signatures.push(splitSig(sig))
 		}
 
@@ -717,7 +720,6 @@ export async function executeOnIdentity(
 		const txnTuples = txns.map(toTuples(0))
 		await identity.executeBySender(txnTuples, opts)
 	} else {
-		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
 		// Has offset because the execute() takes the first nonce
 		const txnTuples = txns.map(toTuples(1))
 		const executeTx = zeroFeeTx(
@@ -726,7 +728,10 @@ export async function executeOnIdentity(
 			identity.address,
 			identity.interface.functions.executeBySender.encode([txnTuples])
 		)
-		const sig = await signer.signMessage(executeTx.hash())
+
+		const sig = await signMessage(signer, executeTx.hash())
+
+		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
 		await factoryWithSigner.deployAndExecute(
 			bytecode,
 			0,
