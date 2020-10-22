@@ -87,21 +87,22 @@ const StakeNowPopup = () => {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
-	const { stats, setNewBondOpen, setNewBondPool } = useContext(AppContext)
+	const { stats, setNewBondOpen, setNewBondPool, account } = useContext(
+		AppContext
+	)
 
-	const { userBalance, userBonds } = stats
+	const { userBalance } = stats
 
 	useEffect(() => {
 		const hasADX = userBalance.gt(ZERO)
-		const hasBonds = userBonds.length > 0
-		const lastPopUP = loadFromLocalStorage("stake-popup-last-pop")
+		const lastPopUP = loadFromLocalStorage(`stake-popup-last-pop-${account}`)
 		const showSinceLast = !lastPopUP || Date.now() - lastPopUP > HIDE_FOR
 
-		if (hasADX && !hasBonds && showSinceLast) {
+		if (hasADX && showSinceLast) {
 			setOpen(true)
-			saveToLocalStorage(Date.now(), "stake-popup-last-pop")
+			saveToLocalStorage(Date.now(), `stake-popup-last-pop-${account}`)
 		}
-	}, [userBalance, userBonds.length])
+	}, [account, userBalance])
 
 	return (
 		<Box>
