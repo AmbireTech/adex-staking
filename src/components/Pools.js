@@ -75,6 +75,7 @@ const Pools = () => {
 						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
 							count: UNBOND_DAYS
 						})}
+						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
 					/>
 
 					<PoolCard
