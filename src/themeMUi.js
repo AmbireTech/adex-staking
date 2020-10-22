@@ -24,6 +24,7 @@ const palette = {
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
+	lightGrey: { main: ALEX_GREY_LIGHT, contrastText: WHITE },
 	warning: {
 		main: WARNING,
 		contrastText: BLACK

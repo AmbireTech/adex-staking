@@ -54,7 +54,9 @@
     "currentAPY": "Current APY",
     "incentive": "Incentive",
     "fees": "Fees",
-    "noSelection": "Nothing selected"
+    "noSelection": "Nothing selected",
+    "currencyBalance": "{{currency}} BALANCE",
+    "goBack": "Go back"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -185,6 +187,10 @@
     "swapInProgress": "Token swap is in progress! It will be completed once all your pending transactions have been confirmed.",
     "swapNow": "Swap now",
     "adxToUpgrade": "ADX Token upgrade"
+  },
+  "popups": {
+    "congratulations": "Congratulations!",
+    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
   },
   "rewards": {
     "noRewards": "No rewards",
