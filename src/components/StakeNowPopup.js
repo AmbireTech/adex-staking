@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { fade } from "@material-ui/core/styles/colorManipulator"
 import {
@@ -15,8 +15,16 @@ import { CardRow } from "./cardCommon"
 import { ReactComponent as AdExIcon } from "./../resources/adex-logo-clean.svg"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
+import { ZERO } from "../helpers/constants"
+
+import {
+	loadFromLocalStorage,
+	saveToLocalStorage
+} from "../helpers/localStorage"
 
 import { useTranslation } from "react-i18next"
+
+const HIDE_FOR = 1 * 24 * 60 * 60 * 1000 // 1 day
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -53,8 +61,6 @@ const useStyles = makeStyles(theme => {
                 ${theme.palette.background.special} 0%,
                 ${theme.palette.common.black} 110%
             )`
-
-			// `radial-gradient(ellipse at bottom,  ${theme.palette.primary.main} 0%, ${theme.palette.background.darkerPaper} 100%)`
 		},
 		bottom: {
 			position: "relative",
@@ -79,17 +85,23 @@ const useStyles = makeStyles(theme => {
 const StakeNowPopup = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const [open, setOpen] = useState(true)
+	const [open, setOpen] = useState(false)
 
-	const {
-		prices,
-		stats,
-		setNewBondOpen,
-		chosenWalletType,
-		setNewBondPool
-	} = useContext(AppContext)
+	const { stats, setNewBondOpen, setNewBondPool } = useContext(AppContext)
 
-	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
+	const { userBalance, userBonds } = stats
+
+	useEffect(() => {
+		const hasADX = userBalance.gt(ZERO)
+		const hasBonds = userBonds.length > 0
+		const lastPopUP = loadFromLocalStorage("stake-popup-last-pop")
+		const showSinceLast = !lastPopUP || Date.now() - lastPopUP > HIDE_FOR
+
+		if (hasADX && !hasBonds && showSinceLast) {
+			setOpen(true)
+			saveToLocalStorage(Date.now(), "stake-popup-last-pop")
+		}
+	}, [userBalance, userBonds.length])
 
 	return (
 		<Box>
@@ -152,7 +164,7 @@ const StakeNowPopup = () => {
 										fontSize={27}
 										text={
 											stats.userBalance
-												? formatADXPretty(stats.userBalance) + " ADX"
+												? formatADXPretty(userBalance) + " ADX"
 												: ""
 										}
 										isAmountText
@@ -163,7 +175,6 @@ const StakeNowPopup = () => {
 								<Box my={1}>
 									<Fab
 										id={`stake-popup-stake-btn`}
-										// disabled={!stats.loaded || !canStake}
 										onClick={() => {
 											setOpen(false)
 											setNewBondPool("")
