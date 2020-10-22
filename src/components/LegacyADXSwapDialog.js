@@ -18,12 +18,16 @@ const LegacyToken = new Contract(ADDR_ADX_OLD, ERC20ABI, provider)
 export default function LegacyADXSwapDialog(
 	getSigner,
 	wrapDoingTxns,
-	chosenWalletType
+	chosenWalletType,
+	legacySwapInPrg,
+	setLegacySwapInPrg,
+	legacySwapOpen,
+	setLegacySwapInOpen
 ) {
 	const { t } = useTranslation()
 	// Amount to migrate
 	const [amount, setAmount] = useState(ZERO)
-	const [isSwapInPrg, setSwapInPrg] = useState(false)
+	// const [isSwapInPrg, setSwapInPrg] = useState(false)
 
 	useEffect(() => {
 		if (!getSigner || !chosenWalletType.name) return
@@ -32,8 +36,10 @@ export default function LegacyADXSwapDialog(
 			if (!signer) return
 			const walletAddr = await signer.getAddress()
 			setAmount(await LegacyToken.balanceOf(walletAddr))
+			setLegacySwapInOpen(true)
 		}
 		refreshAmount().catch(e => console.error(e))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [getSigner, chosenWalletType])
 
 	const farmer = (
@@ -101,14 +107,14 @@ export default function LegacyADXSwapDialog(
 		swapTokens.bind(null, setAmount, amount, getSigner, chosenWalletType)
 	)
 	const dialog = ConfirmationDialog({
-		isOpen: amount.gt(ZERO),
-		onDeny: () => setAmount(ZERO),
+		isOpen: legacySwapOpen,
+		onDeny: () => setLegacySwapInOpen(false),
 		onConfirm: async () => {
 			const txns = await onSwap()
 			if (!txns) return
-			setSwapInPrg(true)
+			setLegacySwapInPrg(true)
 			await Promise.all(txns.map(x => x.wait()))
-			setSwapInPrg(false)
+			setLegacySwapInPrg(false)
 		},
 		confirmActionName: t("legacy.swapNow"),
 		title: t("legacy.adxToUpgrade"),
@@ -117,7 +123,7 @@ export default function LegacyADXSwapDialog(
 	return (
 		<>
 			{dialog}
-			<Snackbar open={isSwapInPrg}>
+			<Snackbar open={legacySwapInPrg}>
 				<MuiAlert elevation={6} variant="filled" severity="success">
 					{t("legacy.swapInProgress")}
 				</MuiAlert>

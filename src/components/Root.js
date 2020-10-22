@@ -77,7 +77,11 @@ export default function Root() {
 		snackHooks,
 		chainWarning,
 		newBondPool,
-		setNewBondPool
+		setNewBondPool,
+		legacySwapInPrg,
+		setLegacySwapInPrg,
+		legacySwapOpen,
+		setLegacySwapInOpen
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -140,7 +144,11 @@ export default function Root() {
 					LegacyADXSwapDialog(
 						stats.loaded ? getSigner : null,
 						wrapDoingTxns,
-						chosenWalletType
+						chosenWalletType,
+						legacySwapInPrg,
+						setLegacySwapInPrg,
+						legacySwapOpen,
+						setLegacySwapInOpen
 					)}
 
 					{ConfirmationDialog({

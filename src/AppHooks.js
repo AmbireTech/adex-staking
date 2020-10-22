@@ -88,6 +88,8 @@ export default function Root() {
 	const [prices, setPrices] = useState({})
 	const [chainWarning, setChainWarning] = useState(false)
 	const [newBondPool, setNewBondPool] = useState(null)
+	const [legacySwapInPrg, setLegacySwapInPrg] = useState(false)
+	const [legacySwapOpen, setLegacySwapInOpen] = useState(false)
 
 	useInactiveListener(!!connectWallet)
 
@@ -237,6 +239,10 @@ export default function Root() {
 		account,
 		chainWarning,
 		newBondPool,
-		setNewBondPool
+		setNewBondPool,
+		legacySwapInPrg,
+		setLegacySwapInPrg,
+		legacySwapOpen,
+		setLegacySwapInOpen
 	}
 }

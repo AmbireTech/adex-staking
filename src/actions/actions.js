@@ -70,7 +70,8 @@ export const EMPTY_STATS = {
 	// canExecuteGaslessError: null,
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
 	tomPoolStats: POOL_EMPTY_STATS,
-	prices: {}
+	prices: {},
+	legacyTokenBalance: ZERO
 }
 
 const sumRewards = all =>

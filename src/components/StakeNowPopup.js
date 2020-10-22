@@ -87,22 +87,29 @@ const StakeNowPopup = () => {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
-	const { stats, setNewBondOpen, setNewBondPool, account } = useContext(
-		AppContext
-	)
+	const {
+		stats,
+		setNewBondOpen,
+		setNewBondPool,
+		account,
+		legacySwapOpen,
+		legacySwapInPrg
+	} = useContext(AppContext)
 
 	const { userBalance } = stats
 
 	useEffect(() => {
-		const hasADX = userBalance.gt(ZERO)
-		const lastPopUP = loadFromLocalStorage(`stake-popup-last-pop-${account}`)
-		const showSinceLast = !lastPopUP || Date.now() - lastPopUP > HIDE_FOR
+		if (!legacySwapInPrg && !legacySwapOpen) {
+			const hasADX = userBalance.gt(ZERO)
+			const lastPopUP = loadFromLocalStorage(`stake-popup-last-pop-${account}`)
+			const showSinceLast = !lastPopUP || Date.now() - lastPopUP > HIDE_FOR
 
-		if (hasADX && showSinceLast) {
-			setOpen(true)
-			saveToLocalStorage(Date.now(), `stake-popup-last-pop-${account}`)
+			if (hasADX && showSinceLast) {
+				setOpen(true)
+				saveToLocalStorage(Date.now(), `stake-popup-last-pop-${account}`)
+			}
 		}
-	}, [account, userBalance])
+	}, [legacySwapOpen, legacySwapInPrg, account, userBalance])
 
 	return (
 		<Box>
