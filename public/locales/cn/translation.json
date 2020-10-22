@@ -157,7 +157,8 @@
     "unknownCheckConsole": "An unknown error occurred. Check the console for more details.",
     "noSignerProvided": "Signer not provided",
     "noMessageProvided": "Message not provided",
-    "signatureNotVerified": "Can not verify signature"
+    "signatureNotVerified": "Can not verify signature",
+    "nothingToStake": "Nothing to stake"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

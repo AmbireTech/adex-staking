@@ -121,7 +121,8 @@ const Gasless = () => {
 	const hasEnoughForReStake = tomRewardADX.gte(MIN_GASLESS_RE_STAKE_REWARDS)
 
 	const walletConnected = identityAddr && loaded
-	const disabled = !walletConnected || !canExecuteGasless
+	const disabled =
+		!walletConnected || !canExecuteGasless || userIdentityBalance.isZero()
 	const disableReStake = disabled || !hasEnoughForReStake
 	const canExecuteGaslessReStakeErrorKey = (canExecuteGaslessErrorKey || "")
 		.toLowerCase()
@@ -135,8 +136,11 @@ const Gasless = () => {
 				currency: "ADX"
 		  })
 		: ""
+
 	const canExecuteGaslessError = !!canExecuteGaslessErrorKey
 		? t(canExecuteGaslessErrorKey)
+		: userIdentityBalance.isZero()
+		? t("errors.nothingToStake")
 		: ""
 
 	const showReStake =
