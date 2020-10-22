@@ -15,7 +15,8 @@ export default function StatsCard({
 	moreExtraInfo,
 	loaded,
 	actions,
-	multilineLinesAmounts
+	multilineLinesAmounts,
+	justify
 }) {
 	return (
 		<Box>
@@ -27,6 +28,7 @@ export default function StatsCard({
 					text={title}
 					isAmountText
 					infoText={titleInfo}
+					justify={justify}
 				/>
 			)}
 
@@ -39,6 +41,7 @@ export default function StatsCard({
 					isAmountText
 					multilineLinesAmounts={multilineLinesAmounts}
 					infoText={subtitleInfo}
+					justify={justify}
 				/>
 			)}
 
@@ -50,6 +53,7 @@ export default function StatsCard({
 					text={extra}
 					isAmountText
 					infoText={extraInfo}
+					justify={justify}
 				/>
 			)}
 
@@ -61,6 +65,7 @@ export default function StatsCard({
 					text={moreExtra}
 					isAmountText
 					infoText={moreExtraInfo}
+					justify={justify}
 				/>
 			)}
 

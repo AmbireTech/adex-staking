@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	SvgIcon,
@@ -7,10 +7,12 @@ import {
 	Modal,
 	Fade,
 	Backdrop,
-	Typography
+	Typography,
+	Button
 } from "@material-ui/core"
+import { CardRow } from "./cardCommon"
 import { ReactComponent as AdExIcon } from "./../resources/adex-logo-clean.svg"
-
+import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 
 import { useTranslation } from "react-i18next"
@@ -43,19 +45,25 @@ const useStyles = makeStyles(theme => {
 			justifyContent: "center"
 		},
 		top: {
-			background: `radial-gradient(ellipse at bottom,  ${theme.palette.primary.main} 0%, ${theme.palette.background.darkerPaper} 100%)`
+			background: `radial-gradient(
+                ellipse at bottom,
+                ${theme.palette.background.special} 0%,
+                ${theme.palette.common.black} 110%
+            )`
+
+			// `radial-gradient(ellipse at bottom,  ${theme.palette.primary.main} 0%, ${theme.palette.background.darkerPaper} 100%)`
 		},
 		bottom: {
 			position: "relative",
 			background: theme.palette.common.white,
 			borderTopLeftRadius: "100%",
 			borderTopRightRadius: "100%",
-			width: "130%",
-			marginLeft: "-15%",
-			marginTop: -69,
+			width: "142%",
+			marginLeft: "-21%",
+			marginTop: -90,
 			padding: theme.spacing(3),
 			paddingTop: 69 + theme.spacing(3),
-			paddingInline: `calc(15% + ${theme.spacing(3)}px)`
+			paddingInline: `calc(21% + ${theme.spacing(3)}px)`
 		},
 		modal: {
 			display: "flex",
@@ -71,6 +79,7 @@ const StakeNowPopup = () => {
 	const [open, setOpen] = useState(true)
 
 	const {
+		prices,
 		stats,
 		setNewBondOpen,
 		chosenWalletType,
@@ -92,9 +101,9 @@ const StakeNowPopup = () => {
 				}}
 			>
 				<Fade in={open}>
-					<Box overflow="hidden">
-						<Box height={169} classes={{ root: classes.top }}></Box>
-						<Box height={350} classes={{ root: classes.bottom }}>
+					<Box overflow="hidden" width={420} maxWidth={"100%"} m={1}>
+						<Box height={200} classes={{ root: classes.top }}></Box>
+						<Box classes={{ root: classes.bottom }}>
 							<Box classes={{ root: classes.iconBoxBack }}>
 								<Box classes={{ root: classes.iconBox }} fontSize={50}>
 									<SvgIcon fontSize="inherit" color="inherit">
@@ -102,26 +111,79 @@ const StakeNowPopup = () => {
 									</SvgIcon>
 								</Box>
 							</Box>
-							<Box>
-								<Typography variant="h4" color="primary">
-									Stake NOW if you want stake
+							<Box
+								display="flex"
+								flexDirection="column"
+								alignItems="center"
+								justifyContent="center"
+							>
+								<Typography
+									variant="h4"
+									color="primary"
+									gutterBottom
+									align="center"
+								>
+									{t("popups.congratulations")}
+								</Typography>
+								<Typography
+									variant="caption"
+									color="primary"
+									gutterBottom
+									align="center"
+								>
+									{t("popups.proudOwnerOfADX")}
 								</Typography>
 
-								{
+								<Box my={3}>
+									<CardRow
+										color="text.main"
+										fontWeight={"fontWeightBold"}
+										fontSize={14}
+										text={t("common.currencyBalance", { currency: "ADX" })}
+										justify="center"
+									/>
+
+									<CardRow
+										color="warning.main"
+										fontWeight={"fontWeightBold"}
+										fontSize={27}
+										text={
+											stats.userBalance
+												? formatADXPretty(stats.userBalance) + " ADX"
+												: ""
+										}
+										isAmountText
+										justify="center"
+									/>
+								</Box>
+
+								<Box my={1}>
 									<Fab
 										id={`stake-popup-stake-btn`}
 										// disabled={!stats.loaded || !canStake}
 										onClick={() => {
+											setOpen(false)
 											setNewBondPool("")
 											setNewBondOpen(true)
 										}}
 										variant="extended"
 										color="secondary"
-										size="medium"
+										size="large"
 									>
 										{t("bonds.stakeADX")}
 									</Fab>
-								}
+								</Box>
+
+								<Box my={1}>
+									<Button
+										id={`stake-popup-close-btn`}
+										size="small"
+										onClick={() => setOpen(false)}
+										color="primary"
+									>
+										{t("common.goBack")}
+									</Button>
+								</Box>
 							</Box>
 						</Box>
 					</Box>
