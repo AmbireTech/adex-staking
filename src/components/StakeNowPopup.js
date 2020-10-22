@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
+import { fade } from "@material-ui/core/styles/colorManipulator"
 import {
 	SvgIcon,
 	Box,
@@ -26,8 +27,10 @@ const useStyles = makeStyles(theme => {
 			height: 92,
 			top: -46,
 			left: "calc(50% - 46px)",
-			background:
-				"linear-gradient(142deg, rgba(222,222,222,1) 0%, rgba(255,255,255,0.53) 100%)",
+			background: `linear-gradient(69deg, ${fade(
+				theme.palette.lightGrey.main,
+				0.69
+			)} 0%, ${fade(theme.palette.common.white, 0.69)} 100%)`,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
