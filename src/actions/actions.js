@@ -114,9 +114,9 @@ export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 }
 
 export function getValidatorFeesAPY({ channel, prices, totalStake }) {
-	const { periodStart, periodEnd, channelArgs, spec = {} } = channel
+	const { periodStart, periodEnd, channelArgs, stats = {} } = channel
 	const { tokenAmount } = channelArgs
-	const { currentTotalActiveStake } = spec
+	const { currentTotalActiveStake } = stats
 
 	const totalActiveStaked = bigNumberify(
 		currentTotalActiveStake || totalStake || 0
