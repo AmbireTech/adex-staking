@@ -253,7 +253,6 @@ export default function Root() {
 								setNewBondPool,
 								newBondPool,
 								pools: POOLS.filter(x => x.selectable),
-								maxAmount: stats.userBalance,
 								onNewBond: async bond => {
 									setNewBondOpen(false)
 									await wrapDoingTxns(
