@@ -496,7 +496,7 @@ export async function createNewBond(
 	if (needed.gt(ZERO))
 		identityTxns.push([
 			Token.address,
-			Token.interface.functions.transferFrom.encode([walletAddr, addr, amount])
+			Token.interface.functions.transferFrom.encode([walletAddr, addr, needed])
 		])
 	if (allowanceStaking.lt(amount))
 		identityTxns.push([
