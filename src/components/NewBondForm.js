@@ -52,11 +52,6 @@ export default function NewBondForm({
 	const onlyIdentityBalance = !identityDeployed && userIdentityBalance.gt(ZERO)
 	const maxAmount = onlyIdentityBalance ? userIdentityBalance : userBalance
 
-	console.log("onlyIdentityBalance", onlyIdentityBalance)
-	console.log("identityDeployed", identityDeployed)
-	console.log("userIdentityBalance.gt(ZERO)", userIdentityBalance.gt(ZERO))
-	console.log("userIdentityBalance", userIdentityBalance.toString())
-
 	const onAction = () => {
 		setConfirmation(false)
 		onNewBond(bond)
