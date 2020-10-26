@@ -121,10 +121,10 @@ export function getValidatorFeesAPY({ channel, prices, totalStake }) {
 	const totalActiveStaked = bigNumberify(
 		currentTotalActiveStake || totalStake || 0
 	)
-	const pricePrecision = 1_000_00
+	const pricePrecision = 1_000_000
 
 	const totalStakeInDaiValue = bigNumberify(totalActiveStaked)
-		.mul(Math.floor(bigNumberify((prices.USD || 0.2) * pricePrecision)))
+		.mul(bigNumberify(Math.floor((prices.USD || 0.2) * pricePrecision)))
 		.div(pricePrecision)
 
 	const toDistribute = bigNumberify(tokenAmount)
