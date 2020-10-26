@@ -35,6 +35,8 @@ import { useTranslation, Trans } from "react-i18next"
 
 const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
+console.log(MIN_GASLESS_RE_STAKE_REWARDS.toString())
+
 const useStyles = makeStyles(theme => {
 	return {
 		overlay: {
@@ -121,21 +123,31 @@ const Gasless = () => {
 	const hasEnoughForReStake = tomRewardADX.gte(MIN_GASLESS_RE_STAKE_REWARDS)
 
 	const walletConnected = identityAddr && loaded
-	const disabled =
-		!walletConnected || !canExecuteGasless || userIdentityBalance.isZero()
-	const disableReStake = disabled || !hasEnoughForReStake
-	const canExecuteGaslessReStakeErrorKey = (canExecuteGaslessErrorKey || "")
-		.toLowerCase()
-		.includes("needs to have at least")
-		? "errors.insufficientGaslessAddrBalance"
-		: canExecuteGaslessErrorKey || "errors.minGaslessReStake"
 
-	const canExecuteGaslessReStakeError = !!canExecuteGaslessReStakeErrorKey
-		? t(canExecuteGaslessReStakeErrorKey, {
-				amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
-				currency: "ADX"
-		  })
+	const mainErrKey = !walletConnected
+		? "common.connectWallet"
+		: canExecuteGasless
+		? canExecuteGaslessErrorKey
 		: ""
+
+	const canExecuteGaslessReStakeErrorKey =
+		mainErrKey ||
+		((canExecuteGaslessErrorKey || "")
+			.toLowerCase()
+			.includes("needs to have at least")
+			? "errors.insufficientGaslessAddrBalance"
+			: !hasEnoughForReStake
+			? "errors.minGaslessReStake"
+			: canExecuteGaslessErrorKey || "")
+
+	const canExecuteGaslessReStakeError =
+		mainErrKey ||
+		(!!canExecuteGaslessReStakeErrorKey
+			? t(canExecuteGaslessReStakeErrorKey, {
+					amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
+					currency: "ADX"
+			  })
+			: "")
 
 	const canExecuteGaslessError = !!canExecuteGaslessErrorKey
 		? t(canExecuteGaslessErrorKey)
@@ -343,7 +355,7 @@ const Gasless = () => {
 													color="secondary"
 													size="large"
 													onClick={() => setBondOpen(true)}
-													disabled={disabled}
+													disabled={!!canExecuteGaslessError}
 												>
 													{t("common.stake")}
 												</Button>
@@ -387,7 +399,7 @@ const Gasless = () => {
 															color="secondary"
 															size="large"
 															onClick={() => setReStakeOpen(true)}
-															disabled={disableReStake}
+															disabled={!!canExecuteGaslessReStakeError}
 														>
 															{t("gasless.reStakeRewards")}
 														</Button>
@@ -399,7 +411,8 @@ const Gasless = () => {
 								)}
 							</Box>
 							<Box mt={2}>
-								{!disabled && (
+								{(!canExecuteGaslessError ||
+									!canExecuteGaslessReStakeError) && (
 									<Box mt={2}>
 										<Trans
 											i18nKey="gasless.info"
