@@ -136,7 +136,7 @@ const Pools = () => {
 						}
 						// comingSoon
 					/>
-					<PoolCard
+					{/* <PoolCard
 						id="liquidity-pool"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
@@ -146,7 +146,7 @@ const Pools = () => {
 						name={t("common.liPo")}
 						loading={!stats.loaded}
 						comingSoon
-					/>
+					/> */}
 					<EmailSignUp formId={2} formName="stakingportalleads" />
 				</Box>
 			</Box>
