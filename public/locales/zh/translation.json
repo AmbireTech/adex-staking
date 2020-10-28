@@ -105,7 +105,7 @@
     "canUnbondIn_plural": "可以在 {{count}} 天解绑",
     "requestUnbond": "请求解绑",
     "bondExplanationMsg": "表格显示您在验证池（绑定）的全部ADX存款以及状态、金额和当前APY的信息。使用操作按钮，您可在 {{count}} 天的锁定期过后申请解绑并取出ADX",
-    "bondExplanationMsg_plural ": "表格显示您在验证池（绑定）的全部ADX存款以及状态、金额和当前APY的信息。使用操作按钮，您可在 {{count}} 天的锁定期过后申请解绑并取出ADX，",
+    "bondExplanationMsg_plural": "表格显示您在验证池（绑定）的全部ADX存款以及状态、金额和当前APY的信息。使用操作按钮，您可在 {{count}} 天的锁定期过后申请解绑并取出ADX，",
     "confirmationLabel": "我了解我的ADX将锁定至少{{unbondDays}}天，并且我熟知<e1>条款和条件以及</e1>和<e2></e2>质押条件",
     "createBond": "创建绑定",
     "currentYield": "<farmer>🌾</farmer>  当前年产量{{apy}} {{sign}} <farmer>🌾</farmer>",
@@ -131,7 +131,7 @@
     "createNewBond": "创建绑定——无转账费"
   },
   "errors": {
-    "invalidAmount tInput": "金额输入无效！",
+    "invalidAmountInput": "金额输入无效！",
     "lowADXAmount": "ADX金额不足！",
     "lessDanMinPoolADX": "ADX金额低于所选池的最低要求！",
     "amountOverPoolLimit": "ADX金额过大-将超过池总质押额限制！",
