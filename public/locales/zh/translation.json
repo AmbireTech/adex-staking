@@ -55,6 +55,8 @@
     "incentive": "激励",
     "fees": "费用",
     "noSelection": "未选择任何内容",
+    "currencyBalance": "{{currency}} BALANCE",
+    "goBack": "Go back"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -77,14 +79,16 @@
     "loPoRewardPolicy": "存入ADX之后，您可以获得ADX积分，它会根据弹性发行量自动在ADX中产生新奖励，同时允许您参与ADEX治理。",
     "loPoSlashPolicy": "禁止削减.",
     "tomRewardPolicy": "\"Validator Tom\"池将按比例将手续费收入分配给全体质押者。手续费收入将是总交易量的7%，您可以在Explorer上进行跟踪。到2020年底，我们将额外发放700万ADX作为奖励。",
-    "tomSlashPolicy": "禁止削减."
+    "tomSlashPolicy": "禁止削减.",
+    "unbondPeriodDay": "{{count}} day",
+    "unbondPeriodDay_plural": "{{count}} days",
   },
   "email": {
     "subscribe": "订阅ADEX新闻",
     "win": "赢得<strong>{{rewards}}</strong>ADX！",
     "email": "邮件",
     "validEmail": "请提供有效的邮箱！",
-    "best Email": "请提供您最常用的邮箱",
+    "bestEmail": "请提供您最常用的邮箱",
     "gdprLabel": "是的，我希望AdEx Network向我推送新闻和其他相关内容",
     "promotionTerms": "我同意接收<externalLink>促销条款和条件</externalLink>",
     "submitting": "提交...",
@@ -113,7 +117,7 @@
     "txSent": "无转账费交易 {{txId}} 发送！",
     "connectWalletToSeeAddr": "连接钱包查看无转账费质押地址",
     "copiedToClipboard": "无转账费质押地址 {{identityAddr}} 复制到剪切板",
-    "addrToolTip": "这是您的无转账费帐户地址:自动计算的(CREATE2)智能合同地址将在发出第一笔交易后创建。",
+    "addrTooltip": "这是您的无转账费帐户地址:自动计算的(CREATE2)智能合同地址将在发出第一笔交易后创建。",
     "bullet1": "将ADX存入此地址。当质押额最少<strong> {{minBalance}} {{currency}} </strong>时，您可以点击\"押注\"该金额将不收取转账费。",
     "bullet2": "在单击\"质押\"之前，您可以根据需要，从钱包和交易所多次发送ADX。",
     "bullet3": "无转账费质押限制在{{count}} 小时进行单次质押",
@@ -153,12 +157,13 @@
     "unknownCheckConsole": "发生未知错误。有关详细信息，请检查控制台。",
     "noSignerProvided": "未提供签名者",
     "noMessageProvided": "未提供消息",
-    "signatureNotVerified": "无法验证签名"
+    "signatureNotVerified": "无法验证签名",
+    "nothingToStake": "Nothing to stake"
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
     "connectToMainnet": "请连接到主网以太坊网络",
-    "signAllTransaction": "请对所有未完成的{{wallet}}操作签名！",
+    "signAllTransactions": "请对所有未完成的{{wallet}}操作签名！",
     "addrCopied": "地址{{account}} 已复制到剪贴板"
   },
   "dialogs": {
@@ -185,6 +190,10 @@
     "swapInProgress": "通证交换正在进行中！未完交易确认后完成",
     "swapNow": "立即交换",
     "adxToUpgrade": "ADX通证升级",
+  },
+  "popups": {
+    "congratulations": "Congratulations!",
+    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
   },
   "rewards": {
     "noRewards": "无奖励",
