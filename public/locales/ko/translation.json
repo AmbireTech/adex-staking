@@ -210,5 +210,11 @@
     "terms": "이용 약관",
     "adxToken": "AdEx (ADX) 토큰",
     "version": "v{{version}}"
+  },
+  "relayerResErrors": {
+    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
+    "pendingTransactions": "Must not have a pending transactions",
+    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
+    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
   }
 }

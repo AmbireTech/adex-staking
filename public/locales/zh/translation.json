@@ -80,8 +80,8 @@
     "loPoSlashPolicy": "禁止削减.",
     "tomRewardPolicy": "\"Validator Tom\"池将按比例将手续费收入分配给全体质押者。手续费收入将是总交易量的7%，您可以在Explorer上进行跟踪。到2020年底，我们将额外发放700万ADX作为奖励。",
     "tomSlashPolicy": "禁止削减.",
-    "unbondPeriodDay": "{{count}} day",
-    "unbondPeriodDay_plural": "{{count}} days"
+    "unbondPeriodDay": "{{count}} 天",
+    "unbondPeriodDay_plural": "{{count}} 天"
   },
   "email": {
     "subscribe": "订阅ADEX新闻",
@@ -211,5 +211,11 @@
     "terms": "条款和条件",
     "adxToken": "AdEx (ADX) 通证",
     "version": "v{{version}}"
+  },
+  "relayerResErrors": {
+    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
+    "pendingTransactions": "Must not have a pending transactions",
+    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
+    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
   }
 }
