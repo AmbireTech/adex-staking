@@ -81,7 +81,7 @@
     "tomRewardPolicy": "\"Validator Tom\"池将按比例将手续费收入分配给全体质押者。手续费收入将是总交易量的7%，您可以在Explorer上进行跟踪。到2020年底，我们将额外发放700万ADX作为奖励。",
     "tomSlashPolicy": "禁止削减.",
     "unbondPeriodDay": "{{count}} day",
-    "unbondPeriodDay_plural": "{{count}} days",
+    "unbondPeriodDay_plural": "{{count}} days"
   },
   "email": {
     "subscribe": "订阅ADEX新闻",
@@ -189,7 +189,7 @@
     "p4": "<farmer>🌾</farmer>之后，您可以质押ADX，赚取高达150%APY（年百分比收益率）而不必担心大幅削减风险<external>阅读更多</external>。<farmer>🌾</farmer>",
     "swapInProgress": "通证交换正在进行中！未完交易确认后完成",
     "swapNow": "立即交换",
-    "adxToUpgrade": "ADX通证升级",
+    "adxToUpgrade": "ADX通证升级"
   },
   "popups": {
     "congratulations": "Congratulations!",
@@ -204,7 +204,7 @@
     "totalSelected": "选择总数",
     "name": "奖励名称",
     "tableInfo": "本表格显示您的所有奖励",
-    "poolName": "{{pool}} - {{type}} {{extra}}",
+    "poolName": "{{pool}} - {{type}} {{extra}}"
   },
   "company": {
     "copy": "© {{year}} AdEx 网络 OÜ",
