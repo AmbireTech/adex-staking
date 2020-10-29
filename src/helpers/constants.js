@@ -76,11 +76,11 @@ export const Wallets = [
 	{
 		name: METAMASK,
 		icon: metamaskLogo
+	},
+	{
+		name: WALLET_CONNECT,
+		icon: walletconnectLogo
 	}
-	// {
-	// 	name: WALLET_CONNECT,
-	// 	icon: walletconnectLogo
-	// }
 	// {
 	// 	name: TREZOR,
 	// 	icon: trezorLogo
