@@ -72,7 +72,9 @@ const useStyles = makeStyles(theme => {
 
 const defaultGaslessInfo = {
 	canExecuteGasless: false,
-	canExecuteGaslessErrorKey: "common.connectWallet"
+	canExecuteGaslessError: {
+		message: "common.connectWallet"
+	}
 }
 
 const Gasless = () => {
@@ -102,7 +104,7 @@ const Gasless = () => {
 
 	const {
 		canExecuteGasless,
-		canExecuteGaslessError: canExecuteGaslessErrorKey
+		canExecuteGaslessError: gaslessError
 	} = gaslessInfo
 
 	useEffect(() => {
@@ -124,36 +126,23 @@ const Gasless = () => {
 
 	const walletConnected = identityAddr && loaded
 
-	const mainErrKey = !walletConnected
+	const mainErr = !walletConnected
 		? "common.connectWallet"
-		: canExecuteGasless
-		? canExecuteGaslessErrorKey
+		: !canExecuteGasless
+		? t(gaslessError.message || "", gaslessError.data || {})
 		: ""
 
-	const canExecuteGaslessReStakeErrorKey =
-		mainErrKey ||
-		((canExecuteGaslessErrorKey || "")
-			.toLowerCase()
-			.includes("needs to have at least")
-			? "errors.insufficientGaslessAddrBalance"
-			: !hasEnoughForReStake
-			? "errors.minGaslessReStake"
-			: canExecuteGaslessErrorKey || "")
-
 	const canExecuteGaslessReStakeError =
-		mainErrKey ||
-		(!!canExecuteGaslessReStakeErrorKey
-			? t(canExecuteGaslessReStakeErrorKey, {
+		mainErr ||
+		(!hasEnoughForReStake
+			? t("errors.minGaslessReStake", {
 					amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
 					currency: "ADX"
 			  })
 			: "")
 
-	const canExecuteGaslessError = !!canExecuteGaslessErrorKey
-		? t(canExecuteGaslessErrorKey)
-		: userIdentityBalance.isZero()
-		? t("errors.nothingToStake")
-		: ""
+	const canExecuteGaslessError =
+		mainErr || (userIdentityBalance.isZero() ? t("errors.nothingToStake") : "")
 
 	const showReStake =
 		walletConnected &&
