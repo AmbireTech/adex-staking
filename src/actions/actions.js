@@ -433,16 +433,25 @@ export async function getGaslessInfo(addr) {
 	try {
 		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
 		const resData = await res.json()
+		const canExecuteGasless = res.status === 200 && resData.canExecute === true
+		const canExecuteGaslessError = canExecuteGasless
+			? null
+			: {
+					message: `relayerResErrors.${resData.message}`,
+					data: resData.data
+			  }
 
 		return {
-			canExecuteGasless: resData.canExecute === true,
-			canExecuteGaslessError: resData.message || null
+			canExecuteGasless,
+			canExecuteGaslessError
 		}
 	} catch (err) {
 		console.error(err)
 		return {
 			canExecuteGasless: false,
-			canExecuteGaslessError: "errors.gaslessStakingTempOff"
+			canExecuteGaslessError: {
+				message: "errors.gaslessStakingTempOff"
+			}
 		}
 	}
 }
