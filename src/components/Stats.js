@@ -7,6 +7,8 @@ import {
 	FormControl,
 	Grid
 } from "@material-ui/core"
+import { commify } from "ethers/utils"
+
 import { POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
 import { PropRow } from "./cardCommon"
@@ -133,6 +135,23 @@ export default function Stats() {
 						stats.totalPayouts
 							? formatADXPretty(stats.totalPayouts) + " DAI"
 							: "-"
+					}
+					loaded={loaded}
+				/>
+
+				<ValidatorStatsCard
+					label={t("stats.dailyPayoutsVolume")}
+					value={
+						stats.dailyPayoutsVolume
+							? formatADXPretty(stats.dailyPayoutsVolume) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.yearlyTransactions")}
+					value={
+						stats.yearlyTransactions ? commify(stats.yearlyTransactions) : "-"
 					}
 					loaded={loaded}
 				/>
