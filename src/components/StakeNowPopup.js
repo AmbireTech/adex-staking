@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => {
 const StakeNowPopup = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const [open, setOpen] = useState(true)
+	const [open, setOpen] = useState(false)
 
 	const {
 		stats,
