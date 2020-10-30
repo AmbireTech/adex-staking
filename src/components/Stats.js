@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
 	Box,
 	MenuItem,
@@ -10,6 +10,9 @@ import {
 import { POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
 import { PropRow } from "./cardCommon"
+import StatsCard from "./StatsCard"
+import { getValidatorStatsByPoolId } from "../actions/pools"
+import { formatADXPretty } from "../helpers/formatting"
 
 const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	value: x.id,
@@ -17,10 +20,45 @@ const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	pool: x
 }))
 
-export default function Rewards() {
+const ValidatorStatsCard = ({ label, value, loaded }) => (
+	<Box m={1} p={2} bgcolor="background.darkerPaper" boxShadow={25}>
+		<Box m={1}>
+			{StatsCard({
+				loaded: loaded,
+				title: label,
+				subtitle: value
+			})}
+		</Box>
+	</Box>
+)
+
+export default function Stats() {
 	const { t } = useTranslation()
 	const [poolId, setPoolId] = useState(poolsSrc[0].value)
 	const [pool, setPool] = useState(poolsSrc[0].pool)
+	const [statsByPoolId, setStatsByPoolId] = useState({})
+	const [stats, setStats] = useState({})
+
+	const loaded = !!Object.keys(stats).length
+
+	// TODO: add it to app context or new stats context
+	useEffect(() => {
+		if (!statsByPoolId[poolId]) {
+			const newStats = { ...setStatsByPoolId }
+			newStats[poolId] = {}
+			setStatsByPoolId(newStats)
+			setStats(newStats[poolId])
+
+			const updatePoolStats = async () => {
+				const stats = await getValidatorStatsByPoolId(poolId)()
+				const newStats = { ...setStatsByPoolId }
+				newStats[poolId] = stats
+				setStatsByPoolId(newStats)
+				setStats(newStats[poolId])
+			}
+			updatePoolStats()
+		}
+	}, [poolId, statsByPoolId])
 
 	return (
 		<Box>
@@ -78,6 +116,26 @@ export default function Rewards() {
 						</Box>
 					</Grid>
 				</Grid>
+			</Box>
+			<Box display="flex" flexDirection="row">
+				<ValidatorStatsCard
+					label={t("stats.totalCampaignsDeposits")}
+					value={
+						stats.totalDeposits
+							? formatADXPretty(stats.totalDeposits) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.totalPayouts")}
+					value={
+						stats.totalPayouts
+							? formatADXPretty(stats.totalPayouts) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+				/>
 			</Box>
 		</Box>
 	)
