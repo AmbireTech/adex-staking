@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
-import { AccountBalanceSharp as LiquidityIcon } from "@material-ui/icons"
 import PoolCard from "./PoolCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
