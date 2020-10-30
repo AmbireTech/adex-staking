@@ -35,6 +35,7 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 
 	if (decimalSeparatorSplit.length > 1) {
 		const decimalsSplit = decimalSeparatorSplit[1].split(" ")
+		const rest = decimalsSplit.slice(2)
 		return (
 			<Box component="div" display={multiline ? "block" : "inline"}>
 				<Box component="div" display="inline">
@@ -53,6 +54,12 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 					<Box component="div" display="inline" fontSize={fontSize * 0.8}>
 						{" "}
 						{decimalsSplit[1]}
+					</Box>
+				)}
+				{!!rest.length && (
+					<Box component="div" display="inline">
+						{" "}
+						{rest.join(" ")}
 					</Box>
 				)}
 			</Box>

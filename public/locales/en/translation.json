@@ -111,7 +111,6 @@
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
     "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
-
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -214,5 +213,11 @@
     "terms": "Terms and conditions",
     "adxToken": "AdEx (ADX) Token",
     "version": "v{{version}}"
+  },
+  "relayerResErrors": {
+    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
+    "pendingTransactions": "Must not have a pending transactions",
+    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
+    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
   }
 }

@@ -115,9 +115,9 @@ export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 }
 
 export function getValidatorFeesAPY({ channel, prices, totalStake }) {
-	const { periodStart, periodEnd, channelArgs, spec = {} } = channel
+	const { periodStart, periodEnd, channelArgs, stats = {} } = channel
 	const { tokenAmount } = channelArgs
-	const { currentTotalActiveStake } = spec
+	const { currentTotalActiveStake } = stats
 
 	const totalActiveStaked = bigNumberify(
 		currentTotalActiveStake || totalStake || 0
@@ -437,16 +437,25 @@ export async function getGaslessInfo(addr) {
 	try {
 		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
 		const resData = await res.json()
+		const canExecuteGasless = res.status === 200 && resData.canExecute === true
+		const canExecuteGaslessError = canExecuteGasless
+			? null
+			: {
+					message: `relayerResErrors.${resData.message}`,
+					data: resData.data
+			  }
 
 		return {
-			canExecuteGasless: resData.canExecute === true,
-			canExecuteGaslessError: resData.message || null
+			canExecuteGasless,
+			canExecuteGaslessError
 		}
 	} catch (err) {
 		console.error(err)
 		return {
 			canExecuteGasless: false,
-			canExecuteGaslessError: "errors.gaslessStakingTempOff"
+			canExecuteGaslessError: {
+				message: "errors.gaslessStakingTempOff"
+			}
 		}
 	}
 }
@@ -508,7 +517,7 @@ export async function createNewBond(
 	if (needed.gt(ZERO))
 		identityTxns.push([
 			Token.address,
-			Token.interface.functions.transferFrom.encode([walletAddr, addr, amount])
+			Token.interface.functions.transferFrom.encode([walletAddr, addr, needed])
 		])
 	if (allowanceStaking.lt(amount))
 		identityTxns.push([
