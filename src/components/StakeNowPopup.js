@@ -24,7 +24,7 @@ import {
 
 import { useTranslation } from "react-i18next"
 
-const HIDE_FOR = 1 * 24 * 60 * 60 * 1000 // 1 day
+const HIDE_FOR = 10 * 24 * 60 * 60 * 1000 // 10 day
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -72,7 +72,8 @@ const useStyles = makeStyles(theme => {
 			marginTop: -90,
 			padding: theme.spacing(3),
 			paddingTop: 69 + theme.spacing(3),
-			paddingInline: `calc(21% + ${theme.spacing(3)}px)`
+			paddingLeft: `calc(21% + ${theme.spacing(3)}px)`,
+			paddingRight: `calc(21% + ${theme.spacing(3)}px)`
 		},
 		modal: {
 			display: "flex",
@@ -85,7 +86,7 @@ const useStyles = makeStyles(theme => {
 const StakeNowPopup = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(true)
 
 	const {
 		stats,

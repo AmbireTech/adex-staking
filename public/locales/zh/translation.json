@@ -185,10 +185,10 @@
     "whereToBuy": "在哪里购买ADX"
   },
   "legacy": {
-    "p1": "ADX通证已成功完成<external> 升级 </external>到新的智能合同。您当前持有的是<strong> {{amount}} </strong>旧版AD",
+    "p1": "ADX通证已成功完成<external> 升级 </external>到新的智能合同。您当前持有的是<strong> {{amount}} </strong>旧版ADX",
     "p2": "从2020年8月21日开始，旧版ADX将被弃用，不再用于交易所交易或质押。",
     "p3": "我们建议您现在通过单击\"立即交换\"<i><strong>Swap now</strong></i>按钮，并签署{{wallet}}交易，立即兑换掉旧的ADX",
-    "p4": "<farmer>🌾</farmer>之后，您可以质押ADX，赚取高达150%APY（年百分比收益率）而不必担心大幅削减风险<external>阅读更多</external>。<farmer>🌾</farmer>",
+    "p4": "<farmer>🌾</farmer>之后，您可以质押ADX，赚取高达50%APY（年百分比收益率）而不必担心大幅削减风险<external>阅读更多</external>。<farmer>🌾</farmer>",
     "swapInProgress": "通证交换正在进行中！未完交易确认后完成",
     "swapNow": "立即交换",
     "adxToUpgrade": "ADX通证升级"

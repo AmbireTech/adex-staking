@@ -35,8 +35,11 @@ export default function LegacyADXSwapDialog(
 			const signer = await getSigner(chosenWalletType)
 			if (!signer) return
 			const walletAddr = await signer.getAddress()
-			setAmount(await LegacyToken.balanceOf(walletAddr))
-			setLegacySwapInOpen(true)
+			const balance = await LegacyToken.balanceOf(walletAddr)
+			setAmount(balance)
+			if (balance.gt(ZERO)) {
+				setLegacySwapInOpen(true)
+			}
 		}
 		refreshAmount().catch(e => console.error(e))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
