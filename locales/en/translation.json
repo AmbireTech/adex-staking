@@ -175,7 +175,8 @@
     "reStakeConfirmation": "<box> Are you sure you want to re-stake your earnings of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
     "reActivatingInfo": "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again.",
     "claimConfirmation": "You are about to claim your earnings of ",
-    "forTotal": "For total of: {{total}}"
+    "forTotal": "For total of: {{total}}",
+    "exceptWallets": "(except {{wallets}})"
   },
   "help": {
     "help": "help",
