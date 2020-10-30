@@ -54,7 +54,9 @@
     "currentAPY": "Current APY",
     "incentive": "Incentive",
     "fees": "Fees",
-    "noSelection": "Nothing selected"
+    "noSelection": "Nothing selected",
+    "currencyBalance": "{{currency}} BALANCE",
+    "goBack": "Go back"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -77,7 +79,9 @@
     "loPoRewardPolicy": "By depositing ADX you receive ADX-LOYALTY, which automatically incurs new rewards in ADX based on elastic issuance, while also allowing you to participate in AdEx governance.",
     "loPoSlashPolicy": "No slashing.",
     "tomRewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.",
-    "tomSlashPolicy": "No slashing."
+    "tomSlashPolicy": "No slashing.",
+    "unbondPeriodDay": "{{count}} day",
+    "unbondPeriodDay_plural": "{{count}} days"
   },
   "email": {
     "subscribe": "Subscribe for AdEx News &",
@@ -105,7 +109,8 @@
     "confirmationLabel": "I understand I am locking up my ADX for at least {{unbondDays}} days and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
-    "stakeADX": "Stake ADX"
+    "stakeADX": "Stake ADX",
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -150,7 +155,12 @@
     "noEthBrowserDetected": "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.",
     "connectedToUnsupportedNetwork": "You're connected to an unsupported network.",
     "siteNotAuth": "Please authorize this website to access your Ethereum account.",
-    "unknownCheckConsole": "An unknown error occurred. Check the console for more details."
+    "unknownCheckConsole": "An unknown error occurred. Check the console for more details.",
+    "noSignerProvided": "Signer not provided",
+    "noMessageProvided": "Message not provided",
+    "signatureNotVerified": "Can not verify signature",
+    "nothingToStake": "Nothing to stake",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
@@ -175,13 +185,17 @@
     "whereToBuy": "Where to buy ADX"
   },
   "legacy": {
-    "p1": "The ADX token completed a <external> successful upgrade </external> to a new smart contract. You are currently holding <strong> {{amount}} </strong> legacy AD",
+    "p1": "The ADX token completed a <external> successful upgrade </external> to a new smart contract. You are currently holding <strong> {{amount}} </strong> legacy ADX",
     "p2": "Starting August 21st 2020, the legacy ADX will be deprecated and will no longer be traded on exchanges or used for staking.",
     "p3": "We recommend that you swap your legacy ADX right now by clicking the <i><strong>Swap now</strong></i> button and signing the {{wallet}} transactions",
-    "p4": "<farmer>🌾</farmer> After this, you can stake your ADX to earn up to 150% APY (annual percentage yield) with no slashing risk <external> read more </external>. <farmer>🌾</farmer>",
+    "p4": "<farmer>🌾</farmer> After this, you can stake your ADX to earn up to 50% APY (annual percentage yield) with no slashing risk <external> read more </external>. <farmer>🌾</farmer>",
     "swapInProgress": "Token swap is in progress! It will be completed once all your pending transactions have been confirmed.",
     "swapNow": "Swap now",
     "adxToUpgrade": "ADX Token upgrade"
+  },
+  "popups": {
+    "congratulations": "Congratulations!",
+    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
   },
   "rewards": {
     "noRewards": "No rewards",
@@ -193,5 +207,17 @@
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
     "poolName": "{{pool}} - {{type}} {{extra}}"
+  },
+  "company": {
+    "copy": "© {{year}} AdEx Network OÜ",
+    "terms": "Terms and conditions",
+    "adxToken": "AdEx (ADX) Token",
+    "version": "v{{version}}"
+  },
+  "relayerResErrors": {
+    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
+    "pendingTransactions": "Must not have a pending transactions",
+    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
+    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
   }
 }

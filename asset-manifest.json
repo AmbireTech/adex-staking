@@ -1,23 +1,24 @@
 {
   "files": {
     "main.css": "/static/css/main.7a743c3f.chunk.css",
-    "main.js": "/static/js/main.0489bc91.chunk.js",
-    "main.js.map": "/static/js/main.0489bc91.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.2a5f5c99.js",
-    "runtime-main.js.map": "/static/js/runtime-main.2a5f5c99.js.map",
-    "static/js/2.9d9baf37.chunk.js": "/static/js/2.9d9baf37.chunk.js",
-    "static/js/2.9d9baf37.chunk.js.map": "/static/js/2.9d9baf37.chunk.js.map",
-    "static/js/3.927f4535.chunk.js": "/static/js/3.927f4535.chunk.js",
-    "static/js/3.927f4535.chunk.js.map": "/static/js/3.927f4535.chunk.js.map",
-    "static/js/4.f8ae9bd2.chunk.js": "/static/js/4.f8ae9bd2.chunk.js",
-    "static/js/4.f8ae9bd2.chunk.js.map": "/static/js/4.f8ae9bd2.chunk.js.map",
+    "main.js": "/static/js/main.7e1ec430.chunk.js",
+    "main.js.map": "/static/js/main.7e1ec430.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.e04e690f.js",
+    "runtime-main.js.map": "/static/js/runtime-main.e04e690f.js.map",
+    "static/js/2.0f112d9b.chunk.js": "/static/js/2.0f112d9b.chunk.js",
+    "static/js/2.0f112d9b.chunk.js.map": "/static/js/2.0f112d9b.chunk.js.map",
+    "static/js/3.18146e16.chunk.js": "/static/js/3.18146e16.chunk.js",
+    "static/js/3.18146e16.chunk.js.map": "/static/js/3.18146e16.chunk.js.map",
+    "static/js/4.fbe56353.chunk.js": "/static/js/4.fbe56353.chunk.js",
+    "static/js/4.fbe56353.chunk.js.map": "/static/js/4.fbe56353.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.7f25a2adadac5232780427981773544c.js": "/precache-manifest.7f25a2adadac5232780427981773544c.js",
+    "precache-manifest.ee5a261b628ebdc285500c625eb87f22.js": "/precache-manifest.ee5a261b628ebdc285500c625eb87f22.js",
     "service-worker.js": "/service-worker.js",
     "static/css/main.7a743c3f.chunk.css.map": "/static/css/main.7a743c3f.chunk.css.map",
-    "static/js/2.9d9baf37.chunk.js.LICENSE.txt": "/static/js/2.9d9baf37.chunk.js.LICENSE.txt",
-    "static/js/3.927f4535.chunk.js.LICENSE.txt": "/static/js/3.927f4535.chunk.js.LICENSE.txt",
+    "static/js/2.0f112d9b.chunk.js.LICENSE.txt": "/static/js/2.0f112d9b.chunk.js.LICENSE.txt",
+    "static/js/3.18146e16.chunk.js.LICENSE.txt": "/static/js/3.18146e16.chunk.js.LICENSE.txt",
     "static/media/App.css": "/static/media/Roboto-Regular.11eabca2.ttf",
+    "static/media/adex-logo-clean.9a6cff4c.svg": "/static/media/adex-logo-clean.9a6cff4c.svg",
     "static/media/coming-soon-ic.556674d8.svg": "/static/media/coming-soon-ic.556674d8.svg",
     "static/media/gasless-ic.8cc8ae7b.svg": "/static/media/gasless-ic.8cc8ae7b.svg",
     "static/media/getFetch.cjs": "/static/media/getFetch.013f0b90.cjs",
@@ -31,9 +32,9 @@
     "static/media/walletconnect-logo.svg": "/static/media/walletconnect-logo.37f2bc6e.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.2a5f5c99.js",
-    "static/js/2.9d9baf37.chunk.js",
+    "static/js/runtime-main.e04e690f.js",
+    "static/js/2.0f112d9b.chunk.js",
     "static/css/main.7a743c3f.chunk.css",
-    "static/js/main.0489bc91.chunk.js"
+    "static/js/main.7e1ec430.chunk.js"
   ]
 }
