@@ -65,6 +65,9 @@ export const getWithdrawActionBySelectedRewardChannels = (
 	return actions
 }
 
+const sumValidatorAnalyticsResValue = res =>
+	Object.values(res.aggr || {}).reduce((a, b) => a.add(b.value), ZERO)
+
 export const getValidatorTomStats = async () => {
 	const channels = await fetchJSON(MARKET_URL + "/campaigns?all")
 	const { totalDeposits, totalPayouts } = channels.reduce(
@@ -82,9 +85,22 @@ export const getValidatorTomStats = async () => {
 		{ totalDeposits: ZERO, totalPayouts: ZERO }
 	)
 
+	const dailyPayoutsData = await fetchJSON(
+		TOM_URL + "/analytics?metric=eventPayouts&timeframe=day"
+	)
+	const yearlyTransactionsData = await fetchJSON(
+		TOM_URL + "/analytics?metric=eventCounts&timeframe=year"
+	)
+	const dailyPayoutsVolume = sumValidatorAnalyticsResValue(dailyPayoutsData)
+	const yearlyTransactions = sumValidatorAnalyticsResValue(
+		yearlyTransactionsData
+	)
+
 	return {
 		totalDeposits,
-		totalPayouts
+		totalPayouts,
+		dailyPayoutsVolume,
+		yearlyTransactions
 	}
 }
 
