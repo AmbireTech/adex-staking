@@ -237,6 +237,19 @@ function SideNav({
 							<ListItemText primary={t("common.rewards")} />
 						</RRListItem>
 						<RRListItem
+							id="side-nav-link-stats"
+							button
+							to={{ pathname: "/stats" }}
+							className={clsx({ [classes.active]: path === "/stats" })}
+						>
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<GaslessIcon width="100%" height="100%" color="secondary" />
+								</SvgIcon>
+							</ListItemIcon>
+							<ListItemText primary={t("common.validatorStats")} />
+						</RRListItem>
+						<RRListItem
 							id="side-nav-link-gasless"
 							button
 							to={{ pathname: "/gasless" }}
