@@ -136,3 +136,20 @@ export function CardRow({
 		</Box>
 	)
 }
+
+export function PropRow({ name, value }) {
+	return (
+		<Box display="flex" flexDirection="row" mb={2}>
+			<Box
+				width={130}
+				mr={2}
+				color="primary.main"
+				textAlign="right"
+				flexShrink={0}
+			>
+				{name}
+			</Box>
+			<Box>{value}</Box>
+		</Box>
+	)
+}
