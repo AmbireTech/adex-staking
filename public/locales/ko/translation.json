@@ -174,7 +174,8 @@
     "reStakeConfirmation": "<box> {{amount}} {{currency}}의 수익금을 다시 스테이킹 하시겠습니까? </box> <box> 이는 이 금액이 최소 {{unbondDays}} 일 동안 잠겨 있음을 의미합니다. </box> <box> {{extraInfo}} </box>",
     "reActivatingInfo": " 예치금이 다시 활성화됩니다. 즉, 예치 해제 요청이 취소되며, 보상을 다시 받기 시작합니다.",
     "claimConfirmation": " 수익을 실현하려고 합니다.",
-    "forTotal": "총: {{total}}"
+    "forTotal": "총: {{total}}",
+    "exceptWallets": "(except {{wallets}})"
   },
   "help": {
     "help": "도움말",
