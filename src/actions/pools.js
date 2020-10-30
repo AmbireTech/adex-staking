@@ -1,9 +1,13 @@
-import { DEPOSIT_POOLS, POOLS } from "../helpers/constants"
+import { DEPOSIT_POOLS, POOLS, ZERO } from "../helpers/constants"
 import {
 	onLoyaltyPoolDeposit,
 	onLoyaltyPoolWithdraw
 } from "./loyaltyPoolActions"
 import { claimRewards } from "./actions"
+import { fetchJSON } from "../helpers/fetch"
+
+const MARKET_URL = "https://market.adex.network"
+const TOM_URL = "https://tom.adex.network"
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
@@ -59,4 +63,33 @@ export const getWithdrawActionBySelectedRewardChannels = (
 	})
 
 	return actions
+}
+
+export const getValidatorTomStats = async () => {
+	const channels = await fetchJSON(MARKET_URL + "/campaigns?all")
+	const { totalDeposits, totalPayouts } = channels.reduce(
+		(amounts, { depositAmount, status }) => {
+			amounts.totalDeposits = amounts.totalDeposits.add(depositAmount)
+			amounts.totalPayouts = amounts.totalPayouts.add(
+				Object.values(status.lastApprovedBalances || {}).reduce(
+					(a, b) => a.add(b),
+					ZERO
+				)
+			)
+
+			return amounts
+		},
+		{ totalDeposits: ZERO, totalPayouts: ZERO }
+	)
+
+	return {
+		totalDeposits,
+		totalPayouts
+	}
+}
+
+export const getValidatorStatsByPoolId = poolId => {
+	if (poolId === POOLS[0].id) {
+		return getValidatorTomStats
+	}
 }
