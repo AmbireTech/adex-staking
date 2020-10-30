@@ -159,7 +159,8 @@
     "noSignerProvided": "未提供签名者",
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
-    "nothingToStake": "Nothing to stake"
+    "nothingToStake": "Nothing to stake",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",

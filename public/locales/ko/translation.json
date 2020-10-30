@@ -158,7 +158,8 @@
     "noSignerProvided": " 서명자가 없습니다. ",
     "noMessageProvided": "메시지가 없습니다.",
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
-    "nothingToStake": "스테이크할 것이 없습니다."
+    "nothingToStake": "스테이크할 것이 없습니다.",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",
