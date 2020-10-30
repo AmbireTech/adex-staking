@@ -109,7 +109,8 @@
     "confirmationLabel": "나는 적어도 {{unbondDays}} 일 동안 나의 ADX를 잠그는 것을 이해하였으며 <e1> 이용약관 </e1> 그리고 <e2> </e2>  스테이킹 조건을 숙지하였습니다. ",
     "createBond": "예치금 생성하기",
     "currentYield": "<farmer>🌾</farmer>  현재 연간 수익률 {{apy}} {{sign}} <farmer>🌾</farmer>",
-    "stakeADX": "ADX 스테이킹하기"
+    "stakeADX": "ADX 스테이킹하기",
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
   },
   "gasless": {
     "staking": "가스없는 스테이킹",
@@ -157,7 +158,8 @@
     "noSignerProvided": " 서명자가 없습니다. ",
     "noMessageProvided": "메시지가 없습니다.",
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
-    "nothingToStake": "스테이크할 것이 없습니다."
+    "nothingToStake": "스테이크할 것이 없습니다.",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",

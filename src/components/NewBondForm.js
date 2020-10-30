@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { getPool } from "../helpers/bonds"
 import {
 	parseADX,
@@ -32,7 +32,6 @@ import { useTranslation, Trans } from "react-i18next"
 
 export default function NewBondForm({
 	stats,
-	maxAmount,
 	onNewBond,
 	pools,
 	chosenWalletType,
@@ -48,6 +47,10 @@ export default function NewBondForm({
 	const minWidthStyle = { minWidth: "180px" }
 	const activePool = getPool(newBondPool)
 	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
+	const { identityDeployed, userIdentityBalance, userBalance } = stats
+
+	const onlyIdentityBalance = !identityDeployed && userIdentityBalance.gt(ZERO)
+	const maxAmount = onlyIdentityBalance ? userIdentityBalance : userBalance
 
 	const onAction = () => {
 		setConfirmation(false)
@@ -81,6 +84,7 @@ export default function NewBondForm({
 		/>
 	)
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const validateFields = params => {
 		const { amountBN, poolToValidate } = params
 		const minStakingAmountBN = poolToValidate
@@ -100,6 +104,7 @@ export default function NewBondForm({
 		return
 	}
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const updateStakingAmountBN = amountBN => {
 		validateFields({ amountBN, poolToValidate: activePool })
 		setStakingAmount(formatADX(amountBN))
@@ -120,6 +125,14 @@ export default function NewBondForm({
 		setBond({ ...bond, poolId: newBondPool })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newBondPool])
+
+	useEffect(() => {
+		if (onlyIdentityBalance) {
+			updateStakingAmountBN(userIdentityBalance)
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [onlyIdentityBalance, userIdentityBalance])
 
 	return (
 		<Box
@@ -144,6 +157,7 @@ export default function NewBondForm({
 						style={minWidthStyle}
 						value={stakingAmount}
 						error={amountErr}
+						disabled={onlyIdentityBalance}
 						onChange={ev => {
 							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
 							const amount = Math.max(0, ev.target.value)
@@ -153,20 +167,28 @@ export default function NewBondForm({
 						}}
 						helperText={amountErr ? amountErrText : null}
 					/>
+
 					<Box mt={1}>
-						<Button
-							fullWidth
-							size="small"
-							id="new-bond-form-max-amount-btn"
-							onClick={() => {
-								updateStakingAmountBN(maxAmount)
-							}}
-						>
-							{t("common.maxAmountBtn", {
-								amount: formatADXPretty(maxAmount),
+						{onlyIdentityBalance ? (
+							t("bonds.stakeNewAccIdentityBalance", {
+								amount: formatADXPretty(userIdentityBalance),
 								currency: "ADX"
-							})}
-						</Button>
+							})
+						) : (
+							<Button
+								fullWidth
+								size="small"
+								id="new-bond-form-max-amount-btn"
+								onClick={() => {
+									updateStakingAmountBN(maxAmount)
+								}}
+							>
+								{t("common.maxAmountBtn", {
+									amount: formatADXPretty(maxAmount),
+									currency: "ADX"
+								})}
+							</Button>
+						)}
 					</Box>
 				</Grid>
 				<Grid item xs={12} sm={6}>

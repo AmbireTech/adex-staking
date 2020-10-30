@@ -71,7 +71,8 @@ export const EMPTY_STATS = {
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
 	tomPoolStats: POOL_EMPTY_STATS,
 	prices: {},
-	legacyTokenBalance: ZERO
+	legacyTokenBalance: ZERO,
+	identityDeployed: false
 }
 
 const sumRewards = all =>
@@ -250,6 +251,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const addr = await signer.getAddress()
 	const identityAddr = getUserIdentity(addr).addr
+	const identityDeployed =
+		(await defaultProvider.getCode(identityAddr)) !== "0x"
 
 	const [
 		{ userBonds, userBalance, userWalletBalance, userIdentityBalance },
@@ -300,6 +303,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	return {
 		identityAddr,
+		identityDeployed,
 		connectedWalletAddress: addr,
 		userBonds,
 		userBalance, // ADX on wallet
@@ -503,6 +507,10 @@ export async function createNewBond(
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
 		await tokenWithSigner.approve(addr, MAX_UINT)
+	}
+
+	if (!stats.identityDeployed && needed.gt(ZERO)) {
+		throw new Error("errors.cantDeployAndStakeMore")
 	}
 
 	let identityTxns = []

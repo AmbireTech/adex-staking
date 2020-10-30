@@ -109,7 +109,8 @@
     "confirmationLabel": "I understand I am locking up my ADX for at least {{unbondDays}} days and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
-    "stakeADX": "Stake ADX"
+    "stakeADX": "Stake ADX",
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -158,7 +159,8 @@
     "noSignerProvided": "Signer not provided",
     "noMessageProvided": "Message not provided",
     "signatureNotVerified": "Can not verify signature",
-    "nothingToStake": "Nothing to stake"
+    "nothingToStake": "Nothing to stake",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

@@ -109,7 +109,8 @@
     "confirmationLabel": "我了解我的ADX将锁定至少{{unbondDays}}天，并且我熟知<e1>条款和条件以及</e1>和<e2></e2>质押条件",
     "createBond": "创建绑定",
     "currentYield": "<farmer>🌾</farmer>  当前年产量{{apy}} {{sign}} <farmer>🌾</farmer>",
-    "stakeADX": "质押ADX"
+    "stakeADX": "质押ADX",
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
   },
   "gasless": {
     "staking": "无转账费质押",
@@ -158,7 +159,8 @@
     "noSignerProvided": "未提供签名者",
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
-    "nothingToStake": "Nothing to stake"
+    "nothingToStake": "Nothing to stake",
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
