@@ -5,6 +5,7 @@ import { Box, Typography } from "@material-ui/core"
 import { hexToRgbaColorString } from "../helpers/colors"
 import { useWindowSize } from "../hooks/windowSize"
 import { useTranslation } from "react-i18next"
+import { formatNumberPretty } from "../helpers/formatting"
 
 const commonDsProps = {
 	fill: false,
@@ -93,7 +94,9 @@ export const StatsChart = ({
 				label: function(t, d) {
 					// This adds currency (DAI) to label in the tooltips if needed
 					var xLabel = d.datasets[t.datasetIndex].label
-					var yLabel = currency ? `${t.yLabel} ${currency}` : `${t.yLabel}`
+					var yLabel = currency
+						? `${formatNumberPretty(t.yLabel)} ${currency}`
+						: `${formatNumberPretty(t.yLabel)}`
 					return `${xLabel}: ${yLabel}`
 				}
 			}
