@@ -5,6 +5,7 @@ import {
 } from "./loyaltyPoolActions"
 import { claimRewards } from "./actions"
 import { fetchJSON } from "../helpers/fetch"
+import { formatDAI } from "../helpers/formatting"
 
 const MARKET_URL = "https://market.adex.network"
 const TOM_URL = "https://tom.adex.network"
@@ -68,6 +69,18 @@ export const getWithdrawActionBySelectedRewardChannels = (
 const sumValidatorAnalyticsResValue = res =>
 	Object.values(res.aggr || {}).reduce((a, b) => a.add(b.value), ZERO)
 
+const toChartData = (data, isDaiAmount) => {
+	return (data.aggr || []).reduce(
+		(data, { time, value }) => {
+			data.labels.push(time)
+			data.datasets.push(parseFloat(isDaiAmount ? formatDAI(value) : value))
+
+			return data
+		},
+		{ labels: [], datasets: [] }
+	)
+}
+
 export const getValidatorTomStats = async () => {
 	const channels = await fetchJSON(MARKET_URL + "/campaigns?all")
 	const { totalDeposits, totalPayouts } = channels.reduce(
@@ -91,16 +104,14 @@ export const getValidatorTomStats = async () => {
 	const yearlyTransactionsData = await fetchJSON(
 		TOM_URL + "/analytics?metric=eventCounts&timeframe=year"
 	)
-	const dailyPayoutsVolume = sumValidatorAnalyticsResValue(dailyPayoutsData)
-	const yearlyTransactions = sumValidatorAnalyticsResValue(
-		yearlyTransactionsData
-	)
 
 	return {
 		totalDeposits,
 		totalPayouts,
-		dailyPayoutsVolume,
-		yearlyTransactions
+		dailyPayoutsData: toChartData(dailyPayoutsData, true),
+		dailyPayoutsVolume: sumValidatorAnalyticsResValue(dailyPayoutsData),
+		yearlyTransactionsData: toChartData(yearlyTransactionsData),
+		yearlyTransactions: sumValidatorAnalyticsResValue(yearlyTransactionsData)
 	}
 }
 
