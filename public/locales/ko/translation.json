@@ -84,8 +84,7 @@
     "unbondPeriodDay_plural": "{{count}} 일"
   },
   "email": {
-    "subscribe": "AdEx 뉴스 구독하기 &",
-    "win": "<strong>{{rewards}}</strong> ADX를 획득하세요! ",
+    "subscribe": "AdEx의 <strong>독점 컨텐츠</strong> 뉴스를 구독해 주세요",
     "email": "Email",
     "validEmail": "유효한 이메일 주소를 입력하세요!",
     "bestEmail": "가장 많이 사용하는 이메일을 입력하세요",

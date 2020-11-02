@@ -136,28 +136,23 @@ export default function EmailSignUp(props) {
 						color="white"
 						fontWeight={"fontWeightBold"}
 						fontSize={16}
-						text={t("email.subscribe")}
-						justify="center"
-					/>
-					<Box color="warning.main" fontWeight={"fontWeightBold"}>
-						<Typography component="span" variant="h6">
+						text={
 							<Trans
-								i18nKey="email.win"
-								values={{
-									rewards: "5x1,000"
-								}}
+								i18nKey="email.subscribe"
 								components={{
 									strong: (
-										<Typography
-											className={classes.bold}
-											component="span"
-											variant="h5"
-										></Typography>
+										<Box
+											display="inline"
+											color="warning.main"
+											fontWeight={"fontWeightBold"}
+											fontSize="h5.fontSize"
+										></Box>
 									)
 								}}
 							/>
-						</Typography>{" "}
-					</Box>
+						}
+						justify="center"
+					/>
 					<Box width={1} mt={2}>
 						<TextField
 							id={"email-signup-email-input"}

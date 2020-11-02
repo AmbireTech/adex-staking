@@ -84,8 +84,7 @@
     "unbondPeriodDay_plural": "{{count}} days"
   },
   "email": {
-    "subscribe": "Subscribe for AdEx News &",
-    "win": "win <strong>{{rewards}}</strong> ADX! ",
+    "subscribe": "Subscribe for AdEx News <strong> for exclusive content </strong> ",
     "email": "Email",
     "validEmail": "Please provide a valid email!",
     "bestEmail": "Please provide your best email",

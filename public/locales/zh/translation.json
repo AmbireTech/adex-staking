@@ -84,8 +84,7 @@
     "unbondPeriodDay_plural": "{{count}} 天"
   },
   "email": {
-    "subscribe": "订阅ADEX新闻",
-    "win": "赢得<strong>{{rewards}}</strong>ADX！",
+    "subscribe": "邮件订阅更多AdEx<strong>独家内容</strong>",
     "email": "邮件",
     "validEmail": "请提供有效的邮箱！",
     "bestEmail": "请提供您最常用的邮箱",
