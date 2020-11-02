@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext } from "react"
 import {
 	Box,
 	MenuItem,
@@ -8,12 +8,11 @@ import {
 	Grid
 } from "@material-ui/core"
 import { commify } from "ethers/utils"
-
+import ValidatorStatsContext from "../ValidatorStatsContext"
 import { POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
 import { PropRow } from "./cardCommon"
 import StatsCard from "./StatsCard"
-import { getValidatorStatsByPoolId } from "../actions/pools"
 import { formatADXPretty } from "../helpers/formatting"
 
 const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
@@ -36,31 +35,10 @@ const ValidatorStatsCard = ({ label, value, loaded }) => (
 
 export default function Stats() {
 	const { t } = useTranslation()
-	const [poolId, setPoolId] = useState(poolsSrc[0].value)
-	const [pool, setPool] = useState(poolsSrc[0].pool)
-	const [statsByPoolId, setStatsByPoolId] = useState({})
-	const [stats, setStats] = useState({})
 
-	const loaded = !!Object.keys(stats).length
-
-	// TODO: add it to app context or new stats context
-	useEffect(() => {
-		if (!statsByPoolId[poolId]) {
-			const newStats = { ...setStatsByPoolId }
-			newStats[poolId] = {}
-			setStatsByPoolId(newStats)
-			setStats(newStats[poolId])
-
-			const updatePoolStats = async () => {
-				const stats = await getValidatorStatsByPoolId(poolId)()
-				const newStats = { ...setStatsByPoolId }
-				newStats[poolId] = stats
-				setStatsByPoolId(newStats)
-				setStats(newStats[poolId])
-			}
-			updatePoolStats()
-		}
-	}, [poolId, statsByPoolId])
+	const { loaded, poolId, setPoolId, pool, setPool, stats } = useContext(
+		ValidatorStatsContext
+	)
 
 	return (
 		<Box>
