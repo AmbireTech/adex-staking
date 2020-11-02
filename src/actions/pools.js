@@ -83,19 +83,42 @@ const toChartData = (data, valueLabel, currency) => {
 
 export const getValidatorTomStats = async () => {
 	const channels = await fetchJSON(MARKET_URL + "/campaigns?all")
-	const { totalDeposits, totalPayouts } = channels.reduce(
-		(amounts, { depositAmount, status }) => {
-			amounts.totalDeposits = amounts.totalDeposits.add(depositAmount)
-			amounts.totalPayouts = amounts.totalPayouts.add(
+	const {
+		totalDeposits,
+		totalPayouts,
+		uniqueUnits,
+		uniquePublishers,
+		uniqueAdvertisers
+	} = channels.reduce(
+		(data, { creator, depositAmount, status, spec }) => {
+			data.totalDeposits = data.totalDeposits.add(depositAmount)
+			data.totalPayouts = data.totalPayouts.add(
 				Object.values(status.lastApprovedBalances || {}).reduce(
 					(a, b) => a.add(b),
 					ZERO
 				)
 			)
 
-			return amounts
+			spec.adUnits.forEach(({ ipfs }) => {
+				data.uniqueUnits[ipfs] = true
+			})
+			Object.keys(status.lastApprovedBalances).forEach(key => {
+				if (key !== creator) {
+					data.uniquePublishers[key.toLowerCase()] = true
+				}
+			})
+
+			data.uniqueAdvertisers[creator.toLowerCase()] = true
+
+			return data
 		},
-		{ totalDeposits: ZERO, totalPayouts: ZERO }
+		{
+			totalDeposits: ZERO,
+			totalPayouts: ZERO,
+			uniqueUnits: {},
+			uniquePublishers: {},
+			uniqueAdvertisers: {}
+		}
 	)
 
 	const dailyPayoutsData = await fetchJSON(
@@ -106,6 +129,10 @@ export const getValidatorTomStats = async () => {
 	)
 
 	return {
+		totalCampaigns: channels.length,
+		uniqueUnits: Object.keys(uniqueUnits).length,
+		uniquePublishers: Object.keys(uniquePublishers).length,
+		uniqueAdvertisers: Object.keys(uniqueAdvertisers).length,
 		totalDeposits,
 		totalPayouts,
 		dailyPayoutsData: toChartData(dailyPayoutsData, "stats.labelPayout", "DAI"),
