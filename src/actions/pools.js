@@ -127,6 +127,12 @@ export const getValidatorTomStats = async () => {
 	const yearlyTransactionsData = await fetchJSON(
 		TOM_URL + "/analytics?metric=eventCounts&timeframe=year"
 	)
+	const dailyTransactionsData = await fetchJSON(
+		TOM_URL + "/analytics?metric=eventCounts&timeframe=day"
+	)
+	const monthlyTransactionsData = await fetchJSON(
+		TOM_URL + "/analytics?metric=eventCounts&timeframe=month"
+	)
 
 	return {
 		totalCampaigns: channels.length,
@@ -141,7 +147,17 @@ export const getValidatorTomStats = async () => {
 			yearlyTransactionsData,
 			"stats.labelTransactions"
 		),
-		yearlyTransactions: sumValidatorAnalyticsResValue(yearlyTransactionsData)
+		yearlyTransactions: sumValidatorAnalyticsResValue(yearlyTransactionsData),
+		dailyTransactionsData: toChartData(
+			dailyTransactionsData,
+			"stats.labelTransactions"
+		),
+		dailyTransactions: sumValidatorAnalyticsResValue(dailyTransactionsData),
+		monthlyTransactionsData: toChartData(
+			monthlyTransactionsData,
+			"stats.labelTransactions"
+		),
+		monthlyTransactions: sumValidatorAnalyticsResValue(monthlyTransactionsData)
 	}
 }
 
