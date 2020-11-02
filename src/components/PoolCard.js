@@ -161,7 +161,7 @@ export default function PoolCard({
 						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
-						text={t("pools.currentDailyYield", { yield: weeklyYield })}
+						text={t("pools.weeklyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
 						justify="center"
 						mb={3}
