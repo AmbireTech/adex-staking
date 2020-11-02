@@ -69,15 +69,15 @@ export const getWithdrawActionBySelectedRewardChannels = (
 const sumValidatorAnalyticsResValue = res =>
 	Object.values(res.aggr || {}).reduce((a, b) => a.add(b.value), ZERO)
 
-const toChartData = (data, isDaiAmount) => {
+const toChartData = (data, valueLabel, currency) => {
 	return (data.aggr || []).reduce(
 		(data, { time, value }) => {
-			data.labels.push(time)
-			data.datasets.push(parseFloat(isDaiAmount ? formatDAI(value) : value))
+			data.labels.push(new Date(time).toLocaleString())
+			data.datasets.push(parseFloat(currency ? formatDAI(value) : value))
 
 			return data
 		},
-		{ labels: [], datasets: [] }
+		{ labels: [], datasets: [], valueLabel, currency }
 	)
 }
 
@@ -108,9 +108,12 @@ export const getValidatorTomStats = async () => {
 	return {
 		totalDeposits,
 		totalPayouts,
-		dailyPayoutsData: toChartData(dailyPayoutsData, true),
+		dailyPayoutsData: toChartData(dailyPayoutsData, "stats.labelPayout", "DAI"),
 		dailyPayoutsVolume: sumValidatorAnalyticsResValue(dailyPayoutsData),
-		yearlyTransactionsData: toChartData(yearlyTransactionsData),
+		yearlyTransactionsData: toChartData(
+			yearlyTransactionsData,
+			"stats.labelTransactions"
+		),
 		yearlyTransactions: sumValidatorAnalyticsResValue(yearlyTransactionsData)
 	}
 }
