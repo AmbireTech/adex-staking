@@ -14,7 +14,7 @@ import { PropRow } from "./cardCommon"
 import StatsCard from "./StatsCard"
 import { StatsChart } from "./StatsChart"
 import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
-import { PRIMARY } from "../themeMUi"
+import { BACKGROUND_SPECIAL } from "../themeMUi"
 
 const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	value: x.id,
@@ -95,7 +95,7 @@ export default function Stats() {
 			<Box>
 				<Grid container spacing={2}>
 					<Grid item md={12} lg={7}>
-						<Box width={1} p={1} bgcolor="background.special">
+						<Box width={1} p={1} bgcolor="background.paper">
 							<StatsChart
 								options={{
 									title: t(`stats.${chartDataKey}`)
@@ -105,7 +105,7 @@ export default function Stats() {
 								dataActive={true}
 								dataSynced={loaded}
 								yLabel={t(chartData.valueLabel)}
-								yColor={PRIMARY}
+								yColor={BACKGROUND_SPECIAL}
 								currency={chartData.currency}
 							/>
 						</Box>
@@ -136,7 +136,41 @@ export default function Stats() {
 					</Grid>
 				</Grid>
 			</Box>
-			<Box display="flex" flexDirection="row">
+			<Box display="flex" flexDirection="row" flexWrap="wrap">
+				<ValidatorStatsCard
+					label={t("stats.totalCampaigns")}
+					value={
+						stats.totalCampaigns
+							? formatNumberPretty(stats.totalCampaigns)
+							: "-"
+					}
+					loaded={loaded}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.uniqueUnits")}
+					value={
+						stats.uniqueUnits ? formatNumberPretty(stats.uniqueUnits) : "-"
+					}
+					loaded={loaded}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.uniquePublishers")}
+					value={
+						stats.uniquePublishers
+							? formatNumberPretty(stats.uniquePublishers)
+							: "-"
+					}
+					loaded={loaded}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.uniqueAdvertisers")}
+					value={
+						stats.uniqueAdvertisers
+							? formatNumberPretty(stats.uniqueAdvertisers)
+							: "-"
+					}
+					loaded={loaded}
+				/>
 				<ValidatorStatsCard
 					label={t("stats.totalCampaignsDeposits")}
 					value={
