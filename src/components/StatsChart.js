@@ -137,7 +137,7 @@ export const StatsChart = ({
 					// NOTE: this one is just to show constant size grid lines
 					display: true,
 					gridLines: {
-						display: true,
+						display: false,
 						drawBorder: false,
 						drawTicks: false
 					},

@@ -57,7 +57,7 @@ const getDefaultLabels = (labels = []) => [
 
 export default function Stats() {
 	const { t } = useTranslation()
-	const [chartDataKey, setChartDataKey] = useState("dailyPayoutsData")
+	const [chartDataKey, setChartDataKey] = useState("yearlyTransactionsData")
 	const [chartData, setChartData] = useState({})
 
 	const { loaded, poolId, setPoolId, pool, setPool, stats } = useContext(
@@ -212,6 +212,30 @@ export default function Stats() {
 					loaded={loaded}
 					currentKey={chartDataKey}
 					chartKey={"yearlyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.dailyTransactions")}
+					value={
+						stats.dailyTransactions
+							? formatNumberPretty(stats.dailyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"dailyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.monthlyTransactions")}
+					value={
+						stats.monthlyTransactions
+							? formatNumberPretty(stats.monthlyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"monthlyTransactionsData"}
 					setKey={setChartDataKey}
 				/>
 			</Box>
