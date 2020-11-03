@@ -178,4 +178,6 @@ export const getValidatorStatsByPoolId = poolId => {
 	if (poolId === POOLS[0].id) {
 		return getValidatorTomStats
 	}
+
+	return () => ({})
 }
