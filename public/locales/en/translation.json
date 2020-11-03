@@ -62,7 +62,8 @@
     "purpose": "Purpose",
     "slashing": "Slashing",
     "lockup": "Lockup",
-    "apyStability": "APY stability"
+    "apyStability": "APY stability",
+    "poolStats": "Pool stats"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -235,7 +236,7 @@
     "uniquePublishers": "Unique publishers",
     "uniqueAdvertisers": "Unique advertisers",
     "totalDeposits": "Total deposits",
-    "totalPayouts": "total payouts",
+    "totalPayouts": "Total payouts",
     "dailyPayoutsData": "Daily payouts",
     "dailyPayoutsVolume": "Daily payouts",
     "yearlyTransactionsData": "Yearly impressions (transactions)",
