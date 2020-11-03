@@ -1,4 +1,10 @@
-import { DEPOSIT_POOLS, POOLS, ZERO } from "../helpers/constants"
+import {
+	DEPOSIT_POOLS,
+	POOLS,
+	ZERO,
+	DAI_TOKEN_ADDR,
+	ADDR_CORE
+} from "../helpers/constants"
 import {
 	onLoyaltyPoolDeposit,
 	onLoyaltyPoolWithdraw
@@ -6,9 +12,13 @@ import {
 import { claimRewards } from "./actions"
 import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
+import ERC20ABI from "../abi/ERC20"
+import { Contract } from "ethers"
+import { defaultProvider } from "../ethereum"
 
 const MARKET_URL = "https://market.adex.network"
 const TOM_URL = "https://tom.adex.network"
+const DaiToken = new Contract(DAI_TOKEN_ADDR, ERC20ABI, defaultProvider)
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
@@ -134,6 +144,8 @@ export const getValidatorTomStats = async () => {
 		TOM_URL + "/analytics?metric=eventCounts&timeframe=month"
 	)
 
+	const lockupOnChain = await DaiToken.balanceOf(ADDR_CORE)
+
 	return {
 		totalCampaigns: channels.length,
 		uniqueUnits: Object.keys(uniqueUnits).length,
@@ -157,7 +169,8 @@ export const getValidatorTomStats = async () => {
 			monthlyTransactionsData,
 			"stats.labelTransactions"
 		),
-		monthlyTransactions: sumValidatorAnalyticsResValue(monthlyTransactionsData)
+		monthlyTransactions: sumValidatorAnalyticsResValue(monthlyTransactionsData),
+		lockupOnChain
 	}
 }
 

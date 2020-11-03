@@ -238,6 +238,15 @@ export default function Stats() {
 					chartKey={"monthlyTransactionsData"}
 					setKey={setChartDataKey}
 				/>
+				<ValidatorStatsCard
+					label={t("stats.lockupOnChain")}
+					value={
+						stats.lockupOnChain
+							? formatADXPretty(stats.lockupOnChain) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+				/>
 			</Box>
 		</Box>
 	)

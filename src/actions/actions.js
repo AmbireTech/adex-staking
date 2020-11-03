@@ -13,7 +13,8 @@ import {
 	ADDR_ADX,
 	MAX_UINT,
 	ZERO,
-	POOLS
+	POOLS,
+	ADDR_CORE
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
@@ -24,7 +25,6 @@ import {
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
 
-const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
 const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
