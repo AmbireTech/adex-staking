@@ -29,6 +29,13 @@ const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	pool: x
 }))
 
+const chartStatsKeys = [
+	"yearlyTransactionsData",
+	"dailyPayoutsData",
+	"dailyTransactionsData",
+	"monthlyTransactionsData"
+]
+
 const useStyles = makeStyles(theme => {
 	return {
 		card: {
@@ -100,6 +107,28 @@ export function PropItem({ name, value }) {
 	)
 }
 
+const XSelect = ({ chartDataKey, setChartDataKey, t }) => (
+	<FormControl fullWidth>
+		{/* <InputLabel id="pool-stats-key-select-input-label">
+				{t("common.statsSelect")}
+			</InputLabel> */}
+		<Select
+			labelId="pool-stats-key-select-input-labe"
+			id="pool-stats-key-select"
+			value={chartDataKey}
+			onChange={e => {
+				setChartDataKey(e.target.value)
+			}}
+		>
+			{chartStatsKeys.map(key => (
+				<MenuItem key={key} value={key}>
+					{t(key)}
+				</MenuItem>
+			))}
+		</Select>
+	</FormControl>
+)
+
 const getDefaultLabels = (labels = []) => [
 	labels[0] || "",
 	labels[labels.length - 1] || ""
@@ -146,7 +175,14 @@ export default function Stats() {
 			<Box mt={2}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} md={12} lg={7}>
-						<Box m={1} mt={2} width={1} p={1} bgcolor="background.darkerPaper">
+						<Box
+							m={1}
+							mt={2}
+							width={1}
+							p={1}
+							bgcolor="background.darkerPaper"
+							boxShadow={25}
+						>
 							<StatsChart
 								options={{
 									title: t(`stats.${chartDataKey}`)
@@ -159,6 +195,11 @@ export default function Stats() {
 								yLabel={t(chartData.valueLabel)}
 								yColor={BACKGROUND_SPECIAL}
 								currency={chartData.currency}
+								xSelect={XSelect({
+									chartDataKey,
+									setChartDataKey,
+									t
+								})}
 							/>
 						</Box>
 					</Grid>

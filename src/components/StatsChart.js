@@ -9,7 +9,7 @@ import { formatNumberPretty } from "../helpers/formatting"
 
 const commonDsProps = {
 	fill: true,
-	lineTension: 0.42,
+	lineTension: 0.333,
 	borderWidth: 2,
 	pointRadius: 2,
 	pointHitRadius: 10
@@ -34,7 +34,8 @@ export const StatsChart = ({
 	xLabel = "",
 	yLabel = "DATA",
 	yColor = SECONDARY,
-	currency
+	currency,
+	xSelect
 }) => {
 	const windowSize = useWindowSize()
 	const chartHeight = Math.min(
@@ -50,6 +51,7 @@ export const StatsChart = ({
 				...commonDsProps,
 				backgroundColor: hexToRgbaColorString(yColor, 0.13),
 				borderColor: hexToRgbaColorString(yColor, 1),
+				pointBackgroundColor: hexToRgbaColorString(yColor, 1),
 				label: yLabel,
 				data: dataSynced ? data.datasets : [],
 				yAxisID: "y-axis-1",
@@ -199,11 +201,7 @@ export const StatsChart = ({
 					<DefaultLabel label={defaultLabels[0]} align="left" />
 				</Box>
 
-				<Box flexGrow="1">
-					<Typography component="div" variant="caption" align="center">
-						{t(xLabel)}
-					</Typography>
-				</Box>
+				<Box flexGrow="1">{xSelect}</Box>
 
 				<Box flexGrow="1">
 					<DefaultLabel label={defaultLabels[1]} align="right" />
