@@ -1,6 +1,6 @@
 import React from "react"
 import { Line } from "react-chartjs-2"
-import { SECONDARY } from "../themeMUi"
+import { SECONDARY, BACKGROUND_SPECIAL } from "../themeMUi"
 import { Box, Typography } from "@material-ui/core"
 import { hexToRgbaColorString } from "../helpers/colors"
 import { useWindowSize } from "../hooks/windowSize"
@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next"
 import { formatNumberPretty } from "../helpers/formatting"
 
 const commonDsProps = {
-	fill: false,
-	lineTension: 0,
+	fill: true,
+	lineTension: 0.42,
 	borderWidth: 2,
 	pointRadius: 2,
 	pointHitRadius: 10
@@ -48,7 +48,7 @@ export const StatsChart = ({
 		datasets: [
 			{
 				...commonDsProps,
-				backgroundColor: hexToRgbaColorString(yColor, 1),
+				backgroundColor: hexToRgbaColorString(yColor, 0.13),
 				borderColor: hexToRgbaColorString(yColor, 1),
 				label: yLabel,
 				data: dataSynced ? data.datasets : [],
@@ -109,17 +109,19 @@ export const StatsChart = ({
 		scales: {
 			xAxes: [
 				{
-					display: true,
+					display: false,
 					gridLines: {
 						display: true,
 						drawBorder: true,
-						drawTicks: true
+						drawTicks: true,
+						color: SECONDARY
 					},
 					scaleLabel: {
 						display: false,
 						labelString: t(xLabel || "TIMEFRAME"),
 						fontSize: DEFAULT_FONT_SIZE,
-						fontFamily: FONT
+						fontFamily: FONT,
+						color: SECONDARY
 					},
 					ticks: {
 						autoSkip: true,
@@ -135,13 +137,14 @@ export const StatsChart = ({
 			yAxes: [
 				{
 					// NOTE: this one is just to show constant size grid lines
-					display: true,
+					display: false,
 					gridLines: {
 						display: false,
 						drawBorder: false,
 						drawTicks: false
 					},
 					ticks: {
+						display: false,
 						beginAtZero: true,
 						maxTicksLimit: 11,
 						stepSize: 1,
@@ -156,9 +159,20 @@ export const StatsChart = ({
 					id: "y-axis-dummy-grid-lines"
 				},
 				{
-					display: false,
+					display: true,
+					color: SECONDARY,
 					ticks: {
-						beginAtZero: true
+						display: true,
+						beginAtZero: true,
+						fontColor: BACKGROUND_SPECIAL,
+						callback: label => formatNumberPretty(label)
+					},
+					scaleLabel: {
+						display: true,
+						color: SECONDARY
+					},
+					gridLines: {
+						display: false
 					},
 					type: "linear",
 					id: "y-axis-1"
@@ -168,11 +182,12 @@ export const StatsChart = ({
 	}
 
 	return (
-		<Box>
-			<Box height={chartHeight}>
+		<Box width={1}>
+			<Box height={chartHeight} width={1}>
 				<Line height={chartHeight} data={chartData} options={linesOptions} />
 			</Box>
 			<Box
+				maxWidth={1}
 				display="flex"
 				flexDirection="row"
 				justifyContent="space-between"
