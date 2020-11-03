@@ -120,7 +120,7 @@ export const StatsChart = ({
 					},
 					scaleLabel: {
 						display: false,
-						labelString: t(xLabel || "TIMEFRAME"),
+						labelString: xLabel,
 						fontSize: DEFAULT_FONT_SIZE,
 						fontFamily: FONT,
 						color: SECONDARY

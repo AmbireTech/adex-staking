@@ -109,9 +109,6 @@ export function PropItem({ name, value }) {
 
 const XSelect = ({ chartDataKey, setChartDataKey, t }) => (
 	<FormControl fullWidth>
-		{/* <InputLabel id="pool-stats-key-select-input-label">
-				{t("common.statsSelect")}
-			</InputLabel> */}
 		<Select
 			labelId="pool-stats-key-select-input-labe"
 			id="pool-stats-key-select"
@@ -122,7 +119,7 @@ const XSelect = ({ chartDataKey, setChartDataKey, t }) => (
 		>
 			{chartStatsKeys.map(key => (
 				<MenuItem key={key} value={key}>
-					{t(key)}
+					{t(`stats.${key}`)}
 				</MenuItem>
 			))}
 		</Select>
@@ -316,7 +313,7 @@ export default function Stats() {
 					loaded={loaded}
 				/>
 				<ValidatorStatsCard
-					label={t("stats.totalCampaignsDeposits")}
+					label={t("stats.totalDeposits")}
 					value={
 						stats.totalDeposits
 							? formatADXPretty(stats.totalDeposits) + " DAI"
