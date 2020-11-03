@@ -33,10 +33,10 @@ const useStyles = makeStyles(theme => {
 	return {
 		card: {
 			position: "relative",
-			backgroundColor: theme.palette.background.darkerPaper
+			backgroundColor: theme.palette.background.paper
 		},
 		active: {
-			backgroundColor: theme.palette.background.paper
+			backgroundColor: theme.palette.background.darkerPaper
 		},
 		interactive: {
 			cursor: "pointer"
@@ -146,7 +146,7 @@ export default function Stats() {
 			<Box mt={2}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} md={12} lg={7}>
-						<Box m={1} mt={2} width={1} p={1} bgcolor="background.paper">
+						<Box m={1} mt={2} width={1} p={1} bgcolor="background.darkerPaper">
 							<StatsChart
 								options={{
 									title: t(`stats.${chartDataKey}`)
