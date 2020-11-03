@@ -1,6 +1,5 @@
 import React, { Fragment } from "react"
-import { Box } from "@material-ui/core"
-import Typography from "@material-ui/core/Typography"
+import { Box, Typography } from "@material-ui/core"
 import { InfoSharp as InfoIcon } from "@material-ui/icons"
 import Tooltip from "./Tooltip"
 
@@ -133,23 +132,6 @@ export function CardRow({
 					)}
 				</Box>
 			</Typography>
-		</Box>
-	)
-}
-
-export function PropRow({ name, value }) {
-	return (
-		<Box display="flex" flexDirection="row" mb={2}>
-			<Box
-				width={130}
-				mr={2}
-				color="primary.main"
-				textAlign="right"
-				flexShrink={0}
-			>
-				{name}
-			</Box>
-			<Box>{value}</Box>
 		</Box>
 	)
 }
