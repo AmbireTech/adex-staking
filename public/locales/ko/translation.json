@@ -93,8 +93,7 @@
     "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
   },
   "email": {
-    "subscribe": "AdEx 뉴스 구독하기 &",
-    "win": "<strong>{{rewards}}</strong> ADX를 획득하세요! ",
+    "subscribe": "AdEx의 <strong>독점 컨텐츠</strong> 뉴스를 구독해 주세요",
     "email": "Email",
     "validEmail": "유효한 이메일 주소를 입력하세요!",
     "bestEmail": "가장 많이 사용하는 이메일을 입력하세요",
@@ -183,7 +182,8 @@
     "reStakeConfirmation": "<box> {{amount}} {{currency}}의 수익금을 다시 스테이킹 하시겠습니까? </box> <box> 이는 이 금액이 최소 {{unbondDays}} 일 동안 잠겨 있음을 의미합니다. </box> <box> {{extraInfo}} </box>",
     "reActivatingInfo": " 예치금이 다시 활성화됩니다. 즉, 예치 해제 요청이 취소되며, 보상을 다시 받기 시작합니다.",
     "claimConfirmation": " 수익을 실현하려고 합니다.",
-    "forTotal": "총: {{total}}"
+    "forTotal": "총: {{total}}",
+    "exceptWallets": "(except {{wallets}})"
   },
   "help": {
     "help": "도움말",

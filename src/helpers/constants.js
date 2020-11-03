@@ -85,7 +85,13 @@ export const Wallets = [
 	},
 	{
 		name: WALLET_CONNECT,
-		icon: walletconnectLogo
+		icon: walletconnectLogo,
+		extraLabel: {
+			message: "dialogs.exceptWallets",
+			data: {
+				wallets: "Trust Wallet"
+			}
+		}
 	}
 	// {
 	// 	name: TREZOR,

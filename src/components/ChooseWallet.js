@@ -30,7 +30,7 @@ export default function ChooseWallet({
 				{t("dialogs.selectWallet")}
 			</DialogTitle>
 			<List>
-				{Wallets.map(({ icon, name = "" }) => (
+				{Wallets.map(({ icon, name = "", extraLabel }) => (
 					<ListItem
 						id={`connect-wallet-select-${toIdAttributeString(name)}`}
 						disabled={disableNonBrowserWallets && name !== METAMASK}
@@ -45,6 +45,11 @@ export default function ChooseWallet({
 							primary={t("dialogs.connectWith", {
 								wallet: name
 							})}
+							secondary={
+								extraLabel
+									? t(extraLabel.message || "", extraLabel.data || {})
+									: null
+							}
 						/>
 					</ListItem>
 				))}
