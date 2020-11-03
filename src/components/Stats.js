@@ -7,7 +7,10 @@ import {
 	InputLabel,
 	FormControl,
 	Grid,
-	SvgIcon
+	SvgIcon,
+	List,
+	ListItem,
+	ListItemText
 } from "@material-ui/core"
 import clsx from "clsx"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
@@ -15,7 +18,6 @@ import SectionHeader from "./SectionHeader"
 import ValidatorStatsContext from "../ValidatorStatsContext"
 import { POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
-import { PropRow } from "./cardCommon"
 import StatsCard from "./StatsCard"
 import { StatsChart } from "./StatsChart"
 import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
@@ -67,11 +69,12 @@ const ValidatorStatsCard = ({
 				[classes.active]: active,
 				[classes.interactive]: interactive
 			})}
-			mr={2}
+			m={1}
 			mb={2}
 			p={4}
 			boxShadow={25}
 			onClick={() => chartKey && setKey(chartKey)}
+			flexGrow={1}
 		>
 			{interactive && (
 				<SvgIcon className={classes.icon} fontSize="inherit">
@@ -86,6 +89,14 @@ const ValidatorStatsCard = ({
 				})}
 			</Box>
 		</Box>
+	)
+}
+
+export function PropItem({ name, value }) {
+	return (
+		<ListItem>
+			<ListItemText primary={name} secondary={value} />
+		</ListItem>
 	)
 }
 
@@ -110,7 +121,7 @@ export default function Stats() {
 	return (
 		<Box>
 			<SectionHeader title={t("common.validatorStats")} />
-			<Box mt={2}>
+			<Box mt={2} m={1}>
 				<FormControl>
 					<InputLabel id="pool-stats-select-input-label">
 						{t("common.pool")}
@@ -134,8 +145,8 @@ export default function Stats() {
 			</Box>
 			<Box mt={2}>
 				<Grid container spacing={2}>
-					<Grid item md={12} lg={7}>
-						<Box width={1} p={1} bgcolor="background.paper">
+					<Grid item xs={12} md={12} lg={7}>
+						<Box m={1} mt={2} width={1} p={1} bgcolor="background.paper">
 							<StatsChart
 								options={{
 									title: t(`stats.${chartDataKey}`)
@@ -151,28 +162,30 @@ export default function Stats() {
 							/>
 						</Box>
 					</Grid>
-					<Grid item md={12} lg={5}>
+					<Grid item xs={12} md={12} lg={5}>
 						<Box>
-							<PropRow name={t("common.name")} value={t(pool.label)} />
-							<PropRow name={t("common.purpose")} value={t(pool.purpose)} />
-							<PropRow
-								name={t("common.slashing")}
-								value={t(pool.slashPolicy)}
-							/>
-							<PropRow
-								name={t("common.rewards")}
-								value={t(pool.rewardPolicy)}
-							/>
-							<PropRow
-								name={t("common.lockup")}
-								value={t(pool.lockupPeriodText, {
-									count: pool.lockupPeriod || 0
-								})}
-							/>
-							<PropRow
-								name={t("common.apyStability")}
-								value={t(pool.apyStability)}
-							/>
+							<List dense disablePadding>
+								<PropItem name={t("common.name")} value={t(pool.label)} />
+								<PropItem name={t("common.purpose")} value={t(pool.purpose)} />
+								<PropItem
+									name={t("common.slashing")}
+									value={t(pool.slashPolicy)}
+								/>
+								<PropItem
+									name={t("common.rewards")}
+									value={t(pool.rewardPolicy)}
+								/>
+								<PropItem
+									name={t("common.lockup")}
+									value={t(pool.lockupPeriodText, {
+										count: pool.lockupPeriod || 0
+									})}
+								/>
+								<PropItem
+									name={t("common.apyStability")}
+									value={t(pool.apyStability)}
+								/>
+							</List>
 						</Box>
 					</Grid>
 				</Grid>
