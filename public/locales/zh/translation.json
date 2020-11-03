@@ -56,7 +56,13 @@
     "fees": "费用",
     "noSelection": "未选择任何内容",
     "currencyBalance": "{{currency}} BALANCE",
-    "goBack": "Go back"
+    "goBack": "Go back",
+    "validatorStats": "Validator stats",
+    "name": "Name",
+    "purpose": "Purpose",
+    "slashing": "Slashing",
+    "lockup": "Lockup",
+    "apyStability": "APY stability"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -81,7 +87,10 @@
     "tomRewardPolicy": "\"Validator Tom\"池将按比例将手续费收入分配给全体质押者。手续费收入将是总交易量的7%，您可以在Explorer上进行跟踪。到2020年底，我们将额外发放700万ADX作为奖励。",
     "tomSlashPolicy": "禁止削减.",
     "unbondPeriodDay": "{{count}} 天",
-    "unbondPeriodDay_plural": "{{count}} 天"
+    "unbondPeriodDay_plural": "{{count}} 天",
+    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
+    "tomApyStability": "Flexible",
+    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
   },
   "email": {
     "subscribe": "订阅ADEX新闻",
@@ -219,5 +228,24 @@
     "pendingTransactions": "Must not have a pending transactions",
     "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
     "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+  },
+  "stats": {
+    "totalCampaigns": "Total campaigns",
+    "uniqueUnits": "Unique ad units",
+    "uniquePublishers": "Unique publishers",
+    "uniqueAdvertisers": "Unique advertisers",
+    "totalDeposits": "Total deposits",
+    "totalPayouts": "total payouts",
+    "dailyPayoutsData": "Daily payouts",
+    "dailyPayoutsVolume": "Daily payouts",
+    "yearlyTransactionsData": "Yearly impressions (transactions)",
+    "yearlyTransactions": "Yearly impressions (transactions)",
+    "dailyTransactionsData": "Daily impressions",
+    "dailyTransactions": "Daily impressions",
+    "monthlyTransactionsData": "Monthly impressions",
+    "monthlyTransactions": "Monthly impressions",
+    "lockupOnChain": "Locked up on chain",
+    "labelPayout": "Payouts",
+    "labelTransactions": "Impressions (Transactions)"
   }
 }
