@@ -13,6 +13,7 @@ import {
 	ListItemText
 } from "@material-ui/core"
 import clsx from "clsx"
+import { useLocation } from "react-router-dom"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import SectionHeader from "./SectionHeader"
 import ValidatorStatsContext from "../ValidatorStatsContext"
@@ -58,6 +59,10 @@ const useStyles = makeStyles(theme => {
 		}
 	}
 })
+
+const useQuery = () => {
+	return new URLSearchParams(useLocation().search)
+}
 
 const ValidatorStatsCard = ({
 	label,
@@ -133,6 +138,8 @@ const getDefaultLabels = (labels = []) => [
 
 export default function Stats() {
 	const { t } = useTranslation()
+	const query = useQuery()
+
 	const [chartDataKey, setChartDataKey] = useState("yearlyTransactionsData")
 	const [chartData, setChartData] = useState({})
 
@@ -143,6 +150,22 @@ export default function Stats() {
 	useEffect(() => {
 		setChartData(stats[chartDataKey] || {})
 	}, [chartDataKey, stats])
+
+	useEffect(() => {
+		const validator = query.get("validator")
+		const selected = validator
+			? poolsSrc.filter(x => t(x.label === validator))[0]
+			: null
+		if (selected) {
+			onPoolSelect(selected.value)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [query, t])
+
+	function onPoolSelect(poolId) {
+		setPoolId(poolId)
+		setPool(poolsSrc.find(x => x.value === poolId).pool)
+	}
 
 	return (
 		<Box>
@@ -157,8 +180,7 @@ export default function Stats() {
 						id="pool-stats-select"
 						value={poolId}
 						onChange={e => {
-							setPoolId(e.target.value)
-							setPool(poolsSrc.find(x => x.value === e.target.value).pool)
+							onPoolSelect(e.target.value)
 						}}
 					>
 						{poolsSrc.map(({ value, label }) => (
