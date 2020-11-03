@@ -31,7 +31,7 @@ export const StatsChart = ({
 	dataActive = true,
 	defaultLabels = [],
 	options = {},
-	xLabel = "TIMEFRAME",
+	xLabel = "",
 	yLabel = "DATA",
 	yColor = SECONDARY,
 	currency
@@ -39,7 +39,7 @@ export const StatsChart = ({
 	const windowSize = useWindowSize()
 	const chartHeight = Math.min(
 		Math.max(Math.floor((windowSize.height || 0) / 2.2), 240),
-		420
+		333
 	)
 	const { t } = useTranslation()
 
@@ -186,7 +186,7 @@ export const StatsChart = ({
 
 				<Box flexGrow="1">
 					<Typography component="div" variant="caption" align="center">
-						{t(xLabel || "TIMEFRAME")}
+						{t(xLabel)}
 					</Typography>
 				</Box>
 
