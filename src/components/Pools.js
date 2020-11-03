@@ -75,6 +75,7 @@ const Pools = () => {
 							count: UNBOND_DAYS
 						})}
 						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
+						statsPath={`/stats?validator=${t(POOLS[0].label)}`}
 					/>
 
 					<PoolCard

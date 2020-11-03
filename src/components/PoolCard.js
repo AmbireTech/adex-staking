@@ -10,7 +10,11 @@ import {
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
+import WithRouterLink from "./WithRouterLink"
+import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { useTranslation } from "react-i18next"
+
+const ButtonWithLink = WithRouterLink(Button)
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -69,7 +73,8 @@ export default function PoolCard({
 	actions,
 	comingSoon,
 	actionBtn,
-	extraData = []
+	extraData = [],
+	statsPath
 }) {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -235,6 +240,23 @@ export default function PoolCard({
 							)}
 						</Fragment>
 					))}
+
+					{!!statsPath && (
+						<Box mb={2}>
+							<ButtonWithLink
+								fullWidth
+								color="primary"
+								to={statsPath}
+								startIcon={
+									<SvgIcon fontSize="inherit" color="inherit">
+										<StatsIcon width="100%" height="100%" />
+									</SvgIcon>
+								}
+							>
+								{t("common.poolStats")}
+							</ButtonWithLink>
+						</Box>
+					)}
 
 					<Tooltip title={disabled ? disabledInfo : ""}>
 						<div>
