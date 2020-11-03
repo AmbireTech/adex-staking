@@ -43,8 +43,8 @@ const useStyles = makeStyles(theme => {
 		},
 		icon: {
 			position: "absolute",
-			width: theme.spacing(4),
-			height: theme.spacing(4),
+			width: theme.spacing(3),
+			height: theme.spacing(3),
 			top: theme.spacing(1),
 			right: theme.spacing(1),
 			color: theme.palette.background.special
@@ -70,8 +70,8 @@ const ValidatorStatsCard = ({
 				[classes.interactive]: interactive
 			})}
 			m={1}
-			mb={2}
-			p={4}
+			py={2}
+			px={5}
 			boxShadow={25}
 			onClick={() => chartKey && setKey(chartKey)}
 			flexGrow={1}
@@ -81,7 +81,7 @@ const ValidatorStatsCard = ({
 					<StatsIcon width="100%" height="100%" />
 				</SvgIcon>
 			)}
-			<Box m={1}>
+			<Box>
 				{StatsCard({
 					loaded: loaded,
 					title: label,
