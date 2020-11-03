@@ -1,7 +1,7 @@
 import React from "react"
 import { Line } from "react-chartjs-2"
 import { SECONDARY, BACKGROUND_SPECIAL } from "../themeMUi"
-import { Box, Typography } from "@material-ui/core"
+import { Box, Typography, CircularProgress } from "@material-ui/core"
 import { hexToRgbaColorString } from "../helpers/colors"
 import { useWindowSize } from "../hooks/windowSize"
 import { useTranslation } from "react-i18next"
@@ -186,8 +186,20 @@ export const StatsChart = ({
 
 	return (
 		<Box width={1}>
-			<Box height={chartHeight} width={1}>
-				<Line height={chartHeight} data={chartData} options={linesOptions} />
+			<Box height={chartHeight} width={1} color={BACKGROUND_SPECIAL}>
+				{dataSynced ? (
+					<Line height={chartHeight} data={chartData} options={linesOptions} />
+				) : (
+					<Box
+						width={1}
+						height={1}
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+					>
+						<CircularProgress color="inherit" size={chartHeight / 4} />
+					</Box>
+				)}
 			</Box>
 			<Box
 				maxWidth={1}
