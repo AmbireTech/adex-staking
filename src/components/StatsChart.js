@@ -167,7 +167,8 @@ export const StatsChart = ({
 						display: true,
 						beginAtZero: true,
 						fontColor: BACKGROUND_SPECIAL,
-						callback: label => formatNumberPretty(label)
+						callback: label =>
+							formatNumberPretty(label) + (currency ? ` ${currency}` : "")
 					},
 					scaleLabel: {
 						display: true,
