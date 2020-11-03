@@ -24,6 +24,7 @@ import {
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
+import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { useTranslation } from "react-i18next"
 
 const RRListItem = WithRouterLink(ListItem)
@@ -244,7 +245,7 @@ function SideNav({
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
-									<GaslessIcon width="100%" height="100%" color="secondary" />
+									<StatsIcon width="100%" height="100%" color="secondary" />
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.validatorStats")} />
