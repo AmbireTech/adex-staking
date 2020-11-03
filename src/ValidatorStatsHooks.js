@@ -1,18 +1,9 @@
 import { useEffect, useState } from "react"
-
-import { POOLS } from "./helpers/constants"
-
 import { getValidatorStatsByPoolId } from "./actions/pools"
 
-const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
-	value: x.id,
-	label: x.label,
-	pool: x
-}))
-
 export default function ValidatorStatsHooks() {
-	const [poolId, setPoolId] = useState(poolsSrc[0].value)
-	const [pool, setPool] = useState(poolsSrc[0].pool)
+	const [poolId, setPoolId] = useState("")
+	const [pool, setPool] = useState({})
 	const [statsByPoolId, setStatsByPoolId] = useState({})
 	const [stats, setStats] = useState({})
 

@@ -154,13 +154,14 @@ export default function Stats() {
 		const validator = query.get("validator")
 		const selected = validator
 			? poolsSrc.filter(x => t(x.label === validator))[0]
-			: null
-		if (selected) {
-			onPoolSelect(selected.value)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [query, t])
+			: {}
 
+		onPoolSelect(selected.value || poolsSrc[0].value)
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	function onPoolSelect(poolId) {
 		setPoolId(poolId)
 		setPool(poolsSrc.find(x => x.value === poolId).pool)
