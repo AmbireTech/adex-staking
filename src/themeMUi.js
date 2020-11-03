@@ -238,6 +238,11 @@ const theme = createMuiTheme({
 				borderTopLeftRadius: 0,
 				borderTopRightRadius: 0
 			}
+		},
+		MuiOutlinedInput: {
+			root: {
+				borderRadius: 0
+			}
 		}
 		// MuiDrawer: {
 		// 	root: {

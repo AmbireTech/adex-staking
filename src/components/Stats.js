@@ -4,7 +4,6 @@ import {
 	Box,
 	MenuItem,
 	Select,
-	InputLabel,
 	FormControl,
 	Grid,
 	SvgIcon,
@@ -113,7 +112,7 @@ export function PropItem({ name, value }) {
 }
 
 const XSelect = ({ chartDataKey, setChartDataKey, t }) => (
-	<FormControl fullWidth>
+	<FormControl fullWidth size="small" variant="outlined" color="primary">
 		<Select
 			labelId="pool-stats-key-select-input-labe"
 			id="pool-stats-key-select"
@@ -170,11 +169,11 @@ export default function Stats() {
 	return (
 		<Box>
 			<SectionHeader title={t("common.validatorStats")} />
-			<Box mt={2} m={1}>
-				<FormControl>
-					<InputLabel id="pool-stats-select-input-label">
+			<Box m={1} mb={0}>
+				<FormControl variant="outlined" size="small">
+					{/* <InputLabel id="pool-stats-select-input-label">
 						{t("common.pool")}
-					</InputLabel>
+					</InputLabel> */}
 					<Select
 						labelId="pool-stats-select-input-labe"
 						id="pool-stats-select"
