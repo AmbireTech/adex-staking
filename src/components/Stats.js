@@ -1,12 +1,17 @@
 import React, { useContext, useEffect, useState } from "react"
+import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	MenuItem,
 	Select,
 	InputLabel,
 	FormControl,
-	Grid
+	Grid,
+	SvgIcon
 } from "@material-ui/core"
+import clsx from "clsx"
+import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
+import SectionHeader from "./SectionHeader"
 import ValidatorStatsContext from "../ValidatorStatsContext"
 import { POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
@@ -22,6 +27,29 @@ const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	pool: x
 }))
 
+const useStyles = makeStyles(theme => {
+	return {
+		card: {
+			position: "relative",
+			backgroundColor: theme.palette.background.darkerPaper
+		},
+		active: {
+			backgroundColor: theme.palette.background.paper
+		},
+		interactive: {
+			cursor: "pointer"
+		},
+		icon: {
+			position: "absolute",
+			width: theme.spacing(4),
+			height: theme.spacing(4),
+			top: theme.spacing(1),
+			right: theme.spacing(1),
+			color: theme.palette.background.special
+		}
+	}
+})
+
 const ValidatorStatsCard = ({
 	label,
 	value,
@@ -30,15 +58,26 @@ const ValidatorStatsCard = ({
 	chartKey,
 	setKey
 }) => {
+	const classes = useStyles()
 	const active = chartKey && currentKey && currentKey === chartKey
+	const interactive = !!chartKey
 	return (
 		<Box
-			m={1}
-			p={2}
-			bgcolor={active ? "background.paper" : "background.darkerPaper"}
+			className={clsx(classes.card, {
+				[classes.active]: active,
+				[classes.interactive]: interactive
+			})}
+			mr={2}
+			mb={2}
+			p={4}
 			boxShadow={25}
 			onClick={() => chartKey && setKey(chartKey)}
 		>
+			{interactive && (
+				<SvgIcon className={classes.icon} fontSize="inherit">
+					<StatsIcon width="100%" height="100%" />
+				</SvgIcon>
+			)}
 			<Box m={1}>
 				{StatsCard({
 					loaded: loaded,
@@ -70,7 +109,8 @@ export default function Stats() {
 
 	return (
 		<Box>
-			<Box mb={2}>
+			<SectionHeader title={t("common.validatorStats")} />
+			<Box mt={2}>
 				<FormControl>
 					<InputLabel id="pool-stats-select-input-label">
 						{t("common.pool")}
@@ -92,7 +132,7 @@ export default function Stats() {
 					</Select>
 				</FormControl>
 			</Box>
-			<Box>
+			<Box mt={2}>
 				<Grid container spacing={2}>
 					<Grid item md={12} lg={7}>
 						<Box width={1} p={1} bgcolor="background.paper">
@@ -104,6 +144,7 @@ export default function Stats() {
 								data={chartData}
 								dataActive={true}
 								dataSynced={loaded}
+								xLabel={t(`stats.${chartDataKey}`)}
 								yLabel={t(chartData.valueLabel)}
 								yColor={BACKGROUND_SPECIAL}
 								currency={chartData.currency}
@@ -136,7 +177,56 @@ export default function Stats() {
 					</Grid>
 				</Grid>
 			</Box>
-			<Box display="flex" flexDirection="row" flexWrap="wrap">
+			<Box mt={2} display="flex" flexDirection="row" flexWrap="wrap">
+				<ValidatorStatsCard
+					label={t("stats.yearlyTransactions")}
+					value={
+						stats.yearlyTransactions
+							? formatNumberPretty(stats.yearlyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"yearlyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.dailyPayoutsVolume")}
+					value={
+						stats.dailyPayoutsVolume
+							? formatADXPretty(stats.dailyPayoutsVolume) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"dailyPayoutsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.dailyTransactions")}
+					value={
+						stats.dailyTransactions
+							? formatNumberPretty(stats.dailyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"dailyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.monthlyTransactions")}
+					value={
+						stats.monthlyTransactions
+							? formatNumberPretty(stats.monthlyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"monthlyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+
 				<ValidatorStatsCard
 					label={t("stats.totalCampaigns")}
 					value={
@@ -188,55 +278,6 @@ export default function Stats() {
 							: "-"
 					}
 					loaded={loaded}
-				/>
-
-				<ValidatorStatsCard
-					label={t("stats.dailyPayoutsVolume")}
-					value={
-						stats.dailyPayoutsVolume
-							? formatADXPretty(stats.dailyPayoutsVolume) + " DAI"
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"dailyPayoutsData"}
-					setKey={setChartDataKey}
-				/>
-				<ValidatorStatsCard
-					label={t("stats.yearlyTransactions")}
-					value={
-						stats.yearlyTransactions
-							? formatNumberPretty(stats.yearlyTransactions)
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"yearlyTransactionsData"}
-					setKey={setChartDataKey}
-				/>
-				<ValidatorStatsCard
-					label={t("stats.dailyTransactions")}
-					value={
-						stats.dailyTransactions
-							? formatNumberPretty(stats.dailyTransactions)
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"dailyTransactionsData"}
-					setKey={setChartDataKey}
-				/>
-				<ValidatorStatsCard
-					label={t("stats.monthlyTransactions")}
-					value={
-						stats.monthlyTransactions
-							? formatNumberPretty(stats.monthlyTransactions)
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"monthlyTransactionsData"}
-					setKey={setChartDataKey}
 				/>
 				<ValidatorStatsCard
 					label={t("stats.lockupOnChain")}
