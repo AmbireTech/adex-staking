@@ -33,7 +33,9 @@ const SectionHeader = ({ title, actions }) => {
 			flexWrap="wrap"
 		>
 			<Box color="text.main" mb={1}>
-				<Typography variant="h3">{title}</Typography>
+				<Typography variant="h3" style={{ wordBreak: "break-word" }}>
+					{title}
+				</Typography>
 			</Box>
 			<Box mb={1}>
 				{!!actions
