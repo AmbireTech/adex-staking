@@ -80,7 +80,9 @@ const sumValidatorAnalyticsResValue = res =>
 	Object.values(res.aggr || {}).reduce((a, b) => a.add(b.value), ZERO)
 
 const toChartData = (data, valueLabel, currency) => {
-	return (data.aggr || []).reduce(
+	const noLast = data.aggr || [{}]
+	noLast.pop()
+	return noLast.reduce(
 		(data, { time, value }) => {
 			data.labels.push(new Date(time).toLocaleString())
 			data.datasets.push(parseFloat(currency ? formatDAI(value) : value))
