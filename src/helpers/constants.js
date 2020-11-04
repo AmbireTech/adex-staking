@@ -11,10 +11,12 @@ export const PRICES_API_URL =
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 
+export const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
 export const ADDR_ADX_LOYALTY_TOKEN =
 	"0xd9A4cB9dc9296e111c66dFACAb8Be034EE2E1c2C"
+export const DAI_TOKEN_ADDR = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
 export const MAX_UINT = bigNumberify(
 	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
@@ -35,8 +37,12 @@ export const POOLS = [
 		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
 		selectable: true,
 		minStakingAmount: "0.0",
+		purpose: "pools.tomPurpose",
+		lockupPeriod: 30,
+		lockupPeriodText: "pools.tomLockupPeriodTxt",
 		rewardPolicy: "pools.tomRewardPolicy",
 		slashPolicy: "pools.tomSlashPolicy",
+		apyStability: "pools.tomApyStability",
 		url: "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
 		estimatedAnnualADXYield: 15103448.2758,

@@ -56,7 +56,14 @@
     "fees": "Fees",
     "noSelection": "Nothing selected",
     "currencyBalance": "{{currency}} BALANCE",
-    "goBack": "Go back"
+    "goBack": "Go back",
+    "validatorStats": "Validator stats",
+    "name": "Name",
+    "purpose": "Purpose",
+    "slashing": "Slashing",
+    "lockup": "Lockup",
+    "apyStability": "APY stability",
+    "poolStats": "Pool stats"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -81,7 +88,10 @@
     "tomRewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.",
     "tomSlashPolicy": "No slashing.",
     "unbondPeriodDay": "{{count}} day",
-    "unbondPeriodDay_plural": "{{count}} days"
+    "unbondPeriodDay_plural": "{{count}} days",    
+    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
+    "tomApyStability": "Flexible",
+    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
   },
   "email": {
     "subscribe": "Subscribe for AdEx News <strong> for exclusive content </strong> ",
@@ -219,5 +229,24 @@
     "pendingTransactions": "Must not have a pending transactions",
     "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
     "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+  },
+  "stats": {
+    "totalCampaigns": "Total campaigns",
+    "uniqueUnits": "Unique ad units",
+    "uniquePublishers": "Unique publishers",
+    "uniqueAdvertisers": "Unique advertisers",
+    "totalDeposits": "Total deposits",
+    "totalPayouts": "Total payouts",
+    "dailyPayoutsData": "Daily payouts",
+    "dailyPayoutsVolume": "Daily payouts",
+    "yearlyTransactionsData": "Yearly impressions (transactions)",
+    "yearlyTransactions": "Yearly impressions (transactions)",
+    "dailyTransactionsData": "Daily impressions",
+    "dailyTransactions": "Daily impressions",
+    "monthlyTransactionsData": "Monthly impressions",
+    "monthlyTransactions": "Monthly impressions",
+    "lockupOnChain": "Locked up on chain",
+    "labelPayout": "Payouts",
+    "labelTransactions": "Impressions (Transactions)"
   }
 }

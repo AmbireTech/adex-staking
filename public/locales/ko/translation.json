@@ -56,7 +56,14 @@
     "fees": "수수료",
     "noSelection": "선택되지 않음",
     "currencyBalance": "{{currency}} 잔액",
-    "goBack": "뒤로 가기"
+    "goBack": "뒤로 가기",
+    "validatorStats": "Validator stats",
+    "name": "Name",
+    "purpose": "Purpose",
+    "slashing": "Slashing",
+    "lockup": "Lockup",
+    "apyStability": "APY stability",
+    "poolStats": "Pool stats"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -81,7 +88,10 @@
     "tomRewardPolicy": " \"검증인 Tom\" 풀은 수수료 수익을 각 스테이커들에게 비례하여 분배합니다. 수수료 수입은 총 거래량의 7 %이며, 탐색기에서 추적할 수 있습니다. 2020년 말까지 700만 ADX의 추가 인센티브 보상이 분배됩니다. ",
     "tomSlashPolicy": "지분 삭감 없음.",
     "unbondPeriodDay": "{{count}} 일",
-    "unbondPeriodDay_plural": "{{count}} 일"
+    "unbondPeriodDay_plural": "{{count}} 일",
+    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
+    "tomApyStability": "Flexible",
+    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
   },
   "email": {
     "subscribe": "AdEx의 <strong>독점 컨텐츠</strong> 뉴스를 구독해 주세요",
@@ -214,9 +224,28 @@
     "version": "v{{version}}"
   },
   "relayerResErrors": {
-    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
-    "pendingTransactions": "Must not have a pending transactions",
-    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
-    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+    "underMinBalance": " 가스없는 주소에 {{amount}} {{currency}} 이상을 보유하고 있어야 합니다",
+    "pendingTransactions": "보류중인 트랜잭션이 없어야 합니다.",
+    "transactionsHoursRateLimit": "지난 {{count}} 시간 동안 거래를 제출하지 않았어야 합니다.",
+    "transactionsHoursRateLimit_plural": "지난 {{count}} 시간 동안 거래를 제출하지 않았어야 합니다."
+  },
+  "stats": {
+    "totalCampaigns": "Total campaigns",
+    "uniqueUnits": "Unique ad units",
+    "uniquePublishers": "Unique publishers",
+    "uniqueAdvertisers": "Unique advertisers",
+    "totalDeposits": "Total deposits",
+    "totalPayouts": "Total payouts",
+    "dailyPayoutsData": "Daily payouts",
+    "dailyPayoutsVolume": "Daily payouts",
+    "yearlyTransactionsData": "Yearly impressions (transactions)",
+    "yearlyTransactions": "Yearly impressions (transactions)",
+    "dailyTransactionsData": "Daily impressions",
+    "dailyTransactions": "Daily impressions",
+    "monthlyTransactionsData": "Monthly impressions",
+    "monthlyTransactions": "Monthly impressions",
+    "lockupOnChain": "Locked up on chain",
+    "labelPayout": "Payouts",
+    "labelTransactions": "Impressions (Transactions)"
   }
 }

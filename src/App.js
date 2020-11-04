@@ -7,18 +7,24 @@ import { Web3ReactProvider } from "@web3-react/core"
 import { Web3Provider } from "ethers/providers"
 import Root from "./components/Root"
 import AppContext from "./AppContext"
+import ValidatorStatsContext from "./ValidatorStatsContext"
 import useApp from "./AppHooks"
+import useValidatorStats from "./ValidatorStatsHooks"
 import Loading from "./components/Loading"
 import "./App.css"
 
 const App = () => {
 	const appHooks = useApp()
+	const validatorStatsHooks = useValidatorStats()
+
 	return (
 		<React.Fragment>
 			<AppContext.Provider value={appHooks}>
-				<Router>
-					<Root />
-				</Router>
+				<ValidatorStatsContext.Provider value={validatorStatsHooks}>
+					<Router>
+						<Root />
+					</Router>
+				</ValidatorStatsContext.Provider>
 			</AppContext.Provider>
 		</React.Fragment>
 	)

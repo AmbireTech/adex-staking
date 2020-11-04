@@ -17,7 +17,7 @@ export const TEXT_MAIN = "#7B7597"
 export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
 export const BACKGROUND_DEFAULT = "#131313"
-export const BACKGROUND_SPECIAL = "#4e3db3"
+export const BACKGROUND_SPECIAL = "#6942ff"
 
 const palette = {
 	type: "dark",
@@ -237,6 +237,11 @@ const theme = createMuiTheme({
 				borderRadius: 0,
 				borderTopLeftRadius: 0,
 				borderTopRightRadius: 0
+			}
+		},
+		MuiOutlinedInput: {
+			root: {
+				borderRadius: 0
 			}
 		}
 		// MuiDrawer: {

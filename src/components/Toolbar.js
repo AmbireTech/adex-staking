@@ -4,6 +4,7 @@ import { AppBar, Toolbar, IconButton, Box, Hidden } from "@material-ui/core"
 import { MenuSharp as MenuIcon } from "@material-ui/icons"
 import { Help } from "./HelperMenu"
 import { Wallet } from "./WalletMenu"
+import LangSelect from "./LangSelect"
 import { styles } from "./rootStyles"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -36,6 +37,9 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 					justifyContent="flex-end"
 					flexWrap="wrap"
 				>
+					<Box mr={2}>
+						<LangSelect />
+					</Box>
 					<Box mr={2}>
 						<Help />
 					</Box>

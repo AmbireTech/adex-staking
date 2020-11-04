@@ -8,6 +8,10 @@ export function formatADXPretty(num) {
 	return commify(formatUnits(num.div("100000000000000"), 4))
 }
 
+export function formatNumberPretty(num) {
+	return commify(num)
+}
+
 export function formatDAI(num) {
 	return formatUnits(num, 18)
 }

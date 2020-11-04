@@ -1,6 +1,5 @@
 import React, { Fragment } from "react"
-import { Box } from "@material-ui/core"
-import Typography from "@material-ui/core/Typography"
+import { Box, Typography } from "@material-ui/core"
 import { InfoSharp as InfoIcon } from "@material-ui/icons"
 import Tooltip from "./Tooltip"
 
