@@ -80,7 +80,7 @@ const sumValidatorAnalyticsResValue = res =>
 	Object.values(res.aggr || {}).reduce((a, b) => a.add(b.value), ZERO)
 
 const toChartData = (data, valueLabel, currency) => {
-	const noLast = data.aggr || [{}]
+	const noLast = [...(data.aggr || [{}])]
 	noLast.pop()
 	return noLast.reduce(
 		(data, { time, value }) => {
