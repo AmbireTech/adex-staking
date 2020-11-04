@@ -19,8 +19,7 @@ export const DARKER_PAPER = "#1A1825"
 export const BACKGROUND_DEFAULT = "#131313"
 export const BACKGROUND_SPECIAL = "#6942ff"
 
-const palette = {
-	type: "dark",
+const paletteCommon = {
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
 	grey: { main: ALEX_GREY, contrastText: WHITE },
@@ -42,6 +41,25 @@ const palette = {
 		contrastText: WHITE
 	},
 	first: lime,
+	common: {
+		white: WHITE,
+		black: BLACK
+	}
+}
+
+const paletteLight = {
+	type: "light",
+	...paletteCommon,
+	background: {
+		darkerPaper: "#eee",
+		special: WHITE,
+		specialSecondary: WHITE
+	}
+}
+
+const paletteDark = {
+	type: "dark",
+	...paletteCommon,
 	text: {
 		main: TEXT_MAIN,
 		primary: fade(WHITE, 0.69),
@@ -54,7 +72,8 @@ const palette = {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
 		default: BLACK,
-		special: BACKGROUND_SPECIAL
+		special: BACKGROUND_SPECIAL,
+		specialSecondary: BLACK
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
@@ -68,10 +87,6 @@ const palette = {
 		focus: fade(WHITE, 0.18),
 		focusOpacity: 0.18,
 		activatedOpacity: 0.18
-	},
-	common: {
-		white: WHITE,
-		black: BLACK
 	}
 }
 
@@ -109,47 +124,48 @@ const shadows = [
 	"3px 4px 15px 0px rgba(0,0,0,1)"
 ]
 
-const defaultTheme = createMuiTheme({ typography, palette })
+const defaultTheme = createMuiTheme({
+	palette: { ...paletteCommon }
+})
 
-const theme = createMuiTheme({
-	shadows,
+const commonTheme = createMuiTheme({
+	...defaultTheme,
 	typography,
-	palette,
+	shadows,
 	overrides: {
 		MuiButton: {
 			root: {
 				borderRadius: 0
 			},
 			outlined: {
-				borderRadius: 0,
-				borderColor: ALEX_GREY
-			},
-			contained: {
-				backgroundColor: ALEX_GREY,
-				color: WHITE,
-				boxShadow: 0,
-				"&:hover": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&$focusVisible": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&:active": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&:disabled": {
-					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
-				}
+				borderRadius: 0
+				// borderColor: ALEX_GREY
 			}
+			// contained: {
+			// 	backgroundColor: ALEX_GREY,
+			// 	color: WHITE,
+			// 	boxShadow: 0,
+			// 	"&:hover": {
+			// 		backgroundColor: ALEX_GREY_LIGHT
+			// 	},
+			// 	"&$focusVisible": {
+			// 		backgroundColor: ALEX_GREY_LIGHT
+			// 	},
+			// 	"&:active": {
+			// 		backgroundColor: ALEX_GREY_LIGHT
+			// 	},
+			// 	"&:disabled": {
+			// 		backgroundColor: fade(WHITE, 0.12),
+			// 		color: fade(WHITE, 0.26)
+			// 	}
 		},
 		MuiFab: {
 			root: {
 				boxShadow: 0,
-				"&:disabled": {
-					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
-				},
+				// "&:disabled": {
+				// 	backgroundColor: fade(WHITE, 0.12),
+				// 	color: fade(WHITE, 0.26)
+				// },
 				"&:active": {
 					boxShadow: 0
 				},
@@ -264,7 +280,61 @@ const theme = createMuiTheme({
 	}
 })
 
-export const themeMUI = responsiveFontSizes(theme, {
+const defaultThemeWithOverrides = responsiveFontSizes(commonTheme, {
 	breakpoints: ["xs", "sm", "md", "lg", "xl"],
 	factor: 3
 })
+
+const darkTheme = createMuiTheme({
+	...defaultThemeWithOverrides,
+	palette: paletteDark,
+	type: "dark",
+	overrides: {
+		MuiButton: {
+			// root: {
+			// 	borderRadius: 0
+			// },
+			outlined: {
+				borderRadius: 0,
+				borderColor: ALEX_GREY
+			},
+			contained: {
+				backgroundColor: ALEX_GREY,
+				color: WHITE,
+				boxShadow: 0,
+				"&:hover": {
+					backgroundColor: ALEX_GREY_LIGHT
+				},
+				"&$focusVisible": {
+					backgroundColor: ALEX_GREY_LIGHT
+				},
+				"&:active": {
+					backgroundColor: ALEX_GREY_LIGHT
+				},
+				"&:disabled": {
+					backgroundColor: fade(WHITE, 0.12),
+					color: fade(WHITE, 0.26)
+				}
+			}
+		},
+		MuiFab: {
+			root: {
+				// boxShadow: 0,
+				"&:disabled": {
+					backgroundColor: fade(WHITE, 0.12),
+					color: fade(WHITE, 0.26)
+				}
+			}
+		}
+	}
+})
+
+console.log("defa", defaultThemeWithOverrides)
+
+const lightTheme = createMuiTheme({
+	...defaultThemeWithOverrides,
+	palette: paletteLight,
+	type: "light"
+})
+
+export const themeMUI = lightTheme
