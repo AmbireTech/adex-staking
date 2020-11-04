@@ -245,7 +245,7 @@ export default function PoolCard({
 						<Box mb={2}>
 							<ButtonWithLink
 								fullWidth
-								color="primary"
+								color="default"
 								to={statsPath}
 								startIcon={
 									<SvgIcon fontSize="inherit" color="inherit">
