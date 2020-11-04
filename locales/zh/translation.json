@@ -55,8 +55,15 @@
     "incentive": "激励",
     "fees": "费用",
     "noSelection": "未选择任何内容",
-    "currencyBalance": "{{currency}} BALANCE",
-    "goBack": "Go back"
+    "currencyBalance": "{{currency}} 余额",
+    "goBack": "返回",
+    "validatorStats": "Validator stats",
+    "name": "Name",
+    "purpose": "Purpose",
+    "slashing": "Slashing",
+    "lockup": "Lockup",
+    "apyStability": "APY stability",
+    "poolStats": "Pool stats"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -81,7 +88,10 @@
     "tomRewardPolicy": "\"Validator Tom\"池将按比例将手续费收入分配给全体质押者。手续费收入将是总交易量的7%，您可以在Explorer上进行跟踪。到2020年底，我们将额外发放700万ADX作为奖励。",
     "tomSlashPolicy": "禁止削减.",
     "unbondPeriodDay": "{{count}} 天",
-    "unbondPeriodDay_plural": "{{count}} 天"
+    "unbondPeriodDay_plural": "{{count}} 天",
+    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
+    "tomApyStability": "Flexible",
+    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
   },
   "email": {
     "subscribe": "邮件订阅更多AdEx<strong>独家内容</strong>",
@@ -158,7 +168,7 @@
     "noSignerProvided": "未提供签名者",
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
-    "nothingToStake": "Nothing to stake",
+    "nothingToStake": "无质押金",
     "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
@@ -194,8 +204,8 @@
     "adxToUpgrade": "ADX通证升级"
   },
   "popups": {
-    "congratulations": "Congratulations!",
-    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
+    "congratulations": "恭喜",
+    "proudOwnerOfADX": "现在您是全新的ADX通证所有者了，您可以立即质押获取奖励。"
   },
   "rewards": {
     "noRewards": "无奖励",
@@ -215,9 +225,28 @@
     "version": "v{{version}}"
   },
   "relayerResErrors": {
-    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
-    "pendingTransactions": "Must not have a pending transactions",
-    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
-    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+    "underMinBalance": "无转账费地址至少需要有 {{amount}} {{currency}} ",
+    "pendingTransactions": "不得有未决交易",
+    "transactionsHoursRateLimit":"过去{{count}} 小时内不得提交交易",
+    "transactionsHoursRateLimit_plural": "过去{{count}} 小时内不得提交交易"
+  },
+  "stats": {
+    "totalCampaigns": "Total campaigns",
+    "uniqueUnits": "Unique ad units",
+    "uniquePublishers": "Unique publishers",
+    "uniqueAdvertisers": "Unique advertisers",
+    "totalDeposits": "Total deposits",
+    "totalPayouts": "Total payouts",
+    "dailyPayoutsData": "Daily payouts",
+    "dailyPayoutsVolume": "Daily payouts",
+    "yearlyTransactionsData": "Yearly impressions (transactions)",
+    "yearlyTransactions": "Yearly impressions (transactions)",
+    "dailyTransactionsData": "Daily impressions",
+    "dailyTransactions": "Daily impressions",
+    "monthlyTransactionsData": "Monthly impressions",
+    "monthlyTransactions": "Monthly impressions",
+    "lockupOnChain": "Locked up on chain",
+    "labelPayout": "Payouts",
+    "labelTransactions": "Impressions (Transactions)"
   }
 }
