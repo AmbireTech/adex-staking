@@ -30,10 +30,10 @@ const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 }))
 
 const chartStatsKeys = [
-	"yearlyTransactionsData",
-	"dailyPayoutsData",
 	"dailyTransactionsData",
-	"monthlyTransactionsData"
+	"monthlyTransactionsData",
+	"yearlyTransactionsData",
+	"dailyPayoutsData"
 ]
 
 const useStyles = makeStyles(theme => {
@@ -139,7 +139,7 @@ export default function Stats() {
 	const { t } = useTranslation()
 	const query = useQuery()
 
-	const [chartDataKey, setChartDataKey] = useState("yearlyTransactionsData")
+	const [chartDataKey, setChartDataKey] = useState("dailyTransactionsData")
 	const [chartData, setChartData] = useState({})
 
 	const { loaded, poolId, setPoolId, pool, setPool, stats } = useContext(
@@ -252,30 +252,6 @@ export default function Stats() {
 			</Box>
 			<Box mt={2} display="flex" flexDirection="row" flexWrap="wrap">
 				<ValidatorStatsCard
-					label={t("stats.yearlyTransactions")}
-					value={
-						stats.yearlyTransactions
-							? formatNumberPretty(stats.yearlyTransactions)
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"yearlyTransactionsData"}
-					setKey={setChartDataKey}
-				/>
-				<ValidatorStatsCard
-					label={t("stats.dailyPayoutsVolume")}
-					value={
-						stats.dailyPayoutsVolume
-							? formatADXPretty(stats.dailyPayoutsVolume) + " DAI"
-							: "-"
-					}
-					loaded={loaded}
-					currentKey={chartDataKey}
-					chartKey={"dailyPayoutsData"}
-					setKey={setChartDataKey}
-				/>
-				<ValidatorStatsCard
 					label={t("stats.dailyTransactions")}
 					value={
 						stats.dailyTransactions
@@ -297,6 +273,30 @@ export default function Stats() {
 					loaded={loaded}
 					currentKey={chartDataKey}
 					chartKey={"monthlyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.yearlyTransactions")}
+					value={
+						stats.yearlyTransactions
+							? formatNumberPretty(stats.yearlyTransactions)
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"yearlyTransactionsData"}
+					setKey={setChartDataKey}
+				/>
+				<ValidatorStatsCard
+					label={t("stats.dailyPayoutsVolume")}
+					value={
+						stats.dailyPayoutsVolume
+							? formatADXPretty(stats.dailyPayoutsVolume) + " DAI"
+							: "-"
+					}
+					loaded={loaded}
+					currentKey={chartDataKey}
+					chartKey={"dailyPayoutsData"}
 					setKey={setChartDataKey}
 				/>
 
