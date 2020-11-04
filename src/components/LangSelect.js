@@ -34,7 +34,7 @@ export default function LangSelect() {
 				aria-haspopup="true"
 				onClick={handleClick}
 			>
-				{locales[language].label || ""}
+				{(locales[language] || {}).label || "English"}
 			</Button>
 			<Menu
 				id="lang-select-menu"

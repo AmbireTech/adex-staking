@@ -4,7 +4,6 @@ import { SECONDARY, BACKGROUND_SPECIAL } from "../themeMUi"
 import { Box, Typography, CircularProgress } from "@material-ui/core"
 import { hexToRgbaColorString } from "../helpers/colors"
 import { useWindowSize } from "../hooks/windowSize"
-import { useTranslation } from "react-i18next"
 import { formatNumberPretty } from "../helpers/formatting"
 
 const commonDsProps = {
@@ -42,7 +41,6 @@ export const StatsChart = ({
 		Math.max(Math.floor((windowSize.height || 0) / 2.2), 240),
 		333
 	)
-	const { t } = useTranslation()
 
 	const chartData = {
 		labels: dataSynced ? data.labels : defaultLabels,
