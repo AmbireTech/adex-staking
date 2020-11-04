@@ -35,8 +35,6 @@ import { useTranslation, Trans } from "react-i18next"
 
 const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
-console.log(MIN_GASLESS_RE_STAKE_REWARDS.toString())
-
 const useStyles = makeStyles(theme => {
 	return {
 		overlay: {

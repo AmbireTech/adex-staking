@@ -147,7 +147,9 @@ export default function Stats() {
 	)
 
 	useEffect(() => {
-		setChartData(stats[chartDataKey] || {})
+		// NOTE: if not deep copy there is some s**t with the chart
+		// - cache maybe and it mixes up everything
+		setChartData(JSON.parse(JSON.stringify({ ...(stats[chartDataKey] || {}) })))
 	}, [chartDataKey, stats])
 
 	useEffect(() => {
