@@ -55,8 +55,8 @@
     "incentive": "激励",
     "fees": "费用",
     "noSelection": "未选择任何内容",
-    "currencyBalance": "{{currency}} BALANCE",
-    "goBack": "Go back",
+    "currencyBalance": "{{currency}} 余额",
+    "goBack": "返回",
     "validatorStats": "Validator stats",
     "name": "Name",
     "purpose": "Purpose",
@@ -168,7 +168,7 @@
     "noSignerProvided": "未提供签名者",
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
-    "nothingToStake": "Nothing to stake",
+    "nothingToStake": "无质押金",
     "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
   },
   "messages": {
@@ -204,8 +204,8 @@
     "adxToUpgrade": "ADX通证升级"
   },
   "popups": {
-    "congratulations": "Congratulations!",
-    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
+    "congratulations": "恭喜",
+    "proudOwnerOfADX": "现在您是全新的ADX通证所有者了，您可以立即质押获取奖励。"
   },
   "rewards": {
     "noRewards": "无奖励",
@@ -225,10 +225,10 @@
     "version": "v{{version}}"
   },
   "relayerResErrors": {
-    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
-    "pendingTransactions": "Must not have a pending transactions",
-    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
-    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+    "underMinBalance": "无转账费地址至少需要有 {{amount}} {{currency}} ",
+    "pendingTransactions": "不得有未决交易",
+    "transactionsHoursRateLimit":"过去{{count}} 小时内不得提交交易",
+    "transactionsHoursRateLimit_plural": "过去{{count}} 小时内不得提交交易"
   },
   "stats": {
     "totalCampaigns": "Total campaigns",

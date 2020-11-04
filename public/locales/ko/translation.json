@@ -224,10 +224,10 @@
     "version": "v{{version}}"
   },
   "relayerResErrors": {
-    "underMinBalance": "Needs to have at least {{amount}} {{currency}} on the gasless address",
-    "pendingTransactions": "Must not have a pending transactions",
-    "transactionsHoursRateLimit": "Must not have submitted transactions in past {{count}} hour",
-    "transactionsHoursRateLimit_plural": "Must not have submitted transactions in past {{count}} hours"
+    "underMinBalance": " 가스없는 주소에 {{amount}} {{currency}} 이상을 보유하고 있어야 합니다",
+    "pendingTransactions": "보류중인 트랜잭션이 없어야 합니다.",
+    "transactionsHoursRateLimit": "지난 {{count}} 시간 동안 거래를 제출하지 않았어야 합니다.",
+    "transactionsHoursRateLimit_plural": "지난 {{count}} 시간 동안 거래를 제출하지 않았어야 합니다."
   },
   "stats": {
     "totalCampaigns": "Total campaigns",
