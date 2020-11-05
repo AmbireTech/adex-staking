@@ -71,8 +71,8 @@ const paletteLight = {
 		default: BACKGROUND_DEFAULT_LIGHT,
 		paper: PAPER_LIGHT,
 		darkerPaper: DARKER_PAPER_LIGHT,
-		special: WHITE,
-		specialSecondary: WHITE,
+		special: SPECIAL_CONTRAST,
+		specialSecondary: BLACK,
 		active: fade(TEXT_MAIN, 0.42),
 		contrast: TEXT_MAIN,
 		contrastText: WHITE
