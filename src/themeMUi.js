@@ -62,16 +62,17 @@ const paletteLight = {
 	special: { main: SPECIAL_CONTRAST, contrastText: WHITE },
 	text: {
 		main: TEXT_MAIN_LIGHT,
-		primary: fade(PRIMARY, 0.9),
-		secondary: fade(PRIMARY, 0.69),
-		disabled: fade(PRIMARY, 0.42),
-		hint: fade(PRIMARY, 0.13)
+		primary: fade(BLACK, 0.9),
+		secondary: fade(BLACK, 0.69),
+		disabled: fade(BLACK, 0.42),
+		hint: fade(BLACK, 0.13)
 	},
 	background: {
 		paper: PAPER_LIGHT,
 		darkerPaper: DARKER_PAPER_LIGHT,
 		special: WHITE,
-		specialSecondary: WHITE
+		specialSecondary: WHITE,
+		active: fade(PRIMARY, 0.3) // "#cecaff"
 	}
 }
 
@@ -92,7 +93,8 @@ const paletteDark = {
 		paper: PAPER,
 		default: BLACK,
 		special: SPECIAL_CONTRAST,
-		specialSecondary: BLACK
+		specialSecondary: BLACK,
+		active: PRIMARY
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
@@ -134,26 +136,27 @@ const commonTheme = createMuiTheme({
 				borderRadius: 0
 			},
 			outlined: {
-				borderRadius: 0
-				// borderColor: ALEX_GREY
+				borderRadius: 0,
+				borderColor: ALEX_GREY
+			},
+			contained: {
+				backgroundColor: ALEX_GREY,
+				color: WHITE,
+				boxShadow: 0,
+				"&:hover": {
+					backgroundColor: ALEX_GREY_LIGHT
+				},
+				"&$focusVisible": {
+					backgroundColor: ALEX_GREY_LIGHT
+				},
+				"&:active": {
+					backgroundColor: ALEX_GREY_LIGHT
+				}
+				// "&:disabled": {
+				// 	backgroundColor: fade(WHITE, 0.12),
+				// 	color: fade(WHITE, 0.26)
+				// }
 			}
-			// contained: {
-			// 	backgroundColor: ALEX_GREY,
-			// 	color: WHITE,
-			// 	boxShadow: 0,
-			// 	"&:hover": {
-			// 		backgroundColor: ALEX_GREY_LIGHT
-			// 	},
-			// 	"&$focusVisible": {
-			// 		backgroundColor: ALEX_GREY_LIGHT
-			// 	},
-			// 	"&:active": {
-			// 		backgroundColor: ALEX_GREY_LIGHT
-			// 	},
-			// 	"&:disabled": {
-			// 		backgroundColor: fade(WHITE, 0.12),
-			// 		color: fade(WHITE, 0.26)
-			// 	}
 		},
 		MuiFab: {
 			root: {
@@ -285,48 +288,8 @@ const darkTheme = createMuiTheme({
 	...defaultThemeWithOverrides,
 	palette: paletteDark,
 	shadows: darkShadows,
-	type: "dark",
-	overrides: {
-		MuiButton: {
-			// root: {
-			// 	borderRadius: 0
-			// },
-			outlined: {
-				borderRadius: 0,
-				borderColor: ALEX_GREY
-			},
-			contained: {
-				backgroundColor: ALEX_GREY,
-				color: WHITE,
-				boxShadow: 0,
-				"&:hover": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&$focusVisible": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&:active": {
-					backgroundColor: ALEX_GREY_LIGHT
-				},
-				"&:disabled": {
-					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
-				}
-			}
-		},
-		MuiFab: {
-			root: {
-				// boxShadow: 0,
-				"&:disabled": {
-					backgroundColor: fade(WHITE, 0.12),
-					color: fade(WHITE, 0.26)
-				}
-			}
-		}
-	}
+	type: "dark"
 })
-
-console.log("defa", defaultThemeWithOverrides)
 
 const lightTheme = createMuiTheme({
 	...defaultThemeWithOverrides,
