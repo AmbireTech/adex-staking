@@ -1,6 +1,15 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { darkTheme, lightTheme } from "./themeMUi"
+import {
+	loadFromLocalStorage,
+	saveToLocalStorage
+} from "./helpers/localStorage"
+
+const THEMES = {
+	light: lightTheme,
+	dark: darkTheme
+}
 
 export const MultiThemeContext = React.createContext()
 
@@ -8,13 +17,21 @@ const MultiThemeProvider = ({ children }) => {
 	const [themeType, setThemeType] = useState("dark")
 	const [theme, setTheme] = useState(darkTheme)
 
+	useEffect(() => {
+		const lastTheme = loadFromLocalStorage("themeType") || "dark"
+		setThemeType(lastTheme)
+		setTheme(THEMES[lastTheme])
+	}, [])
+
 	const switchTheme = () => {
 		if (themeType === "light") {
+			saveToLocalStorage("dark", "themeType")
 			setThemeType("dark")
-			setTheme(darkTheme)
+			setTheme(THEMES["dark"])
 		} else {
+			saveToLocalStorage("light", "themeType")
 			setThemeType("light")
-			setTheme(lightTheme)
+			setTheme(THEMES["light"])
 		}
 	}
 
