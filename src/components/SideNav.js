@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
 	List,
 	ListItem,
@@ -11,6 +11,7 @@ import {
 import clsx from "clsx"
 import Anchor from "./Anchor"
 import logo from "./../resources/staking-logo.svg"
+import logoLight from "./../resources/logo-light-theme.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
@@ -27,6 +28,7 @@ import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { useTranslation } from "react-i18next"
 import { fade } from "@material-ui/core/styles/colorManipulator"
+import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -129,6 +131,7 @@ function SideNav({
 	onRestake,
 	setConnectWallet
 }) {
+	const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()
@@ -152,7 +155,11 @@ function SideNav({
 								flexDirection="row"
 								alignItems="flex-start"
 							>
-								<img width="200px" src={logo} alt="adex-staking-logo"></img>
+								<img
+									width="200px"
+									src={themeType === "dark" ? logo : logoLight}
+									alt="adex-staking-logo"
+								></img>
 							</Box>
 						</ListItem>
 
