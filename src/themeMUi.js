@@ -24,9 +24,9 @@ export const BACKGROUND_DEFAULT = "#131313"
 //LIGHT THEME
 export const TEXT_SECONDARY_LIGHT = "#7f74b5"
 export const TEXT_MAIN_LIGHT = "#847CAA"
-export const PAPER_LIGHT = WHITE
-export const DARKER_PAPER_LIGHT = "#F2F1F8"
-export const BACKGROUND_DEFAULT_LIGHT = ALEX_GREY_LIGHT
+export const PAPER_LIGHT = "#f1f1f1"
+export const DARKER_PAPER_LIGHT = "#f2f0fc"
+export const BACKGROUND_DEFAULT_LIGHT = WHITE
 
 const paletteCommon = {
 	primary: { main: PRIMARY, contrastText: WHITE },
@@ -68,11 +68,14 @@ const paletteLight = {
 		hint: fade(BLACK, 0.13)
 	},
 	background: {
+		default: BACKGROUND_DEFAULT_LIGHT,
 		paper: PAPER_LIGHT,
 		darkerPaper: DARKER_PAPER_LIGHT,
 		special: WHITE,
 		specialSecondary: WHITE,
-		active: fade(PRIMARY, 0.3) // "#cecaff"
+		active: fade(TEXT_MAIN, 0.42),
+		contrast: TEXT_MAIN,
+		contrastText: WHITE
 	}
 }
 
@@ -94,7 +97,9 @@ const paletteDark = {
 		default: BLACK,
 		special: SPECIAL_CONTRAST,
 		specialSecondary: BLACK,
-		active: PRIMARY
+		active: PRIMARY,
+		contrast: WHITE,
+		contrastText: BLACK
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
