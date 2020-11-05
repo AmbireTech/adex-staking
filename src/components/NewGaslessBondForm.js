@@ -11,7 +11,6 @@ import {
 	Checkbox,
 	Box
 } from "@material-ui/core"
-import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
 import StatsCard from "./StatsCard"
 import { useTranslation, Trans } from "react-i18next"
@@ -87,7 +86,7 @@ export default function NewGaslessBondForm({
 				</Grid>
 
 				{!!activePool && (
-					<Grid item xs={12}>
+					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolRewardPolicy")}:
@@ -96,7 +95,7 @@ export default function NewGaslessBondForm({
 								{t(activePool.rewardPolicy)}
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolSlashingPolicy")}
 							</Typography>

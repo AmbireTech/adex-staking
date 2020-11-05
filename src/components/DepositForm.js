@@ -26,7 +26,6 @@ import {
 	Checkbox,
 	Box
 } from "@material-ui/core"
-import { themeMUI } from "../themeMUi"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 
@@ -187,7 +186,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 					</FormControl>
 				</Grid>
 				{activePool ? (
-					<Grid item xs={12}>
+					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolRewardPolicy")}:
@@ -196,7 +195,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								{t(activePool.rewardPolicy)}
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolSlashingPolicy")}:
 							</Typography>
@@ -204,7 +203,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 								{t(activePool.slashPolicy)}
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
 							<Typography variant="body1">
 								<Trans
