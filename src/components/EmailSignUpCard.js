@@ -98,7 +98,7 @@ export default function EmailSignUp(props) {
 
 	return (
 		<Box
-			bgcolor={"background.paper"}
+			bgcolor={"background.darkerPaper"}
 			p={3}
 			my={3}
 			mx={1.5}
@@ -120,7 +120,7 @@ export default function EmailSignUp(props) {
 			{mauticState.success ? (
 				<CardRow
 					mt={3}
-					color="white"
+					color="text.main"
 					fontWeight={"fontWeightBold"}
 					fontSize={16}
 					text={mauticState.successMessage}
@@ -132,7 +132,7 @@ export default function EmailSignUp(props) {
 				<>
 					<CardRow
 						mt={3}
-						color="white"
+						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={16}
 						text={
@@ -142,7 +142,7 @@ export default function EmailSignUp(props) {
 									strong: (
 										<Box
 											display="inline"
-											color="warning.main"
+											color="special.main"
 											fontWeight={"fontWeightBold"}
 											fontSize="h5.fontSize"
 										></Box>

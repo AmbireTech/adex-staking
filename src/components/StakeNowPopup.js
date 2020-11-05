@@ -168,7 +168,7 @@ const StakeNowPopup = () => {
 									/>
 
 									<CardRow
-										color="warning.main"
+										color="special.main"
 										fontWeight={"fontWeightBold"}
 										fontSize={27}
 										text={
