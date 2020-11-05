@@ -5,6 +5,7 @@ import { MenuSharp as MenuIcon } from "@material-ui/icons"
 import { Help } from "./HelperMenu"
 import { Wallet } from "./WalletMenu"
 import LangSelect from "./LangSelect"
+import ThemeSwitch from "./ThemeSwitch"
 import { styles } from "./rootStyles"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -39,6 +40,9 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 				>
 					<Box mr={2}>
 						<LangSelect />
+					</Box>
+					<Box mr={2}>
+						<ThemeSwitch />
 					</Box>
 					<Box mr={2}>
 						<Help />
