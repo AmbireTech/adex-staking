@@ -284,18 +284,16 @@ const defaultThemeWithOverrides = responsiveFontSizes(commonTheme, {
 	factor: 3
 })
 
-const darkTheme = createMuiTheme({
+export const darkTheme = createMuiTheme({
 	...defaultThemeWithOverrides,
 	palette: paletteDark,
 	shadows: darkShadows,
 	type: "dark"
 })
 
-const lightTheme = createMuiTheme({
+export const lightTheme = createMuiTheme({
 	...defaultThemeWithOverrides,
 	palette: paletteLight,
 	shadows: lightShadows,
 	type: "light"
 })
-
-export const themeMUI = darkTheme
