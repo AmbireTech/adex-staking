@@ -10,7 +10,7 @@ import {
 	TextField
 } from "@material-ui/core"
 import { CardRow } from "./cardCommon"
-import { ExternalAnchor } from "./Anchor"
+// import { ExternalAnchor } from "./Anchor"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
 import { validateEmail } from "./../helpers/validation"
 import {
@@ -59,11 +59,11 @@ export default function EmailSignUp(props) {
 	const [mauticState, setMauticState] = useState({})
 	const [waiting, setWaiting] = useState(false)
 	const [gdpr, setGDPR] = useState(false)
-	const [tos, setTos] = useState(false)
+	// const [tos, setTos] = useState(false)
 	const [errors, setErrors] = useState({
 		email: false,
-		gdpr: false,
-		tos: false
+		gdpr: false
+		// tos: false
 	})
 	const classes = useStyles({ errors })
 
@@ -74,14 +74,18 @@ export default function EmailSignUp(props) {
 	const handleValidationErrors = () => {
 		setErrors({
 			email: !validateEmail(email),
-			gdpr: !gdpr,
-			tos: !tos
+			gdpr: !gdpr
+			// tos: !tos
 		})
 	}
 
 	const handleSubmit = async () => {
 		handleValidationErrors()
-		if (validateEmail(email) && gdpr && tos) {
+		if (
+			validateEmail(email) &&
+			gdpr
+			// && tos
+		) {
 			setWaiting(true)
 			try {
 				const HTMLResponse = await submitFormToMautic({ ...props, email })
@@ -98,7 +102,7 @@ export default function EmailSignUp(props) {
 
 	return (
 		<Box
-			bgcolor={"background.paper"}
+			bgcolor={"background.darkerPaper"}
 			p={3}
 			my={3}
 			mx={1.5}
@@ -120,7 +124,7 @@ export default function EmailSignUp(props) {
 			{mauticState.success ? (
 				<CardRow
 					mt={3}
-					color="white"
+					color="text.main"
 					fontWeight={"fontWeightBold"}
 					fontSize={16}
 					text={mauticState.successMessage}
@@ -132,7 +136,7 @@ export default function EmailSignUp(props) {
 				<>
 					<CardRow
 						mt={3}
-						color="white"
+						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={16}
 						text={
@@ -142,7 +146,7 @@ export default function EmailSignUp(props) {
 									strong: (
 										<Box
 											display="inline"
-											color="warning.main"
+											color="special.main"
 											fontWeight={"fontWeightBold"}
 											fontSize="h5.fontSize"
 										></Box>
@@ -183,36 +187,36 @@ export default function EmailSignUp(props) {
 							</FormGroup>
 						</FormControl>
 					</Box>
-					<Box mt={1} width={1}>
-						<FormControl error={errors.tos}>
-							<FormGroup>
-								<FormControlLabel
-									id={"email-signup-tos-checkbox"}
-									onChange={e => setTos(e.target.checked)}
-									name="tos"
-									classes={{ label: classes.tosCheckbox }}
-									control={<Checkbox size="small" name="checkedA" />}
-									label={
-										<Box>
-											<Trans
-												i18nKey="email.promotionTerms"
-												components={{
-													externalLink: (
-														<ExternalAnchor
-															color="secondary"
-															id={"email-signup-tos-check"}
-															target="_blank"
-															href={`https://www.adex.network/blog/subscribe-and-win-5000-adx/`}
-														/>
-													)
-												}}
-											/>
-										</Box>
-									}
-								/>
-							</FormGroup>
-						</FormControl>
-					</Box>
+					{/* <Box mt={1} width={1}>
+							<FormControl error={errors.tos}>
+								<FormGroup>
+									<FormControlLabel
+										id={"email-signup-tos-checkbox"}
+										onChange={e => setTos(e.target.checked)}
+										name="tos"
+										classes={{ label: classes.tosCheckbox }}
+										control={<Checkbox size="small" name="checkedA" />}
+										label={
+											<Box>
+												<Trans
+													i18nKey="email.promotionTerms"
+													components={{
+														externalLink: (
+															<ExternalAnchor
+																color="secondary"
+																id={"email-signup-tos-check"}
+																target="_blank"
+																href={`https://www.adex.network/blog/subscribe-and-win-5000-adx/`}
+															/>
+														)
+													}}
+												/>
+											</Box>
+										}
+									/>
+								</FormGroup>
+							</FormControl>
+						</Box> */}
 					<Box width={1} mt={2} display="flex" justifyContent="center">
 						<Button
 							type="submit"

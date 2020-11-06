@@ -14,19 +14,25 @@ export const styles = theme => {
 			height: "100vh",
 			width: "100vw",
 			backgroundColor: theme.palette.background.default,
-			backgroundImage: `radial-gradient(
+			backgroundImage:
+				theme.type === "dark"
+					? `radial-gradient(
 				circle,
 				${fade(theme.palette.background.special, 0.333)} 0%,
-				${fade(theme.palette.common.black, 0.69)} 146%
-			)`,
+				${fade(theme.palette.background.specialSecondary, 0.69)} 146%
+			)`
+					: 0,
 			backgroundRepeat: "no-repeat",
 			[theme.breakpoints.up("md")]: {
 				backgroundPositionX: drawerWidth / 2,
-				backgroundImage: `radial-gradient(
+				backgroundImage:
+					theme.type === "dark"
+						? `radial-gradient(
 					circle,
 					${fade(theme.palette.background.special, 0.333)} 0%,
-					${fade(theme.palette.common.black, 0.69)} 93%
+					${fade(theme.palette.background.specialSecondary, 0.69)} 93%
 				)`
+						: 0
 			}
 		},
 		toolbar: {

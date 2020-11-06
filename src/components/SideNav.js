@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
 	List,
 	ListItem,
@@ -11,6 +11,7 @@ import {
 import clsx from "clsx"
 import Anchor from "./Anchor"
 import logo from "./../resources/staking-logo.svg"
+import logoLight from "./../resources/logo-light-theme.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
@@ -26,17 +27,16 @@ import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { useTranslation } from "react-i18next"
+import { fade } from "@material-ui/core/styles/colorManipulator"
+import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
 
 const useStyles = makeStyles(theme => {
-	const activeColor = theme.palette.primary.contrastText
-	const activeBgColor = theme.palette.primary.main
+	const activeColor = theme.palette.text.primary
+	const activeBgColor = theme.palette.background.active
 
 	return {
-		navigation: {
-			backgroundColor: theme.palette.background.paper
-		},
 		sntPadding: {
 			paddingTop: 0
 		},
@@ -67,6 +67,12 @@ const useStyles = makeStyles(theme => {
 			borderTopColor: theme.palette.divider,
 			borderTopStyle: "solid"
 		},
+		listItem: {
+			color: theme.palette.text.secondary,
+			"& .MuiListItemIcon-root": {
+				color: fade(theme.palette.text.main, 0.69)
+			}
+		},
 		active: {
 			color: activeColor,
 			backgroundColor: activeBgColor,
@@ -81,7 +87,7 @@ const useStyles = makeStyles(theme => {
 				}
 			},
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.common.white
+				color: theme.palette.text.main
 			}
 		},
 		adxLink: {
@@ -125,6 +131,7 @@ function SideNav({
 	onRestake,
 	setConnectWallet
 }) {
+	const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()
@@ -148,7 +155,11 @@ function SideNav({
 								flexDirection="row"
 								alignItems="flex-start"
 							>
-								<img width="200px" src={logo} alt="adex-staking-logo"></img>
+								<img
+									width="200px"
+									src={themeType === "dark" ? logo : logoLight}
+									alt="adex-staking-logo"
+								></img>
 							</Box>
 						</ListItem>
 
@@ -203,7 +214,9 @@ function SideNav({
 							id="side-nav-link-pools"
 							button
 							to={{ pathname: "/" }}
-							className={clsx({ [classes.active]: path === "/" })}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/"
+							})}
 						>
 							<ListItemIcon color="inherit">
 								<DashboardIcon />
@@ -215,7 +228,9 @@ function SideNav({
 							id="side-nav-link-stakings"
 							button
 							to={{ pathname: "/stakings" }}
-							className={clsx({ [classes.active]: path === "/stakings" })}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/stakings"
+							})}
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
@@ -228,7 +243,9 @@ function SideNav({
 							id="side-nav-link-rewards"
 							button
 							to={{ pathname: "/rewards" }}
-							className={clsx({ [classes.active]: path === "/rewards" })}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/rewards"
+							})}
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
@@ -241,7 +258,9 @@ function SideNav({
 							id="side-nav-link-stats"
 							button
 							to={{ pathname: "/stats" }}
-							className={clsx({ [classes.active]: path === "/stats" })}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/stats"
+							})}
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
@@ -254,7 +273,9 @@ function SideNav({
 							id="side-nav-link-gasless"
 							button
 							to={{ pathname: "/gasless" }}
-							className={clsx({ [classes.active]: path === "/gasless" })}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/gasless"
+							})}
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
@@ -269,6 +290,7 @@ function SideNav({
 					<RRListItem
 						id="side-nav-link-staking-landing-page"
 						button
+						className={clsx(classes.listItem)}
 						onClick={() =>
 							window.open(
 								"https://www.adex.network/staking/",

@@ -24,8 +24,8 @@ const useStyles = makeStyles(theme => {
 			width: 69,
 			height: 69,
 			top: -theme.spacing(3),
-			backgroundColor: theme.palette.common.white,
-			color: theme.palette.background.default,
+			backgroundColor: theme.palette.background.contrast,
+			color: theme.palette.background.contrastText,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
@@ -81,7 +81,7 @@ export default function PoolCard({
 
 	return (
 		<Box
-			bgcolor={"background.paper"}
+			bgcolor={"background.darkerPaper"}
 			p={3}
 			my={3}
 			mx={1.5}
@@ -123,7 +123,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="warning.main"
+						color="special.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={20}
 						text={totalStakedADX}
@@ -133,7 +133,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="text.main"
+						color="text.primary"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
 						text={totalStakedUSD}
@@ -153,7 +153,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="warning.main"
+						color="special.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={20}
 						text={currentAPY}
@@ -205,7 +205,7 @@ export default function PoolCard({
 
 							{data.importantValue && (
 								<CardRow
-									color="warning.main"
+									color="special.main"
 									fontWeight={"fontWeightBold"}
 									fontSize={20}
 									text={data.importantValue}

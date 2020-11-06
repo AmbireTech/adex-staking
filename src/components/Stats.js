@@ -21,7 +21,9 @@ import { useTranslation } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { StatsChart } from "./StatsChart"
 import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
-import { BACKGROUND_SPECIAL } from "../themeMUi"
+import { SPECIAL_CONTRAST } from "../themeMUi"
+
+const ACTIVE_BORDER_WIDTH = 3
 
 const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	value: x.id,
@@ -43,7 +45,8 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: theme.palette.background.paper
 		},
 		active: {
-			backgroundColor: theme.palette.background.darkerPaper
+			backgroundColor: theme.palette.background.darkerPaper,
+			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.background.special}`
 		},
 		interactive: {
 			cursor: "pointer"
@@ -203,6 +206,8 @@ export default function Stats() {
 							p={1}
 							bgcolor="background.darkerPaper"
 							boxShadow={25}
+							border={ACTIVE_BORDER_WIDTH}
+							borderColor={"background.special"}
 						>
 							<StatsChart
 								options={{
@@ -214,7 +219,7 @@ export default function Stats() {
 								dataSynced={loaded}
 								xLabel={t(`stats.${chartDataKey}`)}
 								yLabel={t(chartData.valueLabel)}
-								yColor={BACKGROUND_SPECIAL}
+								yColor={SPECIAL_CONTRAST}
 								currency={chartData.currency}
 								xSelect={XSelect({
 									chartDataKey,

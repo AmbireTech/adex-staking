@@ -25,7 +25,6 @@ import {
 	Checkbox,
 	Box
 } from "@material-ui/core"
-import { themeMUI } from "../themeMUi"
 import { ExternalAnchor } from "./Anchor"
 import { getPoolStatsByPoolId } from "../actions"
 import { useTranslation, Trans } from "react-i18next"
@@ -216,7 +215,7 @@ export default function NewBondForm({
 					</FormControl>
 				</Grid>
 				{!!activePool && (
-					<Grid item xs={12}>
+					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolRewardPolicy")}:
@@ -225,7 +224,7 @@ export default function NewBondForm({
 								{t(activePool.rewardPolicy)}
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolSlashingPolicy")}:
 							</Typography>
@@ -233,7 +232,7 @@ export default function NewBondForm({
 								{t(activePool.slashPolicy)}
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
 							<Typography variant="body1">
 								<Trans
@@ -252,7 +251,7 @@ export default function NewBondForm({
 								/>
 							</Typography>
 						</Grid>
-						<Grid item xs={12} style={{ marginTop: themeMUI.spacing(2) }}>
+						<Grid item xs={12}>
 							<Typography variant="body1">
 								<strong>
 									{t("messages.signAllTransactions", {

@@ -1,6 +1,6 @@
 import React from "react"
 import { Line } from "react-chartjs-2"
-import { SECONDARY, BACKGROUND_SPECIAL } from "../themeMUi"
+import { SECONDARY, SPECIAL_CONTRAST } from "../themeMUi"
 import { Box, Typography, CircularProgress } from "@material-ui/core"
 import { hexToRgbaColorString } from "../helpers/colors"
 import { useWindowSize } from "../hooks/windowSize"
@@ -164,7 +164,7 @@ export const StatsChart = ({
 					ticks: {
 						display: true,
 						beginAtZero: true,
-						fontColor: BACKGROUND_SPECIAL,
+						fontColor: SPECIAL_CONTRAST,
 						callback: label =>
 							formatNumberPretty(label) + (currency ? ` ${currency}` : "")
 					},
@@ -184,7 +184,7 @@ export const StatsChart = ({
 
 	return (
 		<Box width={1}>
-			<Box height={chartHeight} width={1} color={BACKGROUND_SPECIAL}>
+			<Box height={chartHeight} width={1} color={SPECIAL_CONTRAST}>
 				{dataSynced ? (
 					<Line height={chartHeight} data={chartData} options={linesOptions} />
 				) : (
