@@ -27,7 +27,7 @@ import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { useTranslation } from "react-i18next"
-import { fade } from "@material-ui/core/styles/colorManipulator"
+// import { fade } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => {
 		listItem: {
 			color: theme.palette.text.secondary,
 			"& .MuiListItemIcon-root": {
-				color: fade(theme.palette.text.main, 0.69)
+				color: theme.palette.text.secondary // fade(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
@@ -87,7 +87,7 @@ const useStyles = makeStyles(theme => {
 				}
 			},
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.main
+				color: activeColor //theme.palette.text.main
 			}
 		},
 		adxLink: {

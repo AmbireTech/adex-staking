@@ -102,7 +102,7 @@ export default function EmailSignUp(props) {
 
 	return (
 		<Box
-			bgcolor={"background.darkerPaper"}
+			bgcolor={"background.card"}
 			p={3}
 			my={3}
 			mx={1.5}
