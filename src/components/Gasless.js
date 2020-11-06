@@ -242,7 +242,7 @@ const Gasless = () => {
 									flexDirection="row"
 									alignItems="center"
 									justifyContent="flex-start"
-									bgcolor="background.paper"
+									bgcolor="background.darkerPaper"
 									color="text.main"
 									fontSize={23}
 									boxShadow={25}

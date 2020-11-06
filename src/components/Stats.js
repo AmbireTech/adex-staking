@@ -23,6 +23,8 @@ import { StatsChart } from "./StatsChart"
 import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
 import { SPECIAL_CONTRAST } from "../themeMUi"
 
+const ACTIVE_BORDER_WIDTH = 3
+
 const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
 	value: x.id,
 	label: x.label,
@@ -43,7 +45,8 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: theme.palette.background.paper
 		},
 		active: {
-			backgroundColor: theme.palette.background.darkerPaper
+			backgroundColor: theme.palette.background.darkerPaper,
+			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.text.main}`
 		},
 		interactive: {
 			cursor: "pointer"
@@ -54,7 +57,7 @@ const useStyles = makeStyles(theme => {
 			height: theme.spacing(3),
 			top: theme.spacing(1),
 			right: theme.spacing(1),
-			color: SPECIAL_CONTRAST
+			color: theme.palette.background.special
 		}
 	}
 })
@@ -203,6 +206,8 @@ export default function Stats() {
 							p={1}
 							bgcolor="background.darkerPaper"
 							boxShadow={25}
+							border={ACTIVE_BORDER_WIDTH}
+							borderColor={"text.main"}
 						>
 							<StatsChart
 								options={{
