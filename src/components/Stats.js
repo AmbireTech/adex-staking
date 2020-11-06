@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => {
 		},
 		active: {
 			backgroundColor: theme.palette.background.darkerPaper,
-			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.text.main}`
+			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.background.special}`
 		},
 		interactive: {
 			cursor: "pointer"
@@ -207,7 +207,7 @@ export default function Stats() {
 							bgcolor="background.darkerPaper"
 							boxShadow={25}
 							border={ACTIVE_BORDER_WIDTH}
-							borderColor={"text.main"}
+							borderColor={"background.special"}
 						>
 							<StatsChart
 								options={{
