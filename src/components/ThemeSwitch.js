@@ -10,7 +10,10 @@ export default function ThemeSwitch() {
 	const { themeType, switchTheme } = useContext(MultiThemeContext)
 
 	return (
-		<IconButton onClick={switchTheme}>
+		<IconButton
+			id={`theme-switch-go-to-${themeType === "dark" ? "light" : "dark"}`}
+			onClick={switchTheme}
+		>
 			{themeType === "dark" ? <LightIcon /> : <DarkIcon />}
 		</IconButton>
 	)
