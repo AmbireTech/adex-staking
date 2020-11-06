@@ -160,6 +160,7 @@ export default function Rewards() {
 
 	const onClaim = async () => {
 		setSelected({})
+		setTotalAmountsSelected({})
 		const actions = getWithdrawActionBySelectedRewardChannels(
 			selectedRewards,
 			chosenWalletType,
@@ -173,6 +174,7 @@ export default function Rewards() {
 
 	const onReStake = async () => {
 		setSelected({})
+		setTotalAmountsSelected({})
 		await wrapDoingTxns(
 			restake.bind(null, chosenWalletType, {
 				// NOTE: now only tom channels are valid for re-stake at the moment
