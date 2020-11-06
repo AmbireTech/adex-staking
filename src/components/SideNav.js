@@ -68,9 +68,9 @@ const useStyles = makeStyles(theme => {
 			borderTopStyle: "solid"
 		},
 		listItem: {
-			color: theme.palette.text.secondary,
+			color: theme.palette.text.primary,
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.secondary // fade(theme.palette.text.main, 0.69)
+				color: theme.palette.text.primary // fade(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
