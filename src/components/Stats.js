@@ -219,7 +219,7 @@ export default function Stats() {
 								dataSynced={loaded}
 								xLabel={t(`stats.${chartDataKey}`)}
 								yLabel={t(chartData.valueLabel)}
-								yColor={theme.palette.special.main}
+								yColor={theme.palette.background.special}
 								currency={chartData.currency}
 								xSelect={XSelect({
 									chartDataKey,
