@@ -509,9 +509,13 @@ export async function createNewBond(
 		await tokenWithSigner.approve(addr, MAX_UINT)
 	}
 
-	//if (!stats.identityDeployed && needed.gt(ZERO) && hasADXOnGasles) {
-	//	throw new Error("errors.cantDeployAndStakeMore")
-	//}
+	if (
+		!stats.identityDeployed &&
+		balanceOnIdentity.gt(ZERO) &&
+		needed.gt(ZERO)
+	) {
+		throw new Error("errors.cantDeployAndStakeMore")
+	}
 
 	let identityTxns = []
 	if (needed.gt(ZERO))
