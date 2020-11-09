@@ -22,7 +22,11 @@ import {
 	getUSDFormatted
 } from "../helpers/formatting"
 import AppContext from "../AppContext"
-import { DEPOSIT_POOLS, ZERO, UNBOND_DAYS } from "../helpers/constants"
+import {
+	// DEPOSIT_POOLS,
+	ZERO,
+	UNBOND_DAYS
+} from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -57,7 +61,10 @@ export default function Rewards() {
 		AppContext
 	)
 	const [rewards, setRewards] = useState([])
-	const { loyaltyPoolStats, tomPoolStats } = stats
+	const {
+		// loyaltyPoolStats,
+		tomPoolStats
+	} = stats
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
 	const [reStakeOpen, setReStakeOpen] = useState(false)
@@ -75,7 +82,9 @@ export default function Rewards() {
 		getDAIInUSD(totalOutstandingRewardsAmounts["DAI"] || ZERO)
 
 	const selectedRewards = rewards.filter(x => selected[x.id])
-	const loaded = loyaltyPoolStats.userDataLoaded && tomPoolStats.userDataLoaded
+	const loaded =
+		// loyaltyPoolStats.userDataLoaded &&
+		tomPoolStats.userDataLoaded
 
 	const disableActionsMsg = !chosenWalletType.name
 		? t("common.connectWallet")
@@ -99,22 +108,25 @@ export default function Rewards() {
 			userDataLoaded: tomUserDataLoaded
 		} = tomPoolStats
 
-		const {
-			currentAPY: loPoCurrentAPY,
-			rewardADX: loPoRewardADX,
-			userDataLoaded: loPoUserDataLoaded
-		} = loyaltyPoolStats
+		// const {
+		// 	currentAPY: loPoCurrentAPY,
+		// 	rewardADX: loPoRewardADX,
+		// 	userDataLoaded: loPoUserDataLoaded
+		// } = loyaltyPoolStats
 
-		if (tomUserDataLoaded && loPoUserDataLoaded) {
-			const loPoReward = {
-				id: "loyalty_pool",
-				name: t("rewards.loPoReward"),
-				amount: loPoRewardADX,
-				outstandingReward: loPoRewardADX,
-				currency: "ADX",
-				currentAPY: loPoCurrentAPY,
-				poolId: DEPOSIT_POOLS[0].id
-			}
+		if (
+			tomUserDataLoaded
+			// && loPoUserDataLoaded
+		) {
+			// const loPoReward = {
+			// 	id: "loyalty_pool",
+			// 	name: t("rewards.loPoReward"),
+			// 	amount: loPoRewardADX,
+			// 	outstandingReward: loPoRewardADX,
+			// 	currency: "ADX",
+			// 	currentAPY: loPoCurrentAPY,
+			// 	poolId: DEPOSIT_POOLS[0].id
+			// }
 
 			const rewards = tomRewardChannels.map(channel => {
 				const rewardData = {
@@ -142,11 +154,17 @@ export default function Rewards() {
 				return rewardData
 			})
 
-			setRewards([loPoReward, ...rewards])
+			setRewards([
+				// loPoReward,
+				...rewards
+			])
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loyaltyPoolStats, tomPoolStats])
+	}, [
+		// loyaltyPoolStats,
+		tomPoolStats
+	])
 
 	const onSelectChange = (id, value) => {
 		const newSelected = { ...selected }
