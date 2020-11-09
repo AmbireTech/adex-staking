@@ -24,8 +24,9 @@ const useStyles = makeStyles(theme => {
 			width: 69,
 			height: 69,
 			top: -theme.spacing(3),
-			backgroundColor: theme.palette.background.contrast,
-			color: theme.palette.background.contrastText,
+			backgroundColor: theme.palette.common.white,
+			color: theme.palette.common.black,
+			boxShadow: theme.type === "light" ? theme.shadows[25] : 0,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
@@ -81,7 +82,7 @@ export default function PoolCard({
 
 	return (
 		<Box
-			bgcolor={"background.darkerPaper"}
+			bgcolor={"background.card"}
 			p={3}
 			my={3}
 			mx={1.5}

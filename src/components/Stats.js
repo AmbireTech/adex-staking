@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles, useTheme } from "@material-ui/core/styles"
 import {
 	Box,
 	MenuItem,
@@ -21,7 +21,6 @@ import { useTranslation } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { StatsChart } from "./StatsChart"
 import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
-import { SPECIAL_CONTRAST } from "../themeMUi"
 
 const ACTIVE_BORDER_WIDTH = 3
 
@@ -139,6 +138,7 @@ const getDefaultLabels = (labels = []) => [
 ]
 
 export default function Stats() {
+	const theme = useTheme()
 	const { t } = useTranslation()
 	const query = useQuery()
 
@@ -219,7 +219,7 @@ export default function Stats() {
 								dataSynced={loaded}
 								xLabel={t(`stats.${chartDataKey}`)}
 								yLabel={t(chartData.valueLabel)}
-								yColor={SPECIAL_CONTRAST}
+								yColor={theme.palette.background.special}
 								currency={chartData.currency}
 								xSelect={XSelect({
 									chartDataKey,

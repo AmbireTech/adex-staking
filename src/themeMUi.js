@@ -12,7 +12,6 @@ export const WARNING = "#FEB006"
 export const SUCCESS = "#14dc9c"
 export const INFO = "#1b75bc"
 export const ERROR = "#ff6969"
-export const SPECIAL_CONTRAST = "#6942ff"
 
 // DARK THEME
 export const TEXT_MAIN = "#7B7597"
@@ -20,13 +19,15 @@ export const TEXT_DEFAULT = "#e2dff5"
 export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
 export const BACKGROUND_DEFAULT = "#131313"
+export const SPECIAL_CONTRAST = "#6942ff"
 
 //LIGHT THEME
 export const TEXT_SECONDARY_LIGHT = "#7f74b5"
-export const TEXT_MAIN_LIGHT = "#847CAA"
-export const PAPER_LIGHT = "#f1f1f1"
-export const DARKER_PAPER_LIGHT = "#f2f0fc"
+export const TEXT_MAIN_LIGHT = "#534c78"
+export const PAPER_LIGHT = "#fefefe"
+export const DARKER_PAPER_LIGHT = "#eee"
 export const BACKGROUND_DEFAULT_LIGHT = WHITE
+export const SPECIAL_CONTRAST_LIGHT = "#1BC69F" //  SECONDARY// "#3c1fcc"
 
 const paletteCommon = {
 	primary: { main: PRIMARY, contrastText: WHITE },
@@ -59,7 +60,7 @@ const paletteCommon = {
 const paletteLight = {
 	type: "light",
 	...paletteCommon,
-	special: { main: SPECIAL_CONTRAST, contrastText: WHITE },
+	special: { main: SPECIAL_CONTRAST_LIGHT, contrastText: WHITE },
 	text: {
 		main: TEXT_MAIN_LIGHT,
 		primary: fade(BLACK, 0.9),
@@ -71,11 +72,12 @@ const paletteLight = {
 		default: BACKGROUND_DEFAULT_LIGHT,
 		paper: PAPER_LIGHT,
 		darkerPaper: DARKER_PAPER_LIGHT,
-		special: SPECIAL_CONTRAST,
+		special: SPECIAL_CONTRAST_LIGHT,
 		specialSecondary: BLACK,
 		active: fade(TEXT_MAIN, 0.42),
 		contrast: TEXT_MAIN,
-		contrastText: WHITE
+		contrastText: WHITE,
+		card: DARKER_PAPER_LIGHT
 	}
 }
 
@@ -99,7 +101,8 @@ const paletteDark = {
 		specialSecondary: BLACK,
 		active: PRIMARY,
 		contrast: WHITE,
-		contrastText: BLACK
+		contrastText: BLACK,
+		card: PAPER
 	},
 	overlay: fade(DARKER_PAPER, 0.69),
 	action: {
@@ -129,7 +132,7 @@ const darkShadows = [...defaultTheme.shadows, "3px 4px 15px 0px rgba(0,0,0,1)"]
 
 const lightShadows = [
 	...defaultTheme.shadows,
-	"2px 2px 13px 0px rgba(69,69,69,0.420)"
+	"1px 1px 5px 0px rgba(69,69,69,0.30)"
 ]
 
 const commonTheme = createMuiTheme({
