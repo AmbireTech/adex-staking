@@ -124,7 +124,7 @@ export default function EmailSignUp(props) {
 			{mauticState.success ? (
 				<CardRow
 					mt={3}
-					color="text.main"
+					color="text.primary"
 					fontWeight={"fontWeightBold"}
 					fontSize={16}
 					text={mauticState.successMessage}
@@ -136,7 +136,7 @@ export default function EmailSignUp(props) {
 				<>
 					<CardRow
 						mt={3}
-						color="text.main"
+						color="text.primary"
 						fontWeight={"fontWeightBold"}
 						fontSize={16}
 						text={
