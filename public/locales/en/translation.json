@@ -63,7 +63,8 @@
     "slashing": "Slashing",
     "lockup": "Lockup",
     "apyStability": "APY stability",
-    "poolStats": "Pool stats"
+    "poolStats": "Pool stats",
+    "farm": "Farm"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -248,5 +249,12 @@
     "lockupOnChain": "Locked up on chain",
     "labelPayout": "Payouts",
     "labelTransactions": "Impressions (Transactions)"
+  },
+  "farm": {
+    "totalDeposits": "Total deposits",
+    "myLiquidity": "My liquidity",
+    "liquidityInfo": "Your liquidity data",
+    "staked": "Staked: {{staked}}",
+    "onWallet": "On wallet: {{onWallet}}"
   }
 }
