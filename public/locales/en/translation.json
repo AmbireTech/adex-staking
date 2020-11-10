@@ -255,6 +255,9 @@
     "myLiquidity": "My liquidity",
     "liquidityInfo": "Your liquidity data",
     "staked": "Staked: {{staked}}",
-    "onWallet": "On wallet: {{onWallet}}"
+    "onWallet": "On wallet: {{onWallet}}",
+    "platform": "Platform: {{platform}}",
+    "depositAssets": "Deposit: {{depositAssets}}",
+    "rewardAssets": "Earn: {{rewardAssets}}"
   }
 }

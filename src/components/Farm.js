@@ -44,11 +44,15 @@ const Farm = () => {
 							</SvgIcon>
 						]}
 						name={"BPT-ADX-yUSD"}
-						totalStakedADX={`${formatADXPretty(stats.totalStakeTom)} ADX`}
-						totalStakedUSD={`${getADXInUSDFormatted(
-							prices,
+						platform={"Balancer"}
+						depositAssets={"BPT (ADX-yUSD)"}
+						depositAssetsLink={
+							"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/"
+						}
+						rewardAssets={"ADX"}
+						totalDeposits={`${formatADXPretty(
 							stats.totalStakeTom
-						)}`}
+						)} ADX; ${getADXInUSDFormatted(prices, stats.totalStakeTom)} yUSD`}
 						currentAPY={`${50} %`}
 						weeklyYield={`${(50 / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[

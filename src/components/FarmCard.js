@@ -63,7 +63,7 @@ export default function FarmCard({
 	id,
 	icons,
 	name,
-	totalStakedADX,
+	totalDeposits,
 	totalStakedUSD,
 	currentAPY,
 	weeklyYield,
@@ -81,7 +81,10 @@ export default function FarmCard({
 	comingSoon,
 	actionBtn,
 	extraData = [],
-	special
+	special,
+	platform,
+	depositAssets,
+	rewardAssets
 }) {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -121,6 +124,29 @@ export default function FarmCard({
 			) : (
 				<Box>
 					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={16}
+						text={t("farm.platform", { platform })}
+						// justify="center"
+					/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={16}
+						text={t("farm.depositAssets", { depositAssets })}
+						// justify="center"
+					/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={16}
+						text={t("farm.rewardAssets", { rewardAssets })}
+						// justify="center"
+						mb={3}
+					/>
+
+					<CardRow
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
@@ -133,19 +159,9 @@ export default function FarmCard({
 						color="special.main"
 						fontWeight={"text.primary"}
 						fontSize={14}
-						text={totalStakedADX}
+						text={totalDeposits}
 						isAmountText
-						// infoText={totalStakedADX}
-						justify="center"
-					/>
-
-					<CardRow
-						color="text.primary"
-						fontWeight={"fontWeightBold"}
-						fontSize={14}
-						text={totalStakedUSD}
-						isAmountText
-						// infoText={totalStakedADX}
+						multilineLinesAmounts
 						justify="center"
 						mb={3}
 					/>
