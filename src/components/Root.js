@@ -15,6 +15,7 @@ import ChooseWallet from "./ChooseWallet"
 import Stakings from "./Stakings"
 import Gasless from "./Gasless"
 import Rewards from "./Rewards"
+import Farm from "./Farm"
 import Stats from "./Stats"
 import Pools from "./Pools"
 import StakeNowPopup from "./StakeNowPopup"
@@ -135,6 +136,9 @@ export default function Root() {
 						</Route>
 						<Route path="/rewards">
 							<Rewards />
+						</Route>
+						<Route path="/farm">
+							<Farm />
 						</Route>
 						<Route path="/stats">
 							<Stats />
