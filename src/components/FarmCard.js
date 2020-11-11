@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => {
 			top: -theme.spacing(3),
 			backgroundColor: theme.palette.common.white,
 			color: theme.palette.common.black,
-			boxShadow: theme.type === "light" ? theme.shadows[25] : "none",
+			// boxShadow: theme.type === "light" ? theme.shadows[25] : "none",
+			boxShadow: theme.shadows[25],
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
@@ -34,17 +35,19 @@ const useStyles = makeStyles(theme => {
 			paddingRight: theme.spacing(1)
 		},
 		platformIconBox: {
-			width: 69,
-			height: 69,
-			borderRadius: "100%",
+			color: theme.palette.common.white,
+			backgroundColor: theme.palette.common.black,
+			width: 71,
+			height: 71,
+			borderTopLeftRadius: "100%",
+			borderBottomLeftRadius: "100%",
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
 			justifyContent: "center",
 			position: "absolute",
-			left: 0,
-			top: 0,
-			boxShadow: theme.shadows[25]
+			left: -1,
+			top: -1
 		},
 		overlay: {
 			position: "absolute",
@@ -138,11 +141,7 @@ export default function FarmCard({
 			{comingSoon ? (
 				<Box>
 					<SvgIcon className={classes.comingSoon} color="primary">
-						<ComingSoonImg
-							width="100%"
-							height="100%"
-							// width={160}
-						/>
+						<ComingSoonImg width="100%" height="100%" />
 					</SvgIcon>
 				</Box>
 			) : (
@@ -152,7 +151,6 @@ export default function FarmCard({
 						fontWeight={"fontWeightRegular"}
 						fontSize={16}
 						text={t("farm.platform", { platform })}
-						// justify="center"
 					/>
 					<CardRow
 						color="text.primary"
@@ -176,17 +174,13 @@ export default function FarmCard({
 									)
 								}}
 							/>
-
-							// t("farm.depositAssets", { depositAssets })
 						}
-						// justify="center"
 					/>
 					<CardRow
 						color="text.primary"
 						fontWeight={"fontWeightRegular"}
 						fontSize={16}
 						text={t("farm.rewardAssets", { rewardAssets })}
-						// justify="center"
 						mb={3}
 					/>
 
@@ -219,7 +213,6 @@ export default function FarmCard({
 						fontSize={14}
 						text={t("pools.weeklyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
-						// justify="center"
 						mb={3}
 					/>
 
@@ -297,7 +290,6 @@ export default function FarmCard({
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
 						text={liquidityOnWallet}
-						// justify="center"
 						mb={3}
 					/>
 
