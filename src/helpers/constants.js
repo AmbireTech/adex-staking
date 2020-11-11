@@ -4,6 +4,11 @@ import metamaskLogo from "../metamask-fox.svg"
 // import trezorLogo from "../trezor.svg"
 // import ledgerLogo from "../ledger.png"
 
+import { ReactComponent as BalancerIcon } from "./../resources/balancer-bal-logo.svg"
+import { ReactComponent as UniswapIcon } from "./../resources/uniswap-uni-logo.svg"
+import { ReactComponent as YUSDIcon } from "./../resources/yUSD.svg"
+import { ReactComponent as ADXIcon } from "./../resources/adex-logo-clean.svg"
+
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
 export const PRICES_API_URL =
@@ -113,3 +118,19 @@ export const REACT_APP_RPC_URL =
 	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
+
+export const FARM_TOKENS = [
+	{
+		name: "Balancer ADX-yUSD",
+		token: "BPT-ADX-yUSD",
+		platform: "Balancer",
+		depositAssetsName: "BPT-ADX-yUSD",
+		depositAssetsAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
+		getDepositAssetsUrl:
+			"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: BalancerIcon,
+		assetsIcons: [ADXIcon, YUSDIcon]
+	}
+]
