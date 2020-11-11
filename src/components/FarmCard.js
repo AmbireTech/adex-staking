@@ -7,6 +7,7 @@ import {
 	Typography,
 	SvgIcon
 } from "@material-ui/core"
+import { SwapHorizSharp as AssetsLinkIcon } from "@material-ui/icons"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
 import Tooltip from "./Tooltip"
@@ -19,16 +20,31 @@ const useStyles = makeStyles(theme => {
 		iconBox: {
 			borderRadius: "35px",
 			position: "absolute",
-			width: 169,
+			width: 189,
 			height: 69,
 			top: -theme.spacing(3),
 			backgroundColor: theme.palette.common.white,
 			color: theme.palette.common.black,
-			boxShadow: theme.type === "light" ? theme.shadows[25] : 0,
+			boxShadow: theme.type === "light" ? theme.shadows[25] : "none",
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
-			justifyContent: "center"
+			justifyContent: "space-around",
+			paddingLeft: 69 + theme.spacing(1),
+			paddingRight: theme.spacing(1)
+		},
+		platformIconBox: {
+			width: 69,
+			height: 69,
+			borderRadius: "100%",
+			display: "flex",
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "center",
+			position: "absolute",
+			left: 0,
+			top: 0,
+			boxShadow: theme.shadows[25]
 		},
 		overlay: {
 			position: "absolute",
@@ -66,7 +82,8 @@ const useStyles = makeStyles(theme => {
 
 export default function FarmCard({
 	id,
-	icons,
+	platformIcon,
+	assetsIcons,
 	name,
 	totalDepositTokenBalance,
 	totalDepositTokenStaked,
@@ -389,15 +406,22 @@ export default function FarmCard({
 			)}
 
 			<Box classes={{ root: classes.iconBox }}>
-				{icons || null}
-				{!!loading && (
-					<>
-						<LinearProgress
-							classes={{ root: classes.loading }}
-							color="secondary"
-						/>
-					</>
-				)}
+				<Box classes={{ root: classes.platformIconBox }}>
+					{platformIcon || null}
+					{!!loading && (
+						<>
+							<LinearProgress
+								classes={{ root: classes.loading }}
+								color="secondary"
+							/>
+						</>
+					)}
+				</Box>
+				{(assetsIcons || []).reduce((prev, curr) => [
+					prev,
+					<AssetsLinkIcon />,
+					curr
+				])}
 			</Box>
 		</Box>
 	)

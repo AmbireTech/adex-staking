@@ -32,14 +32,16 @@ const Farm = () => {
 				>
 					<FarmCard
 						id="validator-tom"
-						icons={[
-							<SvgIcon key={"icon-1"} fontSize="large" color="inherit">
+						platformIcon={
+							<SvgIcon key={"balancer"} fontSize="large" color="inherit">
 								<BalancerIcon width="99%" height="99%" />
-							</SvgIcon>,
-							<SvgIcon key={"icon-2"} fontSize="large" color="inherit">
+							</SvgIcon>
+						}
+						assetsIcons={[
+							<SvgIcon key={"adx"} fontSize="large" color="inherit">
 								<ADXIcon width="99%" height="99%" />
 							</SvgIcon>,
-							<SvgIcon key={"icon-3"} fontSize="large" color="inherit">
+							<SvgIcon key={"bpt"} fontSize="large" color="inherit">
 								<YUSDIcon width="99%" height="99%" />
 							</SvgIcon>
 						]}
