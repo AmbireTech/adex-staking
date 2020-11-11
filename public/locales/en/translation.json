@@ -251,13 +251,17 @@
     "labelTransactions": "Impressions (Transactions)"
   },
   "farm": {
+    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
     "totalDeposits": "Total deposits",
     "myLiquidity": "My liquidity",
     "liquidityInfo": "Your liquidity data",
-    "staked": "Staked: {{staked}}",
-    "onWallet": "On wallet: {{onWallet}}",
+    "myStaked": "Staked:",
+    "onWallet": "On wallet:",
     "platform": "Platform: {{platform}}",
-    "depositAssets": "Deposit: {{depositAssets}}",
-    "rewardAssets": "Earn: {{rewardAssets}}"
+    "depositAssets": "Deposit: {{depositAssets}}  <getLink>GET</getLink>",
+    "rewardAssets": "Earn: {{rewardAssets}}",
+    "totalDepositTokenBalance": "Total {{depositAssets}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAssets}} staked",
+    "userStakedShare": "My share"
   }
 }
