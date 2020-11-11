@@ -36,7 +36,11 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 		const decimalsSplit = decimalSeparatorSplit[1].split(" ")
 		const rest = decimalsSplit.slice(2)
 		return (
-			<Box component="div" display={multiline ? "block" : "inline"}>
+			<Box
+				component="div"
+				display={multiline ? "block" : "inline"}
+				width={multiline ? 1 : "auto"}
+			>
 				<Box component="div" display="inline">
 					{decimalSeparatorSplit[0]}
 					{"."}
@@ -113,18 +117,17 @@ export function CardRow({
 					alignItems="center"
 					flexWrap="wrap"
 					justifyContent={justify || "flex-start"}
+					style={{ wordBreak: "break-word" }}
 				>
-					<Box style={{ wordBreak: "break-word" }}>
-						{isAmountText ? (
-							<AmountText
-								text={text}
-								fontSize={fontSize}
-								multiline={multilineLinesAmounts}
-							/>
-						) : (
-							text
-						)}
-					</Box>
+					{isAmountText ? (
+						<AmountText
+							text={text}
+							fontSize={fontSize}
+							multiline={multilineLinesAmounts}
+						/>
+					) : (
+						text
+					)}
 					{infoText && (
 						<Box ml={0.69} display="flex">
 							<Info title={infoText} />
