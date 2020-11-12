@@ -45,14 +45,13 @@ const getTokenStats = async ({ token, signer }) => {
 	}
 }
 
-export const getFarmTokensStats = async chosenWalletType => {
+export const getFarmTokensStats = async ({ chosenWalletType }) => {
 	const signer =
 		chosenWalletType && chosenWalletType.library
 			? await getSigner(chosenWalletType)
 			: null
 
 	const tokenCalls = FARM_TOKENS.map(token => getTokenStats({ token, signer }))
-
 	const allTokensStats = await Promise.all(tokenCalls)
 
 	return allTokensStats
