@@ -132,6 +132,7 @@ export const FARM_POOLS = [
 		depositAssetsName: "TST",
 		depositAssetsAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
 		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
+		lpTokenData: { TST: 1 },
 		rewardAssetsName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
@@ -146,6 +147,7 @@ export const FARM_POOLS = [
 	// 	depositAssetsAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
 	// 	getDepositAssetsUrl:
 	// 		"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
+	//  lpTokenData: { 'ADX': 0.3, 'BPT-ADX-yUSD': 0.7 },
 	// 	rewardAssetsName: "ADX",
 	// 	rewardAssetAddr: ADDR_ADX,
 	// 	platformIcon: BalancerIcon,

@@ -55,15 +55,21 @@ const Farm = () => {
 								getDepositAssetsUrl={farm.getDepositAssetsUrl}
 								rewardAssets={farm.rewardAssetsName}
 								totalDepositTokenBalance={
-									stats ? `${formatADXPretty(stats.totalSupply)}` : t("farm.NA")
+									pollStatsLoaded
+										? `${formatADXPretty(stats.totalSupply)}`
+										: t("farm.NA")
 								}
 								totalDepositTokenStaked={
-									stats ? `${formatADXPretty(stats.totalStaked)}` : t("farm.NA")
+									pollStatsLoaded
+										? `${formatADXPretty(stats.totalStaked)}`
+										: t("farm.NA")
 								}
 								userStakedShare={
 									userStatsLoaded ? `${stats.useShare * 100} %` : t("farm.NA")
 								}
-								currentAPY={`${50} %`}
+								currentAPY={
+									pollStatsLoaded ? `${stats.poolAPY * 100} %` : t("farm.NA")
+								}
 								weeklyYield={`${(50 / (365 / 7)).toFixed(4)} %`}
 								weeklyYieldInfo={[
 									t("pools.currentDailyYield", {
