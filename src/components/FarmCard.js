@@ -400,20 +400,20 @@ export default function FarmCard({
 			<Box classes={{ root: classes.iconBox }}>
 				<Box classes={{ root: classes.platformIconBox }}>
 					{platformIcon || null}
-					{!!loading && (
-						<>
-							<LinearProgress
-								classes={{ root: classes.loading }}
-								color="secondary"
-							/>
-						</>
-					)}
 				</Box>
 				{(assetsIcons || []).reduce((prev, curr) => [
 					prev,
 					<AssetsLinkIcon />,
 					curr
 				])}
+				{!!loading && (
+					<>
+						<LinearProgress
+							classes={{ root: classes.loading }}
+							color="secondary"
+						/>
+					</>
+				)}
 			</Box>
 		</Box>
 	)
