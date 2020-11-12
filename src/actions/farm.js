@@ -6,6 +6,10 @@ import { getSigner, defaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
 
 const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379"
+const AVG_ETH_BLOCK_TAME = 13.08
+const SECS_IN_YEAR = 365 * 24 * 60 * 60
+
+const AVG_BLOCKS_PER_YEAR = SECS_IN_YEAR / AVG_ETH_BLOCK_TAME
 
 const MasterChef = new Contract(
 	MASTER_CHEF_ADDR,
@@ -36,7 +40,21 @@ const getUserBalances = async ({
 	}
 }
 
-const getPoolStats = async ({ pool, walletAddr, identityAddr }) => {
+const getDepositLPTokenToADXValue = ({ externalPrices }) => {
+	// TODO
+	const lpTokensToADX = {
+		TST: 10000
+	}
+
+	return lpTokensToADX
+}
+
+const getPoolStats = async ({
+	pool,
+	walletAddr,
+	identityAddr,
+	externalPrices
+}) => {
 	const depositTokenContract = new Contract(
 		pool.depositAssetsAddr,
 		ERC20ABI,
@@ -49,14 +67,18 @@ const getPoolStats = async ({ pool, walletAddr, identityAddr }) => {
 		{ identityBalance, walletBalance },
 		pendingADX,
 		userInfo,
-		poolInfo
+		poolInfo,
+		adxPerBlock,
+		totalAllocPoint
 	] = await Promise.all([
 		depositTokenContract.totalSupply(),
 		depositTokenContract.balanceOf(MasterChef.address),
 		getUserBalances({ depositTokenContract, walletAddr, identityAddr }),
 		identityAddr ? MasterChef.pendingADX(pool.poolId, walletAddr) : null,
 		identityAddr ? MasterChef.userInfo(pool.poolId, walletAddr) : null,
-		identityAddr ? MasterChef.poolInfo(pool.poolId) : null
+		MasterChef.poolInfo(pool.poolId),
+		MasterChef.ADXPerBlock(),
+		MasterChef.totalAllocPoint()
 	])
 	const precision = 10_000_000
 
@@ -70,6 +92,25 @@ const getPoolStats = async ({ pool, walletAddr, identityAddr }) => {
 					.toNumber() / precision
 			: null
 
+	const poolAdxPerBlock = totalAllocPoint.gt(ZERO)
+		? poolInfo[1].mul(adxPerBlock).div(totalAllocPoint)
+		: ZERO
+
+	const poolADXPerYear = poolAdxPerBlock.mul(AVG_BLOCKS_PER_YEAR.toFixed(0))
+
+	const prices = getDepositLPTokenToADXValue({ externalPrices })
+
+	const stakedToADX = totalStaked.mul(
+		(prices[pool.depositAssetsName] * precision).toFixed(0)
+	)
+
+	const poolAPY =
+		poolADXPerYear
+			.mul(precision)
+			.mul(precision)
+			.div(stakedToADX)
+			.toNumber() / precision
+
 	return {
 		poolId: pool.poolId,
 		totalSupply,
@@ -80,11 +121,17 @@ const getPoolStats = async ({ pool, walletAddr, identityAddr }) => {
 		userInfo,
 		userLPBalance,
 		useShare,
-		poolInfo
+		poolInfo,
+		poolAdxPerBlock,
+		poolADXPerYear,
+		poolAPY: parseFloat(poolAPY.toFixed(4))
 	}
 }
 
-export const getFarmPoolsStats = async ({ chosenWalletType }) => {
+export const getFarmPoolsStats = async ({
+	chosenWalletType,
+	externalPrices
+}) => {
 	const signer =
 		chosenWalletType && chosenWalletType.library
 			? await getSigner(chosenWalletType)
@@ -94,7 +141,7 @@ export const getFarmPoolsStats = async ({ chosenWalletType }) => {
 	const identityAddr = walletAddr ? getUserIdentity(walletAddr).addr : null
 
 	const poolsCalls = FARM_POOLS.map(pool =>
-		getPoolStats({ pool, walletAddr, identityAddr })
+		getPoolStats({ pool, walletAddr, identityAddr, externalPrices })
 	)
 	const allPoolStats = await Promise.all(poolsCalls)
 	const statsByPoolId = allPoolStats.reduce((byId, stats) => {
