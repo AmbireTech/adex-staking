@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react"
-import { getFarmTokensStats } from "./actions/farm"
+import { getFarmPoolsStats } from "./actions/farm"
 import AppContext from "./AppContext"
 
 export const FarmContext = React.createContext()
@@ -11,7 +11,7 @@ function useFarm() {
 	useEffect(() => {
 		console.log("chosenWalletType", chosenWalletType)
 		const updatePoolStats = async () => {
-			const stats = await getFarmTokensStats({ chosenWalletType })
+			const stats = await getFarmPoolsStats({ chosenWalletType })
 			setStats(stats)
 		}
 		updatePoolStats()
