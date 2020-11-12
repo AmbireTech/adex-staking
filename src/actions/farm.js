@@ -43,7 +43,8 @@ const getUserBalances = async ({
 const getDepositLPTokenToADXValue = ({ externalPrices }) => {
 	// TODO
 	const lpTokensToADX = {
-		TST: 10000
+		TST: 10000,
+		ADX: 1
 	}
 
 	return lpTokensToADX
@@ -124,7 +125,7 @@ const getPoolStats = async ({
 		poolInfo,
 		poolAdxPerBlock,
 		poolADXPerYear,
-		poolAPY: parseFloat(poolAPY.toFixed(4))
+		poolAPY
 	}
 }
 

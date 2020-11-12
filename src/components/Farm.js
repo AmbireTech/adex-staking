@@ -32,6 +32,7 @@ const Farm = () => {
 				>
 					{FARM_POOLS.map(farm => {
 						const stats = statsByPoolId ? statsByPoolId[farm.poolId] : null
+						const poolAPY = pollStatsLoaded ? stats.poolAPY * 100 : null
 
 						return (
 							<FarmCard
@@ -56,24 +57,36 @@ const Farm = () => {
 								rewardAssets={farm.rewardAssetsName}
 								totalDepositTokenBalance={
 									pollStatsLoaded
-										? `${formatADXPretty(stats.totalSupply)}`
+										? `${formatADXPretty(stats.totalSupply)} ${
+												farm.depositAssetsName
+										  }`
 										: t("farm.NA")
 								}
 								totalDepositTokenStaked={
 									pollStatsLoaded
-										? `${formatADXPretty(stats.totalStaked)}`
+										? `${formatADXPretty(stats.totalStaked)} ${
+												farm.depositAssetsName
+										  }`
 										: t("farm.NA")
 								}
 								userStakedShare={
-									userStatsLoaded ? `${stats.useShare * 100} %` : t("farm.NA")
+									userStatsLoaded
+										? `${(stats.useShare * 100).toFixed(4)} %`
+										: t("farm.NA")
 								}
 								currentAPY={
-									pollStatsLoaded ? `${stats.poolAPY * 100} %` : t("farm.NA")
+									pollStatsLoaded ? `${poolAPY.toFixed(4)} %` : t("farm.NA")
 								}
-								weeklyYield={`${(50 / (365 / 7)).toFixed(4)} %`}
+								weeklyYield={
+									pollStatsLoaded
+										? `${(poolAPY / (365 / 7)).toFixed(4)} %`
+										: t("farm.NA")
+								}
 								weeklyYieldInfo={[
 									t("pools.currentDailyYield", {
-										yield: (50 / 365).toFixed(4)
+										yield: pollStatsLoaded
+											? (poolAPY / 365).toFixed(4)
+											: t("farm.NA")
 									})
 								]}
 								onDepositBtnClick={() => {}}

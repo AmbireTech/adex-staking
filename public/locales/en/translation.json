@@ -262,6 +262,7 @@
     "rewardAssets": "Earn: {{rewardAssets}}",
     "totalDepositTokenBalance": "Total {{depositAssets}} tokens",
     "totalDepositTokenStaked": "Pool total {{depositAssets}} staked",
-    "userStakedShare": "My share"
+    "userStakedShare": "My share",
+    "NA": "N/A"
   }
 }

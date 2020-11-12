@@ -137,6 +137,21 @@ export const FARM_POOLS = [
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon]
+	},
+	{
+		// GOERLI TST
+		poolId: 1,
+		name: "ADX",
+		token: "ADX",
+		platform: "Uniswap",
+		depositAssetsName: "ADX",
+		depositAssetsAddr: ADDR_ADX,
+		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
+		lpTokenData: { ADX: 1 },
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: UniswapIcon,
+		assetsIcons: [ADXIcon, ADXIcon]
 	}
 	// {
 	// 	poolId: 1,
