@@ -1,5 +1,6 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
+import { FarmContext } from "../FarmProvider"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import FarmCard from "./FarmCard"
 import { formatADXPretty } from "../helpers/formatting"
@@ -10,6 +11,9 @@ import { FARM_TOKENS } from "../helpers/constants"
 const Farm = () => {
 	const { t } = useTranslation()
 	const { stats, chosenWalletType, prices } = useContext(AppContext)
+	const { farmStats } = useContext(FarmContext)
+
+	console.log("farmStats", farmStats)
 
 	const canStake = true // !!chosenWalletType.name && !!stats.connectedWalletAddress
 

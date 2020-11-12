@@ -10,6 +10,7 @@ import useApp from "./AppHooks"
 import useValidatorStats from "./ValidatorStatsHooks"
 import Loading from "./components/Loading"
 import MultiThemeProvider from "./MultiThemeProvider"
+import { FarmProvider } from "./FarmProvider"
 import "./App.css"
 
 const App = () => {
@@ -19,11 +20,13 @@ const App = () => {
 	return (
 		<React.Fragment>
 			<AppContext.Provider value={appHooks}>
-				<ValidatorStatsContext.Provider value={validatorStatsHooks}>
-					<Router>
-						<Root />
-					</Router>
-				</ValidatorStatsContext.Provider>
+				<FarmProvider>
+					<ValidatorStatsContext.Provider value={validatorStatsHooks}>
+						<Router>
+							<Root />
+						</Router>
+					</ValidatorStatsContext.Provider>
+				</FarmProvider>
 			</AppContext.Provider>
 		</React.Fragment>
 	)
