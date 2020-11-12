@@ -114,23 +114,41 @@ export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")
 
 export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 
+// export const REACT_APP_RPC_URL =
+// 	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+
 export const REACT_APP_RPC_URL =
-	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
 
-export const FARM_TOKENS = [
+export const FARM_POOLS = [
 	{
-		name: "Balancer ADX-yUSD",
-		token: "BPT-ADX-yUSD",
+		// GOERLI TST
+		poolId: 0,
+		name: "TST",
+		token: "TST",
 		platform: "Balancer",
-		depositAssetsName: "BPT-ADX-yUSD",
-		depositAssetsAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
-		getDepositAssetsUrl:
-			"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
+		depositAssetsName: "TST",
+		depositAssetsAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
+		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
 		rewardAssetsName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon]
 	}
+	// {
+	// 	poolId: 1,
+	// 	name: "Balancer ADX-yUSD",
+	// 	token: "BPT-ADX-yUSD",
+	// 	platform: "Balancer",
+	// 	depositAssetsName: "BPT-ADX-yUSD",
+	// 	depositAssetsAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
+	// 	getDepositAssetsUrl:
+	// 		"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
+	// 	rewardAssetsName: "ADX",
+	// 	rewardAssetAddr: ADDR_ADX,
+	// 	platformIcon: BalancerIcon,
+	// 	assetsIcons: [ADXIcon, YUSDIcon]
+	// }
 ]
