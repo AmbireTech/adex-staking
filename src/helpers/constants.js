@@ -126,13 +126,25 @@ export const FARM_POOLS = [
 	{
 		// GOERLI TST
 		poolId: 0,
-		name: "TST",
-		token: "TST",
+		name: "TST-ADX",
+		token: "TST-ADX",
 		platform: "Balancer",
-		depositAssetsName: "TST",
+		depositAssetsName: "TST-ADX",
 		depositAssetsAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
 		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
-		lpTokenData: { TST: 1 },
+		lpTokenAddr: "0x2aecF52ABe359820c48986046959B4136AfDfbe2",
+		lpTokenData: [
+			{
+				token: "TST",
+				weight: 0.2,
+				addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+			},
+			{
+				token: "ADX",
+				weight: 0.8,
+				addr: ADDR_ADX
+			}
+		],
 		rewardAssetsName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
@@ -141,13 +153,25 @@ export const FARM_POOLS = [
 	{
 		// GOERLI TST
 		poolId: 1,
-		name: "ADX",
-		token: "ADX",
+		name: "ADX-TST-2",
+		token: "ADX-TST-2",
 		platform: "Uniswap",
-		depositAssetsName: "ADX",
+		depositAssetsName: "ADX-TST-2",
 		depositAssetsAddr: ADDR_ADX,
 		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
-		lpTokenData: { ADX: 1 },
+		lpTokenAddr: "0x0A8fe6e91eaAb3758dF18f546f7364343667E957",
+		lpTokenData: [
+			{
+				token: "ADX",
+				weight: 0.83129,
+				addr: ADDR_ADX
+			},
+			{
+				token: "TST2",
+				weight: 1 - 0.83129,
+				addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+			}
+		],
 		rewardAssetsName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
