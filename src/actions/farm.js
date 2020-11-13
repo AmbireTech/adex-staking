@@ -1,4 +1,4 @@
-import { Contract } from "ethers"
+import { Contract, utils } from "ethers"
 import { FARM_POOLS, ZERO } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 import MasterChefABI from "../abi/MasterChef"
@@ -40,14 +40,117 @@ const getUserBalances = async ({
 	}
 }
 
-const getDepositLPTokenToADXValue = ({ externalPrices }) => {
-	// TODO
-	const lpTokensToADX = {
-		TST: 10000,
-		ADX: 1
+const getOtherTokenAndPoolPrice = (known, unknown) => {
+	const totalLPPrice =
+		(parseFloat(utils.formatUnits(known.poolBalance, known.decimals)) /
+			known.weight) *
+		known.usdPrice
+	const unknownPrice =
+		(totalLPPrice * unknown.weight) /
+		parseFloat(utils.formatUnits(unknown.poolBalance, unknown.decimals))
+
+	return { unknownPrice, totalLPPrice }
+}
+
+const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
+	const adxPrice = externalPrices.USD || 0.27
+
+	const { allTokenContracts, allTokensInUSD } = FARM_POOLS.reduce(
+		(data, { lpTokenData }) => {
+			lpTokenData.forEach(token => {
+				if (!data.allTokenContracts[token.token]) {
+					data.allTokenContracts[token.token] = new Contract(
+						token.addr,
+						ERC20ABI,
+						defaultProvider
+					)
+					data.allTokensInUSD[token.token] = null
+				}
+			})
+
+			return data
+		},
+		{ allTokenContracts: {}, allTokensInUSD: {} }
+	)
+
+	allTokensInUSD["ADX"] = adxPrice
+
+	const poolDataMap = FARM_POOLS.map(
+		async ({
+			poolId,
+			lpTokenAddr,
+			depositAssetsName,
+			depositAssetsAddr,
+			lpTokenData
+		}) => {
+			return {
+				tokenName: depositAssetsName,
+				tokenAddr: depositAssetsAddr,
+				lpTokenData: await Promise.all(
+					lpTokenData.map(async ({ token, addr, weight }, index) => ({
+						poolId,
+						token,
+						addr,
+						decimals: await allTokenContracts[token].decimals(),
+						poolBalance: await allTokenContracts[token].balanceOf(
+							lpTokenAddr || depositAssetsAddr
+						),
+						poolTotalPriceUSD: null,
+						usdPrice: allTokensInUSD[token] || null,
+						weight
+					}))
+				)
+			}
+		}
+	)
+
+	const poolDataWithBalances = await Promise.all(poolDataMap)
+
+	while (Object.values(allTokensInUSD).includes(null)) {
+		poolDataWithBalances.map(poolData => {
+			const { lpTokenData } = poolData
+			const t1 = lpTokenData[0]
+			const t2 = lpTokenData[1]
+
+			t1.usdPrice = t1.usdPrice || allTokensInUSD[t1.token]
+			t2.usdPrice = t2.usdPrice || allTokensInUSD[t2.token]
+
+			if (t1.usdPrice && !t2.usdPrice) {
+				const { unknownPrice, totalLPPrice } = getOtherTokenAndPoolPrice(t1, t2)
+				poolData.poolTotalPriceUSD = poolData.poolTotalPriceUSD || totalLPPrice
+				t2.usdPrice = unknownPrice
+				allTokensInUSD[t2.token] = t2.usdPrice
+			} else if (!t1.usdPrice && t2.usdPrice) {
+				const { unknownPrice, totalLPPrice } = getOtherTokenAndPoolPrice(t2, t1)
+				poolData.poolTotalPriceUSD = poolData.poolTotalPriceUSD || totalLPPrice
+				t1.usdPrice = unknownPrice
+				allTokensInUSD[t1.token] = t1.usdPrice
+			}
+
+			poolData.lpTokenData = [t1, t2]
+
+			return poolData
+		})
 	}
 
-	return lpTokensToADX
+	const lpTokensToADXData = poolDataWithBalances.reduce(
+		(lpTokensToADX, data) => {
+			const { poolTotalPriceUSD, lpTokenData } = data
+			lpTokensToADX[data.tokenName] = {
+				poolTotalPriceUSD,
+				poolTotalADXValue: utils.parseUnits(
+					((data.poolTotalPriceUSD / adxPrice) * 1_000_000).toFixed(0),
+					12
+				),
+				lpTokenData
+			}
+
+			return lpTokensToADX
+		},
+		{}
+	)
+
+	return lpTokensToADXData
 }
 
 const getPoolStats = async ({
@@ -99,17 +202,14 @@ const getPoolStats = async ({
 
 	const poolADXPerYear = poolAdxPerBlock.mul(AVG_BLOCKS_PER_YEAR.toFixed(0))
 
-	const prices = getDepositLPTokenToADXValue({ externalPrices })
+	const prices = await getDepositLPTokenToADXValue({ externalPrices })
 
-	const stakedToADX = totalStaked.mul(
-		(prices[pool.depositAssetsName] * precision).toFixed(0)
-	)
+	const poolTotalADXValue = prices[pool.depositAssetsName].poolTotalADXValue
 
 	const poolAPY =
 		poolADXPerYear
 			.mul(precision)
-			.mul(precision)
-			.div(stakedToADX)
+			.div(poolTotalADXValue)
 			.toNumber() / precision
 
 	return {
