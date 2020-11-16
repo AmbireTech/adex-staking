@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react"
 import {
-	getWithdrawActionByFarmPoolId,
-	getDepositActionByFarmPoolId,
+	onLiquidityPoolDeposit,
+	onLiquidityPoolWithdraw,
 	isValidNumberString
 } from "../actions"
 import {
-	parseADX,
-	formatADX,
+	parseTokens,
+	formatTokens,
 	formatADXPretty,
 	toIdAttributeString
 } from "../helpers/formatting"
@@ -24,9 +24,9 @@ import {
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 
-export default function FarmForm({ closeDialog, farmPool, withdraw }) {
+export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 	const { t } = useTranslation()
-	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
 	const [actionAmount, setActionAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
@@ -34,25 +34,28 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 	const [confirmation, setConfirmation] = useState(false)
 
 	const actionName = withdraw ? "withdraw" : "deposit"
+	const { depositAssetDecimals, depositAssetName } = pool
 
-	const maxAmount = withdraw
-		? farmPool.userLPBalance || ZERO
-		: stats.userWalletBalance
+	const maxAmount = withdraw ? stats.userLPBalance || ZERO : stats.walletBalance
 
 	const onAction = async () => {
 		setConfirmation(false)
+
+		const action = withdraw ? onLiquidityPoolWithdraw : onLiquidityPoolDeposit
+
 		if (closeDialog) closeDialog()
 
-		const action = withdraw
-			? getWithdrawActionByFarmPoolId(farmPool)
-			: getDepositActionByFarmPoolId(farmPool)
-
 		await wrapDoingTxns(
-			action.bind(null, stats, chosenWalletType, parseADX(actionAmount))
+			action.bind(null, {
+				pool,
+				stats,
+				chosenWalletType,
+				actionAmount: parseTokens(actionAmount, depositAssetDecimals)
+			})
 		)()
 	}
 
-	const confirmationLabel = farmPool.confirmationLabel
+	const confirmationLabel = pool.confirmationLabel
 	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
@@ -64,16 +67,19 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 			return
 		}
 
-		const amountBN = parseADX(userInputAmount)
+		const amountBN = parseTokens(userInputAmount, depositAssetDecimals)
 
-		const minStakingAmountBN = parseADX(farmPool.minStakingAmount || "0")
+		const minStakingAmountBN = parseTokens(
+			pool.minStakingAmount || "0",
+			depositAssetDecimals
+		)
 
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
 			setAmountErrText(t("errors.lowADXAmount"))
 			return
 		}
-		if (farmPool && amountBN.lte(minStakingAmountBN)) {
+		if (pool && amountBN.lte(minStakingAmountBN)) {
 			setAmountErr(true)
 			setAmountErrText(t("errors.lessDanMinPoolADX"))
 			return
@@ -81,10 +87,10 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 
 		if (
 			!withdraw &&
-			farmPool &&
-			farmPool.poolTotalStaked &&
-			farmPool.poolDepositsLimit &&
-			amountBN.add(farmPool.poolTotalStaked).gt(farmPool.poolDepositsLimit)
+			pool &&
+			stats.poolTotalStaked &&
+			pool.poolDepositsLimit &&
+			amountBN.add(stats.poolTotalStaked).gt(pool.poolDepositsLimit)
 		) {
 			setAmountErr(true)
 			setAmountErrText(t("errors.amountOverPoolLimit"))
@@ -125,7 +131,7 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 							size="small"
 							id={`new-farm-${actionName}-form-max-amount-btn`}
 							onClick={() => {
-								onAmountChange(formatADX(maxAmount))
+								onAmountChange(formatTokens(maxAmount, depositAssetDecimals))
 							}}
 						>
 							{t("common.maxAmountBtn", {
@@ -136,21 +142,19 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 					</Box>
 				</Grid>
 
-				{farmPool ? (
+				{pool && stats ? (
 					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolRewardPolicy")}:
 							</Typography>
-							<Typography variant="body1">
-								{t(farmPool.rewardPolicy)}
-							</Typography>
+							<Typography variant="body1">{t(pool.rewardPolicy)}</Typography>
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="h6">
 								{t("common.poolSlashingPolicy")}:
 							</Typography>
-							<Typography variant="body1">{t(farmPool.slashPolicy)}</Typography>
+							<Typography variant="body1">{t(pool.slashPolicy)}</Typography>
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
@@ -158,7 +162,7 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 								<Trans
 									i18nKey="bonds.currentYield"
 									values={{
-										apy: (farmPool.poolAPY * 100).toFixed(2),
+										apy: (stats.poolAPY * 100).toFixed(2),
 										sign: "%"
 									}}
 									components={{
@@ -194,19 +198,17 @@ export default function FarmForm({ closeDialog, farmPool, withdraw }) {
 					<FormControl style={{ display: "flex" }}>
 						<Button
 							id={`new-${actionName}-farm-btn-${toIdAttributeString(
-								farmPool
-									? farmPool.poolId || actionName
-									: "-farm-pool-not-selected"
+								pool ? pool.poolId || actionName : "-farm-pool-not-selected"
 							)}`}
 							disableElevation
-							disabled={!confirmed || !!amountErr || !farmPool}
+							disabled={!confirmed || !!amountErr || !pool || !stats}
 							color="primary"
 							variant="contained"
 							onClick={onAction}
 						>
 							{withdraw
-								? t("common.withdrawCurrency", { currency: "ADX" })
-								: t("common.depositCurrency", { currency: "ADX" })}
+								? t("common.withdrawCurrency", { currency: depositAssetName })
+								: t("common.depositCurrency", { currency: depositAssetName })}
 						</Button>
 					</FormControl>
 				</Grid>

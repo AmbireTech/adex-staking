@@ -109,7 +109,8 @@ export default function FarmCard({
 	platform,
 	depositAssets,
 	rewardAssets,
-	farmPool
+	pool,
+	stats
 }) {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -353,7 +354,8 @@ export default function FarmCard({
 							onClick={onDepositBtnClick}
 							tooltipTitle={disabledInfo}
 							disabled={disabled}
-							farmPool={farmPool}
+							pool={pool}
+							stats={stats}
 						/>
 					</Box>
 					<Box m={1}>
@@ -370,7 +372,8 @@ export default function FarmCard({
 							tooltipTitle={disabledInfo}
 							disabled={disabled}
 							withdraw
-							farmPool={farmPool}
+							pool={pool}
+							stats={stats}
 						/>
 					</Box>
 				</Box>
