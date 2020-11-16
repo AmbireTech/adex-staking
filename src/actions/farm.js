@@ -80,13 +80,13 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 		async ({
 			poolId,
 			lpTokenAddr,
-			depositAssetsName,
-			depositAssetsAddr,
+			depositAssetName,
+			depositAssetAddr,
 			lpTokenData
 		}) => {
 			return {
-				tokenName: depositAssetsName,
-				tokenAddr: depositAssetsAddr,
+				tokenName: depositAssetName,
+				tokenAddr: depositAssetAddr,
 				lpTokenData: await Promise.all(
 					lpTokenData.map(async ({ token, addr, weight }, index) => ({
 						poolId,
@@ -94,7 +94,7 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 						addr,
 						decimals: await allTokenContracts[token].decimals(),
 						poolBalance: await allTokenContracts[token].balanceOf(
-							lpTokenAddr || depositAssetsAddr
+							lpTokenAddr || depositAssetAddr
 						),
 						poolTotalPriceUSD: null,
 						usdPrice: allTokensInUSD[token] || null,
@@ -161,7 +161,7 @@ const getPoolStats = async ({
 	externalPrices
 }) => {
 	const depositTokenContract = new Contract(
-		pool.depositAssetsAddr,
+		pool.depositAssetAddr,
 		ERC20ABI,
 		defaultProvider
 	)
@@ -205,7 +205,7 @@ const getPoolStats = async ({
 
 	const prices = await getDepositLPTokenToADXValue({ externalPrices })
 
-	const poolTotalADXValue = prices[pool.depositAssetsName].poolTotalADXValue
+	const poolTotalADXValue = prices[pool.depositAssetName].poolTotalADXValue
 
 	const poolAPY =
 		poolADXPerYear
@@ -275,7 +275,7 @@ export async function onLiquidityPoolDeposit({
 	const identityAddr = getUserIdentity(walletAddr).addr
 
 	const LPToken = new Contract(
-		pool.depositAssetsAddr, // just for testing
+		pool.depositAssetAddr, // just for testing
 		ERC20ABI,
 		defaultProvider
 	)
