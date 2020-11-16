@@ -5,13 +5,17 @@ import MasterChefABI from "../abi/MasterChef"
 import { getSigner, defaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
 import { executeOnIdentity } from "./actions"
+import { formatTokens } from "../helpers/formatting"
 
 // const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379" // goerli
 const MASTER_CHEF_ADDR = "0xC0223ab23b519260AE7C52Dfb0a3dff65Da8385A"
-const AVG_ETH_BLOCK_TAME = 13.08
-const SECS_IN_YEAR = 365 * 24 * 60 * 60
+// const AVG_ETH_BLOCK_TAME = 13.08
+const DAYS_IN_YEAR = 365
+// const SECS_IN_YEAR = DAYS_IN_YEAR * 24 * 60 * 60
+const TOTAL_FARM_ADX_REWARDS = 5_000_000
+const DAYS_TO_DISTRIBUTE_REWARDS = 30
 
-const AVG_BLOCKS_PER_YEAR = SECS_IN_YEAR / AVG_ETH_BLOCK_TAME
+// const AVG_BLOCKS_PER_YEAR = SECS_IN_YEAR / AVG_ETH_BLOCK_TAME
 
 const MasterChef = new Contract(
 	MASTER_CHEF_ADDR,
@@ -174,7 +178,7 @@ const getPoolStats = async ({
 		pendingADX,
 		userInfo,
 		poolInfo,
-		adxPerBlock,
+		// adxPerBlock,
 		totalAllocPoint
 	] = await Promise.all([
 		depositTokenContract.totalSupply(),
@@ -183,7 +187,7 @@ const getPoolStats = async ({
 		identityAddr ? MasterChef.pendingADX(pool.poolId, walletAddr) : null,
 		identityAddr ? MasterChef.userInfo(pool.poolId, walletAddr) : null,
 		MasterChef.poolInfo(pool.poolId),
-		MasterChef.ADXPerBlock(),
+		// MasterChef.ADXPerBlock(),
 		MasterChef.totalAllocPoint()
 	])
 	const precision = 10_000_000
@@ -198,21 +202,24 @@ const getPoolStats = async ({
 					.toNumber() / precision
 			: null
 
-	const poolAdxPerBlock = totalAllocPoint.gt(ZERO)
-		? poolInfo[1].mul(adxPerBlock).div(totalAllocPoint)
-		: ZERO
-
-	const poolADXPerYear = poolAdxPerBlock.mul(AVG_BLOCKS_PER_YEAR.toFixed(0))
+	const poolAllocPoints = poolInfo[1].toNumber()
 
 	const prices = await getDepositLPTokenToADXValue({ externalPrices })
+	const totalStakedFloat = parseFloat(
+		formatTokens(totalStaked, pool.depositAssetDecimals)
+	)
 
-	const poolTotalADXValue = prices[pool.depositAssetName].poolTotalADXValue
+	const lpTokenPrice =
+		prices[pool.depositAssetName].poolTotalPriceUSD /
+		parseFloat(formatTokens(totalSupply, pool.depositAssetDecimals))
+	const lpTokenStakedValueUSD = totalStakedFloat * lpTokenPrice
+	const rewardsDistributedPerYearInUSD =
+		(poolAllocPoints / totalAllocPoint.toNumber()) *
+		TOTAL_FARM_ADX_REWARDS *
+		externalPrices.USD *
+		(DAYS_IN_YEAR / DAYS_TO_DISTRIBUTE_REWARDS)
 
-	const poolAPY =
-		poolADXPerYear
-			.mul(precision)
-			.div(poolTotalADXValue)
-			.toNumber() / precision
+	const poolAPY = rewardsDistributedPerYearInUSD / (lpTokenStakedValueUSD || 1)
 
 	return {
 		poolId: pool.poolId,
@@ -225,8 +232,6 @@ const getPoolStats = async ({
 		userLPBalance,
 		useShare,
 		poolInfo,
-		poolAdxPerBlock,
-		poolADXPerYear,
 		poolAPY
 	}
 }
