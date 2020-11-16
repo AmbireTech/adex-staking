@@ -1,19 +1,16 @@
 import React, { Fragment } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import {
-	Box,
-	Button,
-	LinearProgress,
-	Typography,
-	SvgIcon
-} from "@material-ui/core"
+import { Box, LinearProgress, Typography, SvgIcon } from "@material-ui/core"
 import { SwapHorizSharp as AssetsLinkIcon } from "@material-ui/icons"
 import { ReactComponent as ComingSoonImg } from "./../resources/coming-soon-ic.svg"
 import { CardRow } from "./cardCommon"
-import Tooltip from "./Tooltip"
 import { useTranslation, Trans } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
 import { toIdAttributeString } from "../helpers/formatting"
+import WithDialog from "./WithDialog"
+import FarmForm from "./FarmForm"
+
+const FarmFormDialog = WithDialog(FarmForm)
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -111,7 +108,8 @@ export default function FarmCard({
 	special,
 	platform,
 	depositAssets,
-	rewardAssets
+	rewardAssets,
+	farmPool
 }) {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -343,44 +341,37 @@ export default function FarmCard({
 					))}
 
 					<Box m={1}>
-						<Tooltip title={disabled ? disabledInfo : ""}>
-							<div>
-								{actionBtn || (
-									<Button
-										id={`deposit-liquidity-pool-${id}`}
-										fullWidth
-										variant="contained"
-										disableElevation
-										color="secondary"
-										size="large"
-										onClick={onDepositBtnClick}
-										disabled={disabled}
-									>
-										{t("common.deposit")}
-									</Button>
-								)}
-							</div>
-						</Tooltip>
+						<FarmFormDialog
+							id={`deposit-liquidity-pool-${id}`}
+							title={t("common.addNewDeposit")}
+							btnLabel={t("common.deposit")}
+							fullWidth
+							variant="contained"
+							disableElevation
+							color="secondary"
+							size="large"
+							onClick={onDepositBtnClick}
+							tooltipTitle={disabledInfo}
+							disabled={disabled}
+							farmPool={farmPool}
+						/>
 					</Box>
 					<Box m={1}>
-						<Tooltip title={disabled ? disabledInfo : ""}>
-							<div>
-								{actionBtn || (
-									<Button
-										id={`withdraw-liquidity-pool-${id}`}
-										fullWidth
-										variant="contained"
-										disableElevation
-										color="default"
-										size="large"
-										onClick={onWithdrawBtnClick}
-										disabled={disabled}
-									>
-										{t("common.withdraw")}
-									</Button>
-								)}
-							</div>
-						</Tooltip>
+						<FarmFormDialog
+							id={`withdraw-liquidity-pool-${id}`}
+							title={t("common.withdraw")}
+							btnLabel={t("common.withdraw")}
+							fullWidth
+							variant="contained"
+							disableElevation
+							color="default"
+							size="large"
+							onClick={onDepositBtnClick}
+							tooltipTitle={disabledInfo}
+							disabled={disabled}
+							withdraw
+							farmPool={farmPool}
+						/>
 					</Box>
 				</Box>
 			)}
