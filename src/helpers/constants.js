@@ -120,7 +120,8 @@ export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 export const REACT_APP_RPC_URL =
 	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
-export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
+// export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
+export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
 
 export const FARM_POOLS = [
 	{
@@ -129,8 +130,9 @@ export const FARM_POOLS = [
 		name: "TST-ADX",
 		token: "TST-ADX",
 		platform: "Balancer",
-		depositAssetsName: "TST-ADX",
-		depositAssetsAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
+		depositAssetName: "TST-ADX",
+		depositAssetAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
+		depositAssetDecimals: 18,
 		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
 		lpTokenAddr: "0x2aecF52ABe359820c48986046959B4136AfDfbe2",
 		lpTokenData: [
@@ -156,8 +158,9 @@ export const FARM_POOLS = [
 		name: "ADX-TST-2",
 		token: "ADX-TST-2",
 		platform: "Uniswap",
-		depositAssetsName: "ADX-TST-2",
-		depositAssetsAddr: ADDR_ADX,
+		depositAssetName: "ADX-TST-2",
+		depositAssetAddr: ADDR_ADX,
+		depositAssetDecimals: 18,
 		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
 		lpTokenAddr: "0x0A8fe6e91eaAb3758dF18f546f7364343667E957",
 		lpTokenData: [
@@ -182,8 +185,8 @@ export const FARM_POOLS = [
 	// 	name: "Balancer ADX-yUSD",
 	// 	token: "BPT-ADX-yUSD",
 	// 	platform: "Balancer",
-	// 	depositAssetsName: "BPT-ADX-yUSD",
-	// 	depositAssetsAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
+	// 	depositAssetName: "BPT-ADX-yUSD",
+	// 	depositAssetAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
 	// 	getDepositAssetsUrl:
 	// 		"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
 	//  lpTokenData: { 'ADX': 0.3, 'BPT-ADX-yUSD': 0.7 },
