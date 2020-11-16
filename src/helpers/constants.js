@@ -114,65 +114,95 @@ export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")
 
 export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 
-// export const REACT_APP_RPC_URL =
-// 	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
-
 export const REACT_APP_RPC_URL =
-	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
-// export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
-export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
+// export const REACT_APP_RPC_URL =
+// 	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+
+export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
+// export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
 
 export const FARM_POOLS = [
+	// {
+	// 	// GOERLI TST
+	// 	poolId: 0,
+	// 	name: "TST-ADX",
+	// 	token: "TST-ADX",
+	// 	platform: "Balancer",
+	// 	depositAssetName: "TST-ADX",
+	// 	depositAssetAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
+	// 	depositAssetDecimals: 18,
+	// 	getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
+	// 	lpTokenAddr: "0x2aecF52ABe359820c48986046959B4136AfDfbe2",
+	// 	lpTokenData: [
+	// 		{
+	// 			token: "TST",
+	// 			weight: 0.2,
+	// 			addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+	// 		},
+	// 		{
+	// 			token: "ADX",
+	// 			weight: 0.8,
+	// 			addr: ADDR_ADX
+	// 		}
+	// 	],
+	// 	rewardAssetsName: "ADX",
+	// 	rewardAssetAddr: ADDR_ADX,
+	// 	platformIcon: BalancerIcon,
+	// 	assetsIcons: [ADXIcon, YUSDIcon]
+	// },
+	// {
+	// 	// GOERLI TST
+	// 	poolId: 1,
+	// 	name: "ADX-TST-2",
+	// 	token: "ADX-TST-2",
+	// 	platform: "Uniswap",
+	// 	depositAssetName: "ADX-TST-2",
+	// 	depositAssetAddr: ADDR_ADX,
+	// 	depositAssetDecimals: 18,
+	// 	getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
+	// 	lpTokenAddr: "0x0A8fe6e91eaAb3758dF18f546f7364343667E957",
+	// 	lpTokenData: [
+	// 		{
+	// 			token: "ADX",
+	// 			weight: 0.83129,
+	// 			addr: ADDR_ADX
+	// 		},
+	// 		{
+	// 			token: "TST2",
+	// 			weight: 1 - 0.83129,
+	// 			addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+	// 		}
+	// 	],
+	// 	rewardAssetsName: "ADX",
+	// 	rewardAssetAddr: ADDR_ADX,
+	// 	platformIcon: UniswapIcon,
+	// 	assetsIcons: [ADXIcon, ADXIcon]
+	// }
+
 	{
-		// GOERLI TST
-		poolId: 0,
-		name: "TST-ADX",
-		token: "TST-ADX",
-		platform: "Balancer",
-		depositAssetName: "TST-ADX",
-		depositAssetAddr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D",
-		depositAssetDecimals: 18,
-		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
-		lpTokenAddr: "0x2aecF52ABe359820c48986046959B4136AfDfbe2",
-		lpTokenData: [
-			{
-				token: "TST",
-				weight: 0.2,
-				addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
-			},
-			{
-				token: "ADX",
-				weight: 0.8,
-				addr: ADDR_ADX
-			}
-		],
-		rewardAssetsName: "ADX",
-		rewardAssetAddr: ADDR_ADX,
-		platformIcon: BalancerIcon,
-		assetsIcons: [ADXIcon, YUSDIcon]
-	},
-	{
-		// GOERLI TST
+		// MAINNET
 		poolId: 1,
-		name: "ADX-TST-2",
-		token: "ADX-TST-2",
-		platform: "Uniswap",
-		depositAssetName: "ADX-TST-2",
-		depositAssetAddr: ADDR_ADX,
+		name: "UNI-V2 ADX-ETH",
+		token: "UNI-ADX-ETH",
+		platform: "Uniswap UNI-V2",
+		depositAssetName: "UNI-ADX-ETH",
+		depositAssetAddr: "0xd3772a963790fede65646cfdae08734a17cd0f47",
 		depositAssetDecimals: 18,
-		getDepositAssetsUrl: "https://goerli-faucet.slock.it/",
-		lpTokenAddr: "0x0A8fe6e91eaAb3758dF18f546f7364343667E957",
+		getDepositAssetsUrl:
+			"https://info.uniswap.org/pair/0xd3772a963790fede65646cfdae08734a17cd0f47",
+		lpTokenAddr: "0xd3772a963790fede65646cfdae08734a17cd0f47",
 		lpTokenData: [
 			{
 				token: "ADX",
-				weight: 0.83129,
-				addr: ADDR_ADX
+				weight: 0.5,
+				addr: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 			},
 			{
-				token: "TST2",
-				weight: 1 - 0.83129,
-				addr: "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+				token: "ETH",
+				weight: 0.5,
+				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
 		rewardAssetsName: "ADX",
