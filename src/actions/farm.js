@@ -6,7 +6,8 @@ import { getSigner, defaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
 import { executeOnIdentity } from "./actions"
 
-const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379"
+// const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379" // goerli
+const MASTER_CHEF_ADDR = "0xC0223ab23b519260AE7C52Dfb0a3dff65Da8385A"
 const AVG_ETH_BLOCK_TAME = 13.08
 const SECS_IN_YEAR = 365 * 24 * 60 * 60
 
