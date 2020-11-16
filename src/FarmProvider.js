@@ -9,18 +9,19 @@ function useFarm() {
 	const [farmStats, setStats] = useState({})
 
 	useEffect(() => {
-		console.log("chosenWalletType", chosenWalletType)
-		const updatePoolStats = async () => {
-			const stats = await getFarmPoolsStats({
-				chosenWalletType,
-				externalPrices: prices
-			})
-			setStats(stats)
+		if (Object.keys(prices).length && !Object.keys(farmStats).length) {
+			const updatePoolStats = async () => {
+				const stats = await getFarmPoolsStats({
+					chosenWalletType,
+					externalPrices: prices
+				})
+				setStats(stats)
+			}
+			updatePoolStats()
 		}
-		updatePoolStats()
 		// Will not update on prices change
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType])
+	}, [chosenWalletType, prices])
 
 	return {
 		farmStats
