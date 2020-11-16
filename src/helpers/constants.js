@@ -183,7 +183,7 @@ export const FARM_POOLS = [
 
 	{
 		// MAINNET
-		poolId: 1,
+		poolId: 0,
 		name: "UNI-V2 ADX-ETH",
 		token: "UNI-ADX-ETH",
 		platform: "Uniswap UNI-V2",
