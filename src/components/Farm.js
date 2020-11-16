@@ -1,5 +1,6 @@
 import React, { useContext } from "react"
 import { FarmContext } from "../FarmProvider"
+import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import FarmCard from "./FarmCard"
 import { formatADXPretty } from "../helpers/formatting"
@@ -10,12 +11,10 @@ import { FARM_POOLS } from "../helpers/constants"
 const Farm = () => {
 	const { t } = useTranslation()
 	const { farmStats } = useContext(FarmContext)
+	const { stats: appStats, chosenWalletType } = useContext(AppContext)
 	const { pollStatsLoaded, userStatsLoaded, statsByPoolId } = farmStats
 
-	console.log("farmStats", farmStats)
-
-	const canStake = true // !!chosenWalletType.name && !!stats.connectedWalletAddress
-
+	const canStake = !!chosenWalletType.name && userStatsLoaded //&& !!appStats.connectedWalletAddress
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
 	return (
@@ -52,20 +51,20 @@ const Farm = () => {
 								]}
 								name={farm.name}
 								platform={farm.platform}
-								depositAssets={farm.depositAssetsName}
+								depositAssets={farm.depositAssetName}
 								getDepositAssetsUrl={farm.getDepositAssetsUrl}
 								rewardAssets={farm.rewardAssetsName}
 								totalDepositTokenBalance={
 									pollStatsLoaded
 										? `${formatADXPretty(stats.totalSupply)} ${
-												farm.depositAssetsName
+												farm.depositAssetName
 										  }`
 										: t("farm.NA")
 								}
 								totalDepositTokenStaked={
 									pollStatsLoaded
 										? `${formatADXPretty(stats.totalStaked)} ${
-												farm.depositAssetsName
+												farm.depositAssetName
 										  }`
 										: t("farm.NA")
 								}
@@ -105,10 +104,8 @@ const Farm = () => {
 										? `${formatADXPretty(stats.walletBalance)} ${farm.token}`
 										: t("farm.NA")
 								}
-								farmPool={{
-									...farm,
-									...stats
-								}}
+								pool={farm}
+								stats={stats}
 							/>
 						)
 					})}
