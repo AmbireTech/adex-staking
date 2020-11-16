@@ -105,6 +105,10 @@ const Farm = () => {
 										? `${formatADXPretty(stats.walletBalance)} ${farm.token}`
 										: t("farm.NA")
 								}
+								farmPool={{
+									...farm,
+									...stats
+								}}
 							/>
 						)
 					})}
