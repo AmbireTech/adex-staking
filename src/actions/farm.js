@@ -1,9 +1,10 @@
 import { Contract, utils } from "ethers"
-import { FARM_POOLS, ZERO } from "../helpers/constants"
+import { FARM_POOLS, ZERO, MAX_UINT } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 import MasterChefABI from "../abi/MasterChef"
 import { getSigner, defaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
+import { executeOnIdentity } from "./actions"
 
 const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379"
 const AVG_ETH_BLOCK_TAME = 13.08
@@ -257,12 +258,74 @@ export const getFarmPoolsStats = async ({
 	}
 }
 
-export const getDepositActionByFarmPoolId = farmPool => {
-	// TODO:
-	return () => {}
+export async function onLiquidityPoolDeposit({
+	pool,
+	stats,
+	chosenWalletType,
+	actionAmount
+}) {
+	if (!stats || !pool) throw new Error("errors.statsNotProvided")
+	if (!actionAmount) throw new Error("errors.noDepositAmount")
+	if (actionAmount.isZero()) throw new Error("errors.zeroDeposit")
+
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+
+	const walletAddr = await signer.getAddress()
+	const identityAddr = getUserIdentity(walletAddr).addr
+
+	const LPToken = new Contract(
+		pool.depositAssetsAddr, // just for testing
+		ERC20ABI,
+		defaultProvider
+	)
+
+	const [allowance, allowanceMC, balanceOnWallet] = await Promise.all([
+		LPToken.allowance(walletAddr, identityAddr),
+		LPToken.allowance(identityAddr, MASTER_CHEF_ADDR),
+		LPToken.balanceOf(walletAddr)
+	])
+
+	if (actionAmount.gt(balanceOnWallet)) {
+		throw new Error("errors.amountTooLarge")
+	}
+
+	const setAllowance = actionAmount.gt(ZERO) && !allowance.gte(actionAmount)
+
+	// set allowance to identity
+	if (setAllowance) {
+		const tokenWithSigner = LPToken.connect(signer)
+		await tokenWithSigner.approve(identityAddr, MAX_UINT)
+	}
+
+	let identityTxns = []
+
+	if (allowanceMC.lt(actionAmount)) {
+		identityTxns.push([
+			LPToken.address,
+			LPToken.interface.functions.approve.encode([MASTER_CHEF_ADDR, MAX_UINT])
+		])
+	}
+
+	identityTxns.push([
+		MasterChef.address,
+		MasterChef.interface.functions.deposit.encode([pool.poolId, actionAmount])
+	])
+
+	return executeOnIdentity(
+		chosenWalletType,
+		identityTxns,
+		setAllowance ? { gasLimit: 450000 } : {}
+	)
 }
 
-export const getWithdrawActionByFarmPoolId = farmPool => {
+export async function onLiquidityPoolWithdraw({
+	pool,
+	stats,
+	chosenWalletType,
+	actionAmount
+}) {
+	console.log("onLiquidityPoolWithdraw", stats)
+
 	// TODO:
-	return () => {}
 }
