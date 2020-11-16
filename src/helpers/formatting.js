@@ -39,6 +39,14 @@ export function parseADX(n) {
 	return parseUnits(n, 18)
 }
 
+export function parseTokens(n, decimals = 18) {
+	return parseUnits(n, 18)
+}
+
+export function formatTokens(n, decimals = 18) {
+	return formatUnits(n, decimals)
+}
+
 export function formatDate(d) {
 	return `${d.getDate()} ${d.toLocaleString("default", {
 		month: "short"
