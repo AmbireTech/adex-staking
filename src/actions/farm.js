@@ -256,3 +256,13 @@ export const getFarmPoolsStats = async ({
 		statsByPoolId
 	}
 }
+
+export const getDepositActionByFarmPoolId = farmPool => {
+	// TODO:
+	return () => {}
+}
+
+export const getWithdrawActionByFarmPoolId = farmPool => {
+	// TODO:
+	return () => {}
+}
