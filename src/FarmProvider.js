@@ -9,7 +9,8 @@ function useFarm() {
 	const [farmStats, setStats] = useState({})
 
 	useEffect(() => {
-		if (Object.keys(prices).length && !Object.keys(farmStats).length) {
+		// TODO: update on wallet change but not on prices change
+		if (Object.keys(prices).length) {
 			const updatePoolStats = async () => {
 				const stats = await getFarmPoolsStats({
 					chosenWalletType,
