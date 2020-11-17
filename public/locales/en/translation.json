@@ -264,6 +264,7 @@
     "totalDepositTokenBalance": "Total {{depositAssets}} tokens",
     "totalDepositTokenStaked": "Pool total {{depositAssets}} staked",
     "userStakedShare": "My share",
-    "NA": "N/A"
+    "NA": "N/A",
+    "myReward": "Unclaimed reward"
   }
 }

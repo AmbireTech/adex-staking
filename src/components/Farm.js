@@ -7,7 +7,7 @@ import { formatADXPretty } from "../helpers/formatting"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 import { FARM_POOLS } from "../helpers/constants"
-import theFarmer from "../resources/eddie-the-farmer.png"
+import theFarmer from "../resources/eddie-the-farmer-small.png"
 
 const Farm = () => {
 	const { t } = useTranslation()
@@ -94,7 +94,7 @@ const Farm = () => {
 								mpyInfo={[
 									t("pools.currentDailyYield", {
 										yield: pollStatsLoaded
-											? (poolMPY / 30).toFixed(4)
+											? (poolMPY / 30).toFixed(4) + " %"
 											: t("farm.NA")
 									})
 								]}
@@ -127,6 +127,11 @@ const Farm = () => {
 								liquidityOnWallet={
 									userStatsLoaded
 										? `${formatADXPretty(stats.walletBalance)} ${farm.token}`
+										: t("farm.NA")
+								}
+								pendingADX={
+									userStatsLoaded
+										? `${formatADXPretty(stats.walletBalance)} ADX`
 										: t("farm.NA")
 								}
 								pool={farm}

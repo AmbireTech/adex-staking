@@ -101,6 +101,7 @@ export default function FarmCard({
 	liquidityInfoText,
 	liquidityStaked,
 	liquidityOnWallet,
+	pendingADX,
 	loaded,
 	actions,
 	comingSoon,
@@ -292,6 +293,18 @@ export default function FarmCard({
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
 						text={liquidityOnWallet}
+					/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={t("farm.myReward")}
+					/>
+					<CardRow
+						color="special.main"
+						fontWeight={"fontWeightRegular"}
+						fontSize={14}
+						text={pendingADX}
 						mb={3}
 					/>
 
