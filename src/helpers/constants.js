@@ -215,7 +215,7 @@ export const FARM_POOLS = [
 	},
 	{
 		poolId: 1,
-		name: "Balancer ADX-ETH",
+		name: "Balancer ADX-yUSD",
 		token: "BPT-ADX-yUSD",
 		platform: "Balancer",
 		depositAssetName: "BPT-ADX-yUSD",
