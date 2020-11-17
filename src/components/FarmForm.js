@@ -153,7 +153,7 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 					</Box>
 				)}
 
-				{pool && stats ? (
+				{/* {pool && stats ? (
 					<Box my={2}>
 						<Typography variant="h6">{t("farm.poolMPY")}:</Typography>
 						<Typography variant="body1">
@@ -174,7 +174,7 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 					</Box>
 				) : (
 					""
-				)}
+				)} */}
 				{confirmationLabel && (
 					<Grid item xs={12}>
 						<FormControlLabel
