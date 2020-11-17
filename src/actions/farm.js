@@ -184,8 +184,8 @@ const getPoolStats = async ({
 		depositTokenContract.totalSupply(),
 		depositTokenContract.balanceOf(MasterChef.address),
 		getUserBalances({ depositTokenContract, walletAddr, identityAddr }),
-		identityAddr ? MasterChef.pendingADX(pool.poolId, walletAddr) : null,
-		identityAddr ? MasterChef.userInfo(pool.poolId, walletAddr) : null,
+		identityAddr ? MasterChef.pendingADX(pool.poolId, identityAddr) : null,
+		identityAddr ? MasterChef.userInfo(pool.poolId, identityAddr) : null,
 		MasterChef.poolInfo(pool.poolId),
 		// MasterChef.ADXPerBlock(),
 		MasterChef.totalAllocPoint()
@@ -286,10 +286,16 @@ export async function onLiquidityPoolDeposit({
 		defaultProvider
 	)
 
-	const [allowance, allowanceMC, balanceOnWallet] = await Promise.all([
+	const [
+		allowance,
+		allowanceMC,
+		balanceOnWallet,
+		balanceOnIdentity
+	] = await Promise.all([
 		LPToken.allowance(walletAddr, identityAddr),
 		LPToken.allowance(identityAddr, MASTER_CHEF_ADDR),
-		LPToken.balanceOf(walletAddr)
+		LPToken.balanceOf(walletAddr),
+		LPToken.balanceOf(identityAddr)
 	])
 
 	if (actionAmount.gt(balanceOnWallet)) {
@@ -298,6 +304,8 @@ export async function onLiquidityPoolDeposit({
 
 	const setAllowance = actionAmount.gt(ZERO) && !allowance.gte(actionAmount)
 
+	const needed = actionAmount.sub(balanceOnIdentity)
+
 	// set allowance to identity
 	if (setAllowance) {
 		const tokenWithSigner = LPToken.connect(signer)
@@ -305,6 +313,16 @@ export async function onLiquidityPoolDeposit({
 	}
 
 	let identityTxns = []
+
+	if (needed.gt(ZERO))
+		identityTxns.push([
+			LPToken.address,
+			LPToken.interface.functions.transferFrom.encode([
+				walletAddr,
+				identityAddr,
+				needed
+			])
+		])
 
 	if (allowanceMC.lt(actionAmount)) {
 		identityTxns.push([
