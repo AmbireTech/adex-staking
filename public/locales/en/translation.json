@@ -89,7 +89,7 @@
     "tomRewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on our Explorer. There is an additional incentive reward of 7 million ADX to be distributed by the end of 2020.",
     "tomSlashPolicy": "No slashing.",
     "unbondPeriodDay": "{{count}} day",
-    "unbondPeriodDay_plural": "{{count}} days",    
+    "unbondPeriodDay_plural": "{{count}} days",
     "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
     "tomApyStability": "Flexible",
     "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
@@ -251,7 +251,6 @@
     "labelTransactions": "Impressions (Transactions)"
   },
   "farm": {
-
     "poolMPY": "Pool MPY",
     "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
     "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
@@ -269,6 +268,7 @@
     "NA": "N/A",
     "myReward": "Unclaimed reward",
     "labelLPTokenAmount": "{{token}} amount",
-    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw."
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> "
   }
 }

@@ -205,28 +205,51 @@ export default function FarmCard({
 						mb={3}
 					/>
 
+					{/* <CardRow
+							color="text.main"
+							fontWeight={"fontWeightRegular"}
+							fontSize={14}
+							text={
+								<Trans
+									i18nKey="farm.currentMPYLabel"
+									values={{ mpy: currentMPY }}
+									components={{
+										strong: (
+											<Box
+												ml={1}
+												display="inline"
+												color="special.main"
+												fontWeight={"fontWeightBold"}
+												fontSize={20}
+											/>
+										)
+									}}
+								/>
+							}
+							infoText={mpyInfo}
+							mb={3}
+						/> */}
+
 					<CardRow
-						color="text.main"
+						color="special.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
 						text={
 							<Trans
-								i18nKey="farm.currentMPYLabel"
-								values={{ mpy: currentMPY }}
+								i18nKey="farm.farmStartsInfo"
 								components={{
-									strong: (
-										<Box
-											ml={1}
-											display="inline"
-											color="special.main"
-											fontWeight={"fontWeightBold"}
-											fontSize={20}
+									externalLink: (
+										<ExternalAnchor
+											className={classes.getLink}
+											color="secondary"
+											id={`farm-starts-info-link-pool=${id}`}
+											target="_blank"
+											href={`https://etherscan.io/block/countdown/11296000`}
 										/>
 									)
 								}}
 							/>
 						}
-						infoText={mpyInfo}
 						mb={3}
 					/>
 
