@@ -266,6 +266,7 @@
     "userStakedShare": "My share",
     "NA": "N/A",
     "myReward": "Unclaimed reward",
-    "labelLPTokenAmount": "{{token}} amount"
+    "labelLPTokenAmount": "{{token}} amount",
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw."
   }
 }

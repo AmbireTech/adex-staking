@@ -125,9 +125,9 @@ export default function FarmCard({
 			bgcolor={"background.card"}
 			p={3}
 			my={4}
-			mx={1}
+			mx={2}
 			pt={7}
-			width={420}
+			width={320}
 			maxWidth="100%"
 			minHeight={420}
 			display="flex"
@@ -239,7 +239,7 @@ export default function FarmCard({
 						mb={3}
 					/> */}
 
-					<CardRow
+					{/* <CardRow
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
@@ -252,7 +252,7 @@ export default function FarmCard({
 						text={totalDepositTokenBalance}
 						isAmountText
 						mb={0.5}
-					/>
+					/> */}
 					<CardRow
 						color="text.main"
 						fontWeight={"fontWeightRegular"}

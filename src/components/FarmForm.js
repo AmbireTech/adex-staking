@@ -21,6 +21,7 @@ import {
 	Checkbox,
 	Box
 } from "@material-ui/core"
+import { Alert } from "@material-ui/lab"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 
@@ -43,8 +44,9 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 		rewardAssetName
 	} = pool
 
-	const maxAmount = withdraw ? stats.userLPBalance || ZERO : stats.walletBalance
-	const reward = withdraw ? stats.pendingADX || ZERO : null
+	const { pendingADX, userLPBalance, walletBalance } = stats
+
+	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
 
 	const onAction = async () => {
 		setConfirmation(false)
@@ -150,14 +152,22 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 					</Box>
 				</Grid>
 
+				{withdraw && (
+					<Box mt={2}>
+						<Alert variant="filled" severity="info">
+							{t("farm.withdrawRewardsAlert", { pendingADX, depositAssetName })}
+						</Alert>
+					</Box>
+				)}
+
 				{pool && stats ? (
 					<Box>
-						<Typography variant="h6">{t("common.poolMPY")}:</Typography>
+						<Typography variant="h6">{t("farm.poolMPY")}:</Typography>
 						<Typography variant="body1">
 							<Trans
 								i18nKey="farm.currentMPYLabel"
 								values={{
-									apy: (stats.poolMPY * 100).toFixed(2),
+									mpy: (stats.poolMPY * 100).toFixed(2),
 									sign: "%"
 								}}
 								components={{

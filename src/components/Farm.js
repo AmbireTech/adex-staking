@@ -131,7 +131,7 @@ const Farm = () => {
 								}
 								pendingADX={
 									userStatsLoaded
-										? `${formatADXPretty(stats.walletBalance)} ADX`
+										? `${formatADXPretty(stats.pendingADX)} ADX`
 										: t("farm.NA")
 								}
 								pool={farm}
