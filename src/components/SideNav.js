@@ -20,13 +20,13 @@ import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import {
 	HomeSharp as HomeIcon,
-	DashboardSharp as DashboardIcon,
-	EmojiNatureSharp as FarmIcon
+	DashboardSharp as DashboardIcon
 } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
+import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
 import { useTranslation } from "react-i18next"
 // import { fade } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"

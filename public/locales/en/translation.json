@@ -251,6 +251,8 @@
     "labelTransactions": "Impressions (Transactions)"
   },
   "farm": {
+
+    "poolMPY": "Pool MPY",
     "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
     "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
     "totalDeposits": "Total deposits",
