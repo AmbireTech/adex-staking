@@ -1,5 +1,5 @@
 import { Contract, utils } from "ethers"
-import { FARM_POOLS, ZERO, MAX_UINT } from "../helpers/constants"
+import { ADDR_ADX, FARM_POOLS, ZERO, MAX_UINT } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 import MasterChefABI from "../abi/MasterChef"
 import { getSigner, defaultProvider } from "../ethereum"
@@ -22,6 +22,8 @@ const MasterChef = new Contract(
 	MasterChefABI,
 	defaultProvider
 )
+
+const ADXToken = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 
 const getUserBalances = async ({
 	depositTokenContract,
@@ -357,7 +359,50 @@ export async function onLiquidityPoolWithdraw({
 	chosenWalletType,
 	actionAmount
 }) {
-	console.log("onLiquidityPoolWithdraw", stats)
+	if (!stats || !pool) throw new Error("errors.statsNotProvided")
+	if (!actionAmount) throw new Error("errors.noDepositAmount")
 
-	// TODO:
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+
+	const walletAddr = await signer.getAddress()
+	const identityAddr = getUserIdentity(walletAddr).addr
+
+	const LPToken = new Contract(pool.depositAssetAddr, ERC20ABI, defaultProvider)
+
+	const [userInfo, pendingADX] = await Promise.all([
+		MasterChef.userInfo(pool.poolId, identityAddr),
+		MasterChef.pendingADX(pool.poolId, identityAddr)
+	])
+
+	const userLPBalance = userInfo ? userInfo[0] : ZERO
+
+	if (actionAmount.gt(userLPBalance)) {
+		throw new Error("errors.amountTooLarge")
+	}
+
+	let identityTxns = []
+
+	identityTxns.push([
+		MasterChef.address,
+		MasterChef.interface.functions.withdraw.encode([pool.poolId, actionAmount])
+	])
+
+	identityTxns.push([
+		LPToken.address,
+		LPToken.interface.functions.transfer.encode([walletAddr, actionAmount])
+	])
+
+	if (pendingADX.gt(ZERO)) {
+		identityTxns.push([
+			ADXToken.address,
+			ADXToken.interface.functions.transferFrom.encode([
+				identityAddr,
+				walletAddr,
+				pendingADX
+			])
+		])
+	}
+
+	return executeOnIdentity(chosenWalletType, identityTxns)
 }
