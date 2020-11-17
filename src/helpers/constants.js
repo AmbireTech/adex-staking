@@ -8,6 +8,9 @@ import { ReactComponent as BalancerIcon } from "./../resources/balancer-bal-logo
 import { ReactComponent as UniswapIcon } from "./../resources/uniswap-uni-logo.svg"
 import { ReactComponent as YUSDIcon } from "./../resources/yUSD.svg"
 import { ReactComponent as ADXIcon } from "./../resources/adex-logo-clean.svg"
+import { ReactComponent as ETHIcon } from "./../resources/eth-logo.svg"
+import { ReactComponent as YFIIcon } from "./../resources/yfi-logo.svg"
+import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
@@ -181,12 +184,12 @@ export const FARM_POOLS = [
 	// 	assetsIcons: [ADXIcon, ADXIcon]
 	// }
 
+	// MAINNET
 	{
-		// MAINNET
 		poolId: 0,
-		name: "UNI-V2 ADX-ETH",
+		name: "Uniswap ADX-ETH",
 		token: "UNI-ADX-ETH",
-		platform: "Uniswap UNI-V2",
+		platform: "Uniswap",
 		depositAssetName: "UNI-ADX-ETH",
 		depositAssetAddr: "0xd3772a963790fede65646cfdae08734a17cd0f47",
 		depositAssetDecimals: 18,
@@ -208,21 +211,146 @@ export const FARM_POOLS = [
 		rewardAssetsName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [ADXIcon, ADXIcon]
+		assetsIcons: [ADXIcon, ETHIcon]
+	},
+	{
+		poolId: 1,
+		name: "Balancer ADX-ETH",
+		token: "BPT-ADX-yUSD",
+		platform: "Balancer",
+		depositAssetName: "BPT-ADX-yUSD",
+		depositAssetAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
+		depositAssetDecimals: 18,
+		getDepositAssetsUrl:
+			"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
+		lpTokenAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
+		lpTokenData: [
+			{
+				token: "ADX",
+				weight: 0.7,
+				addr: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
+			},
+			{
+				token: "yUSD",
+				weight: 0.3,
+				addr: "0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c"
+			}
+		],
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: BalancerIcon,
+		assetsIcons: [ADXIcon, YUSDIcon]
+	},
+	{
+		poolId: 2,
+		name: "Balancer BAL-ETH",
+		token: "BPT-BAL-ETH",
+		platform: "Balancer",
+		depositAssetName: "BPT-BAL-ETH",
+		depositAssetAddr: "0x59A19D8c652FA0284f44113D0ff9aBa70bd46fB4",
+		depositAssetDecimals: 18,
+		getDepositAssetsUrl:
+			"https://pools.balancer.exchange/#/pool/0x59A19D8c652FA0284f44113D0ff9aBa70bd46fB4/",
+		lpTokenAddr: "0x59A19D8c652FA0284f44113D0ff9aBa70bd46fB4",
+		lpTokenData: [
+			{
+				token: "BAL",
+				weight: 0.8,
+				addr: "0xba100000625a3754423978a60c9317c58a424e3D"
+			},
+			{
+				token: "ETH",
+				weight: 0.2,
+				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+			}
+		],
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: BalancerIcon,
+		assetsIcons: [BalancerIcon, ETHIcon]
+	},
+	{
+		poolId: 3,
+		name: "Uniswap YFI-ETH",
+		token: "UNI-YFI-ETH",
+		platform: "Uniswap",
+		depositAssetName: "UNI-YFI-ETH",
+		depositAssetAddr: "0x2fDbAdf3C4D5A8666Bc06645B8358ab803996E28",
+		depositAssetDecimals: 18,
+		getDepositAssetsUrl:
+			"https://info.uniswap.org/pair/0x2fDbAdf3C4D5A8666Bc06645B8358ab803996E28",
+		lpTokenAddr: "0x2fDbAdf3C4D5A8666Bc06645B8358ab803996E28",
+		lpTokenData: [
+			{
+				token: "YFI",
+				weight: 0.5,
+				addr: "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e"
+			},
+			{
+				token: "ETH",
+				weight: 0.5,
+				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+			}
+		],
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: UniswapIcon,
+		assetsIcons: [YFIIcon, ETHIcon]
+	},
+	{
+		poolId: 4,
+		name: "Uniswap UNI-ETH",
+		token: "UNI-UNI-ETH",
+		platform: "Uniswap",
+		depositAssetName: "UNI-UNI-ETH",
+		depositAssetAddr: "0xd3d2E2692501A5c9Ca623199D38826e513033a17",
+		depositAssetDecimals: 18,
+		getDepositAssetsUrl:
+			"https://info.uniswap.org/pair/0xd3d2E2692501A5c9Ca623199D38826e513033a17",
+		lpTokenAddr: "0xd3d2E2692501A5c9Ca623199D38826e513033a17",
+		lpTokenData: [
+			{
+				token: "UNI",
+				weight: 0.5,
+				addr: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+			},
+			{
+				token: "ETH",
+				weight: 0.5,
+				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+			}
+		],
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: UniswapIcon,
+		assetsIcons: [UniswapIcon, ETHIcon]
+	},
+	{
+		poolId: 5,
+		name: "Uniswap LINK-ETH",
+		token: "UNI-LINK-ETH",
+		platform: "Uniswap",
+		depositAssetName: "UNI-LINK-ETH",
+		depositAssetAddr: "0xa2107FA5B38d9bbd2C461D6EDf11B11A50F6b974",
+		depositAssetDecimals: 18,
+		getDepositAssetsUrl:
+			"https://info.uniswap.org/pair/0xa2107FA5B38d9bbd2C461D6EDf11B11A50F6b974",
+		lpTokenAddr: "0xa2107FA5B38d9bbd2C461D6EDf11B11A50F6b974",
+		lpTokenData: [
+			{
+				token: "LINK",
+				weight: 0.5,
+				addr: "0x514910771af9ca656af840dff83e8264ecf986ca"
+			},
+			{
+				token: "ETH",
+				weight: 0.5,
+				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+			}
+		],
+		rewardAssetsName: "ADX",
+		rewardAssetAddr: ADDR_ADX,
+		platformIcon: UniswapIcon,
+		assetsIcons: [LINKIcon, ETHIcon]
 	}
-	// {
-	// 	poolId: 1,
-	// 	name: "Balancer ADX-yUSD",
-	// 	token: "BPT-ADX-yUSD",
-	// 	platform: "Balancer",
-	// 	depositAssetName: "BPT-ADX-yUSD",
-	// 	depositAssetAddr: "0x415900c6e18b89531e3e24c902b05c031c71a925",
-	// 	getDepositAssetsUrl:
-	// 		"https://pools.balancer.exchange/#/pool/0x415900c6e18b89531e3e24c902b05c031c71a925/",
-	//  lpTokenData: { 'ADX': 0.3, 'BPT-ADX-yUSD': 0.7 },
-	// 	rewardAssetsName: "ADX",
-	// 	rewardAssetAddr: ADDR_ADX,
-	// 	platformIcon: BalancerIcon,
-	// 	assetsIcons: [ADXIcon, YUSDIcon]
-	// }
 ]
