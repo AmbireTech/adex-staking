@@ -34,9 +34,17 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 	const [confirmation, setConfirmation] = useState(false)
 
 	const actionName = withdraw ? "withdraw" : "deposit"
-	const { depositAssetDecimals, depositAssetName } = pool
+	const {
+		depositAssetDecimals,
+		depositAssetName,
+		platform,
+		depositAsset,
+		getDepositAssetUrl,
+		rewardAssetName
+	} = pool
 
 	const maxAmount = withdraw ? stats.userLPBalance || ZERO : stats.walletBalance
+	const reward = withdraw ? stats.pendingADX || ZERO : null
 
 	const onAction = async () => {
 		setConfirmation(false)
@@ -116,7 +124,7 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 						fullWidth
 						id={`new-farm-${actionName}-form-amount-field`}
 						required
-						label={t("common.labelADXAmount")}
+						label={t("farm.labelLPTokenAmount", { token: depositAssetName })}
 						type="text"
 						value={actionAmount}
 						error={amountErr}
@@ -136,46 +144,32 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 						>
 							{t("common.maxAmountBtn", {
 								amount: formatADXPretty(maxAmount),
-								currency: "ADX"
+								currency: depositAssetName
 							})}
 						</Button>
 					</Box>
 				</Grid>
 
 				{pool && stats ? (
-					<Grid item xs={12} container spacing={2}>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolRewardPolicy")}:
-							</Typography>
-							<Typography variant="body1">{t(pool.rewardPolicy)}</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolSlashingPolicy")}:
-							</Typography>
-							<Typography variant="body1">{t(pool.slashPolicy)}</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
-							<Typography variant="body1">
-								<Trans
-									i18nKey="bonds.currentYield"
-									values={{
-										apy: (stats.poolAPY * 100).toFixed(2),
-										sign: "%"
-									}}
-									components={{
-										farmer: (
-											<span role="img" aria-label="farmer">
-												🌾
-											</span>
-										)
-									}}
-								/>
-							</Typography>
-						</Grid>
-					</Grid>
+					<Box>
+						<Typography variant="h6">{t("common.poolMPY")}:</Typography>
+						<Typography variant="body1">
+							<Trans
+								i18nKey="farm.currentMPYLabel"
+								values={{
+									apy: (stats.poolMPY * 100).toFixed(2),
+									sign: "%"
+								}}
+								components={{
+									farmer: (
+										<span role="img" aria-label="farmer">
+											🌾
+										</span>
+									)
+								}}
+							/>
+						</Typography>
+					</Box>
 				) : (
 					""
 				)}

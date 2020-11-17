@@ -76,6 +76,9 @@ const useStyles = makeStyles(theme => {
 		},
 		getLink: {
 			marginLeft: theme.spacing(1)
+		},
+		strong: {
+			marginRight: theme.spacing(1)
 		}
 	}
 })
@@ -87,7 +90,7 @@ export default function FarmCard({
 	name,
 	totalDepositTokenBalance,
 	totalDepositTokenStaked,
-	getDepositAssetsUrl,
+	getDepositAssetUrl,
 	userStakedShare,
 	currentMPY,
 	mpyInfo,
@@ -109,8 +112,8 @@ export default function FarmCard({
 	extraData = [],
 	special,
 	platform,
-	depositAssets,
-	rewardAssets,
+	depositAsset,
+	rewardAsset,
 	pool,
 	stats
 }) {
@@ -151,7 +154,15 @@ export default function FarmCard({
 						color="text.primary"
 						fontWeight={"fontWeightRegular"}
 						fontSize={16}
-						text={t("farm.platform", { platform })}
+						text={
+							<Trans
+								i18nKey="farm.platform"
+								values={{ platform }}
+								components={{
+									strong: <strong className={classes.strong}></strong>
+								}}
+							/>
+						}
 					/>
 					<CardRow
 						color="text.primary"
@@ -159,17 +170,18 @@ export default function FarmCard({
 						fontSize={16}
 						text={
 							<Trans
-								i18nKey="farm.depositAssets"
-								values={{ depositAssets }}
+								i18nKey="farm.depositAsset"
+								values={{ depositAsset }}
 								components={{
+									strong: <strong className={classes.strong}></strong>,
 									getLink: (
 										<ExternalAnchor
 											color="secondary"
 											id={toIdAttributeString(
-												`get-liquidity-deposit-${depositAssets}`
+												`get-liquidity-deposit-${depositAsset}`
 											)}
 											target="_blank"
-											href={getDepositAssetsUrl}
+											href={getDepositAssetUrl}
 											className={classes.getLink}
 										></ExternalAnchor>
 									)
@@ -181,7 +193,15 @@ export default function FarmCard({
 						color="text.primary"
 						fontWeight={"fontWeightRegular"}
 						fontSize={16}
-						text={t("farm.rewardAssets", { rewardAssets })}
+						text={
+							<Trans
+								i18nKey="farm.rewardAsset"
+								values={{ rewardAsset }}
+								components={{
+									strong: <strong className={classes.strong}></strong>
+								}}
+							/>
+						}
 						mb={3}
 					/>
 
@@ -223,7 +243,7 @@ export default function FarmCard({
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
-						text={t("farm.totalDepositTokenBalance", { depositAssets })}
+						text={t("farm.totalDepositTokenBalance", { depositAsset })}
 					/>
 					<CardRow
 						color="text.primary"
@@ -237,7 +257,7 @@ export default function FarmCard({
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
-						text={t("farm.totalDepositTokenStaked", { depositAssets })}
+						text={t("farm.totalDepositTokenStaked", { depositAsset })}
 					/>
 					<CardRow
 						color="text.primary"
@@ -251,7 +271,7 @@ export default function FarmCard({
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
-						text={t("farm.userStakedShare", { depositAssets })}
+						text={t("farm.userStakedShare", { depositAsset })}
 					/>
 					<CardRow
 						color="text.primary"
@@ -368,7 +388,7 @@ export default function FarmCard({
 							color="secondary"
 							size="large"
 							onClick={onDepositBtnClick}
-							tooltipTitle={disabledInfo}
+							tooltipTitle={disabled ? disabledInfo : ""}
 							disabled={disabled}
 							pool={pool}
 							stats={stats}
@@ -385,7 +405,7 @@ export default function FarmCard({
 							color="default"
 							size="large"
 							onClick={onDepositBtnClick}
-							tooltipTitle={disabledInfo}
+							tooltipTitle={disabled ? disabledInfo : ""}
 							disabled={disabled}
 							withdraw
 							pool={pool}

@@ -66,9 +66,9 @@ const Farm = () => {
 								]}
 								name={farm.name}
 								platform={farm.platform}
-								depositAssets={farm.depositAssetName}
-								getDepositAssetsUrl={farm.getDepositAssetsUrl}
-								rewardAssets={farm.rewardAssetsName}
+								depositAsset={farm.depositAssetName}
+								getDepositAssetUrl={farm.getDepositAssetUrl}
+								rewardAsset={farm.rewardAssetName}
 								totalDepositTokenBalance={
 									pollStatsLoaded
 										? `${formatADXPretty(stats.totalSupply)} ${

@@ -258,13 +258,14 @@
     "liquidityInfo": "Your liquidity data",
     "myStaked": "Staked:",
     "onWallet": "On wallet:",
-    "platform": "Platform: {{platform}}",
-    "depositAssets": "Deposit: {{depositAssets}}  <getLink>GET</getLink>",
-    "rewardAssets": "Earn: {{rewardAssets}}",
-    "totalDepositTokenBalance": "Total {{depositAssets}} tokens",
-    "totalDepositTokenStaked": "Pool total {{depositAssets}} staked",
+    "platform": "<strong> Platform: </strong>  {{platform}}",
+    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
+    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
     "userStakedShare": "My share",
     "NA": "N/A",
-    "myReward": "Unclaimed reward"
+    "myReward": "Unclaimed reward",
+    "labelLPTokenAmount": "{{token}} amount"
   }
 }
