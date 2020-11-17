@@ -7,6 +7,7 @@ import { formatADXPretty } from "../helpers/formatting"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 import { FARM_POOLS } from "../helpers/constants"
+import theFarmer from "../resources/eddie-the-farmer.png"
 
 const Farm = () => {
 	const { t } = useTranslation()
@@ -19,7 +20,21 @@ const Farm = () => {
 
 	return (
 		<Box>
-			<SectionHeader title={t("common.farm")} />
+			<SectionHeader
+				title={t("common.farm")}
+				actions={
+					<Box
+						color="text.main"
+						height={69 * 1.42}
+						width={69 * 1.42}
+						style={{
+							backgroundImage: `url(${theFarmer})`,
+							backgroundSize: "contain",
+							backgroundRepeat: "no-repeat"
+						}}
+					></Box>
+				}
+			/>
 			<Box mt={4}>
 				<Box
 					display="flex"

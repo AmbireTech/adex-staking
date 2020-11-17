@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => {
 			position: "absolute",
 			width: 189,
 			height: 69,
-			top: -theme.spacing(3),
+			top: -35,
 			backgroundColor: theme.palette.common.white,
 			color: theme.palette.common.black,
 			// boxShadow: theme.type === "light" ? theme.shadows[25] : "none",
@@ -119,7 +119,7 @@ export default function FarmCard({
 		<Box
 			bgcolor={"background.card"}
 			p={3}
-			my={3}
+			my={4}
 			mx={1}
 			pt={7}
 			width={420}
