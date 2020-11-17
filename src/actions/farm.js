@@ -213,6 +213,12 @@ const getPoolStats = async ({
 		prices[pool.depositAssetName].poolTotalPriceUSD /
 		parseFloat(formatTokens(totalSupply, pool.depositAssetDecimals))
 	const lpTokenStakedValueUSD = totalStakedFloat * lpTokenPrice
+	const rewardsDistributedPerMonthInUSD =
+		(poolAllocPoints / totalAllocPoint.toNumber()) *
+		TOTAL_FARM_ADX_REWARDS *
+		externalPrices.USD *
+		(30 / DAYS_TO_DISTRIBUTE_REWARDS)
+
 	const rewardsDistributedPerYearInUSD =
 		(poolAllocPoints / totalAllocPoint.toNumber()) *
 		TOTAL_FARM_ADX_REWARDS *
@@ -220,6 +226,7 @@ const getPoolStats = async ({
 		(DAYS_IN_YEAR / DAYS_TO_DISTRIBUTE_REWARDS)
 
 	const poolAPY = rewardsDistributedPerYearInUSD / (lpTokenStakedValueUSD || 1)
+	const poolMPY = rewardsDistributedPerMonthInUSD / (lpTokenStakedValueUSD || 1)
 
 	return {
 		poolId: pool.poolId,
@@ -232,7 +239,8 @@ const getPoolStats = async ({
 		userLPBalance,
 		useShare,
 		poolInfo,
-		poolAPY
+		poolAPY,
+		poolMPY
 	}
 }
 

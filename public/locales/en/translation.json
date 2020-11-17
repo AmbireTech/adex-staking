@@ -252,6 +252,7 @@
   },
   "farm": {
     "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
     "totalDeposits": "Total deposits",
     "myLiquidity": "My liquidity",
     "liquidityInfo": "Your liquidity data",

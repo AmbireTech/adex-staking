@@ -89,9 +89,10 @@ export default function FarmCard({
 	totalDepositTokenStaked,
 	getDepositAssetsUrl,
 	userStakedShare,
-	currentAPY,
-	weeklyYield,
-	weeklyYieldInfo,
+	currentMPY,
+	mpyInfo,
+	// weeklyYield,
+	// weeklyYieldInfo,
 	onDepositBtnClick,
 	onWithdrawBtnClick,
 	loading,
@@ -189,8 +190,8 @@ export default function FarmCard({
 						fontSize={14}
 						text={
 							<Trans
-								i18nKey="farm.currentAPYLabel"
-								values={{ apy: currentAPY }}
+								i18nKey="farm.currentMPYLabel"
+								values={{ mpy: currentMPY }}
 								components={{
 									strong: (
 										<Box
@@ -204,16 +205,18 @@ export default function FarmCard({
 								}}
 							/>
 						}
+						infoText={mpyInfo}
+						mb={3}
 					/>
 
-					<CardRow
+					{/* <CardRow
 						color="text.primary"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
 						text={t("pools.weeklyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
 						mb={3}
-					/>
+					/> */}
 
 					<CardRow
 						color="text.main"

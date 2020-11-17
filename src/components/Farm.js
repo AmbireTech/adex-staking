@@ -46,7 +46,7 @@ const Farm = () => {
 				>
 					{FARM_POOLS.map(farm => {
 						const stats = statsByPoolId ? statsByPoolId[farm.poolId] : null
-						const poolAPY = pollStatsLoaded ? stats.poolAPY * 100 : null
+						const poolMPY = pollStatsLoaded ? stats.poolMPY * 100 : null
 
 						return (
 							<FarmCard
@@ -88,21 +88,31 @@ const Farm = () => {
 										? `${(stats.useShare * 100).toFixed(4)} %`
 										: t("farm.NA")
 								}
-								currentAPY={
-									pollStatsLoaded ? `${poolAPY.toFixed(4)} %` : t("farm.NA")
+								currentMPY={
+									pollStatsLoaded ? `${poolMPY.toFixed(2)} %` : t("farm.NA")
 								}
-								weeklyYield={
-									pollStatsLoaded
-										? `${(poolAPY / (365 / 7)).toFixed(4)} %`
-										: t("farm.NA")
-								}
-								weeklyYieldInfo={[
+								mpyInfo={[
 									t("pools.currentDailyYield", {
 										yield: pollStatsLoaded
-											? (poolAPY / 365).toFixed(4)
+											? (poolMPY / 30).toFixed(4)
 											: t("farm.NA")
 									})
 								]}
+								// currentAPY={
+								// 	pollStatsLoaded ? `${poolAPY.toFixed(4)} %` : t("farm.NA")
+								// }
+								// weeklyYield={
+								// 	pollStatsLoaded
+								// 		? `${(poolAPY / (365 / 7)).toFixed(4)} %`
+								// 		: t("farm.NA")
+								// }
+								// weeklyYieldInfo={[
+								// 	t("pools.currentDailyYield", {
+								// 		yield: pollStatsLoaded
+								// 			? (poolAPY / 365).toFixed(4)
+								// 			: t("farm.NA")
+								// 	})
+								// ]}
 								onDepositBtnClick={() => {}}
 								onWithdrawBtnClick={() => {}}
 								loading={!pollStatsLoaded}
