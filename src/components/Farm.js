@@ -3,11 +3,11 @@ import { FarmContext } from "../FarmProvider"
 import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import FarmCard from "./FarmCard"
+import FarmInfoCard from "./FarmInfoCard"
 import { formatADXPretty } from "../helpers/formatting"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 import { FARM_POOLS } from "../helpers/constants"
-import theFarmer from "../resources/eddie-the-farmer-small.png"
 
 const Farm = () => {
 	const { t } = useTranslation()
@@ -20,21 +20,7 @@ const Farm = () => {
 
 	return (
 		<Box>
-			<SectionHeader
-				title={t("common.farm")}
-				actions={
-					<Box
-						color="text.main"
-						height={69 * 1.42}
-						width={69 * 1.42}
-						style={{
-							backgroundImage: `url(${theFarmer})`,
-							backgroundSize: "contain",
-							backgroundRepeat: "no-repeat"
-						}}
-					></Box>
-				}
-			/>
+			<SectionHeader title={t("common.farm")} actions={<></>} />
 			<Box mt={4}>
 				<Box
 					display="flex"
@@ -44,6 +30,7 @@ const Farm = () => {
 					alignItems="stretch"
 					justifyContent={justifyCenter ? "center" : "flex-start"}
 				>
+					<FarmInfoCard />
 					{FARM_POOLS.map(farm => {
 						const stats = statsByPoolId ? statsByPoolId[farm.poolId] : null
 						const poolMPY = pollStatsLoaded ? stats.poolMPY * 100 : null
