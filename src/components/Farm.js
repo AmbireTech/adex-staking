@@ -12,7 +12,7 @@ import theFarmer from "../resources/eddie-the-farmer-small.png"
 const Farm = () => {
 	const { t } = useTranslation()
 	const { farmStats } = useContext(FarmContext)
-	const { stats: appStats, chosenWalletType } = useContext(AppContext)
+	const { chosenWalletType } = useContext(AppContext)
 	const { pollStatsLoaded, userStatsLoaded, statsByPoolId } = farmStats
 
 	const canStake = !!chosenWalletType.name && userStatsLoaded //&& !!appStats.connectedWalletAddress

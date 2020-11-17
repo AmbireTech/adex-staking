@@ -35,14 +35,7 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 	const [confirmation, setConfirmation] = useState(false)
 
 	const actionName = withdraw ? "withdraw" : "deposit"
-	const {
-		depositAssetDecimals,
-		depositAssetName,
-		platform,
-		depositAsset,
-		getDepositAssetUrl,
-		rewardAssetName
-	} = pool
+	const { depositAssetDecimals, depositAssetName } = pool
 
 	const { pendingADX, userLPBalance, walletBalance } = stats
 
@@ -161,14 +154,13 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 				)}
 
 				{pool && stats ? (
-					<Box>
+					<Box my={2}>
 						<Typography variant="h6">{t("farm.poolMPY")}:</Typography>
 						<Typography variant="body1">
 							<Trans
 								i18nKey="farm.currentMPYLabel"
 								values={{
-									mpy: (stats.poolMPY * 100).toFixed(2),
-									sign: "%"
+									mpy: (stats.poolMPY * 100).toFixed(2) + " %"
 								}}
 								components={{
 									farmer: (
