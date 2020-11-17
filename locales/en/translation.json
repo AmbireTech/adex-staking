@@ -63,7 +63,8 @@
     "slashing": "Slashing",
     "lockup": "Lockup",
     "apyStability": "APY stability",
-    "poolStats": "Pool stats"
+    "poolStats": "Pool stats",
+    "farm": "Farm"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -248,5 +249,26 @@
     "lockupOnChain": "Locked up on chain",
     "labelPayout": "Payouts",
     "labelTransactions": "Impressions (Transactions)"
+  },
+  "farm": {
+
+    "poolMPY": "Pool MPY",
+    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
+    "totalDeposits": "Total deposits",
+    "myLiquidity": "My liquidity",
+    "liquidityInfo": "Your liquidity data",
+    "myStaked": "Staked:",
+    "onWallet": "On wallet:",
+    "platform": "<strong> Platform: </strong>  {{platform}}",
+    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
+    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
+    "userStakedShare": "My share",
+    "NA": "N/A",
+    "myReward": "Unclaimed reward",
+    "labelLPTokenAmount": "{{token}} amount",
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw."
   }
 }
