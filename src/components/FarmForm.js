@@ -14,7 +14,6 @@ import { ZERO } from "../helpers/constants"
 import {
 	Grid,
 	TextField,
-	Typography,
 	Button,
 	FormControl,
 	FormControlLabel,
@@ -23,9 +22,16 @@ import {
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import AppContext from "../AppContext"
-import { useTranslation, Trans } from "react-i18next"
+import { useTranslation } from "react-i18next"
+import { FarmPoolData } from "./FarmCard"
 
-export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
+export default function FarmForm({
+	closeDialog,
+	pool,
+	stats,
+	withdraw,
+	blockNumber
+}) {
 	const { t } = useTranslation()
 	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
@@ -145,36 +151,27 @@ export default function FarmForm({ closeDialog, pool, stats, withdraw }) {
 					</Box>
 				</Grid>
 
-				{withdraw && (
-					<Box mt={2}>
-						<Alert variant="filled" severity="info">
-							{t("farm.withdrawRewardsAlert", { pendingADX, depositAssetName })}
-						</Alert>
-					</Box>
-				)}
+				<Grid item xs={12} sm={12}>
+					{withdraw && (
+						<Box my={2}>
+							<Alert variant="filled" severity="info">
+								{t("farm.withdrawRewardsAlert", {
+									pendingADX,
+									depositAssetName
+								})}
+							</Alert>
+						</Box>
+					)}
 
-				{/* {pool && stats ? (
-					<Box my={2}>
-						<Typography variant="h6">{t("farm.poolMPY")}:</Typography>
-						<Typography variant="body1">
-							<Trans
-								i18nKey="farm.currentMPYLabel"
-								values={{
-									mpy: (stats.poolMPY * 100).toFixed(2) + " %"
-								}}
-								components={{
-									farmer: (
-										<span role="img" aria-label="farmer">
-											🌾
-										</span>
-									)
-								}}
-							/>
-						</Typography>
-					</Box>
-				) : (
-					""
-				)} */}
+					<FarmPoolData
+						pollStatsLoaded={true}
+						userStatsLoaded={true}
+						pool={pool}
+						stats={stats}
+						blockNumber={blockNumber}
+					/>
+				</Grid>
+
 				{confirmationLabel && (
 					<Grid item xs={12}>
 						<FormControlLabel
