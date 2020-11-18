@@ -2,6 +2,8 @@ import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Box, LinearProgress, Typography, SvgIcon } from "@material-ui/core"
 import { SwapHorizSharp as AssetsLinkIcon } from "@material-ui/icons"
+import { ReactComponent as SpecialIcon } from "./../resources/crown-ic.svg"
+
 import { CardRow } from "./cardCommon"
 import { useTranslation, Trans } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
@@ -19,6 +21,9 @@ const FarmFormDialog = WithDialog(FarmForm)
 const REWARDS_ACTIVE_FROM_BLOCK = 11296000
 
 const useStyles = makeStyles(theme => {
+	const iconBoxBorder = ({ special }) =>
+		special ? `3px solid ${theme.palette.special.main}` : "none"
+
 	return {
 		iconBox: {
 			borderRadius: "35px",
@@ -26,7 +31,7 @@ const useStyles = makeStyles(theme => {
 			width: 189,
 			height: 69,
 			top: -35,
-			backgroundColor: theme.palette.common.white,
+			background: `linear-gradient(90deg, ${theme.palette.common.black} 69px, ${theme.palette.common.white} 69px)`,
 			color: theme.palette.common.black,
 			// boxShadow: theme.type === "light" ? theme.shadows[25] : "none",
 			boxShadow: theme.shadows[25],
@@ -35,13 +40,13 @@ const useStyles = makeStyles(theme => {
 			alignItems: "center",
 			justifyContent: "space-around",
 			paddingLeft: 69 + theme.spacing(1),
-			paddingRight: theme.spacing(1)
+			paddingRight: theme.spacing(1),
+			border: iconBoxBorder
 		},
 		platformIconBox: {
 			color: theme.palette.common.white,
-			backgroundColor: theme.palette.common.black,
-			width: 71,
-			height: 71,
+			width: 69,
+			height: "100%",
 			borderTopLeftRadius: "100%",
 			borderBottomLeftRadius: "100%",
 			display: "flex",
@@ -49,8 +54,17 @@ const useStyles = makeStyles(theme => {
 			alignItems: "center",
 			justifyContent: "center",
 			position: "absolute",
-			left: -1,
-			top: -1
+			left: 0,
+			top: 0
+		},
+		specialIcon: {
+			position: "absolute",
+			width: 42,
+			height: 42,
+			left: -18,
+			top: -23,
+			transform: `rotate(320deg)`,
+			color: theme.palette.special.main
 		},
 		overlay: {
 			position: "absolute",
@@ -104,7 +118,8 @@ export const FarmPoolData = ({
 		platform,
 		depositAssetName,
 		getDepositAssetUrl,
-		rewardAssetName
+		rewardAssetName,
+		special
 	} = pool
 
 	const {
@@ -437,8 +452,8 @@ export default function FarmCard({
 	blockNumber
 }) {
 	const { t } = useTranslation()
-	const classes = useStyles()
-	const { id, name } = pool
+	const { id, name, special } = pool
+	const classes = useStyles({ special })
 
 	const platformIcon = (
 		<SvgIcon fontSize="large" color="inherit">
@@ -548,6 +563,11 @@ export default function FarmCard({
 							color="secondary"
 						/>
 					</>
+				)}
+				{!!special && (
+					<SvgIcon fontSize="large" className={classes.specialIcon}>
+						<SpecialIcon width="99%" height="99%" />
+					</SvgIcon>
 				)}
 			</Box>
 		</Box>

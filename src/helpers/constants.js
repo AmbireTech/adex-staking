@@ -200,18 +200,21 @@ export const FARM_POOLS = [
 			{
 				token: "ADX",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 			},
 			{
 				token: "ETH",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [ADXIcon, ETHIcon]
+		assetsIcons: [ADXIcon, ETHIcon],
+		special: true
 	},
 	{
 		poolId: 1,
@@ -228,18 +231,21 @@ export const FARM_POOLS = [
 			{
 				token: "ADX",
 				weight: 0.7,
+				decimals: 18,
 				addr: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 			},
 			{
 				token: "yUSD",
 				weight: 0.3,
+				decimals: 18,
 				addr: "0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c"
 			}
 		],
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
-		assetsIcons: [ADXIcon, YUSDIcon]
+		assetsIcons: [ADXIcon, YUSDIcon],
+		special: true
 	},
 	{
 		poolId: 2,
@@ -256,11 +262,13 @@ export const FARM_POOLS = [
 			{
 				token: "BAL",
 				weight: 0.8,
+				decimals: 18,
 				addr: "0xba100000625a3754423978a60c9317c58a424e3D"
 			},
 			{
 				token: "ETH",
 				weight: 0.2,
+				decimals: 18,
 				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
@@ -284,11 +292,13 @@ export const FARM_POOLS = [
 			{
 				token: "YFI",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e"
 			},
 			{
 				token: "ETH",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
@@ -312,11 +322,13 @@ export const FARM_POOLS = [
 			{
 				token: "UNI",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
 			},
 			{
 				token: "ETH",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
@@ -340,11 +352,13 @@ export const FARM_POOLS = [
 			{
 				token: "LINK",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0x514910771af9ca656af840dff83e8264ecf986ca"
 			},
 			{
 				token: "ETH",
 				weight: 0.5,
+				decimals: 18,
 				addr: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 			}
 		],
