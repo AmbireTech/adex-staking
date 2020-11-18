@@ -61,7 +61,7 @@ const getOtherTokenAndPoolPrice = (known, unknown) => {
 }
 
 const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
-	const adxPrice = externalPrices.USD || 0.27
+	const adxPrice = externalPrices.USD
 
 	const { allTokenContracts, allTokensInUSD } = FARM_POOLS.reduce(
 		(data, { lpTokenData }) => {
@@ -84,13 +84,7 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 	allTokensInUSD["ADX"] = adxPrice
 
 	const poolDataMap = FARM_POOLS.map(
-		async ({
-			poolId,
-			lpTokenAddr,
-			depositAssetName,
-			depositAssetAddr,
-			lpTokenData
-		}) => {
+		async ({ poolId, depositAssetName, depositAssetAddr, lpTokenData }) => {
 			return {
 				tokenName: depositAssetName,
 				tokenAddr: depositAssetAddr,
@@ -101,9 +95,8 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 						addr,
 						decimals: await allTokenContracts[token].decimals(),
 						poolBalance: await allTokenContracts[token].balanceOf(
-							lpTokenAddr || depositAssetAddr
+							depositAssetAddr
 						),
-						poolTotalPriceUSD: null,
 						usdPrice: allTokensInUSD[token] || null,
 						weight
 					}))
@@ -117,8 +110,7 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 	while (Object.values(allTokensInUSD).includes(null)) {
 		poolDataWithBalances.map(poolData => {
 			const { lpTokenData } = poolData
-			const t1 = lpTokenData[0]
-			const t2 = lpTokenData[1]
+			const [t1, t2] = lpTokenData
 
 			t1.usdPrice = t1.usdPrice || allTokensInUSD[t1.token]
 			t2.usdPrice = t2.usdPrice || allTokensInUSD[t2.token]
@@ -230,8 +222,19 @@ const getPoolStats = async ({
 	const poolAPY = rewardsDistributedPerYearInUSD / (lpTokenStakedValueUSD || 1)
 	const poolMPY = rewardsDistributedPerMonthInUSD / (lpTokenStakedValueUSD || 1)
 
+	const lpTokenDataWithPrices = prices[pool.depositAssetName].lpTokenData.map(
+		data => {
+			data.unitsPerLP = data.usdPrice
+				? (lpTokenPrice * data.weight) / data.usdPrice
+				: null
+			return data
+		}
+	)
+
 	return {
 		poolId: pool.poolId,
+		lpTokenPrice,
+		lpTokenDataWithPrices: lpTokenDataWithPrices,
 		totalSupply,
 		totalStaked,
 		lpTokenStakedValueUSD,
