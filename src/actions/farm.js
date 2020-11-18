@@ -269,8 +269,6 @@ export const getFarmPoolsStats = async ({
 	}, {})
 	const blockNumber = await defaultProvider.getBlockNumber()
 
-	console.log(blockNumber)
-
 	return {
 		blockNumber,
 		pollStatsLoaded: true,
