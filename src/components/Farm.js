@@ -40,7 +40,7 @@ const Farm = () => {
 								pollStatsLoaded={pollStatsLoaded}
 								userStatsLoaded={userStatsLoaded}
 								disabled={!canStake}
-								disabledInfo={t("pools.connectWalletToStake")}
+								disabledInfo={t("common.connectWallet")}
 								pool={pool}
 								stats={stats}
 							/>

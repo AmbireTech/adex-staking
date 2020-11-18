@@ -86,40 +86,22 @@ const useStyles = makeStyles(theme => {
 	}
 })
 
-export default function FarmCard({
-	loading,
-	disabled,
-	disabledInfo,
+export const FarmPoolData = ({
 	pollStatsLoaded,
 	userStatsLoaded,
 	pool,
 	stats
-}) {
+}) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 
 	const {
 		id,
-		name,
 		platform,
 		depositAssetName,
 		getDepositAssetUrl,
 		rewardAssetName
 	} = pool
-
-	const platformIcon = (
-		<SvgIcon fontSize="large" color="inherit">
-			<pool.platformIcon width="99%" height="99%" />
-		</SvgIcon>
-	)
-
-	const assetsIcons = [
-		pool.assetsIcons.map((Icon, i) => (
-			<SvgIcon key={i} fontSize="large" color="inherit">
-				<Icon width="99%" height="99%" />
-			</SvgIcon>
-		))
-	]
 
 	// const totalDepositTokenBalance =
 	// 	pollStatsLoaded
@@ -185,84 +167,63 @@ export default function FarmCard({
 		: t("farm.NA")
 
 	return (
-		<Box
-			bgcolor={"background.card"}
-			p={3}
-			my={4}
-			mx={2}
-			pt={7}
-			width={320}
-			maxWidth="100%"
-			minHeight={420}
-			display="flex"
-			flexDirection="column"
-			alignItems="center"
-			boxShadow={25}
-			position="relative"
-		>
-			<Box mb={3}>
-				<Typography align="center" variant="h5" color="textPrimary">
-					{name}
-				</Typography>
-			</Box>
+		<Box width={1}>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={16}
+				text={
+					<Trans
+						i18nKey="farm.platform"
+						values={{ platform }}
+						components={{
+							strong: <strong className={classes.strong}></strong>
+						}}
+					/>
+				}
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={16}
+				text={
+					<Trans
+						i18nKey="farm.depositAsset"
+						values={{ depositAsset: depositAssetName }}
+						components={{
+							strong: <strong className={classes.strong}></strong>,
+							getLink: (
+								<ExternalAnchor
+									color="secondary"
+									id={toIdAttributeString(
+										`get-liquidity-deposit-${depositAssetName}`
+									)}
+									target="_blank"
+									href={getDepositAssetUrl}
+									className={classes.getLink}
+								></ExternalAnchor>
+							)
+						}}
+					/>
+				}
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={16}
+				text={
+					<Trans
+						i18nKey="farm.rewardAsset"
+						values={{ rewardAsset: rewardAssetName }}
+						components={{
+							strong: <strong className={classes.strong}></strong>
+						}}
+					/>
+				}
+				mb={3}
+			/>
 
-			<Box width={1}>
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={16}
-					text={
-						<Trans
-							i18nKey="farm.platform"
-							values={{ platform }}
-							components={{
-								strong: <strong className={classes.strong}></strong>
-							}}
-						/>
-					}
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={16}
-					text={
-						<Trans
-							i18nKey="farm.depositAsset"
-							values={{ depositAsset: depositAssetName }}
-							components={{
-								strong: <strong className={classes.strong}></strong>,
-								getLink: (
-									<ExternalAnchor
-										color="secondary"
-										id={toIdAttributeString(
-											`get-liquidity-deposit-${depositAssetName}`
-										)}
-										target="_blank"
-										href={getDepositAssetUrl}
-										className={classes.getLink}
-									></ExternalAnchor>
-								)
-							}}
-						/>
-					}
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={16}
-					text={
-						<Trans
-							i18nKey="farm.rewardAsset"
-							values={{ rewardAsset: rewardAssetName }}
-							components={{
-								strong: <strong className={classes.strong}></strong>
-							}}
-						/>
-					}
-					mb={3}
-				/>
-
-				{/* <CardRow
+			{/* <CardRow
 							color="text.main"
 							fontWeight={"fontWeightRegular"}
 							fontSize={14}
@@ -287,30 +248,30 @@ export default function FarmCard({
 							mb={3}
 						/> */}
 
-				<CardRow
-					color="special.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={
-						<Trans
-							i18nKey="farm.farmStartsInfo"
-							components={{
-								externalLink: (
-									<ExternalAnchor
-										className={classes.getLink}
-										color="secondary"
-										id={`farm-starts-info-link-pool=${id}`}
-										target="_blank"
-										href={`https://etherscan.io/block/countdown/11296000`}
-									/>
-								)
-							}}
-						/>
-					}
-					mb={3}
-				/>
+			<CardRow
+				color="special.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={
+					<Trans
+						i18nKey="farm.farmStartsInfo"
+						components={{
+							externalLink: (
+								<ExternalAnchor
+									className={classes.getLink}
+									color="secondary"
+									id={`farm-starts-info-link-pool=${id}`}
+									target="_blank"
+									href={`https://etherscan.io/block/countdown/11296000`}
+								/>
+							)
+						}}
+					/>
+				}
+				mb={3}
+			/>
 
-				{/* <CardRow
+			{/* <CardRow
 						color="text.primary"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
@@ -319,7 +280,7 @@ export default function FarmCard({
 						mb={3}
 					/> */}
 
-				{/* <CardRow
+			{/* <CardRow
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
@@ -333,88 +294,148 @@ export default function FarmCard({
 						isAmountText
 						mb={0.5}
 					/> */}
-				<CardRow
-					color="text.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={t("farm.totalDepositTokenStaked", { depositAssetName })}
-				/>
-				<CardRow
-					color="special.main"
-					fontWeight={"text.primary"}
-					fontSize={14}
-					text={totalDepositTokenStaked}
-					isAmountText
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"text.primary"}
-					fontSize={14}
-					text={totalDepositTokenStakedUSD}
-					isAmountText
-					mb={0.5}
-				/>
-				<CardRow
-					color="text.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={t("farm.userStakedShare", { depositAssetName })}
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"text.primary"}
-					fontSize={14}
-					text={userStakedShare}
-					mb={3}
-				/>
+			<CardRow
+				color="text.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={t("farm.totalDepositTokenStaked", { depositAssetName })}
+			/>
+			<CardRow
+				color="special.main"
+				fontWeight={"text.primary"}
+				fontSize={14}
+				text={totalDepositTokenStaked}
+				isAmountText
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"text.primary"}
+				fontSize={14}
+				text={totalDepositTokenStakedUSD}
+				isAmountText
+				mb={0.5}
+			/>
+			<CardRow
+				color="text.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={t("farm.userStakedShare", { depositAssetName })}
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"text.primary"}
+				fontSize={14}
+				text={userStakedShare}
+				mb={3}
+			/>
 
-				<CardRow
-					color="text.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={20}
-					text={t("farm.myLiquidity")}
-					infoText={liquidityInfoText}
-				/>
+			<CardRow
+				color="text.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={20}
+				text={t("farm.myLiquidity")}
+				infoText={liquidityInfoText}
+			/>
 
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={t("farm.myStaked")}
-				/>
-				<CardRow
-					color="special.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={liquidityStaked}
-					mb={0.5}
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={t("farm.onWallet")}
-				/>
-				<CardRow
-					color="special.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={liquidityOnWallet}
-				/>
-				<CardRow
-					color="text.primary"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={t("farm.myReward")}
-				/>
-				<CardRow
-					color="special.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={pendingADX}
-					mb={3}
-				/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={t("farm.myStaked")}
+			/>
+			<CardRow
+				color="special.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={liquidityStaked}
+				mb={0.5}
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={t("farm.onWallet")}
+			/>
+			<CardRow
+				color="special.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={liquidityOnWallet}
+			/>
+			<CardRow
+				color="text.primary"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={t("farm.myReward")}
+			/>
+			<CardRow
+				color="special.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={pendingADX}
+				mb={3}
+			/>
+		</Box>
+	)
+}
 
+export default function FarmCard({
+	loading,
+	disabled,
+	disabledInfo,
+	pollStatsLoaded,
+	userStatsLoaded,
+	pool,
+	stats
+}) {
+	const { t } = useTranslation()
+	const classes = useStyles()
+	const { id, name } = pool
+
+	const platformIcon = (
+		<SvgIcon fontSize="large" color="inherit">
+			<pool.platformIcon width="99%" height="99%" />
+		</SvgIcon>
+	)
+
+	const assetsIcons = [
+		pool.assetsIcons.map((Icon, i) => (
+			<SvgIcon key={i} fontSize="large" color="inherit">
+				<Icon width="99%" height="99%" />
+			</SvgIcon>
+		))
+	]
+
+	return (
+		<Box
+			bgcolor={"background.card"}
+			p={3}
+			my={4}
+			mx={2}
+			pt={7}
+			width={320}
+			maxWidth="100%"
+			minHeight={420}
+			display="flex"
+			flexDirection="column"
+			alignItems="center"
+			boxShadow={25}
+			position="relative"
+		>
+			<Box mb={3}>
+				<Typography align="center" variant="h5" color="textPrimary">
+					{name}
+				</Typography>
+			</Box>
+
+			<FarmPoolData
+				pollStatsLoaded={pollStatsLoaded}
+				userStatsLoaded={userStatsLoaded}
+				pool={pool}
+				stats={stats}
+			/>
+
+			<Box width={1}>
 				<Box mb={1}>
 					<FarmFormDialog
 						id={`deposit-liquidity-pool-${id}`}
