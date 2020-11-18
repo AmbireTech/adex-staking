@@ -36,7 +36,7 @@ const Farm = () => {
 				>
 					<FarmInfoCard />
 					{FARM_POOLS.map(pool => {
-						const stats = statsByPoolId ? statsByPoolId[pool.poolId] : null
+						const stats = statsByPoolId ? statsByPoolId[pool.poolId] : {}
 
 						return (
 							<FarmCard

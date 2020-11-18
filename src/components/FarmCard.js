@@ -8,7 +8,9 @@ import { ExternalAnchor } from "./Anchor"
 import {
 	toIdAttributeString,
 	formatADXPretty,
-	getUSDFormatted
+	getUSDFormatted,
+	formatLPToken
+	// formatTokens
 } from "../helpers/formatting"
 import WithDialog from "./WithDialog"
 import FarmForm from "./FarmForm"
@@ -105,6 +107,14 @@ export const FarmPoolData = ({
 		rewardAssetName
 	} = pool
 
+	const {
+		lpTokenStakedValueUSD,
+		lpTokenDataWithPrices,
+		useShare,
+		walletBalance,
+		userLPBalance
+	} = stats
+
 	// const totalDepositTokenBalance =
 	// 	pollStatsLoaded
 	// 		? `${formatADXPretty(stats.totalSupply)} ${pool.depositAssetName
@@ -116,11 +126,11 @@ export const FarmPoolData = ({
 		: t("farm.NA")
 
 	const totalDepositTokenStakedUSD = pollStatsLoaded
-		? `${getUSDFormatted(stats.lpTokenStakedValueUSD)}`
+		? `${getUSDFormatted(lpTokenStakedValueUSD)}`
 		: t("farm.NA")
 
 	const userStakedShare = userStatsLoaded
-		? `${(stats.useShare * 100).toFixed(4)} %`
+		? `${(useShare * 100).toFixed(4)} %`
 		: t("farm.NA")
 
 	const poolMPY = pollStatsLoaded ? stats.poolMPY * 100 : null
@@ -153,13 +163,31 @@ export const FarmPoolData = ({
 	// 	]
 
 	const liquidityInfoText = t("farm.liquidityInfo")
-	const liquidityStaked = userStatsLoaded
-		? `${formatADXPretty(stats.userLPBalance)} ${pool.token}`
+	const liquidityStakedLP = userStatsLoaded
+		? `${formatADXPretty(userLPBalance)} ${depositAssetName}`
 		: t("farm.NA")
 
-	const liquidityOnWallet = userStatsLoaded
-		? `${formatADXPretty(stats.walletBalance)} ${pool.token}`
+	const liquidityStakedLPInfo =
+		userStatsLoaded && !userLPBalance.isZero()
+			? ` (${formatLPToken({
+					lpValueBN: userLPBalance,
+					lpTokenDataWithPrices,
+					lpTokenName: depositAssetName
+			  })})`
+			: ""
+
+	const liquidityOnWalletLP = userStatsLoaded
+		? `${formatADXPretty(walletBalance)} ${depositAssetName}`
 		: t("farm.NA")
+
+	const liquidityOnWalletLPInfo =
+		userStatsLoaded && !walletBalance.isZero()
+			? ` (${formatLPToken({
+					lpValueBN: walletBalance,
+					lpTokenDataWithPrices,
+					lpTokenName: depositAssetName
+			  })})`
+			: ""
 
 	const pendingADX = userStatsLoaded
 		? `${formatADXPretty(stats.pendingADX)} ADX`
@@ -351,7 +379,14 @@ export const FarmPoolData = ({
 				color="special.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
-				text={liquidityStaked}
+				text={
+					<Box>
+						<Box>{liquidityStakedLP}</Box>
+						{liquidityStakedLPInfo && (
+							<Box color="text.primary">{liquidityStakedLPInfo}</Box>
+						)}
+					</Box>
+				}
 				mb={0.5}
 			/>
 			<CardRow
@@ -364,7 +399,14 @@ export const FarmPoolData = ({
 				color="special.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
-				text={liquidityOnWallet}
+				text={
+					<Box>
+						<Box>{liquidityOnWalletLP}</Box>
+						{liquidityStakedLPInfo && (
+							<Box color="text.primary">{liquidityOnWalletLPInfo}</Box>
+						)}
+					</Box>
+				}
 				mb={0.5}
 			/>
 			<CardRow
