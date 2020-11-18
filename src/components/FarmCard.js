@@ -90,6 +90,7 @@ export default function FarmCard({
 	name,
 	totalDepositTokenBalance,
 	totalDepositTokenStaked,
+	totalDepositTokenStakedUSD,
 	getDepositAssetUrl,
 	userStakedShare,
 	currentMPY,
@@ -283,10 +284,17 @@ export default function FarmCard({
 						text={t("farm.totalDepositTokenStaked", { depositAsset })}
 					/>
 					<CardRow
-						color="text.primary"
+						color="special.main"
 						fontWeight={"text.primary"}
 						fontSize={14}
 						text={totalDepositTokenStaked}
+						isAmountText
+					/>
+					<CardRow
+						color="text.primary"
+						fontWeight={"text.primary"}
+						fontSize={14}
+						text={totalDepositTokenStakedUSD}
 						isAmountText
 						mb={0.5}
 					/>

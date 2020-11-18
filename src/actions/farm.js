@@ -234,6 +234,7 @@ const getPoolStats = async ({
 		poolId: pool.poolId,
 		totalSupply,
 		totalStaked,
+		lpTokenStakedValueUSD,
 		identityBalance,
 		walletBalance,
 		pendingADX,

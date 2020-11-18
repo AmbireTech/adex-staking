@@ -4,7 +4,7 @@ import AppContext from "../AppContext"
 import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
 import FarmCard from "./FarmCard"
 import FarmInfoCard from "./FarmInfoCard"
-import { formatADXPretty } from "../helpers/formatting"
+import { formatADXPretty, getUSDFormatted } from "../helpers/formatting"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 import { FARM_POOLS } from "../helpers/constants"
@@ -68,6 +68,11 @@ const Farm = () => {
 										? `${formatADXPretty(stats.totalStaked)} ${
 												farm.depositAssetName
 										  }`
+										: t("farm.NA")
+								}
+								totalDepositTokenStakedUSD={
+									pollStatsLoaded
+										? `${getUSDFormatted(stats.lpTokenStakedValueUSD)}`
 										: t("farm.NA")
 								}
 								userStakedShare={
