@@ -100,3 +100,16 @@ export const toIdAttributeString = (string, defaultValue) => {
 		return defaultValue || ""
 	}
 }
+
+export const formatLPToken = ({ lpTokenDataWithPrices, lpValueBN }) => {
+	if (!lpValueBN) return "-"
+
+	const [t1, t2] = lpTokenDataWithPrices
+	const lpValue = parseFloat(formatTokens(lpValueBN))
+
+	const formatted = `
+		${formatNumberPretty((t1.unitsPerLP * lpValue).toFixed(6))} ${t1.token} +
+		${formatNumberPretty((t2.unitsPerLP * lpValue).toFixed(6))} ${t2.token}
+	`
+	return formatted
+}
