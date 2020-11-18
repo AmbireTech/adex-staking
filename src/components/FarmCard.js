@@ -14,6 +14,7 @@ import WithDialog from "./WithDialog"
 import FarmForm from "./FarmForm"
 
 const FarmFormDialog = WithDialog(FarmForm)
+const REWARDS_ACTIVE_FROM_BLOCK = 11296000
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -90,7 +91,8 @@ export const FarmPoolData = ({
 	pollStatsLoaded,
 	userStatsLoaded,
 	pool,
-	stats
+	stats,
+	blockNumber
 }) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -121,19 +123,16 @@ export const FarmPoolData = ({
 		? `${(stats.useShare * 100).toFixed(4)} %`
 		: t("farm.NA")
 
-	// const poolMPY = pollStatsLoaded ? stats.poolMPY * 100 : null
+	const poolMPY = pollStatsLoaded ? stats.poolMPY * 100 : null
 
-	// const currentMPY =
-	// 	pollStatsLoaded && poolMPY ? `${poolMPY.toFixed(2)} %` : t("farm.NA")
+	const currentMPY =
+		pollStatsLoaded && poolMPY ? `${poolMPY.toFixed(2)} %` : t("farm.NA")
 
-	// const mpyInfo =
-	// 	[
-	// 		t("pools.currentDailyYield", {
-	// 			yield: pollStatsLoaded
-	// 				? (poolMPY / 30).toFixed(4) + " %"
-	// 				: t("farm.NA")
-	// 		})
-	// 	]
+	const mpyInfo = [
+		t("pools.currentDailyYield", {
+			yield: pollStatsLoaded ? (poolMPY / 30).toFixed(4) + " %" : t("farm.NA")
+		})
+	]
 
 	// const poolAPY = pollStatsLoaded ? stats.poolAPY * 100 : null
 	// const currentAPY =
@@ -220,56 +219,58 @@ export const FarmPoolData = ({
 						}}
 					/>
 				}
-				mb={3}
+				mb={2}
 			/>
 
-			{/* <CardRow
-							color="text.main"
-							fontWeight={"fontWeightRegular"}
-							fontSize={14}
-							text={
-								<Trans
-									i18nKey="farm.currentMPYLabel"
-									values={{ mpy: currentMPY }}
-									components={{
-										strong: (
-											<Box
-												ml={1}
-												display="inline"
-												color="special.main"
-												fontWeight={"fontWeightBold"}
-												fontSize={20}
-											/>
-										)
-									}}
-								/>
-							}
-							infoText={mpyInfo}
-							mb={3}
-						/> */}
-
-			<CardRow
-				color="special.main"
-				fontWeight={"fontWeightRegular"}
-				fontSize={14}
-				text={
-					<Trans
-						i18nKey="farm.farmStartsInfo"
-						components={{
-							externalLink: (
-								<ExternalAnchor
-									className={classes.getLink}
-									color="secondary"
-									id={`farm-starts-info-link-pool=${id}`}
-									target="_blank"
-									href={`https://etherscan.io/block/countdown/11296000`}
-								/>
-							)
-						}}
-					/>
-				}
-				mb={3}
-			/>
+			{blockNumber && blockNumber >= REWARDS_ACTIVE_FROM_BLOCK ? (
+				<CardRow
+					color="text.main"
+					fontWeight={"fontWeightRegular"}
+					fontSize={14}
+					text={
+						<Trans
+							i18nKey="farm.currentMPYLabel"
+							values={{ mpy: currentMPY }}
+							components={{
+								strong: (
+									<Box
+										ml={1}
+										display="inline"
+										color="special.main"
+										fontWeight={"fontWeightBold"}
+										fontSize={20}
+									/>
+								)
+							}}
+						/>
+					}
+					infoText={mpyInfo}
+					mb={2}
+				/>
+			) : (
+				<CardRow
+					color="special.main"
+					fontWeight={"fontWeightRegular"}
+					fontSize={14}
+					text={
+						<Trans
+							i18nKey="farm.farmStartsInfo"
+							components={{
+								externalLink: (
+									<ExternalAnchor
+										className={classes.getLink}
+										color="secondary"
+										id={`farm-starts-info-link-pool=${id}`}
+										target="_blank"
+										href={`https://etherscan.io/block/countdown/11296000`}
+									/>
+								)
+							}}
+						/>
+					}
+					mb={2}
+				/>
+			)}
 
 			{/* <CardRow
 						color="text.primary"
@@ -277,7 +278,7 @@ export const FarmPoolData = ({
 						fontSize={14}
 						text={t("pools.weeklyYield", { yield: weeklyYield })}
 						infoText={weeklyYieldInfo}
-						mb={3}
+						mb={2}
 					/> */}
 
 			{/* <CardRow
@@ -326,7 +327,7 @@ export const FarmPoolData = ({
 				fontWeight={"text.primary"}
 				fontSize={14}
 				text={userStakedShare}
-				mb={3}
+				mb={2}
 			/>
 
 			<CardRow
@@ -373,7 +374,7 @@ export const FarmPoolData = ({
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
 				text={pendingADX}
-				mb={3}
+				mb={2}
 			/>
 		</Box>
 	)
@@ -386,7 +387,8 @@ export default function FarmCard({
 	pollStatsLoaded,
 	userStatsLoaded,
 	pool,
-	stats
+	stats,
+	blockNumber
 }) {
 	const { t } = useTranslation()
 	const classes = useStyles()
@@ -412,7 +414,7 @@ export default function FarmCard({
 			p={3}
 			my={4}
 			mx={2}
-			pt={7}
+			pt={6}
 			width={320}
 			maxWidth="100%"
 			minHeight={420}
@@ -422,7 +424,7 @@ export default function FarmCard({
 			boxShadow={25}
 			position="relative"
 		>
-			<Box mb={3}>
+			<Box mb={2}>
 				<Typography align="center" variant="h5" color="textPrimary">
 					{name}
 				</Typography>
@@ -433,13 +435,14 @@ export default function FarmCard({
 				userStatsLoaded={userStatsLoaded}
 				pool={pool}
 				stats={stats}
+				blockNumber={blockNumber}
 			/>
 
 			<Box width={1}>
 				<Box mb={1}>
 					<FarmFormDialog
 						id={`deposit-liquidity-pool-${id}`}
-						title={t("common.addNewDeposit")}
+						title={t("farm.depositDialogTitle", { name })}
 						btnLabel={t("common.deposit")}
 						fullWidth
 						variant="contained"
@@ -450,12 +453,13 @@ export default function FarmCard({
 						disabled={disabled}
 						pool={pool}
 						stats={stats}
+						blockNumber={blockNumber}
 					/>
 				</Box>
 				<Box>
 					<FarmFormDialog
 						id={`withdraw-liquidity-pool-${id}`}
-						title={t("common.withdraw")}
+						title={t("common.withdrawDialogTitle", { name })}
 						btnLabel={t("common.withdraw")}
 						fullWidth
 						variant="contained"
@@ -467,6 +471,7 @@ export default function FarmCard({
 						withdraw
 						pool={pool}
 						stats={stats}
+						blockNumber={blockNumber}
 					/>
 				</Box>
 			</Box>

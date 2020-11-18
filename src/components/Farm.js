@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import { FarmContext } from "../FarmProvider"
 import AppContext from "../AppContext"
-import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
+import { Box, useMediaQuery } from "@material-ui/core"
 import FarmCard from "./FarmCard"
 import FarmInfoCard from "./FarmInfoCard"
 import SectionHeader from "./SectionHeader"
@@ -12,7 +12,12 @@ const Farm = () => {
 	const { t } = useTranslation()
 	const { farmStats } = useContext(FarmContext)
 	const { chosenWalletType } = useContext(AppContext)
-	const { pollStatsLoaded, userStatsLoaded, statsByPoolId } = farmStats
+	const {
+		pollStatsLoaded,
+		userStatsLoaded,
+		statsByPoolId,
+		blockNumber
+	} = farmStats
 
 	const canStake = !!chosenWalletType.name && userStatsLoaded //&& !!appStats.connectedWalletAddress
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
@@ -20,7 +25,7 @@ const Farm = () => {
 	return (
 		<Box>
 			<SectionHeader title={t("common.farm")} actions={<></>} />
-			<Box mt={4}>
+			<Box mt={2}>
 				<Box
 					display="flex"
 					flex={1}
@@ -36,6 +41,7 @@ const Farm = () => {
 						return (
 							<FarmCard
 								key={pool.token}
+								blockNumber={blockNumber}
 								loading={!pollStatsLoaded}
 								pollStatsLoaded={pollStatsLoaded}
 								userStatsLoaded={userStatsLoaded}
