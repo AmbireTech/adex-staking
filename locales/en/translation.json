@@ -170,7 +170,8 @@
     "noMessageProvided": "Message not provided",
     "signatureNotVerified": "Can not verify signature",
     "nothingToStake": "Nothing to stake",
-    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
+    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance",
+    "loadingFarmStats": "Error loading farm stats. {{error}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
@@ -271,6 +272,9 @@
     "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
     "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
     "farmInfoCardText": "Farm ADX until December 20, 2020",
-    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>"
+    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
+    "eddieFarmer": "Eddie the ADX farmer",
+    "withdrawDialogTitle": "Withdraw from {{name}} pool",
+    "depositDialogTitle": "Deposit to {{name}} pool"
   }
 }
