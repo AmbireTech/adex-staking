@@ -299,7 +299,9 @@ export const FarmPoolData = ({
 				color="text.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
-				text={t("farm.totalDepositTokenStaked", { depositAssetName })}
+				text={t("farm.totalDepositTokenStaked", {
+					depositAsset: depositAssetName
+				})}
 			/>
 			<CardRow
 				color="special.main"
@@ -320,7 +322,7 @@ export const FarmPoolData = ({
 				color="text.main"
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
-				text={t("farm.userStakedShare", { depositAssetName })}
+				text={t("farm.userStakedShare")}
 			/>
 			<CardRow
 				color="text.primary"
@@ -336,6 +338,7 @@ export const FarmPoolData = ({
 				fontSize={20}
 				text={t("farm.myLiquidity")}
 				infoText={liquidityInfoText}
+				mb={0.5}
 			/>
 
 			<CardRow
@@ -362,6 +365,7 @@ export const FarmPoolData = ({
 				fontWeight={"fontWeightRegular"}
 				fontSize={14}
 				text={liquidityOnWallet}
+				mb={0.5}
 			/>
 			<CardRow
 				color="text.primary"
@@ -459,7 +463,7 @@ export default function FarmCard({
 				<Box>
 					<FarmFormDialog
 						id={`withdraw-liquidity-pool-${id}`}
-						title={t("common.withdrawDialogTitle", { name })}
+						title={t("farm.withdrawDialogTitle", { name })}
 						btnLabel={t("common.withdraw")}
 						fullWidth
 						variant="contained"
