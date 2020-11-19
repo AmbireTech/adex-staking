@@ -44,6 +44,7 @@ export default function FarmForm({
 	const { pendingADX, userLPBalance, walletBalance } = stats
 
 	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
+	const showRewards = withdraw && pendingADX.gt(ZERO)
 
 	const onAction = useCallback(
 		amount => {
@@ -163,7 +164,7 @@ export default function FarmForm({
 				</Box>
 			</Box>
 			<Box>
-				{withdraw && (
+				{showRewards && (
 					<Box my={2}>
 						<Alert variant="filled" severity="info">
 							{t("farm.withdrawRewardsAlert", {
@@ -217,7 +218,7 @@ export default function FarmForm({
 					</Button>
 				</Box>
 
-				{!!withdraw && (
+				{showRewards && (
 					<Box mt={1}>
 						<Button
 							id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
