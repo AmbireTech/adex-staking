@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useCallback } from "react"
 import {
 	onLiquidityPoolDeposit,
 	onLiquidityPoolWithdraw,
@@ -12,10 +12,8 @@ import {
 } from "../helpers/formatting"
 import { ZERO } from "../helpers/constants"
 import {
-	Grid,
 	TextField,
 	Button,
-	FormControl,
 	FormControlLabel,
 	Checkbox,
 	Box
@@ -47,21 +45,36 @@ export default function FarmForm({
 
 	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
 
-	const onAction = async () => {
-		setConfirmation(false)
+	const onAction = useCallback(
+		amount => {
+			setConfirmation(false)
 
-		const action = withdraw ? onLiquidityPoolWithdraw : onLiquidityPoolDeposit
+			const action = withdraw ? onLiquidityPoolWithdraw : onLiquidityPoolDeposit
 
-		if (closeDialog) closeDialog()
+			if (closeDialog) closeDialog()
 
-		await wrapDoingTxns(
-			action.bind(null, {
-				pool,
-				stats,
-				chosenWalletType,
-				actionAmount: parseTokens(actionAmount, depositAssetDecimals)
-			})
-		)()
+			wrapDoingTxns(
+				action.bind(null, {
+					pool,
+					stats,
+					chosenWalletType,
+					actionAmount: parseTokens(amount, depositAssetDecimals)
+				})
+			)()
+		},
+		[
+			chosenWalletType,
+			closeDialog,
+			depositAssetDecimals,
+			pool,
+			stats,
+			withdraw,
+			wrapDoingTxns
+		]
+	)
+
+	const onRewardsWithdraw = () => {
+		onAction("0.00")
 	}
 
 	const confirmationLabel = pool.confirmationLabel
@@ -119,93 +132,109 @@ export default function FarmForm({
 
 	return (
 		<Box width={1}>
-			<Grid container spacing={2}>
-				<Grid item xs={12} sm={12}>
-					<TextField
+			<Box>
+				<TextField
+					fullWidth
+					id={`new-farm-${actionName}-form-amount-field`}
+					required
+					label={t("farm.labelLPTokenAmount", { token: depositAssetName })}
+					type="text"
+					value={actionAmount}
+					error={amountErr}
+					onChange={ev => {
+						onAmountChange(ev.target.value)
+					}}
+					helperText={amountErr ? amountErrText : null}
+				/>
+				<Box mt={1}>
+					<Button
 						fullWidth
-						id={`new-farm-${actionName}-form-amount-field`}
-						required
-						label={t("farm.labelLPTokenAmount", { token: depositAssetName })}
-						type="text"
-						value={actionAmount}
-						error={amountErr}
-						onChange={ev => {
-							onAmountChange(ev.target.value)
+						size="small"
+						id={`new-farm-${actionName}-form-max-amount-btn`}
+						onClick={() => {
+							onAmountChange(formatTokens(maxAmount, depositAssetDecimals))
 						}}
-						helperText={amountErr ? amountErrText : null}
-					/>
+					>
+						{t("common.maxAmountBtn", {
+							amount: formatADXPretty(maxAmount),
+							currency: depositAssetName
+						})}
+					</Button>
+				</Box>
+			</Box>
+			<Box>
+				{withdraw && (
+					<Box my={2}>
+						<Alert variant="filled" severity="info">
+							{t("farm.withdrawRewardsAlert", {
+								pendingADX,
+								depositAssetName
+							})}
+						</Alert>
+					</Box>
+				)}
+
+				<FarmPoolData
+					pollStatsLoaded={true}
+					userStatsLoaded={true}
+					pool={pool}
+					stats={stats}
+					blockNumber={blockNumber}
+				/>
+			</Box>
+
+			{confirmationLabel && (
+				<Box>
+					<FormControlLabel
+						style={{ userSelect: "none" }}
+						label={t(confirmationLabel)}
+						control={
+							<Checkbox
+								id={`new-${actionName}-form-tos-check`}
+								checked={confirmation}
+								onChange={ev => setConfirmation(ev.target.checked)}
+							/>
+						}
+					></FormControlLabel>
+				</Box>
+			)}
+			<Box>
+				<Box>
+					<Button
+						id={`new-${actionName}-farm-btn-${toIdAttributeString(
+							pool.poolId
+						)}`}
+						disableElevation
+						fullWidth
+						disabled={!confirmed || !!amountErr || !pool || !stats}
+						color="primary"
+						variant="contained"
+						onClick={() => onAction(actionAmount)}
+					>
+						{withdraw
+							? t("common.withdrawCurrency", { currency: depositAssetName })
+							: t("common.depositCurrency", { currency: depositAssetName })}
+					</Button>
+				</Box>
+
+				{!!withdraw && (
 					<Box mt={1}>
 						<Button
-							fullWidth
-							size="small"
-							id={`new-farm-${actionName}-form-max-amount-btn`}
-							onClick={() => {
-								onAmountChange(formatTokens(maxAmount, depositAssetDecimals))
-							}}
-						>
-							{t("common.maxAmountBtn", {
-								amount: formatADXPretty(maxAmount),
-								currency: depositAssetName
-							})}
-						</Button>
-					</Box>
-				</Grid>
-
-				<Grid item xs={12} sm={12}>
-					{withdraw && (
-						<Box my={2}>
-							<Alert variant="filled" severity="info">
-								{t("farm.withdrawRewardsAlert", {
-									pendingADX,
-									depositAssetName
-								})}
-							</Alert>
-						</Box>
-					)}
-
-					<FarmPoolData
-						pollStatsLoaded={true}
-						userStatsLoaded={true}
-						pool={pool}
-						stats={stats}
-						blockNumber={blockNumber}
-					/>
-				</Grid>
-
-				{confirmationLabel && (
-					<Grid item xs={12}>
-						<FormControlLabel
-							style={{ userSelect: "none" }}
-							label={t(confirmationLabel)}
-							control={
-								<Checkbox
-									id={`new-${actionName}-form-tos-check`}
-									checked={confirmation}
-									onChange={ev => setConfirmation(ev.target.checked)}
-								/>
-							}
-						></FormControlLabel>
-					</Grid>
-				)}
-				<Grid item xs={12}>
-					<FormControl style={{ display: "flex" }}>
-						<Button
-							id={`new-${actionName}-farm-btn-${toIdAttributeString(
-								pool ? pool.poolId || actionName : "-farm-pool-not-selected"
+							id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
+								pool.poolId
 							)}`}
 							disableElevation
+							fullWidth
 							disabled={!confirmed || !!amountErr || !pool || !stats}
-							color="primary"
+							color="secondary"
 							variant="contained"
-							onClick={onAction}
+							onClick={onRewardsWithdraw}
 						>
-							{withdraw
-								? t("common.withdrawCurrency", { currency: depositAssetName })
-								: t("common.depositCurrency", { currency: depositAssetName })}
+							{t("farm.withdrawRewardsBtn", { token: "ADX" })}
 						</Button>
-					</FormControl>
-				</Grid>
-			</Grid>
+					</Box>
+				)}
+			</Box>
 		</Box>
 	)
 }
