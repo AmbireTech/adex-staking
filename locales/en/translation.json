@@ -275,6 +275,7 @@
     "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
     "eddieFarmer": "Eddie the ADX farmer",
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
-    "depositDialogTitle": "Deposit to {{name}} pool"
+    "depositDialogTitle": "Deposit to {{name}} pool",
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
   }
 }
