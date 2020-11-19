@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 
 export const FarmContext = React.createContext()
 
-const REFRESH_INTERVAL = 69_000 // 69 sec
+const REFRESH_INTERVAL = 60_000 // 60 sec
 
 function useFarm() {
 	const { t } = useTranslation()
@@ -14,7 +14,7 @@ function useFarm() {
 	const [getStats, setGetFarmStats] = useState(false)
 
 	const refreshFarmStats = useCallback(async () => {
-		if (getStats && Object.keys(prices).length) {
+		if (getStats && !!Object.keys(prices).length) {
 			try {
 				const stats = await getFarmPoolsStats({
 					chosenWalletType,
@@ -39,10 +39,26 @@ function useFarm() {
 	}, [getStats, addSnack, chosenWalletType, prices, t])
 
 	useEffect(() => {
-		const intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
-		return () => clearInterval(intvl)
+		let intvl = null
+		if (getStats) {
+			intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
+		}
+
+		return () => {
+			if (intvl) {
+				clearInterval(intvl)
+			}
+		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refreshFarmStats])
+
+	useEffect(() => {
+		if (getStats) {
+			refreshFarmStats()
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [getStats, chosenWalletType])
 
 	return {
 		farmStats,
