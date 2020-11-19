@@ -58,7 +58,7 @@ function useFarm() {
 			refreshFarmStats()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [getStats, chosenWalletType])
+	}, [getStats, chosenWalletType, prices])
 
 	return {
 		farmStats,
