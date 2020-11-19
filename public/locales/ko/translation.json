@@ -63,7 +63,8 @@
     "slashing": "지분 삭감",
     "lockup": "락업",
     "apyStability": "APY 안정성",
-    "poolStats": "풀 상태"
+    "poolStats": "풀 상태",
+    "farm": "Farm"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -168,7 +169,8 @@
     "noMessageProvided": "메시지가 없습니다.",
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
     "nothingToStake": "스테이크할 것이 없습니다.",
-    "cantDeployAndStakeMore": " 아이디 잔액과 다른 금액을 배치하거나 스테이킹을 할 수 없습니다."
+    "cantDeployAndStakeMore": " 아이디 잔액과 다른 금액을 배치하거나 스테이킹을 할 수 없습니다.",
+    "loadingFarmStats": "Error loading farm stats. {{error}}"
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",
@@ -247,5 +249,32 @@
     "lockupOnChain": "온 체인 락업",
     "labelPayout": "지급액",
     "labelTransactions": "노출(트랜잭션)"
+  },
+  "farm": {
+    "poolMPY": "Pool MPY",
+    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
+    "totalDeposits": "Total deposits",
+    "myLiquidity": "My liquidity",
+    "liquidityInfo": "Your liquidity data",
+    "myStaked": "Staked:",
+    "onWallet": "On wallet:",
+    "platform": "<strong> Platform: </strong>  {{platform}}",
+    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
+    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
+    "userStakedShare": "My share",
+    "NA": "N/A",
+    "myReward": "Unclaimed reward",
+    "labelLPTokenAmount": "{{token}} amount",
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
+    "farmInfoCardText": "Farm ADX until December 20, 2020",
+    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
+    "eddieFarmer": "Eddie the ADX farmer",
+    "withdrawDialogTitle": "Withdraw from {{name}} pool",
+    "depositDialogTitle": "Deposit to {{name}} pool",
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
   }
 }

@@ -63,7 +63,8 @@
     "slashing": "削减",
     "lockup": "锁定",
     "apyStability": "APY 稳定性",
-    "poolStats": "池状态"
+    "poolStats": "池状态",
+    "farm": "Farm"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -169,7 +170,8 @@
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
     "nothingToStake": "无质押金",
-    "cantDeployAndStakeMore": "无法部署和质押身份余额以外的金额"
+    "cantDeployAndStakeMore": "无法部署和质押身份余额以外的金额",
+    "loadingFarmStats": "Error loading farm stats. {{error}}"
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
@@ -248,5 +250,32 @@
     "lockupOnChain": "链上锁定",
     "labelPayout": "支出",
     "labelTransactions": "曝光（交易）"
+  },
+  "farm": {
+    "poolMPY": "Pool MPY",
+    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
+    "totalDeposits": "Total deposits",
+    "myLiquidity": "My liquidity",
+    "liquidityInfo": "Your liquidity data",
+    "myStaked": "Staked:",
+    "onWallet": "On wallet:",
+    "platform": "<strong> Platform: </strong>  {{platform}}",
+    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
+    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
+    "userStakedShare": "My share",
+    "NA": "N/A",
+    "myReward": "Unclaimed reward",
+    "labelLPTokenAmount": "{{token}} amount",
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
+    "farmInfoCardText": "Farm ADX until December 20, 2020",
+    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
+    "eddieFarmer": "Eddie the ADX farmer",
+    "withdrawDialogTitle": "Withdraw from {{name}} pool",
+    "depositDialogTitle": "Deposit to {{name}} pool",
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
   }
 }
