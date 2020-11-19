@@ -57,13 +57,13 @@
     "noSelection": "未选择任何内容",
     "currencyBalance": "{{currency}} 余额",
     "goBack": "返回",
-    "validatorStats": "Validator stats",
-    "name": "Name",
-    "purpose": "Purpose",
-    "slashing": "Slashing",
-    "lockup": "Lockup",
-    "apyStability": "APY stability",
-    "poolStats": "Pool stats"
+    "validatorStats": "验证者状态",
+    "name": "姓名",
+    "purpose": "目的",
+    "slashing": "削减",
+    "lockup": "锁定",
+    "apyStability": "APY 稳定性",
+    "poolStats": "池状态"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -89,9 +89,9 @@
     "tomSlashPolicy": "禁止削减.",
     "unbondPeriodDay": "{{count}} 天",
     "unbondPeriodDay_plural": "{{count}} 天",
-    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
-    "tomApyStability": "Flexible",
-    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
+    "tomLockupPeriodTxt": "30 天（解锁 ADX 前需要经过 30 天，在此期间不会收到收益）",
+    "tomApyStability": "灵活",
+    "tomPurpose": "质押 ADX 通证换取主验证者的信誉"
   },
   "email": {
     "subscribe": "邮件订阅更多AdEx<strong>独家内容</strong>",
@@ -119,7 +119,7 @@
     "createBond": "创建绑定",
     "currentYield": "<farmer>🌾</farmer>  当前年产量{{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "质押ADX",
-    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
+    "stakeNewAccIdentityBalance": "目前您可以质押 {{amount}} {{currency}}。这是基于您的无转账费地址的余额。"
   },
   "gasless": {
     "staking": "无转账费质押",
@@ -169,7 +169,7 @@
     "noMessageProvided": "未提供消息",
     "signatureNotVerified": "无法验证签名",
     "nothingToStake": "无质押金",
-    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
+    "cantDeployAndStakeMore": "无法部署和质押身份余额以外的金额"
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
@@ -185,7 +185,7 @@
     "reActivatingInfo": "您的绑定将被重新激活，解除绑定请求将被取消。该绑定将重新开始赚取奖励.",
     "claimConfirmation": "您将提取您的收益 ",
     "forTotal": "总计为:{{total}}",
-    "exceptWallets": "(except {{wallets}})"
+    "exceptWallets": "({{wallets}}除外)"
   },
   "help": {
     "help": "帮助",
@@ -227,26 +227,26 @@
   "relayerResErrors": {
     "underMinBalance": "无转账费地址至少需要有 {{amount}} {{currency}} ",
     "pendingTransactions": "不得有未决交易",
-    "transactionsHoursRateLimit":"过去{{count}} 小时内不得提交交易",
+    "transactionsHoursRateLimit": "过去{{count}} 小时内不得提交交易",
     "transactionsHoursRateLimit_plural": "过去{{count}} 小时内不得提交交易"
   },
   "stats": {
-    "totalCampaigns": "Total campaigns",
-    "uniqueUnits": "Unique ad units",
-    "uniquePublishers": "Unique publishers",
-    "uniqueAdvertisers": "Unique advertisers",
-    "totalDeposits": "Total deposits",
-    "totalPayouts": "Total payouts",
-    "dailyPayoutsData": "Daily payouts",
-    "dailyPayoutsVolume": "Daily payouts",
-    "yearlyTransactionsData": "Yearly impressions (transactions)",
-    "yearlyTransactions": "Yearly impressions (transactions)",
-    "dailyTransactionsData": "Daily impressions",
-    "dailyTransactions": "Daily impressions",
-    "monthlyTransactionsData": "Monthly impressions",
-    "monthlyTransactions": "Monthly impressions",
-    "lockupOnChain": "Locked up on chain",
-    "labelPayout": "Payouts",
-    "labelTransactions": "Impressions (Transactions)"
+    "totalCampaigns": "广告总数",
+    "uniqueUnits": "唯一广告单位",
+    "uniquePublishers": "唯一发行商",
+    "uniqueAdvertisers": "唯一广告商",
+    "totalDeposits": "总存款",
+    "totalPayouts": "总支出",
+    "dailyPayoutsData": "每日支出",
+    "dailyPayoutsVolume": "每日支出",
+    "yearlyTransactionsData": "每年曝光（交易）",
+    "yearlyTransactions": "每年曝光（交易）",
+    "dailyTransactionsData": "每日曝光",
+    "dailyTransactions": "每日曝光",
+    "monthlyTransactionsData": "每月曝光",
+    "monthlyTransactions": "每月曝光",
+    "lockupOnChain": "链上锁定",
+    "labelPayout": "支出",
+    "labelTransactions": "曝光（交易）"
   }
 }
