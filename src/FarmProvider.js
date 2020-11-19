@@ -11,9 +11,10 @@ function useFarm() {
 	const { t } = useTranslation()
 	const { chosenWalletType, prices, addSnack } = useContext(AppContext)
 	const [farmStats, setStats] = useState({})
+	const [getStats, setGetFarmStats] = useState(false)
 
 	const refreshFarmStats = useCallback(async () => {
-		if (Object.keys(prices).length) {
+		if (getStats && Object.keys(prices).length) {
 			try {
 				const stats = await getFarmPoolsStats({
 					chosenWalletType,
@@ -35,7 +36,7 @@ function useFarm() {
 				}
 			}
 		}
-	}, [addSnack, chosenWalletType, prices, t])
+	}, [getStats, addSnack, chosenWalletType, prices, t])
 
 	useEffect(() => {
 		const intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
@@ -43,24 +44,9 @@ function useFarm() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refreshFarmStats])
 
-	useEffect(() => {
-		// TODO: update on wallet change but not on prices change
-		if (Object.keys(prices).length) {
-			const updatePoolStats = async () => {
-				const stats = await getFarmPoolsStats({
-					chosenWalletType,
-					externalPrices: prices
-				})
-				setStats(stats)
-			}
-			updatePoolStats()
-		}
-		// Will not update on prices change
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType, prices])
-
 	return {
-		farmStats
+		farmStats,
+		setGetFarmStats
 	}
 }
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { FarmContext } from "../FarmProvider"
 import AppContext from "../AppContext"
 import { Box, useMediaQuery } from "@material-ui/core"
@@ -10,7 +10,7 @@ import { FARM_POOLS } from "../helpers/constants"
 
 const Farm = () => {
 	const { t } = useTranslation()
-	const { farmStats } = useContext(FarmContext)
+	const { farmStats, setGetFarmStats } = useContext(FarmContext)
 	const { chosenWalletType } = useContext(AppContext)
 	const {
 		pollStatsLoaded,
@@ -21,6 +21,14 @@ const Farm = () => {
 
 	const canStake = !!chosenWalletType.name && userStatsLoaded //&& !!appStats.connectedWalletAddress
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
+
+	useEffect(() => {
+		setGetFarmStats(true)
+		return () => {
+			setGetFarmStats(false)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<Box>
