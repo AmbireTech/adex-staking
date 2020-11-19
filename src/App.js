@@ -2,7 +2,7 @@ import React, { Suspense } from "react"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { HashRouter as Router } from "react-router-dom"
 import { Web3ReactProvider } from "@web3-react/core"
-import { Web3Provider } from "ethers/providers"
+import { ethers } from "ethers"
 import Root from "./components/Root"
 import AppContext from "./AppContext"
 import ValidatorStatsContext from "./ValidatorStatsContext"
@@ -36,7 +36,9 @@ export default () => (
 	<MultiThemeProvider>
 		<CssBaseline />
 		<Suspense fallback={<Loading />}>
-			<Web3ReactProvider getLibrary={provider => new Web3Provider(provider)}>
+			<Web3ReactProvider
+				getLibrary={provider => new ethers.providers.Web3Provider(provider)}
+			>
 				<App />
 			</Web3ReactProvider>
 		</Suspense>

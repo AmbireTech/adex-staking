@@ -333,7 +333,7 @@ export async function onLiquidityPoolDeposit({
 	if (needed.gt(ZERO))
 		identityTxns.push([
 			LPToken.address,
-			LPToken.interface.functions.transferFrom.encode([
+			LPToken.interface.encodeFunctionData("transferFrom", [
 				walletAddr,
 				identityAddr,
 				needed
@@ -343,13 +343,19 @@ export async function onLiquidityPoolDeposit({
 	if (allowanceMC.lt(actionAmount)) {
 		identityTxns.push([
 			LPToken.address,
-			LPToken.interface.functions.approve.encode([MASTER_CHEF_ADDR, MAX_UINT])
+			LPToken.interface.encodeFunctionData("approve", [
+				MASTER_CHEF_ADDR,
+				MAX_UINT
+			])
 		])
 	}
 
 	identityTxns.push([
 		MasterChef.address,
-		MasterChef.interface.functions.deposit.encode([pool.poolId, actionAmount])
+		MasterChef.interface.encodeFunctionData("deposit", [
+			pool.poolId,
+			actionAmount
+		])
 	])
 
 	return executeOnIdentity(
@@ -391,18 +397,21 @@ export async function onLiquidityPoolWithdraw({
 
 	identityTxns.push([
 		MasterChef.address,
-		MasterChef.interface.functions.withdraw.encode([pool.poolId, actionAmount])
+		MasterChef.interface.encodeFunctionData("withdraw", [
+			pool.poolId,
+			actionAmount
+		])
 	])
 
 	identityTxns.push([
 		LPToken.address,
-		LPToken.interface.functions.transfer.encode([walletAddr, actionAmount])
+		LPToken.interface.encodeFunctionData("transfer", [walletAddr, actionAmount])
 	])
 
 	if (pendingADX.gt(ZERO)) {
 		identityTxns.push([
 			ADXToken.address,
-			ADXToken.interface.functions.transferFrom.encode([
+			ADXToken.interface.encodeFunctionData("transferFrom", [
 				identityAddr,
 				walletAddr,
 				pendingADX

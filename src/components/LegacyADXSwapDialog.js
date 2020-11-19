@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Contract } from "ethers"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
-import { formatUnits } from "ethers/utils"
+import { utils } from "ethers"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { ExternalAnchor } from "./Anchor"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
@@ -56,7 +56,7 @@ export default function LegacyADXSwapDialog(
 				<Trans
 					i18nKey="legacy.p1"
 					values={{
-						amount: amount.gt(ZERO) ? formatUnits(amount, 4) : ""
+						amount: amount.gt(ZERO) ? utils.formatUnits(amount, 4) : ""
 					}}
 					components={{
 						external: (
@@ -86,7 +86,7 @@ export default function LegacyADXSwapDialog(
 					<Trans
 						i18nKey="legacy.p4"
 						values={{
-							amount: amount.gt(ZERO) ? formatUnits(amount, 4) : ""
+							amount: amount.gt(ZERO) ? utils.formatUnits(amount, 4) : ""
 						}}
 						components={{
 							farmer,
