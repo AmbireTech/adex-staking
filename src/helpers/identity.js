@@ -22,7 +22,7 @@ export function getUserIdentity(walletAddr) {
 export function rawZeroFeeTx(idAddr, nonce, to, data) {
 	return {
 		identityContract: idAddr,
-		nonce: nonce.toString(10),
+		nonce: nonce.toString(),
 		feeTokenAddr: "0x6b175474e89094c44da98b954eedeac495271d0f",
 		feeAmount: 0,
 		to,
@@ -33,7 +33,7 @@ export function rawZeroFeeTx(idAddr, nonce, to, data) {
 export function zeroFeeTx(idAddr, nonce, to, data) {
 	return new Transaction({
 		identityContract: idAddr,
-		nonce: nonce.toString(10),
+		nonce: nonce.toString(),
 		feeTokenAddr: "0x6b175474e89094c44da98b954eedeac495271d0f",
 		feeAmount: 0,
 		to,
