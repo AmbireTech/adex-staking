@@ -271,11 +271,15 @@ export const getFarmPoolsStats = async ({
 		return byId
 	}, {})
 	const blockNumber = await defaultProvider.getBlockNumber()
+	const totalRewards = [...Object.values(statsByPoolId)]
+		.filter(x => !!x.pendingADX && x.pendingADX.gt(ZERO))
+		.reduce((a, b) => a.add(b.pendingADX), ZERO)
 
 	return {
 		blockNumber,
 		pollStatsLoaded: true,
 		userStatsLoaded: !!signer,
+		totalRewards,
 		statsByPoolId
 	}
 }
@@ -413,6 +417,66 @@ export async function onLiquidityPoolWithdraw({
 			])
 		])
 	}
+
+	return executeOnIdentity(chosenWalletType, identityTxns)
+}
+
+export async function onHarvestAll({ farmStats, chosenWalletType }) {
+	if (!farmStats) throw new Error("errors.statsNotProvided")
+
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+
+	const walletAddr = await signer.getAddress()
+	const identityAddr = getUserIdentity(walletAddr).addr
+
+	const { statsByPoolId, totalRewards } = farmStats
+
+	const poolsToHarvest = [...Object.values(statsByPoolId)].filter(
+		pool => pool.pendingADX && pool.pendingADX.gt(ZERO)
+	)
+
+	if (!poolsToHarvest.length) {
+		throw new Error("errors.nothingToHarvest")
+	}
+
+	const totalADXRewards = poolsToHarvest.reduce(
+		(a, b) => a.add(b.pendingADX),
+		ZERO
+	)
+
+	if (!totalRewards.eq(totalADXRewards)) {
+		throw new Error("errors.invalidTotalRewards")
+	}
+
+	const identityTxns = poolsToHarvest.reduce((txns, pool) => {
+		const { poolId, pendingADX } = pool
+		txns.push(
+			[
+				MasterChef.address,
+				MasterChef.interface.functions.withdraw.encode([poolId, ZERO])
+			],
+			[
+				ADXToken.address,
+				ADXToken.interface.functions.transferFrom.encode([
+					identityAddr,
+					walletAddr,
+					pendingADX
+				])
+			]
+		)
+
+		return txns
+	}, [])
+
+	identityTxns.push([
+		ADXToken.address,
+		ADXToken.interface.functions.transferFrom.encode([
+			identityAddr,
+			walletAddr,
+			totalADXRewards
+		])
+	])
 
 	return executeOnIdentity(chosenWalletType, identityTxns)
 }
