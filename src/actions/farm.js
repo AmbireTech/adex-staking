@@ -410,11 +410,7 @@ export async function onLiquidityPoolWithdraw({
 	if (pendingADX.gt(ZERO)) {
 		identityTxns.push([
 			ADXToken.address,
-			ADXToken.interface.functions.transferFrom.encode([
-				identityAddr,
-				walletAddr,
-				pendingADX
-			])
+			ADXToken.interface.functions.transfer.encode([walletAddr, pendingADX])
 		])
 	}
 
@@ -450,32 +446,18 @@ export async function onHarvestAll({ farmStats, chosenWalletType }) {
 	}
 
 	const identityTxns = poolsToHarvest.reduce((txns, pool) => {
-		const { poolId, pendingADX } = pool
-		txns.push(
-			[
-				MasterChef.address,
-				MasterChef.interface.functions.withdraw.encode([poolId, ZERO])
-			],
-			[
-				ADXToken.address,
-				ADXToken.interface.functions.transferFrom.encode([
-					identityAddr,
-					walletAddr,
-					pendingADX
-				])
-			]
-		)
+		const { poolId } = pool
+		txns.push([
+			MasterChef.address,
+			MasterChef.interface.functions.withdraw.encode([poolId, ZERO])
+		])
 
 		return txns
 	}, [])
 
 	identityTxns.push([
 		ADXToken.address,
-		ADXToken.interface.functions.transferFrom.encode([
-			identityAddr,
-			walletAddr,
-			totalADXRewards
-		])
+		ADXToken.interface.functions.transfer.encode([walletAddr, totalADXRewards])
 	])
 
 	return executeOnIdentity(chosenWalletType, identityTxns)
