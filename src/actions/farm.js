@@ -284,6 +284,14 @@ export const getFarmPoolsStats = async ({
 	}
 }
 
+// TODO: move it in other file
+class TranslatableError extends Error {
+	constructor(message, values) {
+		super(message)
+		this.values = values
+	}
+}
+
 export async function onLiquidityPoolDeposit({
 	pool,
 	stats,
@@ -293,7 +301,10 @@ export async function onLiquidityPoolDeposit({
 }) {
 	if (!stats || !pool) throw new Error("errors.statsNotProvided")
 	if (!actionAmount) throw new Error("errors.noDepositAmount")
-	if (actionAmount.isZero()) throw new Error("errors.zeroDeposit")
+	if (actionAmount.isZero())
+		throw new TranslatableError("errors.zeroDepositToken", {
+			currency: pool.depositAssetName
+		})
 
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")

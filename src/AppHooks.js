@@ -163,7 +163,14 @@ export default function Root() {
 		} catch (e) {
 			console.error(e)
 			setOpenDoingTx(false)
-			setSnackbarErr(e.message || "errors.unknownError")
+			setSnackbarErr(
+				e.values
+					? {
+							msg: e.message || "errors.unknownError",
+							opts: e.values || {}
+					  }
+					: e.message || "errors.unknownError"
+			)
 			setOpenErr(true)
 		}
 	}
