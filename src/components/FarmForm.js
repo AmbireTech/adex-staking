@@ -22,6 +22,7 @@ import { Alert } from "@material-ui/lab"
 import AppContext from "../AppContext"
 import { useTranslation } from "react-i18next"
 import { FarmPoolData } from "./FarmCard"
+import Tooltip from "./Tooltip"
 
 export default function FarmForm({
 	closeDialog,
@@ -46,6 +47,35 @@ export default function FarmForm({
 	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
 	const showRewards = withdraw && pendingADX && pendingADX.gt(ZERO)
 	const showRewardsOnDeposit = !withdraw && pendingADX && pendingADX.gt(ZERO)
+
+	const confirmationLabel = pool.confirmationLabel
+	const confirmed = !confirmationLabel || confirmation
+
+	const disableActionsMsg = !confirmed
+		? t("farm.noConfirmed")
+		: !!amountErr
+		? amountErrText
+		: !pool || !stats
+		? t("errors.statsNotProvided")
+		: ""
+
+	const disableDepositsMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !walletBalance || walletBalance.isZero()
+		? t("farm.zeroBalanceDeposit", { currency: depositAssetName })
+		: ""
+
+	const disableWithdrawMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !userLPBalance || userLPBalance.isZero()
+		? t("farm.zeroBalanceWithdraw", { currency: depositAssetName })
+		: ""
+
+	const disableRewardsWithdrawMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !pendingADX || pendingADX.isZero()
+		? t("farm.noRewards", { currency: "ADX" })
+		: ""
 
 	const onAction = useCallback(
 		amount => {
@@ -80,9 +110,6 @@ export default function FarmForm({
 	const onRewardsWithdraw = () => {
 		onAction("0.00")
 	}
-
-	const confirmationLabel = pool.confirmationLabel
-	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
 		const { userInputAmount } = params
@@ -215,38 +242,48 @@ export default function FarmForm({
 			)}
 			<Box>
 				<Box>
-					<Button
-						id={`new-${actionName}-farm-btn-${toIdAttributeString(
-							pool.poolId
-						)}`}
-						disableElevation
-						fullWidth
-						disabled={!confirmed || !!amountErr || !pool || !stats}
-						color="primary"
-						variant="contained"
-						onClick={() => onAction(actionAmount)}
-					>
-						{withdraw
-							? t("common.withdrawCurrency", { currency: depositAssetName })
-							: t("common.depositCurrency", { currency: depositAssetName })}
-					</Button>
+					<Tooltip title={withdraw ? disableWithdrawMsg : disableDepositsMsg}>
+						<Box>
+							<Button
+								id={`new-${actionName}-farm-btn-${toIdAttributeString(
+									pool.poolId
+								)}`}
+								disableElevation
+								fullWidth
+								disabled={
+									withdraw ? !!disableWithdrawMsg : !!disableDepositsMsg
+								}
+								color="primary"
+								variant="contained"
+								onClick={() => onAction(actionAmount)}
+							>
+								{withdraw
+									? t("common.withdrawCurrency", { currency: depositAssetName })
+									: t("common.depositCurrency", { currency: depositAssetName })}
+							</Button>
+						</Box>
+					</Tooltip>
 				</Box>
 
 				{showRewards && (
 					<Box mt={1}>
-						<Button
-							id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
-								pool.poolId
-							)}`}
-							disableElevation
-							fullWidth
-							disabled={!confirmed || !!amountErr || !pool || !stats}
-							color="secondary"
-							variant="contained"
-							onClick={onRewardsWithdraw}
-						>
-							{t("farm.withdrawRewardsBtn", { token: "ADX" })}
-						</Button>
+						<Tooltip title={disableRewardsWithdrawMsg}>
+							<Box>
+								<Button
+									id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
+										pool.poolId
+									)}`}
+									disableElevation
+									fullWidth
+									disabled={!!disableRewardsWithdrawMsg}
+									color="secondary"
+									variant="contained"
+									onClick={onRewardsWithdraw}
+								>
+									{t("farm.withdrawRewardsBtn", { token: "ADX" })}
+								</Button>
+							</Box>
+						</Tooltip>
 					</Box>
 				)}
 			</Box>

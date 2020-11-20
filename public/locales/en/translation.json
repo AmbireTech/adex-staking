@@ -279,6 +279,10 @@
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
     "depositDialogTitle": "Deposit to {{name}} pool",
     "withdrawRewardsBtn": "Withdraw {{token}} rewards only",
-    "harvest": "harvest"
+    "harvest": "harvest",
+    "zeroBalanceDeposit": "No {{currency}} balance on your wallet",
+    "zeroBalanceWithdraw": "No {{currency}} staked",
+    "noRewards": "No pending {{currency}} rewards",
+    "noConfirmed": "Terms not accepted"
   }
 }
