@@ -138,7 +138,9 @@ export default function FarmForm({
 		}
 		if (pool && amountBN.lte(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.lessDanMinPoolADX"))
+			setAmountErrText(
+				t("errors.lessDanMinPoolAmount", { currency: depositAssetName })
+			)
 			return
 		}
 

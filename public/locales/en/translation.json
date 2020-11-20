@@ -172,7 +172,9 @@
     "nothingToStake": "Nothing to stake",
     "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance",
     "loadingFarmStats": "Error loading farm stats. {{error}}",
-    "amountNotSelected": "Amount not selected"
+    "amountNotSelected": "Amount not selected",
+    "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
+    "zeroDepositToken": "Can not deposit 0 {{currency}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
