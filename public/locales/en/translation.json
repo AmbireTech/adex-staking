@@ -188,7 +188,7 @@
     "claimConfirmation": "You are about to claim your earnings of ",
     "forTotal": "For total of: {{total}}",
     "exceptWallets": "(except {{wallets}})",
-    "harvestAllConfirmation": "You are going to harvest all of your reward of {{amount}} {{currency}}. "
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. "
   },
   "help": {
     "help": "help",
