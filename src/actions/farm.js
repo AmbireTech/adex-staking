@@ -306,13 +306,17 @@ export async function onLiquidityPoolDeposit({
 		allowance,
 		allowanceMC,
 		balanceOnWallet,
-		balanceOnIdentity
+		balanceOnIdentity,
+		identityCode
 	] = await Promise.all([
 		LPToken.allowance(walletAddr, identityAddr),
 		LPToken.allowance(identityAddr, MASTER_CHEF_ADDR),
 		LPToken.balanceOf(walletAddr),
-		LPToken.balanceOf(identityAddr)
+		LPToken.balanceOf(identityAddr),
+		defaultProvider.getCode(identityAddr)
 	])
+
+	const isDeployed = identityCode === "0x"
 
 	if (actionAmount.gt(balanceOnWallet)) {
 		throw new Error("errors.amountTooLarge")
@@ -355,7 +359,7 @@ export async function onLiquidityPoolDeposit({
 	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
-		setAllowance ? { gasLimit: 200420 } : {}
+		setAllowance ? { gasLimit: isDeployed ? 200_420 : 469_420 } : {}
 	)
 }
 
