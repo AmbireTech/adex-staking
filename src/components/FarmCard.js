@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles"
 import { Box, LinearProgress, Typography, SvgIcon } from "@material-ui/core"
 import { SwapHorizSharp as AssetsLinkIcon } from "@material-ui/icons"
 import { ReactComponent as SpecialIcon } from "./../resources/crown-ic.svg"
-
 import { CardRow } from "./cardCommon"
 import { useTranslation, Trans } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"

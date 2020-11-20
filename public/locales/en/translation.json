@@ -187,7 +187,8 @@
     "reActivatingInfo": "Your bond will be re-activated, meaning that your request to unbond will be cancelled but it will start earning rewards again.",
     "claimConfirmation": "You are about to claim your earnings of ",
     "forTotal": "For total of: {{total}}",
-    "exceptWallets": "(except {{wallets}})"
+    "exceptWallets": "(except {{wallets}})",
+    "harvestAllConfirmation": "You are going to harvest all of your reward of {{amount}} {{currency}}. "
   },
   "help": {
     "help": "help",
@@ -276,6 +277,7 @@
     "eddieFarmer": "Eddie the ADX farmer",
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
     "depositDialogTitle": "Deposit to {{name}} pool",
-    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only",
+    "harvest": "harvest"
   }
 }
