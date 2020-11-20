@@ -455,9 +455,12 @@ export async function onHarvestAll({ farmStats, chosenWalletType }) {
 		return txns
 	}, [])
 
+	const toHarvest = (await ADXToken.balanceOf(identityAddr)).add(
+		totalADXRewards
+	)
 	identityTxns.push([
 		ADXToken.address,
-		ADXToken.interface.functions.transfer.encode([walletAddr, totalADXRewards])
+		ADXToken.interface.functions.transfer.encode([walletAddr, toHarvest])
 	])
 
 	return executeOnIdentity(chosenWalletType, identityTxns)
