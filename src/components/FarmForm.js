@@ -34,7 +34,7 @@ export default function FarmForm({
 	const { t } = useTranslation()
 	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
-	const [actionAmount, setActionAmount] = useState("0.0")
+	const [actionAmount, setActionAmount] = useState("")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
@@ -63,12 +63,16 @@ export default function FarmForm({
 		? disableActionsMsg
 		: !walletBalance || walletBalance.isZero()
 		? t("farm.zeroBalanceDeposit", { currency: depositAssetName })
+		: !actionAmount
+		? t("errors.amountNotSelected")
 		: ""
 
 	const disableWithdrawMsg = !!disableActionsMsg
 		? disableActionsMsg
 		: !userLPBalance || userLPBalance.isZero()
 		? t("farm.zeroBalanceWithdraw", { currency: depositAssetName })
+		: !actionAmount
+		? t("errors.amountNotSelected")
 		: ""
 
 	const disableRewardsWithdrawMsg = !!disableActionsMsg
@@ -172,6 +176,7 @@ export default function FarmForm({
 					type="text"
 					value={actionAmount}
 					error={amountErr}
+					placeholder="0.00"
 					onChange={ev => {
 						onAmountChange(ev.target.value)
 					}}

@@ -171,7 +171,8 @@
     "signatureNotVerified": "Can not verify signature",
     "nothingToStake": "Nothing to stake",
     "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance",
-    "loadingFarmStats": "Error loading farm stats. {{error}}"
+    "loadingFarmStats": "Error loading farm stats. {{error}}",
+    "amountNotSelected": "Amount not selected"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
