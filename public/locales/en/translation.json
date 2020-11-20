@@ -271,6 +271,7 @@
     "myReward": "Unclaimed reward",
     "labelLPTokenAmount": "{{token}} amount",
     "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "depositRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make deposit.",
     "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
     "farmInfoCardText": "Farm ADX until December 20, 2020",
     "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",

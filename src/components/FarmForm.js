@@ -44,7 +44,8 @@ export default function FarmForm({
 	const { pendingADX, userLPBalance, walletBalance } = stats
 
 	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
-	const showRewards = withdraw && pendingADX.gt(ZERO)
+	const showRewards = withdraw && pendingADX && pendingADX.gt(ZERO)
+	const showRewardsOnDeposit = !withdraw && pendingADX && pendingADX.gt(ZERO)
 
 	const onAction = useCallback(
 		amount => {
@@ -59,7 +60,8 @@ export default function FarmForm({
 					pool,
 					stats,
 					chosenWalletType,
-					actionAmount: parseTokens(amount, depositAssetDecimals)
+					actionAmount: parseTokens(amount, depositAssetDecimals),
+					pendingADX
 				})
 			)()
 		},
@@ -67,6 +69,7 @@ export default function FarmForm({
 			chosenWalletType,
 			closeDialog,
 			depositAssetDecimals,
+			pendingADX,
 			pool,
 			stats,
 			withdraw,
@@ -168,7 +171,18 @@ export default function FarmForm({
 					<Box my={2}>
 						<Alert variant="filled" severity="info">
 							{t("farm.withdrawRewardsAlert", {
-								pendingADX,
+								pendingADX: formatADXPretty(pendingADX),
+								depositAssetName
+							})}
+						</Alert>
+					</Box>
+				)}
+
+				{showRewardsOnDeposit && (
+					<Box my={2}>
+						<Alert variant="filled" severity="info">
+							{t("farm.depositRewardsAlert", {
+								pendingADX: formatADXPretty(pendingADX),
 								depositAssetName
 							})}
 						</Alert>

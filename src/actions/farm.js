@@ -288,7 +288,8 @@ export async function onLiquidityPoolDeposit({
 	pool,
 	stats,
 	chosenWalletType,
-	actionAmount
+	actionAmount,
+	pendingADX
 }) {
 	if (!stats || !pool) throw new Error("errors.statsNotProvided")
 	if (!actionAmount) throw new Error("errors.noDepositAmount")
@@ -360,6 +361,13 @@ export async function onLiquidityPoolDeposit({
 		MasterChef.interface.functions.deposit.encode([pool.poolId, actionAmount])
 	])
 
+	if (!!pendingADX && pendingADX.gt(ZERO)) {
+		identityTxns.push([
+			ADXToken.address,
+			ADXToken.interface.functions.transfer.encode([walletAddr, pendingADX])
+		])
+	}
+
 	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
@@ -371,7 +379,8 @@ export async function onLiquidityPoolWithdraw({
 	pool,
 	stats,
 	chosenWalletType,
-	actionAmount
+	actionAmount,
+	pendingADX
 }) {
 	if (!stats || !pool) throw new Error("errors.statsNotProvided")
 	if (!actionAmount) throw new Error("errors.noDepositAmount")
@@ -384,9 +393,8 @@ export async function onLiquidityPoolWithdraw({
 
 	const LPToken = new Contract(pool.depositAssetAddr, ERC20ABI, defaultProvider)
 
-	const [userInfo, pendingADX] = await Promise.all([
-		MasterChef.userInfo(pool.poolId, identityAddr),
-		MasterChef.pendingADX(pool.poolId, identityAddr)
+	const [userInfo] = await Promise.all([
+		MasterChef.userInfo(pool.poolId, identityAddr)
 	])
 
 	const userLPBalance = userInfo ? userInfo[0] : ZERO
@@ -407,7 +415,7 @@ export async function onLiquidityPoolWithdraw({
 		LPToken.interface.functions.transfer.encode([walletAddr, actionAmount])
 	])
 
-	if (pendingADX.gt(ZERO)) {
+	if (!!pendingADX && pendingADX.gt(ZERO)) {
 		identityTxns.push([
 			ADXToken.address,
 			ADXToken.interface.functions.transfer.encode([walletAddr, pendingADX])
