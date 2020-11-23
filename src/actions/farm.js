@@ -381,7 +381,10 @@ export async function onLiquidityPoolDeposit({
 	if (!!pendingADX && pendingADX.gt(ZERO)) {
 		identityTxns.push([
 			ADXToken.address,
-			ADXToken.interface.functions.transfer.encode([walletAddr, pendingADX])
+			ADXToken.interface.encodeFunctionData("transfer", [
+				walletAddr,
+				pendingADX
+			])
 		])
 	}
 
@@ -477,7 +480,7 @@ export async function onHarvestAll({ farmStats, chosenWalletType }) {
 		const { poolId } = pool
 		txns.push([
 			MasterChef.address,
-			MasterChef.interface.functions.withdraw.encode([poolId, ZERO])
+			MasterChef.interface.encodeFunctionData("withdraw", [poolId, ZERO])
 		])
 
 		return txns
@@ -488,7 +491,7 @@ export async function onHarvestAll({ farmStats, chosenWalletType }) {
 	)
 	identityTxns.push([
 		ADXToken.address,
-		ADXToken.interface.functions.transfer.encode([walletAddr, toHarvest])
+		ADXToken.interface.encodeFunctionData("transfer", [walletAddr, toHarvest])
 	])
 
 	return executeOnIdentity(chosenWalletType, identityTxns)
