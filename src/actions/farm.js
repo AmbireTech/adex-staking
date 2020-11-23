@@ -134,7 +134,8 @@ const getPoolStats = async ({
 	pool,
 	walletAddr,
 	identityAddr,
-	externalPrices
+	externalPrices,
+	poolsPricesData
 }) => {
 	const depositTokenContract = new Contract(
 		pool.depositAssetAddr,
@@ -175,13 +176,12 @@ const getPoolStats = async ({
 
 	const poolAllocPoints = poolInfo[1].toNumber()
 
-	const prices = await getDepositLPTokenToADXValue({ externalPrices })
 	const totalStakedFloat = parseFloat(
 		formatTokens(totalStaked, pool.depositAssetDecimals)
 	)
 
 	const lpTokenPrice =
-		prices[pool.depositAssetName].poolTotalPriceUSD /
+		poolsPricesData[pool.depositAssetName].poolTotalPriceUSD /
 		parseFloat(formatTokens(totalSupply, pool.depositAssetDecimals))
 	const lpTokenStakedValueUSD = totalStakedFloat * lpTokenPrice
 	const rewardsDistributedPerMonthInUSD =
@@ -199,14 +199,14 @@ const getPoolStats = async ({
 	const poolAPY = rewardsDistributedPerYearInUSD / (lpTokenStakedValueUSD || 1)
 	const poolMPY = rewardsDistributedPerMonthInUSD / (lpTokenStakedValueUSD || 1)
 
-	const lpTokenDataWithPrices = prices[pool.depositAssetName].lpTokenData.map(
-		data => {
-			data.unitsPerLP = data.usdPrice
-				? (lpTokenPrice * data.weight) / data.usdPrice
-				: null
-			return data
-		}
-	)
+	const lpTokenDataWithPrices = poolsPricesData[
+		pool.depositAssetName
+	].lpTokenData.map(data => {
+		data.unitsPerLP = data.usdPrice
+			? (lpTokenPrice * data.weight) / data.usdPrice
+			: null
+		return data
+	})
 
 	return {
 		poolId: pool.poolId,
@@ -238,8 +238,15 @@ export const getFarmPoolsStats = async ({
 	const walletAddr = signer ? await signer.getAddress() : null
 	const identityAddr = walletAddr ? getUserIdentity(walletAddr).addr : null
 
+	const poolsPricesData = await getDepositLPTokenToADXValue({ externalPrices })
 	const poolsCalls = FARM_POOLS.map(pool =>
-		getPoolStats({ pool, walletAddr, identityAddr, externalPrices })
+		getPoolStats({
+			pool,
+			walletAddr,
+			identityAddr,
+			externalPrices,
+			poolsPricesData
+		})
 	)
 	const allPoolStats = await Promise.all(poolsCalls)
 	const statsByPoolId = allPoolStats.reduce((byId, stats) => {
