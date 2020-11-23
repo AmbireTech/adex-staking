@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Snackbar } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 
@@ -19,18 +19,21 @@ export function useSnack() {
 		}
 	}, [snackPack, snackMessageInfo, snackOpen])
 
-	const addSnack = (message, severity, hideTimeout = 20000, action) => {
-		setSnackPack(prev => [
-			...prev,
-			{
-				message,
-				severity,
-				hideTimeout,
-				action,
-				key: new Date().getTime() + "-" + Math.random()
-			}
-		])
-	}
+	const addSnack = useCallback(
+		(message, severity, hideTimeout = 20000, action) => {
+			setSnackPack(prev => [
+				...prev,
+				{
+					message,
+					severity,
+					hideTimeout,
+					action,
+					key: new Date().getTime() + "-" + Math.random()
+				}
+			])
+		},
+		[]
+	)
 
 	const closeSnack = (event, reason) => {
 		if (reason === "clickaway") {

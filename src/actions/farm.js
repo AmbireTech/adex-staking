@@ -25,29 +25,6 @@ const MasterChef = new Contract(
 
 const ADXToken = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 
-const getUserBalances = async ({
-	depositTokenContract,
-	walletAddr,
-	identityAddr
-}) => {
-	if (!walletAddr) {
-		return {
-			identityBalance: null,
-			walletBalance: null
-		}
-	} else {
-		const [identityBalance, walletBalance] = await Promise.all([
-			depositTokenContract.balanceOf(identityAddr),
-			depositTokenContract.balanceOf(walletAddr)
-		])
-
-		return {
-			identityBalance,
-			walletBalance
-		}
-	}
-}
-
 const getOtherTokenAndPoolPrice = (known, unknown) => {
 	const totalLPPrice =
 		(parseFloat(utils.formatUnits(known.poolBalance, known.decimals)) /
@@ -157,7 +134,8 @@ const getPoolStats = async ({
 	pool,
 	walletAddr,
 	identityAddr,
-	externalPrices
+	externalPrices,
+	poolsPricesData
 }) => {
 	const depositTokenContract = new Contract(
 		pool.depositAssetAddr,
@@ -168,7 +146,7 @@ const getPoolStats = async ({
 	const [
 		totalSupply,
 		totalStaked,
-		{ identityBalance, walletBalance },
+		walletBalance,
 		pendingADX,
 		userInfo,
 		poolInfo,
@@ -177,7 +155,7 @@ const getPoolStats = async ({
 	] = await Promise.all([
 		depositTokenContract.totalSupply(),
 		depositTokenContract.balanceOf(MasterChef.address),
-		getUserBalances({ depositTokenContract, walletAddr, identityAddr }),
+		walletAddr ? depositTokenContract.balanceOf(walletAddr) : null,
 		identityAddr ? MasterChef.pendingADX(pool.poolId, identityAddr) : null,
 		identityAddr ? MasterChef.userInfo(pool.poolId, identityAddr) : null,
 		MasterChef.poolInfo(pool.poolId),
@@ -198,13 +176,12 @@ const getPoolStats = async ({
 
 	const poolAllocPoints = poolInfo[1].toNumber()
 
-	const prices = await getDepositLPTokenToADXValue({ externalPrices })
 	const totalStakedFloat = parseFloat(
 		formatTokens(totalStaked, pool.depositAssetDecimals)
 	)
 
 	const lpTokenPrice =
-		prices[pool.depositAssetName].poolTotalPriceUSD /
+		poolsPricesData[pool.depositAssetName].poolTotalPriceUSD /
 		parseFloat(formatTokens(totalSupply, pool.depositAssetDecimals))
 	const lpTokenStakedValueUSD = totalStakedFloat * lpTokenPrice
 	const rewardsDistributedPerMonthInUSD =
@@ -222,14 +199,14 @@ const getPoolStats = async ({
 	const poolAPY = rewardsDistributedPerYearInUSD / (lpTokenStakedValueUSD || 1)
 	const poolMPY = rewardsDistributedPerMonthInUSD / (lpTokenStakedValueUSD || 1)
 
-	const lpTokenDataWithPrices = prices[pool.depositAssetName].lpTokenData.map(
-		data => {
-			data.unitsPerLP = data.usdPrice
-				? (lpTokenPrice * data.weight) / data.usdPrice
-				: null
-			return data
-		}
-	)
+	const lpTokenDataWithPrices = poolsPricesData[
+		pool.depositAssetName
+	].lpTokenData.map(data => {
+		data.unitsPerLP = data.usdPrice
+			? (lpTokenPrice * data.weight) / data.usdPrice
+			: null
+		return data
+	})
 
 	return {
 		poolId: pool.poolId,
@@ -238,7 +215,6 @@ const getPoolStats = async ({
 		totalSupply,
 		totalStaked,
 		lpTokenStakedValueUSD,
-		identityBalance,
 		walletBalance,
 		pendingADX,
 		userInfo,
@@ -262,8 +238,15 @@ export const getFarmPoolsStats = async ({
 	const walletAddr = signer ? await signer.getAddress() : null
 	const identityAddr = walletAddr ? getUserIdentity(walletAddr).addr : null
 
+	const poolsPricesData = await getDepositLPTokenToADXValue({ externalPrices })
 	const poolsCalls = FARM_POOLS.map(pool =>
-		getPoolStats({ pool, walletAddr, identityAddr, externalPrices })
+		getPoolStats({
+			pool,
+			walletAddr,
+			identityAddr,
+			externalPrices,
+			poolsPricesData
+		})
 	)
 	const allPoolStats = await Promise.all(poolsCalls)
 	const statsByPoolId = allPoolStats.reduce((byId, stats) => {
@@ -332,7 +315,7 @@ export async function onLiquidityPoolDeposit({
 		defaultProvider.getCode(identityAddr)
 	])
 
-	const isDeployed = identityCode === "0x"
+	const isDeployed = identityCode !== "0x"
 
 	if (actionAmount.gt(balanceOnWallet)) {
 		throw new Error("errors.amountTooLarge")
@@ -391,7 +374,7 @@ export async function onLiquidityPoolDeposit({
 	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
-		setAllowance ? { gasLimit: isDeployed ? 200_420 : 469_420 } : {}
+		setAllowance ? { gasLimit: isDeployed ? 269_420 : 469_420 } : {}
 	)
 }
 
