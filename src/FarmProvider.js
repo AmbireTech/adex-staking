@@ -10,11 +10,14 @@ const REFRESH_INTERVAL = 60_000 // 60 sec
 function useFarm() {
 	const { t } = useTranslation()
 	const { chosenWalletType, prices, addSnack } = useContext(AppContext)
+	const [pricesLoaded, setPricesLoaded] = useState(false)
 	const [farmStats, setStats] = useState({})
 	const [getStats, setGetFarmStats] = useState(false)
 
 	const refreshFarmStats = useCallback(async () => {
-		if (getStats && !!Object.keys(prices).length) {
+		const doUpdate = getStats && pricesLoaded
+
+		if (doUpdate) {
 			try {
 				const stats = await getFarmPoolsStats({
 					chosenWalletType,
@@ -36,29 +39,25 @@ function useFarm() {
 				}
 			}
 		}
-	}, [getStats, addSnack, chosenWalletType, prices, t])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [getStats, chosenWalletType.name, pricesLoaded, t])
 
 	useEffect(() => {
-		let intvl = null
-		if (getStats) {
-			intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
-		}
+		refreshFarmStats()
+		const intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
 
 		return () => {
 			if (intvl) {
 				clearInterval(intvl)
 			}
 		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refreshFarmStats])
 
 	useEffect(() => {
-		if (getStats) {
-			refreshFarmStats()
+		if (Object.keys(prices).length) {
+			setPricesLoaded(true)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [getStats, chosenWalletType, prices])
+	}, [prices, setPricesLoaded])
 
 	return {
 		farmStats,
