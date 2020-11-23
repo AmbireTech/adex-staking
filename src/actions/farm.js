@@ -382,7 +382,7 @@ export async function onLiquidityPoolDeposit({
 	return executeOnIdentity(
 		chosenWalletType,
 		identityTxns,
-		setAllowance ? { gasLimit: isDeployed ? 200_420 : 469_420 } : {}
+		setAllowance ? { gasLimit: isDeployed ? 269_420 : 469_420 } : {}
 	)
 }
 
