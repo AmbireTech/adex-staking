@@ -53,14 +53,14 @@ export default function FarmForm({
 
 	const disableActionsMsg = !confirmed
 		? t("farm.noConfirmed")
-		: !!amountErr
-		? amountErrText
 		: !pool || !stats
 		? t("errors.statsNotProvided")
 		: ""
 
 	const disableDepositsMsg = !!disableActionsMsg
 		? disableActionsMsg
+		: !!amountErr
+		? amountErrText
 		: !walletBalance || walletBalance.isZero()
 		? t("farm.zeroBalanceDeposit", { currency: depositAssetName })
 		: !actionAmount
@@ -69,6 +69,8 @@ export default function FarmForm({
 
 	const disableWithdrawMsg = !!disableActionsMsg
 		? disableActionsMsg
+		: !!amountErr
+		? amountErrText
 		: !userLPBalance || userLPBalance.isZero()
 		? t("farm.zeroBalanceWithdraw", { currency: depositAssetName })
 		: !actionAmount
