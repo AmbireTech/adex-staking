@@ -332,7 +332,7 @@ export async function onLiquidityPoolDeposit({
 		defaultProvider.getCode(identityAddr)
 	])
 
-	const isDeployed = identityCode === "0x"
+	const isDeployed = identityCode !== "0x"
 
 	if (actionAmount.gt(balanceOnWallet)) {
 		throw new Error("errors.amountTooLarge")
