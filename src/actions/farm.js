@@ -25,29 +25,6 @@ const MasterChef = new Contract(
 
 const ADXToken = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 
-const getUserBalances = async ({
-	depositTokenContract,
-	walletAddr,
-	identityAddr
-}) => {
-	if (!walletAddr) {
-		return {
-			identityBalance: null,
-			walletBalance: null
-		}
-	} else {
-		const [identityBalance, walletBalance] = await Promise.all([
-			depositTokenContract.balanceOf(identityAddr),
-			depositTokenContract.balanceOf(walletAddr)
-		])
-
-		return {
-			identityBalance,
-			walletBalance
-		}
-	}
-}
-
 const getOtherTokenAndPoolPrice = (known, unknown) => {
 	const totalLPPrice =
 		(parseFloat(utils.formatUnits(known.poolBalance, known.decimals)) /
@@ -168,7 +145,7 @@ const getPoolStats = async ({
 	const [
 		totalSupply,
 		totalStaked,
-		{ identityBalance, walletBalance },
+		walletBalance,
 		pendingADX,
 		userInfo,
 		poolInfo,
@@ -177,7 +154,7 @@ const getPoolStats = async ({
 	] = await Promise.all([
 		depositTokenContract.totalSupply(),
 		depositTokenContract.balanceOf(MasterChef.address),
-		getUserBalances({ depositTokenContract, walletAddr, identityAddr }),
+		walletAddr ? depositTokenContract.balanceOf(walletAddr) : null,
 		identityAddr ? MasterChef.pendingADX(pool.poolId, identityAddr) : null,
 		identityAddr ? MasterChef.userInfo(pool.poolId, identityAddr) : null,
 		MasterChef.poolInfo(pool.poolId),
@@ -238,7 +215,6 @@ const getPoolStats = async ({
 		totalSupply,
 		totalStaked,
 		lpTokenStakedValueUSD,
-		identityBalance,
 		walletBalance,
 		pendingADX,
 		userInfo,
