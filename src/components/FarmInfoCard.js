@@ -32,7 +32,11 @@ export default function FarmCard() {
 			boxShadow={25}
 			position="relative"
 		>
-			<img src={eddieTheFarmerInfo} alt={t("farm.eddieFarmer")} />
+			<img
+				src={eddieTheFarmerInfo}
+				alt={t("farm.eddieFarmer")}
+				style={{ maxWidth: 222 }}
+			/>
 			<Box my={3}>
 				<Typography align="center" variant="h5" color="textPrimary">
 					{t("farm.farmInfoCardText")}

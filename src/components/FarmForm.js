@@ -22,6 +22,7 @@ import { Alert } from "@material-ui/lab"
 import AppContext from "../AppContext"
 import { useTranslation } from "react-i18next"
 import { FarmPoolData } from "./FarmCard"
+import Tooltip from "./Tooltip"
 
 export default function FarmForm({
 	closeDialog,
@@ -33,7 +34,7 @@ export default function FarmForm({
 	const { t } = useTranslation()
 	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
-	const [actionAmount, setActionAmount] = useState("0.0")
+	const [actionAmount, setActionAmount] = useState("")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
@@ -44,7 +45,41 @@ export default function FarmForm({
 	const { pendingADX, userLPBalance, walletBalance } = stats
 
 	const maxAmount = withdraw ? userLPBalance || ZERO : walletBalance
-	const showRewards = withdraw && pendingADX.gt(ZERO)
+	const showRewards = withdraw && pendingADX && pendingADX.gt(ZERO)
+	const showRewardsOnDeposit = !withdraw && pendingADX && pendingADX.gt(ZERO)
+
+	const confirmationLabel = pool.confirmationLabel
+	const confirmed = !confirmationLabel || confirmation
+
+	const disableActionsMsg = !confirmed
+		? t("farm.noConfirmed")
+		: !!amountErr
+		? amountErrText
+		: !pool || !stats
+		? t("errors.statsNotProvided")
+		: ""
+
+	const disableDepositsMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !walletBalance || walletBalance.isZero()
+		? t("farm.zeroBalanceDeposit", { currency: depositAssetName })
+		: !actionAmount
+		? t("errors.amountNotSelected")
+		: ""
+
+	const disableWithdrawMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !userLPBalance || userLPBalance.isZero()
+		? t("farm.zeroBalanceWithdraw", { currency: depositAssetName })
+		: !actionAmount
+		? t("errors.amountNotSelected")
+		: ""
+
+	const disableRewardsWithdrawMsg = !!disableActionsMsg
+		? disableActionsMsg
+		: !pendingADX || pendingADX.isZero()
+		? t("farm.noRewards", { currency: "ADX" })
+		: ""
 
 	const onAction = useCallback(
 		amount => {
@@ -59,7 +94,8 @@ export default function FarmForm({
 					pool,
 					stats,
 					chosenWalletType,
-					actionAmount: parseTokens(amount, depositAssetDecimals)
+					actionAmount: parseTokens(amount, depositAssetDecimals),
+					pendingADX
 				})
 			)()
 		},
@@ -67,6 +103,7 @@ export default function FarmForm({
 			chosenWalletType,
 			closeDialog,
 			depositAssetDecimals,
+			pendingADX,
 			pool,
 			stats,
 			withdraw,
@@ -77,9 +114,6 @@ export default function FarmForm({
 	const onRewardsWithdraw = () => {
 		onAction("0.00")
 	}
-
-	const confirmationLabel = pool.confirmationLabel
-	const confirmed = !confirmationLabel || confirmation
 
 	const validateFields = params => {
 		const { userInputAmount } = params
@@ -104,7 +138,9 @@ export default function FarmForm({
 		}
 		if (pool && amountBN.lte(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.lessDanMinPoolADX"))
+			setAmountErrText(
+				t("errors.lessDanMinPoolAmount", { currency: depositAssetName })
+			)
 			return
 		}
 
@@ -142,6 +178,7 @@ export default function FarmForm({
 					type="text"
 					value={actionAmount}
 					error={amountErr}
+					placeholder="0.00"
 					onChange={ev => {
 						onAmountChange(ev.target.value)
 					}}
@@ -168,7 +205,18 @@ export default function FarmForm({
 					<Box my={2}>
 						<Alert variant="filled" severity="info">
 							{t("farm.withdrawRewardsAlert", {
-								pendingADX,
+								pendingADX: formatADXPretty(pendingADX),
+								depositAssetName
+							})}
+						</Alert>
+					</Box>
+				)}
+
+				{showRewardsOnDeposit && (
+					<Box my={2}>
+						<Alert variant="filled" severity="info">
+							{t("farm.depositRewardsAlert", {
+								pendingADX: formatADXPretty(pendingADX),
 								depositAssetName
 							})}
 						</Alert>
@@ -201,38 +249,48 @@ export default function FarmForm({
 			)}
 			<Box>
 				<Box>
-					<Button
-						id={`new-${actionName}-farm-btn-${toIdAttributeString(
-							pool.poolId
-						)}`}
-						disableElevation
-						fullWidth
-						disabled={!confirmed || !!amountErr || !pool || !stats}
-						color="primary"
-						variant="contained"
-						onClick={() => onAction(actionAmount)}
-					>
-						{withdraw
-							? t("common.withdrawCurrency", { currency: depositAssetName })
-							: t("common.depositCurrency", { currency: depositAssetName })}
-					</Button>
+					<Tooltip title={withdraw ? disableWithdrawMsg : disableDepositsMsg}>
+						<Box>
+							<Button
+								id={`new-${actionName}-farm-btn-${toIdAttributeString(
+									pool.poolId
+								)}`}
+								disableElevation
+								fullWidth
+								disabled={
+									withdraw ? !!disableWithdrawMsg : !!disableDepositsMsg
+								}
+								color="primary"
+								variant="contained"
+								onClick={() => onAction(actionAmount)}
+							>
+								{withdraw
+									? t("common.withdrawCurrency", { currency: depositAssetName })
+									: t("common.depositCurrency", { currency: depositAssetName })}
+							</Button>
+						</Box>
+					</Tooltip>
 				</Box>
 
 				{showRewards && (
 					<Box mt={1}>
-						<Button
-							id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
-								pool.poolId
-							)}`}
-							disableElevation
-							fullWidth
-							disabled={!confirmed || !!amountErr || !pool || !stats}
-							color="secondary"
-							variant="contained"
-							onClick={onRewardsWithdraw}
-						>
-							{t("farm.withdrawRewardsBtn", { token: "ADX" })}
-						</Button>
+						<Tooltip title={disableRewardsWithdrawMsg}>
+							<Box>
+								<Button
+									id={`new-reward-only-withdraw-farm-btn-${toIdAttributeString(
+										pool.poolId
+									)}`}
+									disableElevation
+									fullWidth
+									disabled={!!disableRewardsWithdrawMsg}
+									color="secondary"
+									variant="contained"
+									onClick={onRewardsWithdraw}
+								>
+									{t("farm.withdrawRewardsBtn", { token: "ADX" })}
+								</Button>
+							</Box>
+						</Tooltip>
 					</Box>
 				)}
 			</Box>
