@@ -424,7 +424,10 @@ export async function onLiquidityPoolWithdraw({
 	if (!!pendingADX && pendingADX.gt(ZERO)) {
 		identityTxns.push([
 			ADXToken.address,
-			ADXToken.interface.encodeFunctionData("encode", [walletAddr, pendingADX])
+			ADXToken.interface.encodeFunctionData("transfer", [
+				walletAddr,
+				pendingADX
+			])
 		])
 	}
 
