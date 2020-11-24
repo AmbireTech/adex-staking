@@ -76,32 +76,57 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
-						<Tooltip title={t("bonds.requestUnbond")}>
-							<Box display="inline-block">
-								<Button
-									id={`request-unbond-${bondId}`}
-									variant="contained"
-									color="primary"
-									onClick={() => onRequestUnbond(bond)}
-								>
-									{t("bonds.requestUnbond")}
-								</Button>
-							</Box>
-						</Tooltip>
+						<Box display="inline-block" m={0.5}>
+							<Tooltip title={t("bonds.requestUnbond")}>
+								<Box display="inline-block">
+									<Button
+										id={`request-unbond-${bondId}`}
+										size="small"
+										variant="contained"
+										color="primary"
+										onClick={() => onRequestUnbond(bond)}
+									>
+										{t("bonds.requestUnbond")}
+									</Button>
+								</Box>
+							</Tooltip>
+						</Box>
 					) : (
-						<Tooltip title={unbondDisableMsg}>
-							<Box display="inline-block">
-								<Button
-									id={`unbond-${bondId}`}
-									variant="contained"
-									disabled={!!unbondDisableMsg}
-									onClick={() => onUnbond(bond)}
-									color="secondary"
-								>
-									{t("common.unbond")}
-								</Button>
+						<>
+							<Box display="inline-block" m={0.5}>
+								<Tooltip title={t("bonds.reBondInfo")}>
+									<Box display="inline-block">
+										<Button
+											id={`re-unbond-${bondId}`}
+											size="small"
+											variant="contained"
+											// TODO
+											onClick={() => {}}
+											color="secondary"
+										>
+											{t("common.rebond")}
+										</Button>
+									</Box>
+								</Tooltip>
 							</Box>
-						</Tooltip>
+
+							<Box display="inline-block" m={0.5}>
+								<Tooltip title={unbondDisableMsg}>
+									<Box display="inline-block">
+										<Button
+											id={`unbond-${bondId}`}
+											size="small"
+											variant="contained"
+											disabled={!!unbondDisableMsg}
+											onClick={() => onUnbond(bond)}
+											color="primary"
+										>
+											{t("common.unbond")}
+										</Button>
+									</Box>
+								</Tooltip>
+							</Box>
+						</>
 					)}
 				</TableCell>
 			</TableRow>
