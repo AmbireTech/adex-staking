@@ -65,7 +65,7 @@
     "apyStability": "APY stability",
     "poolStats": "Pool stats",
     "farm": "Farm",
-    "rebond": "Re-bond"
+    "reBond": "Re-bond"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -196,7 +196,8 @@
     "claimConfirmation": "You are about to claim your earnings of ",
     "forTotal": "For total of: {{total}}",
     "exceptWallets": "(except {{wallets}})",
-    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. "
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "help",

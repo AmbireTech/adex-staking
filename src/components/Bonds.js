@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
 	TableRow,
 	TableCell,
@@ -18,11 +18,14 @@ import {
 } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
 import Tooltip from "./Tooltip"
+import ConfirmationDialog from "./ConfirmationDialog"
 import { getPool, getBondId } from "../helpers/bonds"
-import { useTranslation } from "react-i18next"
+import { useTranslation, Trans } from "react-i18next"
 
 export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 	const { t } = useTranslation()
+	const [reBondOpen, setReBondOpen] = useState(false)
+	const [bondToReBond, setBondToReBond] = useState(null)
 
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
@@ -42,6 +45,12 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 			).toFixed(2)}% APY`
 		}
 		return bond.status
+	}
+
+	const onReBond = () => {
+		// TODO: on re-bond
+
+		console.log("bondToReBond", bondToReBond)
 	}
 
 	const renderBondRow = bond => {
@@ -101,10 +110,13 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 											size="small"
 											variant="contained"
 											// TODO
-											onClick={() => {}}
+											onClick={() => {
+												setBondToReBond(bond)
+												setReBondOpen(true)
+											}}
 											color="secondary"
 										>
-											{t("common.rebond")}
+											{t("common.reBond")}
 										</Button>
 									</Box>
 								</Tooltip>
@@ -162,6 +174,34 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 					</Alert>
 				</Box>
 			)}
+
+			{ConfirmationDialog({
+				isOpen: reBondOpen,
+				onDeny: () => setReBondOpen(false),
+				onConfirm: () => {
+					onReBond()
+				},
+				confirmActionName: t("common.reBond"),
+				content: (
+					<Trans
+						i18nKey="dialogs.reBondConfirmation"
+						values={{
+							amount: bondToReBond
+								? `${formatADXPretty(bondToReBond.currentAmount)}`
+								: "",
+							poolName: bondToReBond
+								? t((getPool(bondToReBond.poolId) || {}).label || "")
+								: "",
+							currency: "ADX",
+							unbondDays: UNBOND_DAYS,
+							extraInfo: t("bonds.reBondInfo")
+						}}
+						components={{
+							box: <Box mb={2}></Box>
+						}}
+					/>
+				)
+			})}
 		</Box>
 	)
 }
