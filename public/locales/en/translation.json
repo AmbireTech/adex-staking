@@ -120,7 +120,10 @@
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
-    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address.",
+    "alreadyUnbonded": "Already unbonded",
+    "unbondNotReady": "Not ready for unbonding",
+    "willUnlockIn": "Can unbond on {{unlockTime}}"
   },
   "gasless": {
     "staking": "Gasless Staking",
