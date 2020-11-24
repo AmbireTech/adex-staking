@@ -117,8 +117,7 @@ export const FarmPoolData = ({
 		platform,
 		depositAssetName,
 		getDepositAssetUrl,
-		rewardAssetName,
-		special
+		rewardAssetName
 	} = pool
 
 	const {

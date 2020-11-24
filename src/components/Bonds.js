@@ -22,7 +22,7 @@ import ConfirmationDialog from "./ConfirmationDialog"
 import { getPool, getBondId } from "../helpers/bonds"
 import { useTranslation, Trans } from "react-i18next"
 
-export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
+export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 	const { t } = useTranslation()
 	const [reBondOpen, setReBondOpen] = useState(false)
 	const [bondToReBond, setBondToReBond] = useState(null)
@@ -47,10 +47,8 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		return bond.status
 	}
 
-	const onReBond = () => {
-		// TODO: on re-bond
-
-		console.log("bondToReBond", bondToReBond)
+	const reBond = () => {
+		onRebond(bondToReBond)
 	}
 
 	const renderBondRow = bond => {
@@ -179,7 +177,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 				isOpen: reBondOpen,
 				onDeny: () => setReBondOpen(false),
 				onConfirm: () => {
-					onReBond()
+					reBond()
 				},
 				confirmActionName: t("common.reBond"),
 				content: (

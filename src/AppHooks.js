@@ -21,7 +21,8 @@ import {
 	onUnbondOrRequest,
 	claimRewards,
 	restake,
-	getPrices
+	getPrices,
+	reBond
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
@@ -180,6 +181,7 @@ export default function Root() {
 	const onUnbond = wrapDoingTxns(
 		onUnbondOrRequest.bind(null, true, chosenWalletType)
 	)
+	const onRebond = wrapDoingTxns(reBond.bind(null, chosenWalletType))
 	const onClaimRewards = wrapDoingTxns(
 		claimRewards.bind(null, chosenWalletType)
 	)
@@ -218,6 +220,7 @@ export default function Root() {
 		setNewBondOpen,
 		toUnbond,
 		setToUnbond,
+		onRebond,
 		toRestake,
 		setToRestake,
 		openErr,
