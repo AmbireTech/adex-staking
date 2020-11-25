@@ -26,7 +26,7 @@ import {
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 
-const REFRESH_INTVL = 20000
+const REFRESH_INTVL = 60_000 // 60sec
 
 const connectorsByName = {
 	[METAMASK]: injected,
@@ -90,19 +90,24 @@ export default function Root() {
 	const [newBondPool, setNewBondPool] = useState(null)
 	const [legacySwapInPrg, setLegacySwapInPrg] = useState(false)
 	const [legacySwapOpen, setLegacySwapInOpen] = useState(false)
+	const [refreshCount, setRefreshCount] = useState(0)
 
 	useInactiveListener(!!connectWallet)
 
 	const refreshStats = useCallback(async () => {
 		const newPrices = await getPrices()
 		const updatePrices =
-			newPrices && JSON.stringify(newPrices) !== JSON.stringify(prices)
+			(!Object.keys(prices) && newPrices) ||
+			(newPrices &&
+				refreshCount % 3 === 0 &&
+				JSON.stringify(newPrices) !== JSON.stringify(prices))
 
 		try {
 			const newStats = await loadStats(
 				chosenWalletType,
 				updatePrices ? newPrices : prices
 			)
+			setRefreshCount(refreshCount + 1)
 			setStats(newStats)
 			if (updatePrices) {
 				setPrices(newPrices)
@@ -121,7 +126,7 @@ export default function Root() {
 			setOpenErr(true)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType, prices])
+	}, [chosenWalletType, refreshCount, prices])
 
 	useEffect(() => {
 		refreshStats()

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 
 export const FarmContext = React.createContext()
 
-const REFRESH_INTERVAL = 60_000 // 60 sec
+const REFRESH_INTERVAL = 120_000 // 120 sec
 
 function useFarm() {
 	const { t } = useTranslation()
