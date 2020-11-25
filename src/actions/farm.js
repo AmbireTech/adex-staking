@@ -38,6 +38,10 @@ const getOtherTokenAndPoolPrice = (known, unknown) => {
 }
 
 const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
+	if (!externalPrices || !externalPrices.USD) {
+		throw new Error("errors.cantCallPricesWithoutADXUSDValue")
+	}
+
 	const adxPrice = externalPrices.USD
 
 	const { allTokenContracts, allTokensInUSD } = FARM_POOLS.reduce(
@@ -249,17 +253,18 @@ export const getFarmPoolsStats = async ({
 		})
 	)
 	const allPoolStats = await Promise.all(poolsCalls)
+
 	const statsByPoolId = allPoolStats.reduce((byId, stats) => {
 		byId[stats.poolId] = stats
 		return byId
 	}, {})
-	const blockNumber = await defaultProvider.getBlockNumber()
+	// const blockNumber = await defaultProvider.getBlockNumber()
 	const totalRewards = [...Object.values(statsByPoolId)]
 		.filter(x => !!x.pendingADX && x.pendingADX.gt(ZERO))
 		.reduce((a, b) => a.add(b.pendingADX), ZERO)
 
 	return {
-		blockNumber,
+		// blockNumber,
 		pollStatsLoaded: true,
 		userStatsLoaded: !!signer,
 		totalRewards,
