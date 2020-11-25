@@ -26,7 +26,8 @@ import {
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 
-const REFRESH_INTVL = 60_000 // 60sec
+const REFRESH_INTVL = 300_000 // 180sec
+const REFRESH_INTVL_WALLET = 60_000 // 60sec
 
 const connectorsByName = {
 	[METAMASK]: injected,
@@ -133,10 +134,13 @@ export default function Root() {
 	}, [chosenWalletType])
 
 	useEffect(() => {
-		const intvl = setInterval(refreshStats, REFRESH_INTVL)
+		const intvl = setInterval(
+			refreshStats,
+			chosenWalletType.name ? REFRESH_INTVL_WALLET : REFRESH_INTVL
+		)
 		return () => clearInterval(intvl)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refreshStats])
+	}, [chosenWalletType.name, refreshStats])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
