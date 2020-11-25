@@ -158,7 +158,15 @@ function getChannelAPY({ channel, prices, totalStake, type }) {
 export async function getPrices() {
 	try {
 		const res = await fetch(PRICES_API_URL)
-		return res.json()
+		const data = await res.json()
+
+		if (!data.adex) {
+			throw new Error("errors.gettingPrices")
+		} else {
+			return {
+				USD: data.adex.usd
+			}
+		}
 	} catch (err) {
 		console.error(err)
 		return null

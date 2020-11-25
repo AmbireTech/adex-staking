@@ -14,8 +14,10 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = bigNumberify(0)
-export const PRICES_API_URL =
-	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+// export const PRICES_API_URL =
+// 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+
+export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 
