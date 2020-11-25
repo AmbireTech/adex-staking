@@ -95,12 +95,11 @@ export default function Root() {
 	useInactiveListener(!!connectWallet)
 
 	const refreshStats = useCallback(async () => {
-		const newPrices = await getPrices()
-		const updatePrices =
-			(!Object.keys(prices) && newPrices) ||
-			(newPrices &&
-				refreshCount % 3 === 0 &&
-				JSON.stringify(newPrices) !== JSON.stringify(prices))
+		const newPrices =
+			!Object.keys(prices) || refreshCount % 3 === 0
+				? await getPrices()
+				: prices
+		const updatePrices = newPrices !== prices
 
 		try {
 			const newStats = await loadStats(
