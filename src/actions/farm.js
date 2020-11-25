@@ -39,7 +39,7 @@ const getOtherTokenAndPoolPrice = (known, unknown) => {
 
 const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 	if (!externalPrices || !externalPrices.USD) {
-		throw new Error("errors.cantCallPricesWithoutADXUSDValue")
+		throw new Error("errors.cantCallLPPricesWithoutADXUSDValue")
 	}
 
 	const adxPrice = externalPrices.USD
@@ -88,7 +88,10 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 
 	const poolDataWithBalances = await Promise.all(poolDataMap)
 
-	while (Object.values(allTokensInUSD).includes(null)) {
+	const maxIters = poolDataWithBalances.length * poolDataWithBalances.length
+	let iters = 0
+
+	while (Object.values(allTokensInUSD).includes(null) && iters <= maxIters) {
 		poolDataWithBalances.map(poolData => {
 			const { lpTokenData } = poolData
 			const [t1, t2] = lpTokenData
@@ -112,6 +115,12 @@ const getDepositLPTokenToADXValue = async ({ externalPrices }) => {
 
 			return poolData
 		})
+
+		iters += 1
+	}
+
+	if (Object.values(allTokensInUSD).includes(null)) {
+		throw new Error("errors.canCalcLPTokensPrices")
 	}
 
 	const lpTokensToADXData = poolDataWithBalances.reduce(
@@ -234,41 +243,53 @@ export const getFarmPoolsStats = async ({
 	chosenWalletType,
 	externalPrices
 }) => {
-	const signer =
-		chosenWalletType && chosenWalletType.library
-			? await getSigner(chosenWalletType)
-			: null
+	try {
+		const signer =
+			chosenWalletType && chosenWalletType.library
+				? await getSigner(chosenWalletType)
+				: null
 
-	const walletAddr = signer ? await signer.getAddress() : null
-	const identityAddr = walletAddr ? getUserIdentity(walletAddr).addr : null
+		const walletAddr = signer ? await signer.getAddress() : null
+		const identityAddr = walletAddr ? getUserIdentity(walletAddr).addr : null
 
-	const poolsPricesData = await getDepositLPTokenToADXValue({ externalPrices })
-	const poolsCalls = FARM_POOLS.map(pool =>
-		getPoolStats({
-			pool,
-			walletAddr,
-			identityAddr,
-			externalPrices,
-			poolsPricesData
+		const poolsPricesData = await getDepositLPTokenToADXValue({
+			externalPrices
 		})
-	)
-	const allPoolStats = await Promise.all(poolsCalls)
+		const poolsCalls = FARM_POOLS.map(pool =>
+			getPoolStats({
+				pool,
+				walletAddr,
+				identityAddr,
+				externalPrices,
+				poolsPricesData
+			})
+		)
+		const allPoolStats = await Promise.all(poolsCalls)
 
-	const statsByPoolId = allPoolStats.reduce((byId, stats) => {
-		byId[stats.poolId] = stats
-		return byId
-	}, {})
-	// const blockNumber = await defaultProvider.getBlockNumber()
-	const totalRewards = [...Object.values(statsByPoolId)]
-		.filter(x => !!x.pendingADX && x.pendingADX.gt(ZERO))
-		.reduce((a, b) => a.add(b.pendingADX), ZERO)
+		const statsByPoolId = allPoolStats.reduce((byId, stats) => {
+			byId[stats.poolId] = stats
+			return byId
+		}, {})
+		// const blockNumber = await defaultProvider.getBlockNumber()
+		const totalRewards = [...Object.values(statsByPoolId)]
+			.filter(x => !!x.pendingADX && x.pendingADX.gt(ZERO))
+			.reduce((a, b) => a.add(b.pendingADX), ZERO)
 
-	return {
-		// blockNumber,
-		pollStatsLoaded: true,
-		userStatsLoaded: !!signer,
-		totalRewards,
-		statsByPoolId
+		return {
+			// blockNumber,
+			pollStatsLoaded: true,
+			userStatsLoaded: !!signer,
+			totalRewards,
+			statsByPoolId
+		}
+	} catch (error) {
+		console.error("error getFarmPoolsStats", error)
+		return {
+			pollStatsLoaded: false,
+			userStatsLoaded: false,
+			totalRewards: ZERO,
+			statsByPoolId: {}
+		}
 	}
 }
 
