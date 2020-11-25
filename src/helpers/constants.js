@@ -216,7 +216,9 @@ export const FARM_POOLS = [
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
 		assetsIcons: [ADXIcon, ETHIcon],
-		special: true
+		special: true,
+		latRewardBlock: 11494773,
+		rewardsDurationDays: 30
 	},
 	{
 		poolId: 1,
@@ -247,7 +249,9 @@ export const FARM_POOLS = [
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon],
-		special: true
+		special: true,
+		latRewardBlock: 11494773,
+		rewardsDurationDays: 30
 	},
 	{
 		poolId: 2,
@@ -277,7 +281,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
-		assetsIcons: [BalancerIcon, ETHIcon]
+		assetsIcons: [BalancerIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 3,
@@ -307,7 +313,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [YFIIcon, ETHIcon]
+		assetsIcons: [YFIIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 4,
@@ -337,7 +345,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [UniswapIcon, ETHIcon]
+		assetsIcons: [UniswapIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 5,
@@ -367,6 +377,8 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [LINKIcon, ETHIcon]
+		assetsIcons: [LINKIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	}
 ]
