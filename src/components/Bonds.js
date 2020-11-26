@@ -47,7 +47,8 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 		return bond.status
 	}
 
-	const reBond = () => {
+	const reBond = async () => {
+		setReBondOpen(false)
 		onRebond(bondToReBond)
 	}
 
