@@ -17,7 +17,7 @@ import WithDialog from "./WithDialog"
 import FarmForm from "./FarmForm"
 
 const FarmFormDialog = WithDialog(FarmForm)
-const REWARDS_ACTIVE_FROM_BLOCK = 11296000
+// const REWARDS_ACTIVE_FROM_BLOCK = 11296000
 
 const useStyles = makeStyles(theme => {
 	const iconBoxBorder = ({ special }) =>
@@ -113,7 +113,6 @@ export const FarmPoolData = ({
 	const classes = useStyles()
 
 	const {
-		id,
 		platform,
 		depositAssetName,
 		getDepositAssetUrl,
