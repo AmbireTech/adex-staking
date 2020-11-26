@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
 	TableRow,
 	TableCell,
@@ -17,11 +17,15 @@ import {
 	formatDate
 } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
+import Tooltip from "./Tooltip"
+import ConfirmationDialog from "./ConfirmationDialog"
 import { getPool, getBondId } from "../helpers/bonds"
-import { useTranslation } from "react-i18next"
+import { useTranslation, Trans } from "react-i18next"
 
-export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
+export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 	const { t } = useTranslation()
+	const [reBondOpen, setReBondOpen] = useState(false)
+	const [bondToReBond, setBondToReBond] = useState(null)
 
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
@@ -43,6 +47,11 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 		return bond.status
 	}
 
+	const reBond = async () => {
+		setReBondOpen(false)
+		onRebond(bondToReBond)
+	}
+
 	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
@@ -50,6 +59,18 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
 		)
 		const bondId = getBondId(bond)
+
+		const unbondDisableMsg =
+			bond.status === "Unbonded"
+				? t("bonds.alreadyUnbonded")
+				: !bond.willUnlock
+				? t("bonds.unbondNotReady")
+				: bond.willUnlock.getTime() > Date.now()
+				? t("bonds.willUnlockIn", {
+						unlockTime: new Date(bond.willUnlock.getTime()).toLocaleDateString()
+				  })
+				: ""
+
 		return (
 			<TableRow key={bondId}>
 				<TableCell>
@@ -63,28 +84,60 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
 					{bond.status === "Active" ? (
-						<Button
-							id={`request-unbond-${bondId}`}
-							variant="contained"
-							color="primary"
-							onClick={() => onRequestUnbond(bond)}
-						>
-							{t("bonds.requestUnbond")}
-						</Button>
+						<Box display="inline-block" m={0.5}>
+							<Tooltip title={t("bonds.requestUnbond")}>
+								<Box display="inline-block">
+									<Button
+										id={`request-unbond-${bondId}`}
+										size="small"
+										variant="contained"
+										color="primary"
+										onClick={() => onRequestUnbond(bond)}
+									>
+										{t("bonds.requestUnbond")}
+									</Button>
+								</Box>
+							</Tooltip>
+						</Box>
 					) : (
-						<Button
-							id={`unbond-${bondId}`}
-							variant="contained"
-							disabled={
-								bond.status === "Unbonded" ||
-								!bond.willUnlock ||
-								bond.willUnlock.getTime() > Date.now()
-							}
-							onClick={() => onUnbond(bond)}
-							color="secondary"
-						>
-							{t("common.unbond")}
-						</Button>
+						<>
+							<Box display="inline-block" m={0.5}>
+								<Tooltip title={t("bonds.reBondInfo")}>
+									<Box display="inline-block">
+										<Button
+											id={`re-unbond-${bondId}`}
+											size="small"
+											variant="contained"
+											// TODO
+											onClick={() => {
+												setBondToReBond(bond)
+												setReBondOpen(true)
+											}}
+											color="secondary"
+										>
+											{t("common.reBond")}
+										</Button>
+									</Box>
+								</Tooltip>
+							</Box>
+
+							<Box display="inline-block" m={0.5}>
+								<Tooltip title={unbondDisableMsg}>
+									<Box display="inline-block">
+										<Button
+											id={`unbond-${bondId}`}
+											size="small"
+											variant="contained"
+											disabled={!!unbondDisableMsg}
+											onClick={() => onUnbond(bond)}
+											color="primary"
+										>
+											{t("common.unbond")}
+										</Button>
+									</Box>
+								</Tooltip>
+							</Box>
+						</>
 					)}
 				</TableCell>
 			</TableRow>
@@ -120,6 +173,34 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond }) {
 					</Alert>
 				</Box>
 			)}
+
+			{ConfirmationDialog({
+				isOpen: reBondOpen,
+				onDeny: () => setReBondOpen(false),
+				onConfirm: () => {
+					reBond()
+				},
+				confirmActionName: t("common.reBond"),
+				content: (
+					<Trans
+						i18nKey="dialogs.reBondConfirmation"
+						values={{
+							amount: bondToReBond
+								? `${formatADXPretty(bondToReBond.currentAmount)}`
+								: "",
+							poolName: bondToReBond
+								? t((getPool(bondToReBond.poolId) || {}).label || "")
+								: "",
+							currency: "ADX",
+							unbondDays: UNBOND_DAYS,
+							extraInfo: t("bonds.reBondInfo")
+						}}
+						components={{
+							box: <Box mb={2}></Box>
+						}}
+					/>
+				)
+			})}
 		</Box>
 	)
 }

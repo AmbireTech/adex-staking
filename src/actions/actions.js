@@ -699,6 +699,24 @@ export async function restake(
 	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
 }
 
+export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
+	const oldBond = [amount, poolId, nonce || ZERO]
+	const newBond = [
+		amount,
+		poolId,
+		BigNumber.from(Math.floor(Date.now() / 1000))
+	]
+
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	return executeOnIdentity(chosenWalletType, [
+		[
+			Staking.address,
+			Staking.interface.encodeFunctionData("replaceBond", [oldBond, newBond])
+		]
+	])
+}
+
 function toChannelTuple(args) {
 	return [
 		args.creator,
