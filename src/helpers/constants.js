@@ -14,8 +14,10 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = BigNumber.from(0)
-export const PRICES_API_URL =
-	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+// export const PRICES_API_URL =
+// 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
+
+export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 
@@ -214,7 +216,9 @@ export const FARM_POOLS = [
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
 		assetsIcons: [ADXIcon, ETHIcon],
-		special: true
+		special: true,
+		latRewardBlock: 11494773,
+		rewardsDurationDays: 30
 	},
 	{
 		poolId: 1,
@@ -245,7 +249,9 @@ export const FARM_POOLS = [
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon],
-		special: true
+		special: true,
+		latRewardBlock: 11494773,
+		rewardsDurationDays: 30
 	},
 	{
 		poolId: 2,
@@ -275,7 +281,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: BalancerIcon,
-		assetsIcons: [BalancerIcon, ETHIcon]
+		assetsIcons: [BalancerIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 3,
@@ -305,7 +313,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [YFIIcon, ETHIcon]
+		assetsIcons: [YFIIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 4,
@@ -335,7 +345,9 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [UniswapIcon, ETHIcon]
+		assetsIcons: [UniswapIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	},
 	{
 		poolId: 5,
@@ -365,6 +377,8 @@ export const FARM_POOLS = [
 		rewardAssetName: "ADX",
 		rewardAssetAddr: ADDR_ADX,
 		platformIcon: UniswapIcon,
-		assetsIcons: [LINKIcon, ETHIcon]
+		assetsIcons: [LINKIcon, ETHIcon],
+		latRewardBlock: 11428515,
+		rewardsDurationDays: 20
 	}
 ]
