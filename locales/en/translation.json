@@ -64,7 +64,8 @@
     "lockup": "Lockup",
     "apyStability": "APY stability",
     "poolStats": "Pool stats",
-    "farm": "Farm"
+    "farm": "Farm",
+    "reBond": "Re-bond"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -120,7 +121,11 @@
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
-    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address.",
+    "alreadyUnbonded": "Already unbonded",
+    "unbondNotReady": "Not ready for unbonding",
+    "willUnlockIn": "Can unbond on {{unlockTime}}",
+    "reBondInfo": "You can re-bond while there is pending or ready unbond request"
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -193,7 +198,8 @@
     "claimConfirmation": "You are about to claim your earnings of ",
     "forTotal": "For total of: {{total}}",
     "exceptWallets": "(except {{wallets}})",
-    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. "
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "help",
