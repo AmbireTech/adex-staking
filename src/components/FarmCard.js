@@ -263,32 +263,32 @@ export const FarmPoolData = ({
 				mb={2}
 			/>
 
-			{blockNumber && blockNumber >= REWARDS_ACTIVE_FROM_BLOCK ? (
-				<CardRow
-					color="text.main"
-					fontWeight={"fontWeightRegular"}
-					fontSize={14}
-					text={
-						<Trans
-							i18nKey="farm.currentMPYLabel"
-							values={{ mpy: currentMPY }}
-							components={{
-								strong: (
-									<Box
-										ml={1}
-										display="inline"
-										color="special.main"
-										fontWeight={"fontWeightBold"}
-										fontSize={20}
-									/>
-								)
-							}}
-						/>
-					}
-					infoText={mpyInfo}
-					mb={2}
-				/>
-			) : (
+			{/* {blockNumber && blockNumber >= REWARDS_ACTIVE_FROM_BLOCK ? ( */}
+			<CardRow
+				color="text.main"
+				fontWeight={"fontWeightRegular"}
+				fontSize={14}
+				text={
+					<Trans
+						i18nKey="farm.currentMPYLabel"
+						values={{ mpy: currentMPY }}
+						components={{
+							strong: (
+								<Box
+									ml={1}
+									display="inline"
+									color="special.main"
+									fontWeight={"fontWeightBold"}
+									fontSize={20}
+								/>
+							)
+						}}
+					/>
+				}
+				infoText={mpyInfo}
+				mb={2}
+			/>
+			{/* ) : (
 				<CardRow
 					color="special.main"
 					fontWeight={"fontWeightRegular"}
@@ -311,7 +311,7 @@ export const FarmPoolData = ({
 					}
 					mb={2}
 				/>
-			)}
+			)} */}
 
 			{/* <CardRow
 						color="text.primary"

@@ -179,7 +179,9 @@
     "loadingFarmStats": "Error loading farm stats. {{error}}",
     "amountNotSelected": "Amount not selected",
     "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
-    "zeroDepositToken": "Can not deposit 0 {{currency}}"
+    "zeroDepositToken": "Can not deposit 0 {{currency}}",
+    "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

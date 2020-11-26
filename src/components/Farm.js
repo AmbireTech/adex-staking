@@ -40,9 +40,9 @@ const Farm = () => {
 		pollStatsLoaded,
 		userStatsLoaded,
 		statsByPoolId,
-		blockNumber,
+		// blockNumber,
 		totalRewards
-	} = farmStats
+	} = farmStats || {}
 
 	const canStake = !!chosenWalletType.name && userStatsLoaded //&& !!appStats.connectedWalletAddress
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
@@ -111,12 +111,12 @@ const Farm = () => {
 				>
 					<FarmInfoCard />
 					{FARM_POOLS.map(pool => {
-						const stats = statsByPoolId ? statsByPoolId[pool.poolId] : {}
+						const stats = statsByPoolId ? statsByPoolId[pool.poolId] || {} : {}
 
 						return (
 							<FarmCard
 								key={pool.token}
-								blockNumber={blockNumber}
+								// blockNumber={blockNumber}
 								loading={!pollStatsLoaded}
 								pollStatsLoaded={pollStatsLoaded}
 								userStatsLoaded={userStatsLoaded}

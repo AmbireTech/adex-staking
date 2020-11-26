@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next"
 
 export const FarmContext = React.createContext()
 
-const REFRESH_INTERVAL = 60_000 // 60 sec
+const REFRESH_INTERVAL_NO_WALLET = 300_000 // 300 sec
+const REFRESH_INTERVAL_WALLET = 60_000 // 60 sec
 
 function useFarm() {
 	const { t } = useTranslation()
@@ -44,14 +45,19 @@ function useFarm() {
 
 	useEffect(() => {
 		refreshFarmStats()
-		const intvl = setInterval(refreshFarmStats, REFRESH_INTERVAL)
+		const intvl = setInterval(
+			refreshFarmStats,
+			chosenWalletType.name
+				? REFRESH_INTERVAL_WALLET
+				: REFRESH_INTERVAL_NO_WALLET
+		)
 
 		return () => {
 			if (intvl) {
 				clearInterval(intvl)
 			}
 		}
-	}, [refreshFarmStats])
+	}, [chosenWalletType.name, refreshFarmStats])
 
 	useEffect(() => {
 		if (Object.keys(prices).length) {
