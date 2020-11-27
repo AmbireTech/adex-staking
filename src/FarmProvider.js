@@ -10,13 +10,15 @@ const REFRESH_INTERVAL_WALLET = 60_000 // 60 sec
 
 function useFarm() {
 	const { t } = useTranslation()
-	const { chosenWalletType, prices, addSnack } = useContext(AppContext)
+	const { chosenWalletType, prices, addSnack, userIdle } = useContext(
+		AppContext
+	)
 	const [pricesLoaded, setPricesLoaded] = useState(false)
 	const [farmStats, setStats] = useState({})
 	const [getStats, setGetFarmStats] = useState(false)
 
 	const refreshFarmStats = useCallback(async () => {
-		const doUpdate = getStats && pricesLoaded
+		const doUpdate = getStats && !userIdle && pricesLoaded
 
 		if (doUpdate) {
 			try {
@@ -41,7 +43,7 @@ function useFarm() {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [getStats, chosenWalletType.name, pricesLoaded, t])
+	}, [getStats, userIdle, chosenWalletType.name, pricesLoaded, t])
 
 	useEffect(() => {
 		refreshFarmStats()
@@ -60,7 +62,7 @@ function useFarm() {
 	}, [chosenWalletType.name, refreshFarmStats])
 
 	useEffect(() => {
-		if (Object.keys(prices).length) {
+		if (!!prices && Object.keys(prices).length) {
 			setPricesLoaded(true)
 		}
 	}, [prices, setPricesLoaded])
