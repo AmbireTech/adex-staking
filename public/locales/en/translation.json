@@ -190,7 +190,6 @@
     "addrCopied": "Address {{account}} copied to clipboard",
     "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
     "continueSession": "Continue session"
-
   },
   "dialogs": {
     "selectWallet": "Select Wallet",
