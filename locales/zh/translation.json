@@ -64,7 +64,8 @@
     "lockup": "锁定",
     "apyStability": "APY 稳定性",
     "poolStats": "池状态",
-    "farm": "Farm"
+    "farm": "Farm",
+    "reBond": "Re-bond"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",
@@ -120,7 +121,11 @@
     "createBond": "创建绑定",
     "currentYield": "<farmer>🌾</farmer>  当前年产量{{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "质押ADX",
-    "stakeNewAccIdentityBalance": "目前您可以质押 {{amount}} {{currency}}。这是基于您的无转账费地址的余额。"
+    "stakeNewAccIdentityBalance": "目前您可以质押 {{amount}} {{currency}}。这是基于您的无转账费地址的余额。",
+    "alreadyUnbonded": "Already unbonded",
+    "unbondNotReady": "Not ready for unbonding",
+    "willUnlockIn": "Can unbond on {{unlockTime}}",
+    "reBondInfo": "You can re-bond while there is pending or ready unbond request"
   },
   "gasless": {
     "staking": "无转账费质押",
@@ -171,13 +176,20 @@
     "signatureNotVerified": "无法验证签名",
     "nothingToStake": "无质押金",
     "cantDeployAndStakeMore": "无法部署和质押身份余额以外的金额",
-    "loadingFarmStats": "Error loading farm stats. {{error}}"
+    "loadingFarmStats": "Error loading farm stats. {{error}}",
+    "amountNotSelected": "Amount not selected",
+    "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
+    "zeroDepositToken": "Can not deposit 0 {{currency}}",
+    "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
   },
   "messages": {
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
     "connectToMainnet": "请连接到主网以太坊网络",
     "signAllTransactions": "请对所有未完成的{{wallet}}操作签名！",
-    "addrCopied": "地址{{account}} 已复制到剪贴板"
+    "addrCopied": "地址{{account}} 已复制到剪贴板",
+    "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
+    "continueSession": "Continue session"
   },
   "dialogs": {
     "selectWallet": "选择钱包",
@@ -187,7 +199,9 @@
     "reActivatingInfo": "您的绑定将被重新激活，解除绑定请求将被取消。该绑定将重新开始赚取奖励.",
     "claimConfirmation": "您将提取您的收益 ",
     "forTotal": "总计为:{{total}}",
-    "exceptWallets": "({{wallets}}除外)"
+    "exceptWallets": "({{wallets}}除外)",
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "帮助",
@@ -270,12 +284,18 @@
     "myReward": "Unclaimed reward",
     "labelLPTokenAmount": "{{token}} amount",
     "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "depositRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make deposit.",
     "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
     "farmInfoCardText": "Farm ADX until December 20, 2020",
     "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
     "eddieFarmer": "Eddie the ADX farmer",
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
     "depositDialogTitle": "Deposit to {{name}} pool",
-    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only",
+    "harvest": "harvest",
+    "zeroBalanceDeposit": "No {{currency}} balance on your wallet",
+    "zeroBalanceWithdraw": "No {{currency}} staked",
+    "noRewards": "No pending {{currency}} rewards",
+    "noConfirmed": "Terms not accepted"
   }
 }
