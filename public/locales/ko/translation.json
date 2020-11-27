@@ -64,7 +64,8 @@
     "lockup": "락업",
     "apyStability": "APY 안정성",
     "poolStats": "풀 상태",
-    "farm": "Farm"
+    "farm": "Farm",
+    "reBond": "Re-bond"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -120,7 +121,11 @@
     "createBond": "예치금 생성하기",
     "currentYield": "<farmer>🌾</farmer>  현재 연간 수익률 {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "ADX 스테이킹하기",
-    "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다."
+    "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다.",
+    "alreadyUnbonded": "Already unbonded",
+    "unbondNotReady": "Not ready for unbonding",
+    "willUnlockIn": "Can unbond on {{unlockTime}}",
+    "reBondInfo": "You can re-bond while there is pending or ready unbond request"
   },
   "gasless": {
     "staking": "가스없는 스테이킹",
@@ -170,7 +175,12 @@
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
     "nothingToStake": "스테이크할 것이 없습니다.",
     "cantDeployAndStakeMore": " 아이디 잔액과 다른 금액을 배치하거나 스테이킹을 할 수 없습니다.",
-    "loadingFarmStats": "Error loading farm stats. {{error}}"
+    "loadingFarmStats": "Error loading farm stats. {{error}}",
+    "amountNotSelected": "Amount not selected",
+    "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
+    "zeroDepositToken": "Can not deposit 0 {{currency}}",
+    "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",
@@ -186,7 +196,9 @@
     "reActivatingInfo": " 예치금이 다시 활성화됩니다. 즉, 예치 해제 요청이 취소되며, 보상을 다시 받기 시작합니다.",
     "claimConfirmation": " 수익을 실현하려고 합니다.",
     "forTotal": "총: {{total}}",
-    "exceptWallets": "(제외 {{wallets}})"
+    "exceptWallets": "(제외 {{wallets}})",
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "도움말",
@@ -269,12 +281,18 @@
     "myReward": "Unclaimed reward",
     "labelLPTokenAmount": "{{token}} amount",
     "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "depositRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make deposit.",
     "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
     "farmInfoCardText": "Farm ADX until December 20, 2020",
     "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
     "eddieFarmer": "Eddie the ADX farmer",
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
     "depositDialogTitle": "Deposit to {{name}} pool",
-    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only",
+    "harvest": "harvest",
+    "zeroBalanceDeposit": "No {{currency}} balance on your wallet",
+    "zeroBalanceWithdraw": "No {{currency}} staked",
+    "noRewards": "No pending {{currency}} rewards",
+    "noConfirmed": "Terms not accepted"
   }
 }
