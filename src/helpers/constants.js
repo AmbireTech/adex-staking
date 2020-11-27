@@ -21,6 +21,8 @@ export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
 
+export const IDLE_TIMEOUT_MINUTES = 10
+
 export const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"

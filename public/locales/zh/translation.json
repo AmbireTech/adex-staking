@@ -187,7 +187,9 @@
     "unsupportedEthNetwork": "检测到不支持的以太坊链！",
     "connectToMainnet": "请连接到主网以太坊网络",
     "signAllTransactions": "请对所有未完成的{{wallet}}操作签名！",
-    "addrCopied": "地址{{account}} 已复制到剪贴板"
+    "addrCopied": "地址{{account}} 已复制到剪贴板",
+    "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
+    "continueSession": "Continue session"
   },
   "dialogs": {
     "selectWallet": "选择钱包",

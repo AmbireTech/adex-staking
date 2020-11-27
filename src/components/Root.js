@@ -8,7 +8,8 @@ import {
 	Fade,
 	Snackbar,
 	useMediaQuery,
-	Box
+	Box,
+	Button
 } from "@material-ui/core"
 import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
@@ -28,7 +29,8 @@ import {
 	ZERO,
 	UNBOND_DAYS,
 	POOLS,
-	REACT_APP_RPC_URL
+	REACT_APP_RPC_URL,
+	IDLE_TIMEOUT_MINUTES
 } from "../helpers/constants"
 import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
 import { styles } from "./rootStyles"
@@ -83,7 +85,9 @@ export default function Root() {
 		legacySwapInPrg,
 		setLegacySwapInPrg,
 		legacySwapOpen,
-		setLegacySwapInOpen
+		setLegacySwapInOpen,
+		idlePopupOpen,
+		onIdleDialogAction
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -290,6 +294,34 @@ export default function Root() {
 									<Box id="alert-chain-description">
 										{t("messages.connectToMainnet")}
 									</Box>
+								</Alert>
+							</Box>
+						</Fade>
+					</Modal>
+					<Modal
+						open={idlePopupOpen}
+						aria-labelledby="alert-user-idle-title"
+						aria-describedby="alert-user-idle-description"
+						BackdropComponent={Backdrop}
+						className={clsx(classes.modal, classes.alwaysOnTop)}
+					>
+						<Fade in={idlePopupOpen}>
+							<Box>
+								<Alert
+									severity="info"
+									action={
+										<Button
+											variant="contained"
+											color="secondary"
+											onClick={onIdleDialogAction}
+										>
+											{t("messages.continueSession")}
+										</Button>
+									}
+								>
+									{t("messages.useIdleTitle", {
+										minutes: IDLE_TIMEOUT_MINUTES
+									})}
 								</Alert>
 							</Box>
 						</Fade>

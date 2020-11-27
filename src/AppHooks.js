@@ -4,7 +4,7 @@ import {
 	NoEthereumProviderError,
 	UserRejectedRequestError as UserRejectedRequestErrorInjected
 } from "@web3-react/injected-connector"
-
+import { useIdleTimer } from "react-idle-timer"
 import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-connector"
 import { getSigner } from "./ethereum"
 import {
@@ -12,7 +12,8 @@ import {
 	METAMASK,
 	TREZOR,
 	LEDGER,
-	SUPPORTED_CHAINS
+	SUPPORTED_CHAINS,
+	IDLE_TIMEOUT_MINUTES
 } from "./helpers/constants"
 import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
 import {
@@ -27,8 +28,9 @@ import {
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 
-const REFRESH_INTVL = 300_000 // 180sec
+const REFRESH_INTVL = 300_000 // 300sec
 const REFRESH_INTVL_WALLET = 60_000 // 60sec
+const IDLE_TIMEOUT = IDLE_TIMEOUT_MINUTES * 60 * 1000
 
 const connectorsByName = {
 	[METAMASK]: injected,
@@ -66,7 +68,7 @@ function getErrorMessage(error) {
 	}
 }
 
-export default function Root() {
+export default function useApp() {
 	const { addSnack, ...snackHooks } = useSnack()
 	const {
 		library,
@@ -93,10 +95,30 @@ export default function Root() {
 	const [legacySwapInPrg, setLegacySwapInPrg] = useState(false)
 	const [legacySwapOpen, setLegacySwapInOpen] = useState(false)
 	const [refreshCount, setRefreshCount] = useState(0)
+	const [userIdle, setUserIdle] = useState(false)
+	const [idlePopupOpen, setIdlePopupOpen] = useState(false)
 
 	useInactiveListener(!!connectWallet)
 
+	const handleOnIdle = () => {
+		setUserIdle(true)
+		setIdlePopupOpen(true)
+	}
+
+	const onIdleDialogAction = () => {
+		setIdlePopupOpen(false)
+		setUserIdle(false)
+	}
+
+	useIdleTimer({
+		timeout: IDLE_TIMEOUT,
+		onIdle: handleOnIdle,
+		debounce: 500
+	})
+
 	const refreshStats = useCallback(async () => {
+		if (userIdle) return
+
 		const newPrices =
 			!Object.keys(prices) || refreshCount % 3 === 0
 				? await getPrices()
@@ -127,7 +149,7 @@ export default function Root() {
 			setOpenErr(true)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType, refreshCount, prices])
+	}, [userIdle, chosenWalletType, refreshCount, prices])
 
 	useEffect(() => {
 		refreshStats()
@@ -261,6 +283,9 @@ export default function Root() {
 		legacySwapInPrg,
 		setLegacySwapInPrg,
 		legacySwapOpen,
-		setLegacySwapInOpen
+		setLegacySwapInOpen,
+		idlePopupOpen,
+		onIdleDialogAction,
+		userIdle
 	}
 }
