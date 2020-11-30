@@ -14,7 +14,9 @@ import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
 import ERC20ABI from "../abi/ERC20"
 import { Contract } from "ethers"
-import { defaultProvider } from "../ethereum"
+import { getDefaultProvider } from "../ethereum"
+
+const defaultProvider = getDefaultProvider
 
 const MARKET_URL = "https://market.adex.network"
 const TOM_URL = "https://tom.adex.network"

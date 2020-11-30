@@ -7,8 +7,10 @@ import ConfirmationDialog from "./ConfirmationDialog"
 import { ExternalAnchor } from "./Anchor"
 import { ZERO, ADDR_ADX } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
-import { defaultProvider } from "./../ethereum"
+import { getDefaultProvider } from "./../ethereum"
 import { useTranslation, Trans } from "react-i18next"
+
+const defaultProvider = getDefaultProvider
 
 const ADDR_ADX_OLD = "0x4470BB87d77b963A013DB939BE332f927f2b992e"
 

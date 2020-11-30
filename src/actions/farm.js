@@ -2,7 +2,7 @@ import { Contract, utils } from "ethers"
 import { ADDR_ADX, FARM_POOLS, ZERO, MAX_UINT } from "../helpers/constants"
 import ERC20ABI from "../abi/ERC20"
 import MasterChefABI from "../abi/MasterChef"
-import { getSigner, defaultProvider } from "../ethereum"
+import { getSigner, getDefaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
 import { executeOnIdentity } from "./actions"
 import { formatTokens, formatADX } from "../helpers/formatting"
@@ -17,6 +17,8 @@ const DAYS_IN_YEAR = 365
 const START_BLOCK = 11296000
 
 // const AVG_BLOCKS_PER_YEAR = SECS_IN_YEAR / AVG_ETH_BLOCK_TAME
+
+const defaultProvider = getDefaultProvider
 
 const MasterChef = new Contract(
 	MASTER_CHEF_ADDR,
