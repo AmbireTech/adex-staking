@@ -6,6 +6,7 @@ import { getSigner, getDefaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
 import { executeOnIdentity } from "./actions"
 import { formatTokens, formatADX } from "../helpers/formatting"
+import { TranslatableError } from "../helpers/errors"
 
 // const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379" // goerli
 const MASTER_CHEF_ADDR = "0xC0223ab23b519260AE7C52Dfb0a3dff65Da8385A"
@@ -295,14 +296,6 @@ export const getFarmPoolsStats = async ({
 			totalRewards: ZERO,
 			statsByPoolId: {}
 		}
-	}
-}
-
-// TODO: move it in other file
-class TranslatableError extends Error {
-	constructor(message, values) {
-		super(message)
-		this.values = values
 	}
 }
 
