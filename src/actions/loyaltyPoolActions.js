@@ -8,7 +8,9 @@ import {
 	MAX_UINT,
 	DEPOSIT_POOLS
 } from "../helpers/constants"
-import { getSigner, defaultProvider } from "../ethereum"
+import { getSigner, getDefaultProvider } from "../ethereum"
+
+const defaultProvider = getDefaultProvider
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 

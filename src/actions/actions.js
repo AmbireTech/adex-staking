@@ -19,11 +19,13 @@ import {
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
 import { ADEX_RELAYER_HOST, PRICES_API_URL } from "../helpers/constants"
-import { getSigner, defaultProvider, signMessage } from "../ethereum"
+import { getSigner, getDefaultProvider, signMessage } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
+
+const defaultProvider = getDefaultProvider
 
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 

@@ -6,13 +6,17 @@ const LocalProvider = REACT_APP_RPC_URL.startsWith("wss://")
 	? providers.WebSocketProvider
 	: providers.JsonRpcProvider
 
-export let defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+// TODO: async
+export const getDefaultProvider = (function() {
+	let defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
 
-// TODO: add get defaultProvider func
-defaultProvider.on("error", e => {
-	console.error("WS Error", e)
-	defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
-})
+	defaultProvider.on("error", e => {
+		console.error("WS Error", e)
+		defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+	})
+
+	return defaultProvider
+})()
 
 export async function getSigner(chosenWalletType) {
 	// console.log("chosenWalletType", chosenWalletType)
