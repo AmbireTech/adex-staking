@@ -189,7 +189,11 @@
     "signAllTransactions": "Please sign all pending {{wallet}} actions!",
     "addrCopied": "Address {{account}} copied to clipboard",
     "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
-    "continueSession": "Continue session"
+    "continueSession": "Continue session",
+    "pendingTransactions": "{{count}} pending transaction detected on your (CREATE2) smart contract address.",
+    "pendingTransactions_plural": "{{count}} pending transactions detected on your (CREATE2) smart contract address.",
+    "pendingTransactionsInfo": "Please, do not send transactions while this alert is visible, as they can fail. {{pools}} actions will not be affected."
+
   },
   "dialogs": {
     "selectWallet": "Select Wallet",

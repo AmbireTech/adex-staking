@@ -130,6 +130,22 @@ export default function Root() {
 				</Drawer>
 			</nav>
 			<main className={classes.content}>
+				{!!stats.identityPendingTxns && (
+					<Box display="flex" alignItems="center" justifyContent="center" m={2}>
+						<Alert severity="warning">
+							<AlertTitle id="alert-pending-identity-txns-title">
+								{t("messages.pendingTransactions", {
+									count: stats.identityPendingTxns
+								})}
+							</AlertTitle>
+							<Box id="alert-pending-identity-txns-title-description">
+								{t("messages.pendingTransactionsInfo", {
+									pools: t("common.loPo")
+								})}
+							</Box>
+						</Alert>
+					</Box>
+				)}
 				<div className={classes.contentInner}>
 					<Switch>
 						<Route path="/stakings">
