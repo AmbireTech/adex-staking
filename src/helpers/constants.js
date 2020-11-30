@@ -125,7 +125,7 @@ export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 // 	"wss://mainnet.infura.io/ws/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const REACT_APP_RPC_URL =
-	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
 // export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
