@@ -271,15 +271,15 @@ export async function loadUserStats(chosenWalletType, prices) {
 		tomPoolUserRewardChannels,
 		// { canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
-		poolsStats,
-		identityPendingTxns
+		poolsStats
+		// identityPendingTxns
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
 		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
-		loadActivePoolsStats(prices),
-		defaultProvider.getTransactionCount(identityAddr, "pending")
+		loadActivePoolsStats(prices)
+		// defaultProvider.getTransactionCount(identityAddr, "pending")
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -318,7 +318,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 	return {
 		identityAddr,
 		identityDeployed,
-		identityPendingTxns,
+		// identityPendingTxns,
 		connectedWalletAddress: addr,
 		userBonds,
 		userBalance, // ADX on wallet

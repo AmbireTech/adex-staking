@@ -131,7 +131,7 @@ export default function Root() {
 				</Drawer>
 			</nav>
 			<main className={classes.content}>
-				{!!stats.identityPendingTxns && (
+				{/* {!!stats.identityPendingTxns && (
 					<Box display="flex" alignItems="center" justifyContent="center" m={2}>
 						<Alert severity="warning">
 							<AlertTitle id="alert-pending-identity-txns-title">
@@ -146,7 +146,7 @@ export default function Root() {
 							</Box>
 						</Alert>
 					</Box>
-				)}
+				)} */}
 				<div className={classes.contentInner}>
 					<Switch>
 						<Route path="/stakings">
