@@ -83,6 +83,7 @@ export default function useApp() {
 	const [toUnbond, setToUnbond] = useState(null)
 	const [toRestake, setToRestake] = useState(null)
 	const [openErr, setOpenErr] = useState(false)
+	const [snackbarSeverity, setSnackSeverity] = useState("error")
 	const [openDoingTx, setOpenDoingTx] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState("errors.unexpectedError")
 	const [stats, setStats] = useState(EMPTY_STATS)
@@ -178,6 +179,7 @@ export default function useApp() {
 	useEffect(() => {
 		if (!!error) {
 			setSnackbarErr(getErrorMessage(error))
+			setSnackSeverity("error")
 			setOpenErr(true)
 			deactivate()
 		}
@@ -202,6 +204,7 @@ export default function useApp() {
 					  }
 					: e.message || "errors.unknownError"
 			)
+			setSnackSeverity(e.severity || error)
 			setOpenErr(true)
 		}
 	}
@@ -258,6 +261,7 @@ export default function useApp() {
 		openDoingTx,
 		setOpenDoingTx,
 		snackbarErr,
+		snackbarSeverity,
 		setSnackbarErr,
 		stats,
 		connectWallet,

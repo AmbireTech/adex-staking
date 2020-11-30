@@ -65,6 +65,7 @@ export default function Root() {
 		openErr,
 		openDoingTx,
 		snackbarErr,
+		snackbarSeverity,
 		stats,
 		connectWallet,
 		setConnectWallet,
@@ -249,7 +250,7 @@ export default function Root() {
 						<Alert
 							id={`err-aler-${toIdAttributeString(snackbarErr)}`}
 							onClose={handleErrClose}
-							severity="error"
+							severity={snackbarSeverity}
 						>
 							{t(
 								snackbarErr.msg || snackbarErr,
