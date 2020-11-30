@@ -181,7 +181,8 @@
     "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
     "zeroDepositToken": "Can not deposit 0 {{currency}}",
     "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
-    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices.",
+    "pendingTransaction": "There's currently a pending transaction on your Identity - during that time you cannot make a new transactions. You can still use the loyalty pool."
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

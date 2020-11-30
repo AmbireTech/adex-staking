@@ -24,6 +24,7 @@ import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
+import { TranslatableError } from "../helpers/errors"
 
 const defaultProvider = getDefaultProvider
 
@@ -745,9 +746,18 @@ export async function executeOnIdentity(
 	const walletAddr = await signer.getAddress()
 	const { addr, bytecode } = getUserIdentity(walletAddr)
 	const identity = new Contract(addr, IdentityABI, signer)
+	const pendingTxns = defaultProvider.getTransactionCount(
+		identity.address,
+		"pending"
+	)
 
-	const needsToDeploy =
-		(await defaultProvider.getCode(identity.address)) === "0x"
+	if (pendingTxns) {
+		throw new TranslatableError("errors.pendingTransaction", {}, "info")
+	}
+
+	const identityCode = defaultProvider.getCode(identity.address)
+
+	const needsToDeploy = identityCode === "0x"
 	const idNonce = needsToDeploy ? ZERO : await identity.nonce()
 	const toTuples = offset => ([to, data], i) =>
 		zeroFeeTx(
@@ -780,7 +790,7 @@ export async function executeOnIdentity(
 		return res.json()
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
-		await identity.executeBySender(txnTuples, opts)
+		return identity.executeBySender(txnTuples, opts)
 	} else {
 		// Has offset because the execute() takes the first nonce
 		const txnTuples = txns.map(toTuples(1))
@@ -794,7 +804,7 @@ export async function executeOnIdentity(
 		const sig = await signMessage(signer, executeTx.hash())
 
 		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
-		await factoryWithSigner.deployAndExecute(
+		return factoryWithSigner.deployAndExecute(
 			bytecode,
 			0,
 			[executeTx.toSolidityTuple()],
