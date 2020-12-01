@@ -138,7 +138,6 @@ export default function LegacyADXSwapDialog(
 }
 
 async function swapTokens(setAmount, amount, getSigner, chosenWalletType) {
-	setAmount(ZERO)
 	const signer = await getSigner(chosenWalletType)
 	const walletAddr = await signer.getAddress()
 	const legacyTokenWithSigner = new Contract(ADDR_ADX_OLD, ERC20ABI, signer)
@@ -177,5 +176,6 @@ async function swapTokens(setAmount, amount, getSigner, chosenWalletType) {
 		)
 	}
 	txns.push(await newTokenWithSigner.swap(amount, firstTimeGasLimit(100000)))
+	setAmount(ZERO)
 	return txns
 }
