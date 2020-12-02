@@ -574,7 +574,7 @@ export async function onUnbondOrRequest(
 		if (!signer) throw new Error("errors.failedToGetSigner")
 		const walletAddr = await signer.getAddress()
 		await executeOnIdentity(chosenWalletType, [
-			[Staking.address, Staking.interface.encodeFunctionData([bond])],
+			[Staking.address, Staking.interface.encodeFunctionData("unbond", [bond])],
 			[
 				Token.address,
 				Token.interface.encodeFunctionData("transfer", [walletAddr, amount])
