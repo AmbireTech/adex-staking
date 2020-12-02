@@ -197,7 +197,9 @@ const getPoolStats = async ({
 
 	const totalRewardsADX =
 		parseFloat(
-			formatADX(adxPerBlock.mul(parseInt(pool.latRewardBlock - START_BLOCK)))
+			formatADX(
+				adxPerBlock.mul(parseInt(pool.latRewardBlock - pool.firstRewardBlock))
+			)
 		) *
 		(poolAllocPoints / totalAllocPoint)
 	const totalPoolRewardsUSD = totalRewardsADX * externalPrices.USD

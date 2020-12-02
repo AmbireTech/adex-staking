@@ -130,6 +130,8 @@ export const REACT_APP_RPC_URL =
 export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
 // export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
 
+const MAIN_START_BLOCK = 11296000
+
 export const FARM_POOLS = [
 	// {
 	// 	// GOERLI TST
@@ -220,6 +222,7 @@ export const FARM_POOLS = [
 		assetsIcons: [ADXIcon, ETHIcon],
 		special: true,
 		latRewardBlock: 11494773,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 30
 	},
 	{
@@ -253,6 +256,7 @@ export const FARM_POOLS = [
 		assetsIcons: [ADXIcon, YUSDIcon],
 		special: true,
 		latRewardBlock: 11494773,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 30
 	},
 	{
@@ -285,6 +289,7 @@ export const FARM_POOLS = [
 		platformIcon: BalancerIcon,
 		assetsIcons: [BalancerIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -317,6 +322,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [YFIIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -349,6 +355,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [UniswapIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -381,6 +388,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [LINKIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	}
 ]
