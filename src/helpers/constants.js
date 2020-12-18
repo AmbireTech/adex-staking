@@ -221,9 +221,9 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [ADXIcon, ETHIcon],
 		special: true,
-		latRewardBlock: 11494773,
+		latRewardBlock: 11547869, //11494773,
 		firstRewardBlock: MAIN_START_BLOCK,
-		rewardsDurationDays: 30
+		rewardsDurationDays: 38
 	},
 	{
 		poolId: 1,
@@ -255,9 +255,9 @@ export const FARM_POOLS = [
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon],
 		special: true,
-		latRewardBlock: 11494773,
+		latRewardBlock: 11547869, // 11494773,
 		firstRewardBlock: MAIN_START_BLOCK,
-		rewardsDurationDays: 30
+		rewardsDurationDays: 38
 	},
 	{
 		poolId: 2,
