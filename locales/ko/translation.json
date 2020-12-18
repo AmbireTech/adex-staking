@@ -285,7 +285,7 @@
     "withdrawRewardsAlert": "{{pendingADX}} ADX의 보류중인 보상이 있습니다. 출금을 신청하면 지갑으로 이체됩니다.",
     "depositRewardsAlert": "{{pendingADX}} ADX의 보류중인 보상이 있습니다. 입금을 신청하면 지갑으로 이체됩니다.",
     "farmStartsInfo": "보상은 11월 20일에  <externalLink> 시작됩니다. </externalLink> ",
-    "farmInfoCardText": "2020년 12월 29알까지 ADX를 수확하세요",
+    "farmInfoCardText": "2020년 12월 28알까지 ADX를 수확하세요",
     "farmInfoCardTextLink": " <externalLink> 추가 정보</externalLink>에 대해서는 우리 블로그를 확인해 주세요.",
     "eddieFarmer": "ADX 농부 Eddie",
     "withdrawDialogTitle": "{{name}} 풀에서 출금하기",
