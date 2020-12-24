@@ -703,15 +703,31 @@ export async function restake(
 
 export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
 	const bond = [amount, poolId, nonce || ZERO]
-
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
-	return executeOnIdentity(chosenWalletType, [
-		[
-			Staking.address,
-			Staking.interface.encodeFunctionData("replaceBond", [bond, bond])
-		]
-	])
+	const walletAddr = await signer.getAddress()
+	const { addr } = getUserIdentity(walletAddr)
+	const allowanceStaking = await Token.allowance(addr, Staking.address)
+	return executeOnIdentity(
+		chosenWalletType,
+		(allowanceStaking.lt(amount)
+			? [
+					[
+						Token.address,
+						Token.interface.encodeFunctionData("approve", [
+							Staking.address,
+							MAX_UINT
+						])
+					]
+			  ]
+			: []
+		).concat([
+			[
+				Staking.address,
+				Staking.interface.encodeFunctionData("replaceBond", [bond, bond])
+			]
+		])
+	)
 }
 
 function toChannelTuple(args) {
