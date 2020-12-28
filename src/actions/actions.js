@@ -194,10 +194,13 @@ export async function getPoolStats(pool, prices) {
 	const rewardChannels = await getRewardChannels(pool)
 	const totalStake = await Token.balanceOf(ADDR_STAKING)
 
-	const now = Math.floor(Date.now() / 1000)
+	const now = Date.now()
 
 	const adxIncentiveRewardsChannels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr === ADDR_ADX && now < x.channelArgs.validUntil
+		x =>
+			x.channelArgs.tokenAddr === ADDR_ADX &&
+			now <= new Date(x.periodEnd).getTime() &&
+			now <= new Date(x.periodStart).getTime()
 	)
 
 	const feeRewardsChannels = rewardChannels.filter(
