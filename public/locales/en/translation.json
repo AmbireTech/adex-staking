@@ -65,7 +65,8 @@
     "apyStability": "APY stability",
     "poolStats": "Pool stats",
     "farm": "Farm",
-    "reBond": "Re-bond"
+    "reBond": "Re-bond",
+    "allTimeRewards": "All-time rewards"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",

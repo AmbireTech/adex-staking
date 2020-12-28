@@ -65,7 +65,8 @@
     "apyStability": "APY 稳定性",
     "poolStats": "池状态",
     "farm": "Farm",
-    "reBond": "Re-bond"
+    "reBond": "Re-bond",
+    "allTimeRewards": "All-time rewards"
   },
   "userData": {
     "myAdxBalance": "我的ADX余额",

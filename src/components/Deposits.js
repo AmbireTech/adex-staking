@@ -72,9 +72,9 @@ const getLoyaltyPoolDeposit = ({
 				)
 			</Fragment>
 		),
-		reward: loyaltyPoolStats.rewardADX ? (
+		reward: loyaltyPoolStats.allTimeRewardADX ? (
 			<AmountText
-				text={`${formatADXPretty(loyaltyPoolStats.rewardADX)} ${"ADX"}`}
+				text={`${formatADXPretty(loyaltyPoolStats.allTimeRewardADX)} ${"ADX"}`}
 				fontSize={17}
 			/>
 		) : (
@@ -218,7 +218,9 @@ export default function Deposits() {
 							<TableRow>
 								<TableCell>{t("common.pool")}</TableCell>
 								<TableCell align="right">{t("common.balance")}</TableCell>
-								<TableCell align="right">{t("common.reward")}</TableCell>
+								<TableCell align="right">
+									{t("common.allTimeRewards")}
+								</TableCell>
 								<TableCell align="right">{t("common.actions")}</TableCell>
 							</TableRow>
 						</TableHead>

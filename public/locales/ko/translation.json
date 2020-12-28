@@ -65,7 +65,8 @@
     "apyStability": "APY 안정성",
     "poolStats": "풀 상태",
     "farm": "팜(Farm)",
-    "reBond": "재예치"
+    "reBond": "재예치",
+    "allTimeRewards": "All-time rewards"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",

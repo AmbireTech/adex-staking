@@ -99,7 +99,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 
 	// reward === null => unknown reward - can not be calculated
 	if (hasExternalLoyaltyTokenTransfers) {
-		currentBalance.rewardADX = null
+		currentBalance.allTimeRewardADX = null
 		return currentBalance
 	}
 
@@ -138,7 +138,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	// console.log('balanceLpToken', balanceLpToken.toString())
 	// console.log('balanceLpADX', balanceLpADX.toString())
 
-	currentBalance.rewardADX = reward
+	currentBalance.allTimeRewardADX = reward
 
 	return currentBalance
 }
