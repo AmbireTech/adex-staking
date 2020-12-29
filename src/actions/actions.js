@@ -199,6 +199,9 @@ export async function getPoolStats(pool, prices) {
 	const adxIncentiveRewardsChannels = rewardChannels.filter(
 		x =>
 			x.channelArgs.tokenAddr === ADDR_ADX &&
+			// hack to remove the legacy channel which ended 3 days earlier than periodEnd
+			x._id !==
+				"0x30d87bab0ef1e7f8b4c3b894ca2beed41bbd54c481f31e5791c1e855c9dbf4ba" &&
 			now <= new Date(x.periodEnd).getTime() &&
 			now > new Date(x.periodStart).getTime()
 	)
