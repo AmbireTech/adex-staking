@@ -200,7 +200,7 @@ export async function getPoolStats(pool, prices) {
 		x =>
 			x.channelArgs.tokenAddr === ADDR_ADX &&
 			now <= new Date(x.periodEnd).getTime() &&
-			now <= new Date(x.periodStart).getTime()
+			now > new Date(x.periodStart).getTime()
 	)
 
 	const feeRewardsChannels = rewardChannels.filter(
