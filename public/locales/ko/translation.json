@@ -296,6 +296,7 @@
     "zeroBalanceDeposit": "지갑에 {{currency}} 잔액이 없습니다.",
     "zeroBalanceWithdraw": " {{currency}} 스테이킹되지 않았습니다.",
     "noRewards": "보류중인 {{currency}} 보상이 없습니다.",
-    "noConfirmed": "약관에 동의하지 않았습니다."
+    "noConfirmed": "약관에 동의하지 않았습니다.",
+    "farmEnded": "Farm has ended. Only withdraws are available."
   }
 }

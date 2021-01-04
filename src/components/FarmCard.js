@@ -449,7 +449,7 @@ export default function FarmCard({
 	blockNumber
 }) {
 	const { t } = useTranslation()
-	const { id, name, special } = pool
+	const { id, name, special, latRewardBlock } = pool
 	const classes = useStyles({ special })
 
 	const platformIcon = (
@@ -465,6 +465,8 @@ export default function FarmCard({
 			</SvgIcon>
 		))
 	]
+
+	const canDeposit = blockNumber < latRewardBlock
 
 	return (
 		<Box
@@ -507,8 +509,10 @@ export default function FarmCard({
 						disableElevation
 						color="secondary"
 						size="large"
-						tooltipTitle={disabled ? disabledInfo : ""}
-						disabled={disabled}
+						tooltipTitle={
+							disabled ? disabledInfo : !canDeposit ? t("farm.farmEnded") : ""
+						}
+						disabled={disabled || !canDeposit}
 						pool={pool}
 						stats={stats}
 						blockNumber={blockNumber}
