@@ -297,6 +297,7 @@
     "zeroBalanceDeposit": "No {{currency}} balance on your wallet",
     "zeroBalanceWithdraw": "No {{currency}} staked",
     "noRewards": "No pending {{currency}} rewards",
-    "noConfirmed": "Terms not accepted"
+    "noConfirmed": "Terms not accepted",
+    "farmEnded": "Farm has ended. Only withdraws are available."
   }
 }
