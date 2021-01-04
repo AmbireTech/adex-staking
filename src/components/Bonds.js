@@ -11,11 +11,7 @@ import {
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import { UNBOND_DAYS, ZERO } from "../helpers/constants"
-import {
-	formatADXPretty,
-	getApproxAPY,
-	formatDate
-} from "../helpers/formatting"
+import { formatADXPretty, formatDate } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
 import Tooltip from "./Tooltip"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -40,9 +36,9 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 			}
 		}
 		if (bond.status === "Active") {
-			return `Active, earning ${(
-				getApproxAPY(bond, stats.totalStakeTom) * 100
-			).toFixed(2)}% APY`
+			return `Active, earning ${(stats.tomPoolStats.totalAPY * 100).toFixed(
+				2
+			)}% APY`
 		}
 		return bond.status
 	}
