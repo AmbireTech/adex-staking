@@ -232,7 +232,7 @@
     "totalSelected": "전체 선택됨 ",
     "name": "보상 이름",
     "tableInfo": " 이 테이블에는 모든 보상이 표시됩니다.",
-    "poolName": "{{pool}} - {{type}} {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",

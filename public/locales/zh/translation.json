@@ -233,7 +233,7 @@
     "totalSelected": "选择总数",
     "name": "奖励名称",
     "tableInfo": "本表格显示您的所有奖励",
-    "poolName": "{{pool}} - {{type}} {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}"
   },
   "company": {
     "copy": "© {{year}} AdEx 网络 OÜ",

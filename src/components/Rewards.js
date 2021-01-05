@@ -129,19 +129,21 @@ export default function Rewards() {
 			// }
 
 			const rewards = tomRewardChannels.map(channel => {
+				const startDate = new Date(channel.periodStart)
+				const endDate = new Date(channel.periodEnd)
 				const rewardData = {
-					id: `tom_${channel.type}_${new Date(
-						channel.periodStart
-					).getTime()}_${new Date(channel.periodEnd).getTime()}`,
+					id: `tom_${channel.type}_${startDate.getTime()}_${endDate.getTime()}`,
 					name: t("rewards.poolName", {
 						pool: "Tom",
 						type: t(`common.${channel.type}`),
 						extra:
 							channel.type === "fees"
-								? new Date(channel.periodEnd).toLocaleString("default", {
+								? `${endDate.toLocaleString("default", {
 										month: "long"
-								  })
-								: ""
+								  })} ${endDate.getFullYear()}`
+								: `${startDate.getMonth() +
+										1}.${startDate.getFullYear()} - ${endDate.getMonth() +
+										1}.${endDate.getFullYear()}`
 					}),
 					amount: channel.amount,
 					outstandingReward: channel.outstandingReward,
