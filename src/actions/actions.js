@@ -41,6 +41,7 @@ const OUTSTANDING_REWARD_THRESHOLD = BigNumber.from("200000000000000000")
 
 export const POOL_EMPTY_STATS = {
 	totalStake: ZERO,
+	totalCurrentTotalActiveStake: ZERO,
 	currentAdxIncentiveAPY: 0,
 	lastDaiFeesAPY: 0,
 	totalAPY: 0,
@@ -218,6 +219,14 @@ export async function getPoolStats(pool, prices) {
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
 	)[0]
 
+	const totalCurrentTotalActiveStake = currentActiveIncentiveChannels.reduce(
+		(totalCurrent, channel) =>
+			totalCurrent.add((channel.stats || {}).currentTotalActiveStake || ZERO),
+		ZERO
+	)
+
+	console.log("totalCurrentTotalActiveStake", totalCurrentTotalActiveStake)
+
 	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
 		(totalAPY, channel) =>
 			totalAPY +
@@ -240,7 +249,8 @@ export async function getPoolStats(pool, prices) {
 		lastDaiFeesAPY,
 		totalAPY: currentAdxIncentiveAPY + lastDaiFeesAPY,
 		loaded: true,
-		totalStake
+		totalStake,
+		totalCurrentTotalActiveStake
 	}
 
 	return stats
