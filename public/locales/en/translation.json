@@ -64,7 +64,9 @@
     "lockup": "Lockup",
     "apyStability": "APY stability",
     "poolStats": "Pool stats",
-    "farm": "Farm"
+    "farm": "Farm",
+    "reBond": "Re-bond",
+    "allTimeRewards": "All-time rewards"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -120,7 +122,11 @@
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
-    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
+    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address.",
+    "alreadyUnbonded": "Already unbonded",
+    "unbondNotReady": "Not ready for unbonding",
+    "willUnlockIn": "Can unbond on {{unlockTime}}",
+    "reBondInfo": "You can re-bond while there is pending or ready unbond request"
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -182,7 +188,9 @@
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
     "connectToMainnet": "Please, connect to mainnet ethereum network.",
     "signAllTransactions": "Please sign all pending {{wallet}} actions!",
-    "addrCopied": "Address {{account}} copied to clipboard"
+    "addrCopied": "Address {{account}} copied to clipboard",
+    "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
+    "continueSession": "Continue session"
   },
   "dialogs": {
     "selectWallet": "Select Wallet",
@@ -193,7 +201,8 @@
     "claimConfirmation": "You are about to claim your earnings of ",
     "forTotal": "For total of: {{total}}",
     "exceptWallets": "(except {{wallets}})",
-    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. "
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "help",
@@ -224,7 +233,7 @@
     "totalSelected": "Total selected",
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
-    "poolName": "{{pool}} - {{type}} {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
@@ -278,7 +287,7 @@
     "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
     "depositRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make deposit.",
     "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
-    "farmInfoCardText": "Farm ADX until December 20, 2020",
+    "farmInfoCardText": "Farm ADX until December 28, 2020",
     "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
     "eddieFarmer": "Eddie the ADX farmer",
     "withdrawDialogTitle": "Withdraw from {{name}} pool",
@@ -288,6 +297,7 @@
     "zeroBalanceDeposit": "No {{currency}} balance on your wallet",
     "zeroBalanceWithdraw": "No {{currency}} staked",
     "noRewards": "No pending {{currency}} rewards",
-    "noConfirmed": "Terms not accepted"
+    "noConfirmed": "Terms not accepted",
+    "farmEnded": "Farm has ended. Only withdraws are available."
   }
 }

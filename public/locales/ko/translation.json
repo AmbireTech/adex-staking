@@ -64,7 +64,9 @@
     "lockup": "락업",
     "apyStability": "APY 안정성",
     "poolStats": "풀 상태",
-    "farm": "Farm"
+    "farm": "팜(Farm)",
+    "reBond": "재예치",
+    "allTimeRewards": "All-time rewards"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -120,7 +122,11 @@
     "createBond": "예치금 생성하기",
     "currentYield": "<farmer>🌾</farmer>  현재 연간 수익률 {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "ADX 스테이킹하기",
-    "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다."
+    "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다.",
+    "alreadyUnbonded": "이미 해제되었습니다",
+    "unbondNotReady": "해제가 준비되지 않았습니다.",
+    "willUnlockIn": "{{unlockTime}} 에 해제할 수 있습니다.",
+    "reBondInfo": "보류 중이거나 준비 해제 요청이 있는 동안 다시 예치할 수 있습니다."
   },
   "gasless": {
     "staking": "가스없는 스테이킹",
@@ -170,13 +176,20 @@
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
     "nothingToStake": "스테이크할 것이 없습니다.",
     "cantDeployAndStakeMore": " 아이디 잔액과 다른 금액을 배치하거나 스테이킹을 할 수 없습니다.",
-    "loadingFarmStats": "Error loading farm stats. {{error}}"
+    "loadingFarmStats": "팜 상태 로딩 오류 {{error}}",
+    "amountNotSelected": "선택되지 않은 금액",
+    "lessDanMinPoolAmount": "{{currency}} 선택한 풀에 필요한 최소 금액보다 적습니다!",
+    "zeroDepositToken": "0 {{currency}} 를 입금할 수 없습니다.",
+    "cantCallLPPricesWithoutADXUSDValue": "ADX의 USD 값이 제공되지 않았습니다. LP 토큰 가격을 계산할 수 없습니다.",
+    "canCalcLPTokensPrices": "LP 토큰 가격 계산 중 오류 발"
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",
     "connectToMainnet": "메인넷 이더리움 네트워크에 연결해 주세요.",
     "signAllTransactions": "보류(pending)중인 모든 작업에 서명하십시오. {{wallet}}",
-    "addrCopied": "지갑이 {{account}} 클립보드에 복사되었습니다."
+    "addrCopied": "지갑이 {{account}} 클립보드에 복사되었습니다.",
+    "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
+    "continueSession": "Continue session"
   },
   "dialogs": {
     "selectWallet": "지갑 선택",
@@ -186,7 +199,9 @@
     "reActivatingInfo": " 예치금이 다시 활성화됩니다. 즉, 예치 해제 요청이 취소되며, 보상을 다시 받기 시작합니다.",
     "claimConfirmation": " 수익을 실현하려고 합니다.",
     "forTotal": "총: {{total}}",
-    "exceptWallets": "(제외 {{wallets}})"
+    "exceptWallets": "(제외 {{wallets}})",
+    "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
   },
   "help": {
     "help": "도움말",
@@ -217,7 +232,7 @@
     "totalSelected": "전체 선택됨 ",
     "name": "보상 이름",
     "tableInfo": " 이 테이블에는 모든 보상이 표시됩니다.",
-    "poolName": "{{pool}} - {{type}} {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
@@ -251,30 +266,37 @@
     "labelTransactions": "노출(트랜잭션)"
   },
   "farm": {
-    "poolMPY": "Pool MPY",
-    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
-    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
-    "totalDeposits": "Total deposits",
-    "myLiquidity": "My liquidity",
-    "liquidityInfo": "Your liquidity data",
-    "myStaked": "Staked:",
-    "onWallet": "On wallet:",
-    "platform": "<strong> Platform: </strong>  {{platform}}",
-    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
-    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
-    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
-    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
-    "userStakedShare": "My share",
+    "poolMPY": "풀 MPY",
+    "currentAPYLabel": "현재 연간 수익률(APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "현재 월간 수익률(MPY): <strong> {{mpy}} </strong>",
+    "totalDeposits": "전체 입금액",
+    "myLiquidity": "내 유동성",
+    "liquidityInfo": "당신의 유동성 데이터",
+    "myStaked": "스테이킹된:",
+    "onWallet": "지갑에서:",
+    "platform": "<strong> 플랫폼: </strong>  {{platform}}",
+    "depositAsset": "<strong> 입금: </strong>  {{depositAsset}}  <getLink>얻기</getLink>",
+    "rewardAsset": "<strong> 획득하기: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "전체 {{depositAsset}} 토큰",
+    "totalDepositTokenStaked": "전체 {{depositAsset}} 스테이킹된 풀",
+    "userStakedShare": "내 점유율",
     "NA": "N/A",
-    "myReward": "Unclaimed reward",
-    "labelLPTokenAmount": "{{token}} amount",
-    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
-    "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
-    "farmInfoCardText": "Farm ADX until December 20, 2020",
-    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
-    "eddieFarmer": "Eddie the ADX farmer",
-    "withdrawDialogTitle": "Withdraw from {{name}} pool",
-    "depositDialogTitle": "Deposit to {{name}} pool",
-    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
+    "myReward": "청구되지 않은 보상",
+    "labelLPTokenAmount": "{{token}} 금액",
+    "withdrawRewardsAlert": "{{pendingADX}} ADX의 보류중인 보상이 있습니다. 출금을 신청하면 지갑으로 이체됩니다.",
+    "depositRewardsAlert": "{{pendingADX}} ADX의 보류중인 보상이 있습니다. 입금을 신청하면 지갑으로 이체됩니다.",
+    "farmStartsInfo": "보상은 11월 20일에  <externalLink> 시작됩니다. </externalLink> ",
+    "farmInfoCardText": "2020년 12월 28알까지 ADX를 수확하세요",
+    "farmInfoCardTextLink": " <externalLink> 추가 정보</externalLink>에 대해서는 우리 블로그를 확인해 주세요.",
+    "eddieFarmer": "ADX 농부 Eddie",
+    "withdrawDialogTitle": "{{name}} 풀에서 출금하기",
+    "depositDialogTitle": "{{name}} 로 입금하기",
+    "withdrawRewardsBtn": "{{token}} 보상만 출금하기",
+    "harvest": "수확하기",
+    "zeroBalanceDeposit": "지갑에 {{currency}} 잔액이 없습니다.",
+    "zeroBalanceWithdraw": " {{currency}} 스테이킹되지 않았습니다.",
+    "noRewards": "보류중인 {{currency}} 보상이 없습니다.",
+    "noConfirmed": "약관에 동의하지 않았습니다.",
+    "farmEnded": "Farm has ended. Only withdraws are available."
   }
 }

@@ -1,11 +1,22 @@
 import { providers, utils } from "ethers"
 
-import { REACT_APP_INFURA_ID } from "./helpers/constants"
+import { REACT_APP_RPC_URL } from "./helpers/constants"
 
-export const defaultProvider = new providers.InfuraProvider(
-	"homestead",
-	REACT_APP_INFURA_ID
-)
+const LocalProvider = REACT_APP_RPC_URL.startsWith("wss://")
+	? providers.WebSocketProvider
+	: providers.JsonRpcProvider
+
+// TODO: async
+export const getDefaultProvider = (function() {
+	let defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+
+	defaultProvider.on("error", e => {
+		console.error("WS Error", e)
+		defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+	})
+
+	return defaultProvider
+})()
 
 export async function getSigner(chosenWalletType) {
 	// console.log("chosenWalletType", chosenWalletType)

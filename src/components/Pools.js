@@ -51,10 +51,12 @@ const Pools = () => {
 							</SvgIcon>
 						}
 						name={t("common.tom")}
-						totalStakedADX={`${formatADXPretty(stats.totalStakeTom)} ADX`}
+						totalStakedADX={`${formatADXPretty(
+							tomPoolStats.totalCurrentTotalActiveStake
+						)} ADX`}
 						totalStakedUSD={`${getADXInUSDFormatted(
 							prices,
-							stats.totalStakeTom
+							tomPoolStats.totalCurrentTotalActiveStake
 						)}`}
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
@@ -67,7 +69,7 @@ const Pools = () => {
 							setNewBondPool(POOLS[0].id)
 							setNewBondOpen(true)
 						}}
-						loading={!stats.loaded}
+						loading={!tomPoolStats.loaded}
 						disabled={!canStake}
 						disabledInfo={t("pools.connectWalletToStake")}
 						lockupPeriodTitle={t("common.unbondPeriod")}
@@ -114,7 +116,7 @@ const Pools = () => {
 								id: "loyalty-pool-deposits-limit",
 								title: t("pools.totalDepositsLimit"),
 								titleInfo: "",
-								normalValue: "25 000 000 ADX",
+								normalValue: "30 000 000 ADX",
 								importantValue: "",
 								valueInfo: "",
 								extra: "",

@@ -1,4 +1,4 @@
-import { bigNumberify, id } from "ethers/utils"
+import { BigNumber, utils } from "ethers"
 import walletconnectLogo from "../walletconnect-logo.svg"
 import metamaskLogo from "../metamask-fox.svg"
 // import trezorLogo from "../trezor.svg"
@@ -13,13 +13,15 @@ import { ReactComponent as YFIIcon } from "./../resources/yfi-logo.svg"
 import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
-export const ZERO = bigNumberify(0)
+export const ZERO = BigNumber.from(0)
 // export const PRICES_API_URL =
 // 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
 
 export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
 export const UNBOND_DAYS = 30
 export const STAKING_RULES_URL = null
+
+export const IDLE_TIMEOUT_MINUTES = 10
 
 export const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
 export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
@@ -28,11 +30,11 @@ export const ADDR_ADX_LOYALTY_TOKEN =
 	"0xd9A4cB9dc9296e111c66dFACAb8Be034EE2E1c2C"
 export const DAI_TOKEN_ADDR = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
-export const MAX_UINT = bigNumberify(
+export const MAX_UINT = BigNumber.from(
 	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
 )
 
-export const MIN_BALANCE_FOR_GASLESS_TXNS = bigNumberify(
+export const MIN_BALANCE_FOR_GASLESS_TXNS = BigNumber.from(
 	"10000000000000000000000"
 ) // 10 000 ADX
 
@@ -44,7 +46,7 @@ export const DEFAULT_BOND = {
 export const POOLS = [
 	{
 		label: "common.validatorTom",
-		id: id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
+		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
 		selectable: true,
 		minStakingAmount: "0.0",
 		purpose: "pools.tomPurpose",
@@ -60,7 +62,7 @@ export const POOLS = [
 	},
 	{
 		label: "common.validatorJerry",
-		id: id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
+		id: utils.id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
 		selectable: false,
 		minStakingAmount: 0,
 		rewardPolicy: "",
@@ -71,7 +73,7 @@ export const POOLS = [
 export const DEPOSIT_POOLS = [
 	{
 		label: "common.loPo",
-		id: id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
+		id: utils.id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
 		selectable: true,
 		minStakingAmount: "0.0",
 		rewardPolicy: "pools.loPoRewardPolicy",
@@ -115,18 +117,20 @@ export const Wallets = [
 
 export const SUPPORTED_CHAINS = [{ id: 1, name: "mainnet" }]
 
-export const TOKEN_OLD_TO_NEW_MULTIPLIER = bigNumberify("100000000000000")
+export const TOKEN_OLD_TO_NEW_MULTIPLIER = BigNumber.from("100000000000000")
 
 export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
+
+// export const REACT_APP_RPC_URL =
+// 	"wss://mainnet.infura.io/ws/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const REACT_APP_RPC_URL =
 	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
-// export const REACT_APP_RPC_URL =
-// 	"https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
-
 export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
 // export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
+
+const MAIN_START_BLOCK = 11296000
 
 export const FARM_POOLS = [
 	// {
@@ -217,8 +221,9 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [ADXIcon, ETHIcon],
 		special: true,
-		latRewardBlock: 11494773,
-		rewardsDurationDays: 30
+		latRewardBlock: 11547869, //11494773,
+		firstRewardBlock: MAIN_START_BLOCK,
+		rewardsDurationDays: 38
 	},
 	{
 		poolId: 1,
@@ -250,8 +255,9 @@ export const FARM_POOLS = [
 		platformIcon: BalancerIcon,
 		assetsIcons: [ADXIcon, YUSDIcon],
 		special: true,
-		latRewardBlock: 11494773,
-		rewardsDurationDays: 30
+		latRewardBlock: 11547869, // 11494773,
+		firstRewardBlock: MAIN_START_BLOCK,
+		rewardsDurationDays: 38
 	},
 	{
 		poolId: 2,
@@ -283,6 +289,7 @@ export const FARM_POOLS = [
 		platformIcon: BalancerIcon,
 		assetsIcons: [BalancerIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -315,6 +322,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [YFIIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -347,6 +355,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [UniswapIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	},
 	{
@@ -379,6 +388,7 @@ export const FARM_POOLS = [
 		platformIcon: UniswapIcon,
 		assetsIcons: [LINKIcon, ETHIcon],
 		latRewardBlock: 11428515,
+		firstRewardBlock: MAIN_START_BLOCK,
 		rewardsDurationDays: 20
 	}
 ]

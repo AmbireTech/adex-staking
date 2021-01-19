@@ -1,5 +1,5 @@
 import { Contract } from "ethers"
-import { bigNumberify, hexZeroPad, id } from "ethers/utils"
+import { BigNumber, utils } from "ethers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import { splitSig, Transaction } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
@@ -19,11 +19,13 @@ import {
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
 import { ADEX_RELAYER_HOST, PRICES_API_URL } from "../helpers/constants"
-import { getSigner, defaultProvider, signMessage } from "../ethereum"
+import { getSigner, getDefaultProvider, signMessage } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
+
+const defaultProvider = getDefaultProvider
 
 // const ADDR_ADX_OLD = "0x4470bb87d77b963a013db939be332f927f2b992e"
 
@@ -31,14 +33,15 @@ const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 const Core = new Contract(ADDR_CORE, CoreABI, defaultProvider)
 
-const MAX_SLASH = bigNumberify("1000000000000000000")
+const MAX_SLASH = BigNumber.from("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 
 // 0.2 DAI or ADX
-const OUTSTANDING_REWARD_THRESHOLD = bigNumberify("200000000000000000")
+const OUTSTANDING_REWARD_THRESHOLD = BigNumber.from("200000000000000000")
 
 export const POOL_EMPTY_STATS = {
 	totalStake: ZERO,
+	totalCurrentTotalActiveStake: ZERO,
 	currentAdxIncentiveAPY: 0,
 	lastDaiFeesAPY: 0,
 	totalAPY: 0,
@@ -80,7 +83,7 @@ const sumRewards = all =>
 
 export const isTomChannelId = channel =>
 	channel.channelArgs.validators.some(
-		val => id(`validator:${val}`) === POOLS[0].id
+		val => utils.id(`validator:${val}`) === POOLS[0].id
 	)
 
 export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
@@ -91,7 +94,7 @@ export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 		currentTotalActiveStake
 	} = stats
 
-	const poolTotalStake = bigNumberify(currentTotalActiveStake || totalStake)
+	const poolTotalStake = BigNumber.from(currentTotalActiveStake || totalStake)
 	const distributionEnds = new Date(periodEnd).getTime()
 	const now = Date.now()
 
@@ -101,7 +104,7 @@ export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 
 	const secondsLeft = Math.floor((distributionEnds - now) / 1000)
 
-	const toDistribute = bigNumberify(currentRewardPerSecond).mul(secondsLeft)
+	const toDistribute = BigNumber.from(currentRewardPerSecond).mul(secondsLeft)
 
 	const precision = 10_000_000
 
@@ -119,16 +122,16 @@ export function getValidatorFeesAPY({ channel, prices, totalStake }) {
 	const { tokenAmount } = channelArgs
 	const { currentTotalActiveStake } = stats
 
-	const totalActiveStaked = bigNumberify(
+	const totalActiveStaked = BigNumber.from(
 		currentTotalActiveStake || totalStake || 0
 	)
 	const pricePrecision = 1_000_000
 
-	const totalStakeInDaiValue = bigNumberify(totalActiveStaked)
-		.mul(bigNumberify(Math.floor((prices.USD || 0.2) * pricePrecision)))
+	const totalStakeInDaiValue = BigNumber.from(totalActiveStaked)
+		.mul(BigNumber.from(Math.floor((prices.USD || 0.2) * pricePrecision)))
 		.div(pricePrecision)
 
-	const toDistribute = bigNumberify(tokenAmount)
+	const toDistribute = BigNumber.from(tokenAmount)
 
 	const distributionSeconds = Math.floor(
 		(new Date(periodEnd) - new Date(periodStart)) / 1000
@@ -137,7 +140,7 @@ export function getValidatorFeesAPY({ channel, prices, totalStake }) {
 	const apy = toDistribute
 		.mul(1000)
 		.mul(
-			bigNumberify(SECONDS_IN_YEAR)
+			BigNumber.from(SECONDS_IN_YEAR)
 				.mul(1000)
 				.div(distributionSeconds)
 		)
@@ -192,10 +195,16 @@ export async function getPoolStats(pool, prices) {
 	const rewardChannels = await getRewardChannels(pool)
 	const totalStake = await Token.balanceOf(ADDR_STAKING)
 
-	const now = Math.floor(Date.now() / 1000)
+	const now = Date.now()
 
 	const adxIncentiveRewardsChannels = rewardChannels.filter(
-		x => x.channelArgs.tokenAddr === ADDR_ADX && now < x.channelArgs.validUntil
+		x =>
+			x.channelArgs.tokenAddr === ADDR_ADX &&
+			// hack to remove the legacy channel which ended 3 days earlier than periodEnd
+			x._id !==
+				"0x30d87bab0ef1e7f8b4c3b894ca2beed41bbd54c481f31e5791c1e855c9dbf4ba" &&
+			now <= new Date(x.periodEnd).getTime() &&
+			now > new Date(x.periodStart).getTime()
 	)
 
 	const feeRewardsChannels = rewardChannels.filter(
@@ -209,6 +218,14 @@ export async function getPoolStats(pool, prices) {
 	const lastFeeRewardChannel = feeRewardsChannels.sort(
 		(a, b) => b.channelArgs.validUntil - a.channelArgs.validUntil
 	)[0]
+
+	const totalCurrentTotalActiveStake = currentActiveIncentiveChannels.reduce(
+		(totalCurrent, channel) =>
+			totalCurrent.add((channel.stats || {}).currentTotalActiveStake || ZERO),
+		ZERO
+	)
+
+	console.log("totalCurrentTotalActiveStake", totalCurrentTotalActiveStake)
 
 	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
 		(totalAPY, channel) =>
@@ -232,7 +249,8 @@ export async function getPoolStats(pool, prices) {
 		lastDaiFeesAPY,
 		totalAPY: currentAdxIncentiveAPY + lastDaiFeesAPY,
 		loaded: true,
-		totalStake
+		totalStake,
+		totalCurrentTotalActiveStake
 	}
 
 	return stats
@@ -342,7 +360,7 @@ export async function loadBondStats(addr, identityAddr) {
 		defaultProvider.getLogs({
 			fromBlock: 0,
 			address: ADDR_STAKING,
-			topics: [null, hexZeroPad(identityAddr, 32)]
+			topics: [null, utils.hexZeroPad(identityAddr, 32)]
 		}),
 		defaultProvider.getLogs({
 			fromBlock: 0,
@@ -353,16 +371,15 @@ export async function loadBondStats(addr, identityAddr) {
 	const userBalance = userWalletBalance.add(userIdentityBalance)
 
 	const slashedByPool = slashLogs.reduce((pools, log) => {
-		const { poolId, newSlashPts } = Staking.interface.parseLog(log).values
+		const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
 		pools[poolId] = newSlashPts
 		return pools
 	}, {})
 
 	const userBonds = logs.reduce((bonds, log) => {
 		const topic = log.topics[0]
-		const evs = Staking.interface.events
-		if (topic === evs.LogBond.topic) {
-			const vals = Staking.interface.parseLog(log).values
+		if (topic === Staking.interface.getEventTopic("LogBond")) {
+			const vals = Staking.interface.parseLog(log).args
 			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals
 			const bond = { owner, amount, poolId, nonce, slashedAtStart, time }
 			bonds.push({
@@ -373,14 +390,16 @@ export async function loadBondStats(addr, identityAddr) {
 					.div(MAX_SLASH.sub(slashedAtStart)),
 				...bond
 			})
-		} else if (topic === evs.LogUnbondRequested.topic) {
+		} else if (
+			topic === Staking.interface.getEventTopic("LogUnbondRequested")
+		) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
-			const { bondId, willUnlock } = Staking.interface.parseLog(log).values
+			const { bondId, willUnlock } = Staking.interface.parseLog(log).args
 			const bond = bonds.find(({ id }) => id === bondId)
 			bond.status = "UnbondRequested"
 			bond.willUnlock = new Date(willUnlock * 1000)
-		} else if (topic === evs.LogUnbonded.topic) {
-			const { bondId } = Staking.interface.parseLog(log).values
+		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
+			const { bondId } = Staking.interface.parseLog(log).args
 			bonds.find(({ id }) => id === bondId).status = "Unbonded"
 		}
 		return bonds
@@ -410,7 +429,7 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 			const claimFrom = rewardChannel.balances[addr] ? addr : identityAddr
 			if (!rewardChannel.balances[claimFrom]) return null
 			const balanceTree = new BalanceTree(rewardChannel.balances)
-			const outstandingReward = bigNumberify(
+			const outstandingReward = BigNumber.from(
 				rewardChannel.balances[claimFrom]
 			).sub(await Core.withdrawnPerUser(rewardChannel.channelId, claimFrom))
 			const type =
@@ -487,7 +506,7 @@ export async function createNewBond(
 	const bond = [
 		amount,
 		poolId,
-		nonce || bigNumberify(Math.floor(Date.now() / 1000))
+		nonce || BigNumber.from(Math.floor(Date.now() / 1000))
 	]
 
 	const [allowance, allowanceStaking, balanceOnIdentity] = await Promise.all([
@@ -529,23 +548,27 @@ export async function createNewBond(
 	if (needed.gt(ZERO))
 		identityTxns.push([
 			Token.address,
-			Token.interface.functions.transferFrom.encode([walletAddr, addr, needed])
+			Token.interface.encodeFunctionData("transferFrom", [
+				walletAddr,
+				addr,
+				needed
+			])
 		])
 	if (allowanceStaking.lt(amount))
 		identityTxns.push([
 			Token.address,
-			Token.interface.functions.approve.encode([Staking.address, MAX_UINT])
+			Token.interface.encodeFunctionData("approve", [Staking.address, MAX_UINT])
 		])
 
 	const active = stats.userBonds.find(
 		x => x.status === "Active" && x.poolId === poolId
 	)
 	const stakingData = active
-		? Staking.interface.functions.replaceBond.encode([
+		? Staking.interface.encodeFunctionData("replaceBond", [
 				active,
 				[active.amount.add(amount), poolId, active.nonce]
 		  ])
-		: Staking.interface.functions.addBond.encode([bond])
+		: Staking.interface.encodeFunctionData("addBond", [bond])
 	identityTxns.push([Staking.address, stakingData])
 
 	return executeOnIdentity(
@@ -567,17 +590,17 @@ export async function onUnbondOrRequest(
 		if (!signer) throw new Error("errors.failedToGetSigner")
 		const walletAddr = await signer.getAddress()
 		await executeOnIdentity(chosenWalletType, [
-			[Staking.address, Staking.interface.functions.unbond.encode([bond])],
+			[Staking.address, Staking.interface.encodeFunctionData("unbond", [bond])],
 			[
 				Token.address,
-				Token.interface.functions.transfer.encode([walletAddr, amount])
+				Token.interface.encodeFunctionData("transfer", [walletAddr, amount])
 			]
 		])
 	} else {
 		await executeOnIdentity(chosenWalletType, [
 			[
 				Staking.address,
-				Staking.interface.functions.requestUnbond.encode([bond])
+				Staking.interface.encodeFunctionData("requestUnbond", [bond])
 			]
 		])
 	}
@@ -618,7 +641,7 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 			const channelTuple = toChannelTuple(channel.channelArgs)
 			return [
 				Core.address,
-				Core.interface.functions.channelWithdraw.encode([
+				Core.interface.encodeFunctionData("channelWithdraw", [
 					channelTuple,
 					channel.stateRoot,
 					channel.signatures,
@@ -630,7 +653,7 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 		.concat(
 			Object.entries(toTransfer).map(([tokenAddr, amount]) => [
 				tokenAddr,
-				Token.interface.functions.transfer.encode([walletAddr, amount])
+				Token.interface.encodeFunctionData("transfer", [walletAddr, amount])
 			])
 		)
 
@@ -668,7 +691,7 @@ export async function restake(
 			const channelTuple = toChannelTuple(rewardChannel.channelArgs)
 			return [
 				Core.address,
-				Core.interface.functions.channelWithdraw.encode([
+				Core.interface.encodeFunctionData("channelWithdraw", [
 					channelTuple,
 					rewardChannel.stateRoot,
 					rewardChannel.signatures,
@@ -680,15 +703,47 @@ export async function restake(
 		.concat([
 			[
 				Token.address,
-				Token.interface.functions.approve.encode([Staking.address, newBond[0]])
+				Token.interface.encodeFunctionData("approve", [
+					Staking.address,
+					newBond[0]
+				])
 			],
 			[
 				Staking.address,
-				Staking.interface.functions.replaceBond.encode([bond, newBond])
+				Staking.interface.encodeFunctionData("replaceBond", [bond, newBond])
 			]
 		])
 
 	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
+}
+
+export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
+	const bond = [amount, poolId, nonce || ZERO]
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	const walletAddr = await signer.getAddress()
+	const { addr } = getUserIdentity(walletAddr)
+	const allowanceStaking = await Token.allowance(addr, Staking.address)
+	return executeOnIdentity(
+		chosenWalletType,
+		(allowanceStaking.lt(amount)
+			? [
+					[
+						Token.address,
+						Token.interface.encodeFunctionData("approve", [
+							Staking.address,
+							MAX_UINT
+						])
+					]
+			  ]
+			: []
+		).concat([
+			[
+				Staking.address,
+				Staking.interface.encodeFunctionData("replaceBond", [bond, bond])
+			]
+		])
+	)
 }
 
 function toChannelTuple(args) {
@@ -756,7 +811,7 @@ export async function executeOnIdentity(
 			identity.address,
 			idNonce,
 			identity.address,
-			identity.interface.functions.executeBySender.encode([txnTuples])
+			identity.interface.encodeFunctionData("executeBySender", [txnTuples])
 		)
 
 		const sig = await signMessage(signer, executeTx.hash())

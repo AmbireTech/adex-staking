@@ -8,7 +8,9 @@ import {
 	MAX_UINT,
 	DEPOSIT_POOLS
 } from "../helpers/constants"
-import { getSigner, defaultProvider } from "../ethereum"
+import { getSigner, getDefaultProvider } from "../ethereum"
+
+const defaultProvider = getDefaultProvider
 
 export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
@@ -92,12 +94,12 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	}
 
 	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
-		log => LoyaltyToken.interface.parseLog(log).values[0] !== ZERO_ADDR
+		log => LoyaltyToken.interface.parseLog(log).args[0] !== ZERO_ADDR
 	)
 
 	// reward === null => unknown reward - can not be calculated
 	if (hasExternalLoyaltyTokenTransfers) {
-		currentBalance.rewardADX = null
+		currentBalance.allTimeRewardADX = null
 		return currentBalance
 	}
 
@@ -114,8 +116,8 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 				const lpTokenLog = LoyaltyToken.interface.parseLog(log)
 				const adxTransferLog = Token.interface.parseLog(axdTransferLog)
 
-				deposits.adx = deposits.adx.add(lpTokenLog.values[2])
-				deposits.adxLPT = deposits.adxLPT.add(adxTransferLog.values[2])
+				deposits.adx = deposits.adx.add(lpTokenLog.args[2])
+				deposits.adxLPT = deposits.adxLPT.add(adxTransferLog.args[2])
 			}
 
 			return deposits
@@ -136,7 +138,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	// console.log('balanceLpToken', balanceLpToken.toString())
 	// console.log('balanceLpADX', balanceLpADX.toString())
 
-	currentBalance.rewardADX = reward
+	currentBalance.allTimeRewardADX = reward
 
 	return currentBalance
 }

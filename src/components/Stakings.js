@@ -13,7 +13,8 @@ const Stakings = () => {
 		setToUnbond,
 		onUnbond,
 		setToRestake,
-		onClaimRewards
+		onClaimRewards,
+		onRebond
 	} = useContext(AppContext)
 
 	return (
@@ -32,7 +33,8 @@ const Stakings = () => {
 							onRequestUnbond: setToUnbond,
 							onUnbond,
 							onClaimRewards,
-							onRestake: setToRestake
+							onRestake: setToRestake,
+							onRebond
 						})}
 					</Box>
 				</Box>

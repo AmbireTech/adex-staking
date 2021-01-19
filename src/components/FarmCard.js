@@ -17,7 +17,7 @@ import WithDialog from "./WithDialog"
 import FarmForm from "./FarmForm"
 
 const FarmFormDialog = WithDialog(FarmForm)
-const REWARDS_ACTIVE_FROM_BLOCK = 11296000
+// const REWARDS_ACTIVE_FROM_BLOCK = 11296000
 
 const useStyles = makeStyles(theme => {
 	const iconBoxBorder = ({ special }) =>
@@ -113,12 +113,10 @@ export const FarmPoolData = ({
 	const classes = useStyles()
 
 	const {
-		id,
 		platform,
 		depositAssetName,
 		getDepositAssetUrl,
-		rewardAssetName,
-		special
+		rewardAssetName
 	} = pool
 
 	const {
@@ -451,7 +449,7 @@ export default function FarmCard({
 	blockNumber
 }) {
 	const { t } = useTranslation()
-	const { id, name, special } = pool
+	const { id, name, special, latRewardBlock } = pool
 	const classes = useStyles({ special })
 
 	const platformIcon = (
@@ -467,6 +465,8 @@ export default function FarmCard({
 			</SvgIcon>
 		))
 	]
+
+	const canDeposit = blockNumber < latRewardBlock
 
 	return (
 		<Box
@@ -509,8 +509,10 @@ export default function FarmCard({
 						disableElevation
 						color="secondary"
 						size="large"
-						tooltipTitle={disabled ? disabledInfo : ""}
-						disabled={disabled}
+						tooltipTitle={
+							disabled ? disabledInfo : !canDeposit ? t("farm.farmEnded") : ""
+						}
+						disabled={disabled || !canDeposit}
 						pool={pool}
 						stats={stats}
 						blockNumber={blockNumber}

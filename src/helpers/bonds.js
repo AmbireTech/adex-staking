@@ -1,5 +1,7 @@
 import { POOLS, ADDR_STAKING } from "./constants"
-import { keccak256, defaultAbiCoder } from "ethers/utils"
+import { utils } from "ethers"
+
+const { keccak256, defaultAbiCoder } = utils
 
 export const getPool = poolId => POOLS.find(x => x.id === poolId)
 export function getBondId({ owner, amount, poolId, nonce }) {

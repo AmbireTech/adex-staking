@@ -160,9 +160,9 @@ export default function NewBondForm({
 						onChange={ev => {
 							// since its a number input it can be a negative number which wouldn't make sense so we cap it at 0
 							const amount = Math.max(0, ev.target.value)
-							const amountBN = parseADX(amount.toString(10))
+							const amountBN = parseADX(amount.toString())
 							updateStakingAmountBN(amountBN)
-							setStakingAmount(amount.toString(10))
+							setStakingAmount(amount.toString())
 						}}
 						helperText={amountErr ? amountErrText : null}
 					/>
