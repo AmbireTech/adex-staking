@@ -26,7 +26,8 @@ import {
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 
-const REFRESH_INTVL = 20000
+const REFRESH_INTVL = 300_000 // 180sec
+const REFRESH_INTVL_WALLET = 60_000 // 60sec
 
 const connectorsByName = {
 	[METAMASK]: injected,
@@ -90,19 +91,23 @@ export default function Root() {
 	const [newBondPool, setNewBondPool] = useState(null)
 	const [legacySwapInPrg, setLegacySwapInPrg] = useState(false)
 	const [legacySwapOpen, setLegacySwapInOpen] = useState(false)
+	const [refreshCount, setRefreshCount] = useState(0)
 
 	useInactiveListener(!!connectWallet)
 
 	const refreshStats = useCallback(async () => {
-		const newPrices = await getPrices()
-		const updatePrices =
-			newPrices && JSON.stringify(newPrices) !== JSON.stringify(prices)
+		const newPrices =
+			!Object.keys(prices) || refreshCount % 3 === 0
+				? await getPrices()
+				: prices
+		const updatePrices = newPrices !== prices
 
 		try {
 			const newStats = await loadStats(
 				chosenWalletType,
 				updatePrices ? newPrices : prices
 			)
+			setRefreshCount(refreshCount + 1)
 			setStats(newStats)
 			if (updatePrices) {
 				setPrices(newPrices)
@@ -121,7 +126,7 @@ export default function Root() {
 			setOpenErr(true)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType, prices])
+	}, [chosenWalletType, refreshCount, prices])
 
 	useEffect(() => {
 		refreshStats()
@@ -129,10 +134,13 @@ export default function Root() {
 	}, [chosenWalletType])
 
 	useEffect(() => {
-		const intvl = setInterval(refreshStats, REFRESH_INTVL)
+		const intvl = setInterval(
+			refreshStats,
+			chosenWalletType.name ? REFRESH_INTVL_WALLET : REFRESH_INTVL
+		)
 		return () => clearInterval(intvl)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refreshStats])
+	}, [chosenWalletType.name, refreshStats])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
@@ -163,7 +171,14 @@ export default function Root() {
 		} catch (e) {
 			console.error(e)
 			setOpenDoingTx(false)
-			setSnackbarErr(e.message || "errors.unknownError")
+			setSnackbarErr(
+				e.values
+					? {
+							msg: e.message || "errors.unknownError",
+							opts: e.values || {}
+					  }
+					: e.message || "errors.unknownError"
+			)
 			setOpenErr(true)
 		}
 	}

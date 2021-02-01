@@ -57,13 +57,14 @@
     "noSelection": "선택되지 않음",
     "currencyBalance": "{{currency}} 잔액",
     "goBack": "뒤로 가기",
-    "validatorStats": "Validator stats",
-    "name": "Name",
-    "purpose": "Purpose",
-    "slashing": "Slashing",
-    "lockup": "Lockup",
-    "apyStability": "APY stability",
-    "poolStats": "Pool stats"
+    "validatorStats": "검증자 상태",
+    "name": "이름",
+    "purpose": "목적",
+    "slashing": "지분 삭감",
+    "lockup": "락업",
+    "apyStability": "APY 안정성",
+    "poolStats": "풀 상태",
+    "farm": "Farm"
   },
   "userData": {
     "myAdxBalance": "나의 ADX 잔액",
@@ -89,9 +90,9 @@
     "tomSlashPolicy": "지분 삭감 없음.",
     "unbondPeriodDay": "{{count}} 일",
     "unbondPeriodDay_plural": "{{count}} 일",
-    "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
-    "tomApyStability": "Flexible",
-    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
+    "tomLockupPeriodTxt": "30일(ADX를 잠금 해제하기 전에 30일이 경과해야 하며, 그 기간 동안에는 보상을 받을 수 없습니다)",
+    "tomApyStability": "탄력적인",
+    "tomPurpose": " ADX 토큰을 주 검증자의 평판에 대해 스테이킹합니다."
   },
   "email": {
     "subscribe": "AdEx의 <strong>독점 컨텐츠</strong> 뉴스를 구독해 주세요",
@@ -119,7 +120,7 @@
     "createBond": "예치금 생성하기",
     "currentYield": "<farmer>🌾</farmer>  현재 연간 수익률 {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "ADX 스테이킹하기",
-    "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address."
+    "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다."
   },
   "gasless": {
     "staking": "가스없는 스테이킹",
@@ -168,7 +169,8 @@
     "noMessageProvided": "메시지가 없습니다.",
     "signatureNotVerified": " 서명을 확인할 수 없습니다.",
     "nothingToStake": "스테이크할 것이 없습니다.",
-    "cantDeployAndStakeMore": "Can not deploy and stake amount different than identity balance"
+    "cantDeployAndStakeMore": " 아이디 잔액과 다른 금액을 배치하거나 스테이킹을 할 수 없습니다.",
+    "loadingFarmStats": "Error loading farm stats. {{error}}"
   },
   "messages": {
     "unsupportedEthNetwork": "지원되지 않는 이더리움 체인이 감지되었습니다!",
@@ -184,7 +186,7 @@
     "reActivatingInfo": " 예치금이 다시 활성화됩니다. 즉, 예치 해제 요청이 취소되며, 보상을 다시 받기 시작합니다.",
     "claimConfirmation": " 수익을 실현하려고 합니다.",
     "forTotal": "총: {{total}}",
-    "exceptWallets": "(except {{wallets}})"
+    "exceptWallets": "(제외 {{wallets}})"
   },
   "help": {
     "help": "도움말",
@@ -230,22 +232,49 @@
     "transactionsHoursRateLimit_plural": "지난 {{count}} 시간 동안 거래를 제출하지 않았어야 합니다."
   },
   "stats": {
-    "totalCampaigns": "Total campaigns",
-    "uniqueUnits": "Unique ad units",
-    "uniquePublishers": "Unique publishers",
-    "uniqueAdvertisers": "Unique advertisers",
+    "totalCampaigns": "전체 캠페인",
+    "uniqueUnits": "고유한 광고 단위",
+    "uniquePublishers": "고유한 게시자",
+    "uniqueAdvertisers": "고유한 광고주",
+    "totalDeposits": "총 예금",
+    "totalPayouts": "총 지급액",
+    "dailyPayoutsData": "일일 지급액",
+    "dailyPayoutsVolume": "일일 지급액",
+    "yearlyTransactionsData": "연간 노출(트랜잭션)",
+    "yearlyTransactions": " 연간 노출(트랜잭션)",
+    "dailyTransactionsData": "일일 노출",
+    "dailyTransactions": "일일 노출",
+    "monthlyTransactionsData": "월별 노출",
+    "monthlyTransactions": "월별 노출",
+    "lockupOnChain": "온 체인 락업",
+    "labelPayout": "지급액",
+    "labelTransactions": "노출(트랜잭션)"
+  },
+  "farm": {
+    "poolMPY": "Pool MPY",
+    "currentAPYLabel": "Current annual yield (APY): <strong> {{apy}} </strong>",
+    "currentMPYLabel": "Current monthly yield (MPY): <strong> {{mpy}} </strong>",
     "totalDeposits": "Total deposits",
-    "totalPayouts": "Total payouts",
-    "dailyPayoutsData": "Daily payouts",
-    "dailyPayoutsVolume": "Daily payouts",
-    "yearlyTransactionsData": "Yearly impressions (transactions)",
-    "yearlyTransactions": "Yearly impressions (transactions)",
-    "dailyTransactionsData": "Daily impressions",
-    "dailyTransactions": "Daily impressions",
-    "monthlyTransactionsData": "Monthly impressions",
-    "monthlyTransactions": "Monthly impressions",
-    "lockupOnChain": "Locked up on chain",
-    "labelPayout": "Payouts",
-    "labelTransactions": "Impressions (Transactions)"
+    "myLiquidity": "My liquidity",
+    "liquidityInfo": "Your liquidity data",
+    "myStaked": "Staked:",
+    "onWallet": "On wallet:",
+    "platform": "<strong> Platform: </strong>  {{platform}}",
+    "depositAsset": "<strong> Deposit: </strong>  {{depositAsset}}  <getLink>GET</getLink>",
+    "rewardAsset": "<strong> Earn: </strong>  {{rewardAsset}}",
+    "totalDepositTokenBalance": "Total {{depositAsset}} tokens",
+    "totalDepositTokenStaked": "Pool total {{depositAsset}} staked",
+    "userStakedShare": "My share",
+    "NA": "N/A",
+    "myReward": "Unclaimed reward",
+    "labelLPTokenAmount": "{{token}} amount",
+    "withdrawRewardsAlert": "You have pending rewards of {{pendingADX}} ADX. They will be transferred to your wallet when you make withdraw.",
+    "farmStartsInfo": "Rewards starting  <externalLink> Nov 20 </externalLink> ",
+    "farmInfoCardText": "Farm ADX until December 20, 2020",
+    "farmInfoCardTextLink": "Check out our blog for <externalLink> more info </externalLink>",
+    "eddieFarmer": "Eddie the ADX farmer",
+    "withdrawDialogTitle": "Withdraw from {{name}} pool",
+    "depositDialogTitle": "Deposit to {{name}} pool",
+    "withdrawRewardsBtn": "Withdraw {{token}} rewards only"
   }
 }

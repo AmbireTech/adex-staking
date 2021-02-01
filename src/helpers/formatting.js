@@ -39,6 +39,14 @@ export function parseADX(n) {
 	return parseUnits(n, 18)
 }
 
+export function parseTokens(n, decimals = 18) {
+	return parseUnits(n, 18)
+}
+
+export function formatTokens(n, decimals = 18) {
+	return formatUnits(n, decimals)
+}
+
 export function formatDate(d) {
 	return `${d.getDate()} ${d.toLocaleString("default", {
 		month: "short"
@@ -91,4 +99,17 @@ export const toIdAttributeString = (string, defaultValue) => {
 	} else {
 		return defaultValue || ""
 	}
+}
+
+export const formatLPToken = ({ lpTokenDataWithPrices, lpValueBN }) => {
+	if (!lpValueBN) return "-"
+
+	const [t1, t2] = lpTokenDataWithPrices
+	const lpValue = parseFloat(formatTokens(lpValueBN))
+
+	const formatted = `
+		${formatNumberPretty((t1.unitsPerLP * lpValue).toFixed(6))} ${t1.token} +
+		${formatNumberPretty((t2.unitsPerLP * lpValue).toFixed(6))} ${t2.token}
+	`
+	return formatted
 }

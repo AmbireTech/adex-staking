@@ -69,8 +69,8 @@ export const styles = theme => {
 				marginLeft: drawerWidth
 			},
 			[theme.breakpoints.down("sm")]: {
-				paddingLeft: theme.spacing(1.5),
-				paddingRight: theme.spacing(1.5)
+				paddingLeft: theme.spacing(1),
+				paddingRight: theme.spacing(1)
 			}
 		},
 		contentInner: {

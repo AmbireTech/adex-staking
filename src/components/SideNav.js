@@ -26,6 +26,7 @@ import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
+import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
 import { useTranslation } from "react-i18next"
 // import { fade } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"
@@ -234,7 +235,7 @@ function SideNav({
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
-									<StakingIcon width="100%" height="100%" color="secondary" />
+									<StakingIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.staked")} />
@@ -249,10 +250,25 @@ function SideNav({
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
-									<GiftIcon width="100%" height="100%" color="secondary" />
+									<GiftIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.rewards")} />
+						</RRListItem>
+						<RRListItem
+							id="side-nav-link-farm"
+							button
+							to={{ pathname: "/farm" }}
+							className={clsx(classes.listItem, {
+								[classes.active]: path === "/farm"
+							})}
+						>
+							<ListItemIcon color="inherit">
+								<SvgIcon color="inherit">
+									<FarmIcon width="100%" height="100%" />
+								</SvgIcon>
+							</ListItemIcon>
+							<ListItemText primary={t("common.farm")} />
 						</RRListItem>
 						<RRListItem
 							id="side-nav-link-stats"
@@ -264,7 +280,7 @@ function SideNav({
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
-									<StatsIcon width="100%" height="100%" color="secondary" />
+									<StatsIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.validatorStats")} />
@@ -279,7 +295,7 @@ function SideNav({
 						>
 							<ListItemIcon color="inherit">
 								<SvgIcon color="inherit">
-									<GaslessIcon width="100%" height="100%" color="secondary" />
+									<GaslessIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.gaslessStaking")} />
