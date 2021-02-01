@@ -173,7 +173,7 @@ export default function Root() {
 						confirmActionName: t("common.unbond"),
 						content: (
 							<Trans
-								i18nKey="dialogs.bondConfirmation"
+								i18nKey="dialogs.bondToV5MigrationConfirmation"
 								values={{
 									amount: formatADXPretty(
 										toUnbond ? toUnbond.currentAmount : ZERO
