@@ -81,7 +81,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 				<TableCell align="right">
 					{bond.status === "Active" ? (
 						<Box display="inline-block" m={0.5}>
-							<Tooltip title={t("bonds.requestUnbond")}>
+							<Tooltip title={t("bonds.requestUnbondOrMigrate")}>
 								<Box display="inline-block">
 									<Button
 										id={`request-unbond-${bondId}`}
@@ -90,7 +90,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 										color="primary"
 										onClick={() => onRequestUnbond(bond)}
 									>
-										{t("bonds.requestUnbond")}
+										{t("bonds.requestUnbondOrMigrate")}
 									</Button>
 								</Box>
 							</Tooltip>
@@ -128,7 +128,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 											onClick={() => onUnbond(bond)}
 											color="primary"
 										>
-											{t("common.unbond")}
+											{t("common.unbondOrMigrate")}
 										</Button>
 									</Box>
 								</Tooltip>
