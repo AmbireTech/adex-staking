@@ -12,6 +12,7 @@ const Stakings = () => {
 		stats,
 		setToUnbond,
 		onUnbond,
+		onMigration,
 		setToRestake,
 		onClaimRewards,
 		onRebond
@@ -32,6 +33,7 @@ const Stakings = () => {
 							stats,
 							onRequestUnbond: setToUnbond,
 							onUnbond,
+							onMigration,
 							onClaimRewards,
 							onRestake: setToRestake,
 							onRebond

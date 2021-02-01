@@ -66,7 +66,8 @@
     "poolStats": "Pool stats",
     "farm": "Farm",
     "reBond": "Re-bond",
-    "allTimeRewards": "All-time rewards"
+    "allTimeRewards": "All-time rewards",
+    "migrate": "Migrate"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -125,8 +126,10 @@
     "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address.",
     "alreadyUnbonded": "Already unbonded",
     "unbondNotReady": "Not ready for unbonding",
+    "migrationNotReady": "Not ready for migration",
     "willUnlockIn": "Can unbond on {{unlockTime}}",
     "reBondInfo": "You can re-bond while there is pending or ready unbond request",
+    "migrationInfo": "TODO: Some extra migration info",
     "requestUnbondOrMigrate": "Migrate / Request Unbond"
   },
   "gasless": {
@@ -204,6 +207,7 @@
     "exceptWallets": "(except {{wallets}})",
     "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
     "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
+    "migrationConfirmation": "<box> Are you sure you want to migrate this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Will will get migration reward of {{migrationReward}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
     "bondToV5MigrationConfirmation": "<box> Are you sure you want to request unbond/migration of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to finalize migration process or unbond your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> <li> If you chose to migrate the bond you will get extra reward to compensate the lack of rewards for the {{unbondDays}} period.  </li> </ol>"
   },
   "help": {

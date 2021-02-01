@@ -10,7 +10,7 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { UNBOND_DAYS, ZERO } from "../helpers/constants"
+import { UNBOND_DAYS, UNBOND_DAYS_V5, ZERO } from "../helpers/constants"
 import { formatADXPretty, formatDate } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
 import Tooltip from "./Tooltip"
@@ -18,10 +18,15 @@ import ConfirmationDialog from "./ConfirmationDialog"
 import { getPool, getBondId } from "../helpers/bonds"
 import { useTranslation, Trans } from "react-i18next"
 
-export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
+export default function Bonds({
+	stats,
+	onRequestUnbond,
+	onUnbond,
+	onMigration
+}) {
 	const { t } = useTranslation()
-	const [reBondOpen, setReBondOpen] = useState(false)
-	const [bondToReBond, setBondToReBond] = useState(null)
+	const [migrationOpen, setMigrationOpen] = useState(false)
+	const [bondToMigrate, setBondToMigrate] = useState(null)
 
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
@@ -43,9 +48,9 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 		return bond.status
 	}
 
-	const reBond = async () => {
-		setReBondOpen(false)
-		onRebond(bondToReBond)
+	const migrate = async () => {
+		setMigrationOpen(false)
+		onMigration(bondToMigrate)
 	}
 
 	const renderBondRow = bond => {
@@ -67,6 +72,17 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 				  })
 				: ""
 
+		const migrationDisableMsg = ""
+		// bond.status === "Unbonded"
+		// 	? t("bonds.alreadyUnbonded")
+		// 	: !bond.willUnlock
+		// 		? t("bonds.migrationNotReady")
+		// 		: bond.willUnlock.getTime() > Date.now()
+		// 			? t("bonds.willUnlockIn", {
+		// 				unlockTime: new Date(bond.willUnlock.getTime()).toLocaleDateString()
+		// 			})
+		// 			: ""
+
 		return (
 			<TableRow key={bondId}>
 				<TableCell>
@@ -79,7 +95,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					{bond.status === "Active" ? (
+					{bond.status !== "Active" ? (
 						<Box display="inline-block" m={0.5}>
 							<Tooltip title={t("bonds.requestUnbondOrMigrate")}>
 								<Box display="inline-block">
@@ -98,20 +114,20 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 					) : (
 						<>
 							<Box display="inline-block" m={0.5}>
-								<Tooltip title={t("bonds.reBondInfo")}>
+								<Tooltip title={migrationDisableMsg}>
 									<Box display="inline-block">
 										<Button
-											id={`re-unbond-${bondId}`}
+											id={`migrate-${bondId}`}
 											size="small"
 											variant="contained"
-											// TODO
+											disabled={!!migrationDisableMsg}
 											onClick={() => {
-												setBondToReBond(bond)
-												setReBondOpen(true)
+												setBondToMigrate(bond)
+												setMigrationOpen(true)
 											}}
 											color="secondary"
 										>
-											{t("common.reBond")}
+											{t("common.migrate")}
 										</Button>
 									</Box>
 								</Tooltip>
@@ -128,7 +144,7 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 											onClick={() => onUnbond(bond)}
 											color="primary"
 										>
-											{t("common.unbondOrMigrate")}
+											{t("common.unbond")}
 										</Button>
 									</Box>
 								</Tooltip>
@@ -171,25 +187,25 @@ export default function Bonds({ stats, onRequestUnbond, onUnbond, onRebond }) {
 			)}
 
 			{ConfirmationDialog({
-				isOpen: reBondOpen,
-				onDeny: () => setReBondOpen(false),
+				isOpen: migrationOpen,
+				onDeny: () => setMigrationOpen(false),
 				onConfirm: () => {
-					reBond()
+					migrate()
 				},
-				confirmActionName: t("common.reBond"),
+				confirmActionName: t("common.migrate"),
 				content: (
 					<Trans
-						i18nKey="dialogs.reBondConfirmation"
+						i18nKey="dialogs.migrationConfirmation"
 						values={{
-							amount: bondToReBond
-								? `${formatADXPretty(bondToReBond.currentAmount)}`
+							amount: bondToMigrate
+								? `${formatADXPretty(bondToMigrate.currentAmount)}`
 								: "",
-							poolName: bondToReBond
-								? t((getPool(bondToReBond.poolId) || {}).label || "")
+							poolName: bondToMigrate
+								? t((getPool(bondToMigrate.poolId) || {}).label || "")
 								: "",
 							currency: "ADX",
-							unbondDays: UNBOND_DAYS,
-							extraInfo: t("bonds.reBondInfo")
+							unbondDays: UNBOND_DAYS_V5,
+							extraInfo: t("bonds.migrationInfo")
 						}}
 						components={{
 							box: <Box mb={2}></Box>

@@ -19,6 +19,7 @@ export const ZERO = BigNumber.from(0)
 
 export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
 export const UNBOND_DAYS = 30
+export const UNBOND_DAYS_V5 = 20
 export const STAKING_RULES_URL = null
 
 export const IDLE_TIMEOUT_MINUTES = 10
@@ -67,6 +68,24 @@ export const POOLS = [
 		minStakingAmount: 0,
 		rewardPolicy: "",
 		slashPolicy: ""
+	}
+]
+
+export const POOLS_V5 = [
+	{
+		label: "common.validatorTom",
+		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
+		selectable: true,
+		minStakingAmount: "0.0",
+		purpose: "pools.tomPurpose",
+		lockupPeriod: 20,
+		lockupPeriodText: "pools.tomLockupPeriodTxt",
+		rewardPolicy: "pools.tomRewardPolicy",
+		slashPolicy: "pools.tomSlashPolicy",
+		apyStability: "pools.tomApyStability",
+		url: "https://tom.adex.network",
+		legacyPoolId: POOLS[0],
+		migrationContract: "0x00" //TODO
 	}
 ]
 
