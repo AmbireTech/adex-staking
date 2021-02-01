@@ -114,7 +114,7 @@ const Pools = () => {
 								id: "loyalty-pool-deposits-limit",
 								title: t("pools.totalDepositsLimit"),
 								titleInfo: "",
-								normalValue: "25 000 000 ADX",
+								normalValue: "30 000 000 ADX",
 								importantValue: "",
 								valueInfo: "",
 								extra: "",
