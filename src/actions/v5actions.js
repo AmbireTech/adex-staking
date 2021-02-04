@@ -24,6 +24,13 @@ const ADXSupplyController = new Contract(
 )
 const StakingPool = new Contract(ADDR_STAKING_POOL, stakingPoolABI, provider)
 
+export const STAKING_POOL_EVENT_TYPES = {
+	enter: "enter",
+	leave: "leave",
+	withdraw: "withdraw",
+	rageLeave: "rageLeave"
+}
+
 export async function onMigrationToV5(
 	chosenWalletType,
 	{ amount, poolId, nonce }
@@ -90,7 +97,9 @@ export async function getStakings({ walletAddr, prices }) {
 		const parsedLog = StakingPool.interface.parseLog(log)
 
 		return {
-			amount: parsedLog[2]
+			type: STAKING_POOL_EVENT_TYPES.enter,
+			amount: parsedLog.args.amount, // [2]
+			blockNumber: log.blockNumber
 			// time: //TODO
 		}
 	})
@@ -99,8 +108,10 @@ export async function getStakings({ walletAddr, prices }) {
 		const parsedLog = StakingPool.interface.parseLog(log)
 
 		return {
-			willUnlockAt: parsedLog[1],
-			adxAmount: parsedLog[2]
+			type: STAKING_POOL_EVENT_TYPES.leave,
+			willUnlockAt: parsedLog.args.willUnlockAt, //[1]
+			adxAmount: parsedLog.args.adxAmount, // [2]
+			blockNumber: log.blockNumber
 			// time: //TODO
 		}
 	})
@@ -115,16 +126,21 @@ export async function getStakings({ walletAddr, prices }) {
 		const parsedADXTransferLog = Token.interface.parseLog(log)
 
 		return {
-			amount: parsedADXTransferLog[1],
-			isRageLeave: !!burnTxLog
+			type: !!burnTxLog
+				? STAKING_POOL_EVENT_TYPES.rageLeave
+				: STAKING_POOL_EVENT_TYPES.withdraw,
+			amount: parsedADXTransferLog.args.amount, //[2]
+			blockNumber: log.blockNumber
 			// time: //TODO
 		}
 	})
 
+	const stakings = userEnters.concat(userLeaves).concat(userWithdraws)
+
+	// TODO: get and map events timestamp provider.getBlock(blockNumber).timestamp
+
 	return {
 		balanceSPADX,
-		userEnters,
-		userLeaves,
-		userWithdraws
+		stakings
 	}
 }
