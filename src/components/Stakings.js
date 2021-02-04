@@ -3,6 +3,7 @@ import { Box, Typography } from "@material-ui/core"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
+import StakingPoolV5 from "./StakingPoolV5"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 
@@ -21,6 +22,20 @@ const Stakings = () => {
 	return (
 		<Box>
 			<SectionHeader title={t("common.staked")} />
+			<Box mt={2}>
+				<Box color="text.main">
+					<Typography variant="h5" gutterBottom>
+						{t("common.stakings")}
+					</Typography>
+				</Box>
+				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
+					<Box p={3}>
+						{StakingPoolV5({
+							stats
+						})}
+					</Box>
+				</Box>
+			</Box>
 			<Box mt={2}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
