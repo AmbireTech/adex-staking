@@ -1,10 +1,10 @@
-import { Contract } from "ethers"
+import { Contract, BigNumber } from "ethers"
 import ERC20ABI from "../abi/ERC20"
 import ADXTokenABI from "../abi/ADXToken"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
-import { ADDR_ADX, ADDR_ADX_LOYALTY_TOKEN } from "../helpers/constants"
+import { ADDR_ADX, ZERO } from "../helpers/constants"
 import { getDefaultProvider } from "../ethereum"
-import { getUserIdentity } from "../helpers/identity"
+// import { getPrices, executeOnIdentity } from './common'
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000"
@@ -31,6 +31,17 @@ export const STAKING_POOL_EVENT_TYPES = {
 	rageLeave: "rageLeave"
 }
 
+export const STAKING_POOL_EMPTY_STATS = {
+	balanceSPToken: ZERO,
+	balanceSPADX: ZERO,
+	rewardADX: ZERO,
+	poolTotalStaked: ZERO,
+	currentAPY: 0,
+	stakings: [],
+	loaded: false,
+	userDataLoaded: false
+}
+
 export async function onMigrationToV5(
 	chosenWalletType,
 	{ amount, poolId, nonce }
@@ -39,9 +50,9 @@ export async function onMigrationToV5(
 	console.log(chosenWalletType, amount, poolId, nonce)
 }
 
-export async function getStakingPortalData() {
+export async function getTomStakingV5PoolData() {
 	const [poolTotalStaked, incentivePerSecond] = await Promise.all([
-		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
+		Token.balanceOf(ADDR_STAKING_POOL),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL)
 	])
 
@@ -60,8 +71,68 @@ export async function getStakingPortalData() {
 	}
 }
 
-export async function getStakings({ walletAddr, prices }) {
-	const identityAddr = getUserIdentity(walletAddr).addr
+// to test the ui component
+/*
+export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
+
+    const poolData = await getTomStakingV5PoolData()
+    if (!identityAddr) {
+        return {
+            ...STAKING_POOL_EMPTY_STATS,
+            ...poolData,
+            loaded: true
+        }
+    }
+
+    const decimalsString = '000000000000000000'
+
+    const stakings = [
+        {
+            label: 'Tom Staking Pool V5',
+            type: STAKING_POOL_EVENT_TYPES.enter,
+            amount: BigNumber.from(1000 + decimalsString),
+            blockNumber: 11295886
+        },
+        {
+            label: 'Tom Staking Pool V5',
+            type: STAKING_POOL_EVENT_TYPES.leave,
+            amount: BigNumber.from(420 + decimalsString),
+            blockNumber: 11482093
+        },
+        {
+            label: 'Tom Staking Pool V5',
+            type: STAKING_POOL_EVENT_TYPES.withdraw,
+            amount: BigNumber.from(420 + decimalsString),
+            blockNumber: 11661741
+        },
+        {
+            label: 'Tom Staking Pool V5',
+            type: STAKING_POOL_EVENT_TYPES.rageLeave,
+            amount: BigNumber.from(460 + decimalsString),
+            blockNumber: 11789046
+        },
+    ]
+
+    const balanceSPADX = BigNumber.from(4 + decimalsString)
+
+    return {
+        ...poolData,
+        balanceSPADX,
+        stakings,
+        userDataLoaded: true
+    }
+}
+*/
+
+export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
+	const poolData = await getTomStakingV5PoolData()
+	if (!identityAddr) {
+		return {
+			...STAKING_POOL_EMPTY_STATS,
+			...poolData,
+			loaded: true
+		}
+	}
 
 	const [
 		balanceSPToken,
@@ -79,7 +150,7 @@ export async function getStakings({ walletAddr, prices }) {
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.LogLeave(walletAddr, ADDR_ADX_LOYALTY_TOKEN, null)
+			...StakingPool.filters.LogLeave(identityAddr, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
@@ -140,7 +211,9 @@ export async function getStakings({ walletAddr, prices }) {
 	// TODO: get and map events timestamp provider.getBlock(blockNumber).timestamp
 
 	return {
+		...poolData,
 		balanceSPADX,
-		stakings
+		stakings,
+		userDataLoaded: true
 	}
 }
