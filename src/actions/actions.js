@@ -1,15 +1,11 @@
 import { Contract } from "ethers"
 import { BigNumber, utils } from "ethers"
 import BalanceTree from "adex-protocol-eth/js/BalanceTree"
-import { splitSig, Transaction } from "adex-protocol-eth/js"
 import StakingABI from "adex-protocol-eth/abi/Staking"
-import IdentityABI from "adex-protocol-eth/abi/Identity"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
-import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
 import ERC20ABI from "../abi/ERC20"
 import {
 	ADDR_STAKING,
-	ADDR_FACTORY,
 	ADDR_ADX,
 	MAX_UINT,
 	ZERO,
@@ -17,13 +13,18 @@ import {
 	ADDR_CORE
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
-import { getUserIdentity, zeroFeeTx, rawZeroFeeTx } from "../helpers/identity"
-import { ADEX_RELAYER_HOST, PRICES_API_URL } from "../helpers/constants"
-import { getSigner, getDefaultProvider, signMessage } from "../ethereum"
+import { getUserIdentity } from "../helpers/identity"
+import { ADEX_RELAYER_HOST } from "../helpers/constants"
+import { getSigner, getDefaultProvider } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
+import { executeOnIdentity } from "./common"
+import {
+	STAKING_POOL_EMPTY_STATS,
+	loadUserTomStakingV5PoolStats
+} from "./v5actions"
 
 const defaultProvider = getDefaultProvider
 
@@ -73,6 +74,7 @@ export const EMPTY_STATS = {
 	// canExecuteGaslessError: null,
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
 	tomPoolStats: POOL_EMPTY_STATS,
+	tomStakingV5PoolStats: STAKING_POOL_EMPTY_STATS,
 	prices: {},
 	legacyTokenBalance: ZERO,
 	identityDeployed: false
@@ -158,24 +160,6 @@ function getChannelAPY({ channel, prices, totalStake, type }) {
 	}
 }
 
-export async function getPrices() {
-	try {
-		const res = await fetch(PRICES_API_URL)
-		const data = await res.json()
-
-		if (!data.adex) {
-			throw new Error("errors.gettingPrices")
-		} else {
-			return {
-				USD: data.adex.usd
-			}
-		}
-	} catch (err) {
-		console.error(err)
-		return null
-	}
-}
-
 export async function loadStats(chosenWalletType, prices) {
 	const [totalStake, userStats] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING),
@@ -225,14 +209,18 @@ export async function getPoolStats(pool, prices) {
 		ZERO
 	)
 
-	console.log("totalCurrentTotalActiveStake", totalCurrentTotalActiveStake)
+	console.log(
+		"totalCurrentTotalActiveStake",
+		totalCurrentTotalActiveStake.toString()
+	)
+	console.log("totalStake", totalStake.toString())
 
 	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
 		(totalAPY, channel) =>
 			totalAPY +
 			getIncentiveChannelCurrentAPY({
 				channel,
-				totalStake
+				totalStake: totalCurrentTotalActiveStake
 			}),
 		0
 	)
@@ -262,11 +250,13 @@ export async function loadUserStats(chosenWalletType, prices) {
 	if (!chosenWalletType.name) {
 		const loyaltyPoolStats = await loadUserLoyaltyPoolsStats()
 		const poolStats = await loadActivePoolsStats(prices)
+		const tomStakingV5PoolStats = await loadUserTomStakingV5PoolStats()
 
 		return {
 			...EMPTY_STATS,
 			loyaltyPoolStats,
 			...poolStats,
+			tomStakingV5PoolStats,
 			prices,
 			loaded: true
 		}
@@ -285,13 +275,15 @@ export async function loadUserStats(chosenWalletType, prices) {
 		tomPoolUserRewardChannels,
 		// { canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
-		poolsStats
+		poolsStats,
+		tomStakingV5PoolStatsWithUserData
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
 		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
-		loadActivePoolsStats(prices)
+		loadActivePoolsStats(prices),
+		loadUserTomStakingV5PoolStats({ identityAddr })
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -346,6 +338,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		// canExecuteGaslessError,
 		loyaltyPoolStats,
 		tomPoolStats: tomPoolStatsWithUserData,
+		tomStakingV5PoolStats: tomStakingV5PoolStatsWithUserData,
 		prices
 	}
 }
@@ -755,74 +748,4 @@ function toChannelTuple(args) {
 		args.validators,
 		args.spec
 	]
-}
-
-export async function executeOnIdentity(
-	chosenWalletType,
-	txns,
-	opts = {},
-	gasless
-) {
-	const signer = await getSigner(chosenWalletType)
-	if (!signer) throw new Error("errors.failedToGetSigner")
-	const walletAddr = await signer.getAddress()
-	const { addr, bytecode } = getUserIdentity(walletAddr)
-	const identity = new Contract(addr, IdentityABI, signer)
-
-	const needsToDeploy =
-		(await defaultProvider.getCode(identity.address)) === "0x"
-	const idNonce = needsToDeploy ? ZERO : await identity.nonce()
-	const toTuples = offset => ([to, data], i) =>
-		zeroFeeTx(
-			identity.address,
-			idNonce.add(i + offset),
-			to,
-			data
-		).toSolidityTuple()
-	if (gasless) {
-		// @TODO: we can use execute that calls into executeBySender here to only sign one tx
-		const txnsRaw = txns.map(([to, data], i) =>
-			rawZeroFeeTx(identity.address, idNonce.add(i), to, data)
-		)
-		const signatures = []
-		for (const tx of txnsRaw) {
-			const sig = await signMessage(signer, new Transaction(tx).hash())
-			signatures.push(splitSig(sig))
-		}
-
-		const executeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/execute`
-		const res = await fetch(executeUrl, {
-			method: "POST",
-			body: JSON.stringify({
-				txnsRaw,
-				signatures
-			}),
-			headers: { "Content-Type": "application/json" }
-		})
-		if (res.status === 500) throw new Error("errors.relayerInternal")
-		return res.json()
-	} else if (!needsToDeploy) {
-		const txnTuples = txns.map(toTuples(0))
-		await identity.executeBySender(txnTuples, opts)
-	} else {
-		// Has offset because the execute() takes the first nonce
-		const txnTuples = txns.map(toTuples(1))
-		const executeTx = zeroFeeTx(
-			identity.address,
-			idNonce,
-			identity.address,
-			identity.interface.encodeFunctionData("executeBySender", [txnTuples])
-		)
-
-		const sig = await signMessage(signer, executeTx.hash())
-
-		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
-		await factoryWithSigner.deployAndExecute(
-			bytecode,
-			0,
-			[executeTx.toSolidityTuple()],
-			[splitSig(sig)],
-			opts
-		)
-	}
 }
