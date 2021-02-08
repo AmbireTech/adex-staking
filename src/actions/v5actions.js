@@ -50,6 +50,14 @@ export async function onMigrationToV5(
 	console.log(chosenWalletType, amount, poolId, nonce)
 }
 
+export async function onStakingPoolV5Deposit(
+	chosenWalletType,
+	{ amount, poolId }
+) {
+	console.log("onStakingPoolV5Deposit")
+	// TODO:
+}
+
 export async function getTomStakingV5PoolData() {
 	const [poolTotalStaked, incentivePerSecond] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING_POOL),

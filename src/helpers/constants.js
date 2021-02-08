@@ -68,13 +68,11 @@ export const POOLS = [
 		minStakingAmount: 0,
 		rewardPolicy: "",
 		slashPolicy: ""
-	}
-]
-
-export const POOLS_V5 = [
+	},
 	{
-		label: "common.validatorTom",
-		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
+		version: "stakingv5",
+		label: "common.validatorTomV5",
+		id: utils.id("V5validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
 		selectable: true,
 		minStakingAmount: "0.0",
 		purpose: "pools.tomPurpose",
@@ -84,7 +82,9 @@ export const POOLS_V5 = [
 		slashPolicy: "pools.tomSlashPolicy",
 		apyStability: "pools.tomApyStability",
 		url: "https://tom.adex.network",
-		legacyPoolId: POOLS[0],
+		legacyPoolId: utils.id(
+			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
+		),
 		migrationContract: "0x00" //TODO
 	}
 ]

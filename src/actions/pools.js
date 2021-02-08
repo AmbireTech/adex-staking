@@ -10,6 +10,7 @@ import {
 	onLoyaltyPoolWithdraw
 } from "./loyaltyPoolActions"
 import { claimRewards } from "./actions"
+import { onStakingPoolV5Deposit } from "./v5actions"
 import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
 import ERC20ABI from "../abi/ERC20"
@@ -27,6 +28,9 @@ export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 export const getDepositActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return onLoyaltyPoolDeposit
+	}
+	if (poolId === POOLS[2].id) {
+		return onStakingPoolV5Deposit
 	}
 }
 
