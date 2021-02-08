@@ -54,6 +54,13 @@ export function formatDate(d) {
 	})} ${d.getFullYear()}`
 }
 
+export function formatDateTime(d) {
+	return new Intl.DateTimeFormat(navigator.language, {
+		dateStyle: "short",
+		timeStyle: "short"
+	}).format(d)
+}
+
 // @TODO refactor to take pool arguments and use pool constants
 export function getApproxAPY(bond, totalStake, isEarly) {
 	if (!totalStake || totalStake.isZero()) return 0
