@@ -4,7 +4,7 @@ import ERC20ABI from "../abi/ERC20"
 import MasterChefABI from "../abi/MasterChef"
 import { getSigner, getDefaultProvider } from "../ethereum"
 import { getUserIdentity } from "../helpers/identity"
-import { executeOnIdentity } from "./actions"
+import { executeOnIdentity } from "./common"
 import { formatTokens, formatADX } from "../helpers/formatting"
 
 // const MASTER_CHEF_ADDR = "0x2f0e755e0007E6569379a43E453F264b91336379" // goerli
@@ -14,7 +14,6 @@ const DAYS_IN_YEAR = 365
 // const SECS_IN_YEAR = DAYS_IN_YEAR * 24 * 60 * 60
 // const TOTAL_FARM_ADX_REWARDS = 5_000_000
 // const DAYS_TO_DISTRIBUTE_REWARDS = 30
-const START_BLOCK = 11296000
 
 // const AVG_BLOCKS_PER_YEAR = SECS_IN_YEAR / AVG_ETH_BLOCK_TAME
 
