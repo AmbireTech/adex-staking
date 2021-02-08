@@ -113,12 +113,23 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
         },
     ]
 
+    const withTimestamp = await Promise.all(
+        stakings.map(async (stakngEvent) => {
+            const { timestamp } = (await provider.getBlock(stakngEvent.blockNumber))
+            return {
+                ...stakngEvent,
+                timestamp: timestamp * 1000
+            }
+
+        })
+    )
+
     const balanceSPADX = BigNumber.from(4 + decimalsString)
 
     return {
         ...poolData,
         balanceSPADX,
-        stakings,
+        stakings: withTimestamp,
         userDataLoaded: true
     }
 }
@@ -208,12 +219,20 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 
 	const stakings = userEnters.concat(userLeaves).concat(userWithdraws)
 
-	// TODO: get and map events timestamp provider.getBlock(blockNumber).timestamp
+	const withTimestamp = await Promise.all(
+		stakings.map(async stakngEvent => {
+			const { timestamp } = await provider.getBlock(stakngEvent.blockNumber)
+			return {
+				...stakngEvent,
+				timestamp: timestamp * 1000
+			}
+		})
+	)
 
 	return {
 		...poolData,
 		balanceSPADX,
-		stakings,
+		stakings: withTimestamp,
 		userDataLoaded: true
 	}
 }

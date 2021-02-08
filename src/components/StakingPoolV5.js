@@ -8,7 +8,7 @@ import {
 	TableHead,
 	TableBody
 } from "@material-ui/core"
-import { formatADXPretty } from "../helpers/formatting"
+import { formatADXPretty, formatDateTime } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { AmountText } from "./cardCommon"
 import { useTranslation } from "react-i18next"
@@ -39,6 +39,9 @@ export default function Deposits() {
 						fontSize={17}
 					/>
 				</TableCell>
+				<TableCell align="right">
+					{formatDateTime(new Date(stakingEvent.timestamp))}
+				</TableCell>
 				<TableCell align="right">{stakingEvent.blockNumber}</TableCell>
 			</TableRow>
 		)
@@ -54,6 +57,7 @@ export default function Deposits() {
 								<TableCell>{t("common.pool")}</TableCell>
 								<TableCell align="right">{t("common.type")}</TableCell>
 								<TableCell align="right">{t("common.amount")}</TableCell>
+								<TableCell align="right">{t("common.timestamp")}</TableCell>
 								<TableCell align="right">{t("common.blockNumber")}</TableCell>
 							</TableRow>
 						</TableHead>
