@@ -160,31 +160,33 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						</Button>
 					</Box>
 				</Grid>
-				<Grid item xs={12} sm={6}>
-					<FormControl fullWidth required>
-						<InputLabel>{t("common.pool")}</InputLabel>
-						<Select
-							id={`new-${actionName}-form-pool-select`}
-							value={newDepositPool}
-							onChange={ev => updatePool(ev.target.value)}
-						>
-							<MenuItem value={""}>
-								<em>{t("common.none")}</em>
-							</MenuItem>
-							{DEPOSIT_POOLS.map(({ label, id }) => (
-								<MenuItem
-									id={`new-${actionName}-form-values-${toIdAttributeString(
-										t(label)
-									)}`}
-									key={id}
-									value={id}
-								>
-									{t(label)}
+				{!depositPool && (
+					<Grid item xs={12} sm={6}>
+						<FormControl fullWidth required>
+							<InputLabel>{t("common.pool")}</InputLabel>
+							<Select
+								id={`new-${actionName}-form-pool-select`}
+								value={newDepositPool}
+								onChange={ev => updatePool(ev.target.value)}
+							>
+								<MenuItem value={""}>
+									<em>{t("common.none")}</em>
 								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-				</Grid>
+								{DEPOSIT_POOLS.map(({ label, id }) => (
+									<MenuItem
+										id={`new-${actionName}-form-values-${toIdAttributeString(
+											t(label)
+										)}`}
+										key={id}
+										value={id}
+									>
+										{t(label)}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+				)}
 				{activePool ? (
 					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>

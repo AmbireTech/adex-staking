@@ -71,7 +71,7 @@ export default function Deposits() {
 						variant="contained"
 						disabled={!!disableDepositsMsg}
 						tooltipTitle={disableDepositsMsg}
-						depositPool={POOLS[2]}
+						depositPool={POOLS[2].id}
 					/>
 				</Box>
 			</Box>

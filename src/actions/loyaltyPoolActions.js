@@ -5,14 +5,11 @@ import {
 	ADDR_ADX,
 	ADDR_ADX_LOYALTY_TOKEN,
 	ZERO,
-	MAX_UINT,
-	DEPOSIT_POOLS
+	MAX_UINT
 } from "../helpers/constants"
 import { getSigner, getDefaultProvider } from "../ethereum"
 
 const defaultProvider = getDefaultProvider
-
-export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
 
 const provider = defaultProvider
 const Token = new Contract(ADDR_ADX, ERC20ABI, provider)

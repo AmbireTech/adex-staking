@@ -23,7 +23,8 @@ const MARKET_URL = "https://market.adex.network"
 const TOM_URL = "https://tom.adex.network"
 const DaiToken = new Contract(DAI_TOKEN_ADDR, ERC20ABI, defaultProvider)
 
-export const getDepositPool = poolId => DEPOSIT_POOLS.find(x => x.id === poolId)
+export const getDepositPool = poolId =>
+	DEPOSIT_POOLS.concat(POOLS).find(x => x.id === poolId)
 
 export const getDepositActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
@@ -49,6 +50,9 @@ export const getPoolStatsByPoolId = (stats, poolId) => {
 	}
 	if (poolId === POOLS[0].id) {
 		return stats.tomPoolStats
+	}
+	if (poolId === POOLS[2].id) {
+		return stats.tomStakingV5PoolStats
 	}
 }
 
