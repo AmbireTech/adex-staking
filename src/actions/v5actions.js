@@ -58,6 +58,14 @@ export async function onStakingPoolV5Deposit(
 	// TODO:
 }
 
+export async function onStakingPoolV5Withdraw(
+	chosenWalletType,
+	{ amount, poolId }
+) {
+	console.log("onStakingPoolV5Withdraw", amount)
+	// TODO:
+}
+
 export async function getTomStakingV5PoolData() {
 	const [poolTotalStaked, incentivePerSecond] = await Promise.all([
 		Token.balanceOf(ADDR_STAKING_POOL),
@@ -98,26 +106,38 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
         {
             label: 'Tom Staking Pool V5',
             type: STAKING_POOL_EVENT_TYPES.enter,
-            amount: BigNumber.from(1000 + decimalsString),
-            blockNumber: 11295886
+            amount: BigNumber.from(2000 + decimalsString),
+            blockNumber: 11295886,
+			transactionHash: 1
         },
         {
             label: 'Tom Staking Pool V5',
             type: STAKING_POOL_EVENT_TYPES.leave,
+			withdrawTxHash: 4,
             amount: BigNumber.from(420 + decimalsString),
-            blockNumber: 11482093
+            blockNumber: 11482093,
+			transactionHash: 2
+        },
+		{
+            label: 'Tom Staking Pool V5',
+            type: STAKING_POOL_EVENT_TYPES.leave,
+            amount: BigNumber.from(500 + decimalsString),
+            blockNumber: 11482999,
+			transactionHash: 3
         },
         {
             label: 'Tom Staking Pool V5',
             type: STAKING_POOL_EVENT_TYPES.withdraw,
             amount: BigNumber.from(420 + decimalsString),
-            blockNumber: 11661741
+            blockNumber: 11661741,
+			transactionHash: 4
         },
         {
             label: 'Tom Staking Pool V5',
             type: STAKING_POOL_EVENT_TYPES.rageLeave,
-            amount: BigNumber.from(460 + decimalsString),
-            blockNumber: 11789046
+            amount: BigNumber.from(333 + decimalsString),
+            blockNumber: 11789046,
+			transactionHash: 5
         },
     ]
 
@@ -138,6 +158,7 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
         ...poolData,
         balanceSPADX,
         stakings: withTimestamp,
+		loaded: true,
         userDataLoaded: true
     }
 }
@@ -187,22 +208,10 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		const parsedLog = StakingPool.interface.parseLog(log)
 
 		return {
+			transactionHash: log.transactionHash,
 			type: STAKING_POOL_EVENT_TYPES.enter,
 			amount: parsedLog.args.amount, // [2]
 			blockNumber: log.blockNumber
-			// time: //TODO
-		}
-	})
-
-	const userLeaves = leaveLogs.map(log => {
-		const parsedLog = StakingPool.interface.parseLog(log)
-
-		return {
-			type: STAKING_POOL_EVENT_TYPES.leave,
-			willUnlockAt: parsedLog.args.willUnlockAt, //[1]
-			adxAmount: parsedLog.args.adxAmount, // [2]
-			blockNumber: log.blockNumber
-			// time: //TODO
 		}
 	})
 
@@ -216,12 +225,25 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		const parsedADXTransferLog = Token.interface.parseLog(log)
 
 		return {
+			transactionHash: log.transactionHash,
 			type: !!burnTxLog
 				? STAKING_POOL_EVENT_TYPES.rageLeave
 				: STAKING_POOL_EVENT_TYPES.withdraw,
 			amount: parsedADXTransferLog.args.amount, //[2]
 			blockNumber: log.blockNumber
-			// time: //TODO
+		}
+	})
+
+	const userLeaves = leaveLogs.map(log => {
+		const parsedLog = StakingPool.interface.parseLog(log)
+
+		return {
+			transactionHash: log.transactionHash,
+			type: STAKING_POOL_EVENT_TYPES.leave,
+			willUnlockAt: parsedLog.args.willUnlockAt, //[1]
+			adxAmount: parsedLog.args.adxAmount, // [2]
+			blockNumber: log.blockNumber
+			//TODO: detect withdraw tx
 		}
 	})
 
@@ -241,6 +263,7 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		...poolData,
 		balanceSPADX,
 		stakings: withTimestamp,
+		loaded: true,
 		userDataLoaded: true
 	}
 }
