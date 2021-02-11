@@ -30,7 +30,7 @@ export const getDepositActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return onLoyaltyPoolDeposit
 	}
-	if (poolId === POOLS[2].id) {
+	if (poolId === DEPOSIT_POOLS[1].id) {
 		return onStakingPoolV5Deposit
 	}
 }
@@ -51,7 +51,7 @@ export const getPoolStatsByPoolId = (stats, poolId) => {
 	if (poolId === POOLS[0].id) {
 		return stats.tomPoolStats
 	}
-	if (poolId === POOLS[2].id) {
+	if (poolId === DEPOSIT_POOLS[1].id) {
 		return stats.tomStakingV5PoolStats
 	}
 }

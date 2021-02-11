@@ -17,7 +17,7 @@ import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
 import { useTranslation } from "react-i18next"
-import { POOLS, ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
 import { STAKING_POOL_EVENT_TYPES, onStakingPoolV5Withdraw } from "../actions"
 import { ExternalAnchor } from "./Anchor"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -130,7 +130,7 @@ export default function Deposits() {
 						variant="contained"
 						disabled={!!disableDepositsMsg}
 						tooltipTitle={disableDepositsMsg}
-						depositPool={POOLS[2].id}
+						depositPool={DEPOSIT_POOLS[1].id}
 					/>
 				</Box>
 			</Box>

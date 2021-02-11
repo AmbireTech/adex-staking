@@ -91,9 +91,7 @@ export async function getTomStakingV5PoolData() {
 }
 
 // to test the ui component
-/*
 export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
-
 	const poolData = await getTomStakingV5PoolData()
 	if (!identityAddr) {
 		return {
@@ -103,18 +101,18 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		}
 	}
 
-	const decimalsString = '000000000000000000'
+	const decimalsString = "000000000000000000"
 
 	const stakings = [
 		{
-			label: 'Tom Staking Pool V5',
+			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.enter,
 			amount: BigNumber.from(2000 + decimalsString),
 			blockNumber: 11295886,
 			transactionHash: 1
 		},
 		{
-			label: 'Tom Staking Pool V5',
+			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			withdrawTxHash: 4,
 			amount: BigNumber.from(420 + decimalsString),
@@ -122,52 +120,59 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 			transactionHash: 2
 		},
 		{
-			label: 'Tom Staking Pool V5',
+			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			amount: BigNumber.from(500 + decimalsString),
 			blockNumber: 11482999,
 			transactionHash: 3
 		},
 		{
-			label: 'Tom Staking Pool V5',
+			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.withdraw,
 			amount: BigNumber.from(420 + decimalsString),
 			blockNumber: 11661741,
 			transactionHash: 4
 		},
 		{
-			label: 'Tom Staking Pool V5',
+			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.rageLeave,
 			amount: BigNumber.from(333 + decimalsString),
 			blockNumber: 11789046,
 			transactionHash: 5
-		},
+		}
 	]
 
 	const withTimestamp = await Promise.all(
-		stakings.map(async (stakngEvent) => {
-			const { timestamp } = (await provider.getBlock(stakngEvent.blockNumber))
+		stakings.map(async stakngEvent => {
+			const { timestamp } = await provider.getBlock(stakngEvent.blockNumber)
 			return {
 				...stakngEvent,
 				timestamp: timestamp * 1000
 			}
-
 		})
 	)
 
-	const balanceSPADX = BigNumber.from(4 + decimalsString)
+	const balanceShares = BigNumber.from(10 + decimalsString)
+	const currentBalanceADX = BigNumber.from(11 + decimalsString)
+	const withdrawnReward = BigNumber.from(1 + decimalsString)
+	const rewardWithOutstanding = BigNumber.from(3 + decimalsString)
+	const currentReward = BigNumber.from(2 + decimalsString)
 
 	return {
 		...poolData,
-		balanceSPADX,
+		balanceShares,
+		currentBalanceADX,
+		withdrawnReward,
+		rewardWithOutstanding,
+		currentReward,
+		// totalSharesInTransfers,
 		stakings: withTimestamp,
 		loaded: true,
 		userDataLoaded: true
 	}
 }
-*/
 
-export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
+export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 	const poolData = await getTomStakingV5PoolData()
 	if (!identityAddr) {
 		return {

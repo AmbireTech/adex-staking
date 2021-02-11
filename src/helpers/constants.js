@@ -68,6 +68,21 @@ export const POOLS = [
 		minStakingAmount: 0,
 		rewardPolicy: "",
 		slashPolicy: ""
+	}
+]
+
+export const DEPOSIT_POOLS = [
+	{
+		label: "common.loPo",
+		id: utils.id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
+		selectable: true,
+		minStakingAmount: "0.0",
+		rewardPolicy: "pools.loPoRewardPolicy",
+		slashPolicy: "pools.loPoSlashPolicy",
+		url:
+			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
+		confirmationLabel: null,
+		confirmationUrl: "https://www.adex.network/tos/"
 	},
 	{
 		version: "stakingv5",
@@ -84,23 +99,7 @@ export const POOLS = [
 		url: "https://tom.adex.network",
 		legacyPoolId: utils.id(
 			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
-		),
-		migrationContract: "0x00" //TODO
-	}
-]
-
-export const DEPOSIT_POOLS = [
-	{
-		label: "common.loPo",
-		id: utils.id("deposit:0x49ee1555672E1b7928Fc581810B4e79dD85263E1"),
-		selectable: true,
-		minStakingAmount: "0.0",
-		rewardPolicy: "pools.loPoRewardPolicy",
-		slashPolicy: "pools.loPoSlashPolicy",
-		url:
-			"https://etherscan.io/address/0x49ee1555672e1b7928fc581810b4e79dd85263e1",
-		confirmationLabel: null,
-		confirmationUrl: "https://www.adex.network/tos/"
+		)
 	}
 ]
 

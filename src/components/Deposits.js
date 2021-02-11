@@ -46,6 +46,79 @@ const useStyles = makeStyles(theme => {
 	}
 })
 
+const getStakingPool = ({
+	t,
+	stats,
+	disabledDepositsMsg,
+	disabledWithdrawsMsg
+}) => {
+	const { tomStakingV5PoolStats } = stats
+
+	return {
+		poolId: "adex-staking-pool",
+		label: t("common.tomStakingPool"),
+		balance: (
+			<Fragment>
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.balanceShares
+					)} ${"shares"}`}
+					fontSize={17}
+				/>
+				(=
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.currentBalanceADX
+					)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				)
+			</Fragment>
+		),
+		reward: (
+			<AmountText
+				text={`${formatADXPretty(
+					tomStakingV5PoolStats.rewardWithOutstanding
+				)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		),
+		currentReward: (
+			<AmountText
+				text={`${formatADXPretty(
+					tomStakingV5PoolStats.currentReward
+				)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		),
+		actions: [
+			<DepositsDialog
+				id="staking-pool-tom-deposit-form"
+				title={t("common.addNewDeposit")}
+				btnLabel={t("common.deposit")}
+				color="secondary"
+				size="small"
+				variant="contained"
+				disabled={!!disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg}
+				depositPool={DEPOSIT_POOLS[1].id}
+			/>,
+			<DepositsDialog
+				id="staking-pool-tom-withdraw-form"
+				title={t("deposits.withdrawLoPo")}
+				btnLabel={t("common.withdraw")}
+				color="default"
+				size="small"
+				variant="contained"
+				disabled={!!disabledWithdrawsMsg}
+				depositPool={DEPOSIT_POOLS[1].id}
+				tooltipTitle={disabledWithdrawsMsg}
+				withdraw
+			/>
+		]
+	}
+}
+
 const getLoyaltyPoolDeposit = ({
 	t,
 	stats,
@@ -138,7 +211,8 @@ export default function Deposits() {
 		: ""
 
 	useEffect(() => {
-		const { loyaltyPoolStats } = stats
+		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
+		let loadedDeposits = []
 		if (loyaltyPoolStats.loaded) {
 			// const disabledDepositsMsg = !chosenWalletType.name ?
 			// 	'Connect wallet' :
@@ -155,8 +229,30 @@ export default function Deposits() {
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg
 			})
-			setDeposits(updateDeposits(deposits, loyaltyPoolDeposit))
+			loadedDeposits.push(loyaltyPoolDeposit)
 		}
+
+		if (tomStakingV5PoolStats.loaded) {
+			// const disabledDepositsMsg = !chosenWalletType.name ?
+			// 	'Connect wallet' :
+			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
+			// 		'Pool deposits limit reached' : ''
+			// 	)
+			const disabledWithdrawsMsg = !chosenWalletType.name
+				? t("common.connectWallet")
+				: ""
+
+			const stakingPoolDeposit = getStakingPool({
+				t,
+				stats,
+				disabledDepositsMsg: disableDepositsMsg,
+				disabledWithdrawsMsg
+			})
+
+			loadedDeposits.push(stakingPoolDeposit)
+		}
+
+		setDeposits(updateDeposits(loadedDeposits))
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
