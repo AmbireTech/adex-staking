@@ -16,7 +16,7 @@ const PRECISION = 1_000_000
 
 const provider = getDefaultProvider
 
-const Token = new Contract(ADDR_ADX, ADXTokenABI, provider)
+const ADXToken = new Contract(ADDR_ADX, ADXTokenABI, provider)
 const ADXSupplyController = new Contract(
 	ADDR_ADX_SUPPLY_CONTROLLER,
 	supplyControllerABI,
@@ -27,8 +27,11 @@ const StakingPool = new Contract(ADDR_STAKING_POOL, stakingPoolABI, provider)
 export const STAKING_POOL_EVENT_TYPES = {
 	enter: "enter",
 	leave: "leave",
+	burn: "burn",
 	withdraw: "withdraw",
-	rageLeave: "rageLeave"
+	rageLeave: "rageLeave",
+	shareTokensTransferIn: "shareTokensTransferIn",
+	shareTokensTransferOut: "shareTokensTransferOut"
 }
 
 export const STAKING_POOL_EMPTY_STATS = {
@@ -68,7 +71,7 @@ export async function onStakingPoolV5Withdraw(
 
 export async function getTomStakingV5PoolData() {
 	const [poolTotalStaked, incentivePerSecond] = await Promise.all([
-		Token.balanceOf(ADDR_STAKING_POOL),
+		ADXToken.balanceOf(ADDR_STAKING_POOL),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL)
 	])
 
@@ -175,23 +178,20 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 	}
 
 	const [
-		balanceSPToken,
+		balanceShares,
 		currentShareValue,
-		mintLogs,
-		enterTransferLogs,
+		enterADXTransferLogs,
 		leaveLogs,
 		withdrawLogs,
-		rageLeaveLogs
+		rageLeaveLogs,
+		sharesTokensTransfersInLogs,
+		sharesTokensTransfersOutLogs
 	] = await Promise.all([
 		StakingPool.balanceOf(identityAddr),
 		StakingPool.shareValue(),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(null, identityAddr, null)
-		}),
-		provider.getLogs({
-			fromBlock: 0,
-			...Token.filters.Transfer(identityAddr, ADDR_STAKING_POOL, null)
+			...ADXToken.filters.Transfer(identityAddr, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
@@ -199,35 +199,87 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.LogWithdraw(identityAddr, null, null, null)
+			...StakingPool.filters.Transfer(null, identityAddr, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.LogRageLeave(identityAddr, null, null, null)
+			...StakingPool.filters.Transfer(identityAddr, null, null)
 		})
 	])
 
-	const balanceSPADX = balanceSPToken.mul(currentShareValue)
+	const currentBalanceADX = balanceShares.mul(currentShareValue)
 
-	const enterTransferByTxHash = enterTransferLogs.reduce((txns, log) => {
-		txns[log.transactionHash] = log
-		return txns
-	}, {})
+	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
+		const parsedLog = StakingPool.interface.parseLog(log)
 
-	const userEnters = mintLogs
+		const {
+			from, // [0]
+			amount // [2]
+		} = parsedLog
+
+		return {
+			transactionHash: log.transactionHash,
+			blockNumber: log.blockNumber,
+			shares: amount,
+			type:
+				from === ZERO_ADDR
+					? STAKING_POOL_EVENT_TYPES.enter
+					: STAKING_POOL_EVENT_TYPES.shareTokensTransferIn,
+			from
+		}
+	})
+
+	// Only out txns as we have logs for RageLEave and Withdraw and they only burns shares
+	// TODO: detect innerBurn transactions to ZERO_ADDR (burned by the user itself)
+	const sharesTokensTransfersOut = sharesTokensTransfersOutLogs
+		.map(log => {
+			const parsedLog = StakingPool.interface.parseLog(log)
+
+			const {
+				to, // [1]
+				amount // [2]
+			} = parsedLog
+
+			return {
+				transactionHash: log.transactionHash,
+				blockNumber: log.blockNumber,
+				shares: amount,
+				type: STAKING_POOL_EVENT_TYPES.shareTokensTransferOut,
+				to
+			}
+		})
+		.filter(x => x.to !== ZERO_ADDR)
+
+	const {
+		shareTokensEnterMintByHash,
+		shareTokensTransfersInByTxHas
+	} = sharesTokensTransfersIn.reduce(
+		(txns, event) => {
+			if (event.type === STAKING_POOL_EVENT_TYPES.enter) {
+				txns.shareTokensEnterMintByHash[event.transactionHash] = event
+			}
+
+			if (event.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn) {
+				txns.shareTokensTransfersInByTxHas[event.transactionHash] = event
+			}
+
+			return txns
+		},
+		{ shareTokensEnterMintByHash: {}, shareTokensTransfersInByTxHas: {} }
+	)
+
+	const userEnters = enterADXTransferLogs
 		.msp(log => {
-			const adxTransferLog = enterTransferByTxHash[log.transactionHash]
-			const parsedADXTransferLog = adxTransferLog
-				? Token.interface.parseLog(log)
-				: null
+			const sharesMintEvent = shareTokensEnterMintByHash[log.transactionHash]
 
-			if (parsedADXTransferLog) {
-				const parsedMintLog = StakingPool.interface.parseLog(log)
+			if (sharesMintEvent) {
+				const parsedAdxLog = ADXToken.interface.parseLog(log)
+
 				return {
 					transactionHash: log.transactionHash,
 					type: STAKING_POOL_EVENT_TYPES.enter,
-					shares: parsedMintLog.args.amount, // [2]
-					adxAmount: parsedADXTransferLog.args.amount, // [2]
+					shares: sharesMintEvent.shares,
+					adxAmount: parsedAdxLog.args.amount, // [2]
 					blockNumber: log.blockNumber
 				}
 			} else {
@@ -290,6 +342,8 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		.concat(userLeaves)
 		.concat(userWithdraws)
 		.concat(userRageLeaves)
+		.concat(sharesTokensTransfersIn)
+		.concat(sharesTokensTransfersOut)
 
 	const withTimestamp = await Promise.all(
 		stakings.map(async stakngEvent => {
@@ -301,9 +355,74 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		})
 	)
 
+	const { buySharesByPrice, buyTotalShares } = userEnters.reduce(
+		(data, log) => {
+			data.buySharesByPrice = data.buySharesByPrice.add(
+				log.shares.mul(log.adxAmount)
+			)
+			data.buyTotalShares = data.buyTotalShares.add(log.shares)
+
+			return data
+		},
+		{ buySharesByPrice: ZERO, buyTotalShares: ZERO }
+	)
+
+	const { sellSharesByPrice, sellTotalShares } = userWithdraws
+		.concat(userRageLeaves)
+		.reduce(
+			(data, log) => {
+				data.sellSharesByPrice = data.sellSharesByPrice.add(
+					log.shares.mul(log.adxAmount)
+				)
+				data.sellTotalShares = data.sellTotalShares.add(log.shares)
+
+				return data
+			},
+			{ sellSharesByPrice: ZERO, sellTotalShares: ZERO }
+		)
+
+	const totalSharesOutTransfers = sharesTokensTransfersOut.reduce(
+		(a, b) => a.shares.add(b.shares),
+		ZERO
+	)
+	const totalSharesInTransfers = Object.values(
+		shareTokensTransfersInByTxHas
+	).reduce((a, b) => a.shares.add(b).shares, ZERO)
+
+	const avgShareBuyPrice = buySharesByPrice.div(buyTotalShares)
+	const avgShareSellPrice = sellSharesByPrice.div(sellTotalShares)
+	const isPositiveTardeDelta = avgShareSellPrice.gt(avgShareBuyPrice)
+	const avgTradeDelta = isPositiveTardeDelta
+		? avgShareSellPrice.sub(avgShareBuyPrice)
+		: avgShareBuyPrice.sub(avgShareSellPrice)
+	const withdrawnReward = buyTotalShares
+		.sub(totalSharesOutTransfers)
+		.mul(avgTradeDelta)
+
+	const avgSellPriceWithOutstanding = sellSharesByPrice.add(
+		balanceShares.mul(currentBalanceADX)
+	)
+	const isPositiveTardeDeltaWithOutstanding = avgSellPriceWithOutstanding.gt(
+		avgShareBuyPrice
+	)
+	const avgTradeDeltaWithOutstanding = isPositiveTardeDeltaWithOutstanding
+		? avgSellPriceWithOutstanding.sub(avgShareBuyPrice)
+		: avgShareBuyPrice.sub(avgSellPriceWithOutstanding)
+	const rewardWithOutstanding = buyTotalShares
+		.add(balanceShares)
+		.sub(totalSharesOutTransfers)
+		.mul(avgTradeDeltaWithOutstanding)
+
+	const currentReward = rewardWithOutstanding.sub(withdrawnReward)
+
 	return {
 		...poolData,
-		balanceSPADX,
+		balanceShares,
+		currentBalanceADX,
+		withdrawnReward,
+		rewardWithOutstanding,
+		currentReward,
+		totalSharesInTransfers,
 		stakings: withTimestamp,
 		loaded: true,
 		userDataLoaded: true
