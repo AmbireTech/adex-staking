@@ -35,12 +35,19 @@ export const STAKING_POOL_EVENT_TYPES = {
 }
 
 export const STAKING_POOL_EMPTY_STATS = {
-	balanceSPToken: ZERO,
-	balanceSPADX: ZERO,
-	rewardADX: ZERO,
+	balanceShares: ZERO,
+	currentBalanceADX: ZERO,
+	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
+	rewardWithOutstanding: ZERO,
+	currentReward: ZERO,
+	totalSharesInTransfers: ZERO,
 	currentAPY: 0,
 	stakings: [],
+	leavesPendingToUnlock: [],
+	leavesReadyToWithdraw: [],
+	leavesPendingToUnlockTotalMax: ZERO,
+	leavesReadyToWithdrawTotalMax: ZERO,
 	loaded: false,
 	userDataLoaded: false
 }
@@ -107,7 +114,7 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		{
 			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.enter,
-			amount: BigNumber.from(2000 + decimalsString),
+			amount: BigNumber.from(3000 + decimalsString),
 			blockNumber: 11295886,
 			transactionHash: 1
 		},
@@ -117,13 +124,27 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 			withdrawTxHash: 4,
 			amount: BigNumber.from(420 + decimalsString),
 			blockNumber: 11482093,
-			transactionHash: 2
+			transactionHash: 2,
+			withdrawTx: {
+				label: "Tom Staking Pool V5",
+				type: STAKING_POOL_EVENT_TYPES.withdraw,
+				amount: BigNumber.from(420 + decimalsString),
+				blockNumber: 11661741,
+				transactionHash: 4
+			}
 		},
 		{
 			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			amount: BigNumber.from(500 + decimalsString),
 			blockNumber: 11482999,
+			transactionHash: 3
+		},
+		{
+			label: "Tom Staking Pool V5",
+			type: STAKING_POOL_EVENT_TYPES.leave,
+			amount: BigNumber.from(200 + decimalsString),
+			blockNumber: 11481850,
 			transactionHash: 3
 		},
 		{
@@ -157,6 +178,8 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 	const withdrawnReward = BigNumber.from(1 + decimalsString)
 	const rewardWithOutstanding = BigNumber.from(3 + decimalsString)
 	const currentReward = BigNumber.from(2 + decimalsString)
+	const leavesPendingToUnlockTotalMax = BigNumber.from(500 + decimalsString)
+	const leavesReadyToWithdrawTotalMax = BigNumber.from(200 + decimalsString)
 
 	return {
 		...poolData,
@@ -167,6 +190,10 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		currentReward,
 		// totalSharesInTransfers,
 		stakings: withTimestamp,
+		leavesPendingToUnlock: [],
+		leavesReadyToWithdraw: [],
+		leavesPendingToUnlockTotalMax,
+		leavesReadyToWithdrawTotalMax,
 		loaded: true,
 		userDataLoaded: true
 	}
@@ -332,16 +359,42 @@ export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		const parsedLog = StakingPool.interface.parseLog(log)
 		const { shares, unlocksAt, maxTokens } = parsedLog.args
 
+		const withdrawTx = userWithdraws.find(
+			event =>
+				event.unlocksAt === unlocksAt &&
+				event.shares === shares &&
+				event.maxTokens === maxTokens
+		)
+
 		return {
 			transactionHash: log.transactionHash,
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares, // [1]
 			unlocksAt, //[2]
 			maxTokens, // [3]
-			blockNumber: log.blockNumber
-			//TODO: detect withdraw tx
+			blockNumber: log.blockNumber,
+			withdrawTx
 		}
 	})
+
+	const now = Date.now() / 1000
+
+	const leavesPendingToUnlock = [...userLeaves].filter(
+		event => event.unlocksAt > now
+	)
+	const leavesReadyToWithdraw = [...userLeaves].filter(
+		event => event.unlocksAt < now && !event.withdrawTx
+	)
+
+	const leavesPendingToUnlockTotalMax = leavesPendingToUnlock.reduce(
+		(a, b) => a.maxTokens.add(b.maxTokens),
+		ZERO
+	)
+
+	const leavesReadyToWithdrawTotalMax = leavesPendingToUnlock.reduce(
+		(a, b) => a.maxTokens.add(b.maxTokens),
+		ZERO
+	)
 
 	const stakings = userEnters
 		.concat(userLeaves)
@@ -351,10 +404,10 @@ export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		.concat(sharesTokensTransfersOut)
 
 	const withTimestamp = await Promise.all(
-		stakings.map(async stakngEvent => {
-			const { timestamp } = await provider.getBlock(stakngEvent.blockNumber)
+		stakings.map(async stakingEvent => {
+			const { timestamp } = await provider.getBlock(stakingEvent.blockNumber)
 			return {
-				...stakngEvent,
+				...stakingEvent,
 				timestamp: timestamp * 1000
 			}
 		})
@@ -429,6 +482,10 @@ export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		currentReward,
 		totalSharesInTransfers,
 		stakings: withTimestamp,
+		leavesPendingToUnlock,
+		leavesReadyToWithdraw,
+		leavesPendingToUnlockTotalMax,
+		leavesReadyToWithdrawTotalMax,
 		loaded: true,
 		userDataLoaded: true
 	}
