@@ -75,7 +75,7 @@ const getStakingPool = ({
 				)
 			</Fragment>
 		),
-		reward: (
+		allTimeReward: (
 			<AmountText
 				text={`${formatADXPretty(
 					tomStakingV5PoolStats.rewardWithOutstanding
@@ -87,6 +87,22 @@ const getStakingPool = ({
 			<AmountText
 				text={`${formatADXPretty(
 					tomStakingV5PoolStats.currentReward
+				)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		),
+		pendingToUnlockTotalMax: (
+			<AmountText
+				text={`${formatADXPretty(
+					tomStakingV5PoolStats.leavesPendingToUnlockTotalMax
+				)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		),
+		readyToWithdrawTotalMax: (
+			<AmountText
+				text={`${formatADXPretty(
+					tomStakingV5PoolStats.leavesReadyToWithdrawTotalMax
 				)} ${"ADX"}`}
 				fontSize={17}
 			/>
@@ -145,7 +161,7 @@ const getLoyaltyPoolDeposit = ({
 				)
 			</Fragment>
 		),
-		reward: loyaltyPoolStats.allTimeRewardADX ? (
+		allTimeReward: loyaltyPoolStats.allTimeRewardADX ? (
 			<AmountText
 				text={`${formatADXPretty(loyaltyPoolStats.allTimeRewardADX)} ${"ADX"}`}
 				fontSize={17}
@@ -153,6 +169,9 @@ const getLoyaltyPoolDeposit = ({
 		) : (
 			t("common.unknown")
 		),
+		currentReward: t("common.NA"),
+		pendingToUnlockTotalMax: t("common.NA"),
+		readyToWithdrawTotalMax: t("common.NA"),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
@@ -212,7 +231,7 @@ export default function Deposits() {
 
 	useEffect(() => {
 		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
-		let loadedDeposits = []
+		let loadedDeposits = [...deposits]
 		if (loyaltyPoolStats.loaded) {
 			// const disabledDepositsMsg = !chosenWalletType.name ?
 			// 	'Connect wallet' :
@@ -229,7 +248,7 @@ export default function Deposits() {
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg
 			})
-			loadedDeposits.push(loyaltyPoolDeposit)
+			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
 		}
 
 		if (tomStakingV5PoolStats.loaded) {
@@ -249,10 +268,10 @@ export default function Deposits() {
 				disabledWithdrawsMsg
 			})
 
-			loadedDeposits.push(stakingPoolDeposit)
+			loadedDeposits = updateDeposits(loadedDeposits, stakingPoolDeposit)
 		}
 
-		setDeposits(updateDeposits(loadedDeposits))
+		setDeposits(loadedDeposits)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [stats])
@@ -281,7 +300,10 @@ export default function Deposits() {
 					</Box>
 				</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
-				<TableCell align="right">{deposit.reward}</TableCell>
+				<TableCell align="right">{deposit.allTimeReward}</TableCell>
+				<TableCell align="right">{deposit.currentReward}</TableCell>
+				<TableCell align="right">{deposit.pendingToUnlockTotalMax}</TableCell>
+				<TableCell align="right">{deposit.readyToWithdrawTotalMax}</TableCell>
 				<TableCell align="right">
 					{deposit.actions.map((action, index) => (
 						<Box key={index} display="inline-block" m={0.5}>
@@ -315,7 +337,16 @@ export default function Deposits() {
 								<TableCell>{t("common.pool")}</TableCell>
 								<TableCell align="right">{t("common.balance")}</TableCell>
 								<TableCell align="right">
-									{t("common.allTimeRewards")}
+									{t("deposits.allTimeRewards")}
+								</TableCell>
+								<TableCell align="right">
+									{t("deposits.currentRewards")}
+								</TableCell>
+								<TableCell align="right">
+									{t("deposits.pendingToUnlockTotalMax")}
+								</TableCell>
+								<TableCell align="right">
+									{t("deposits.readyToWithdrawTotalMax")}
 								</TableCell>
 								<TableCell align="right">{t("common.actions")}</TableCell>
 							</TableRow>
