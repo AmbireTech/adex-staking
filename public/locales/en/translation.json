@@ -67,7 +67,8 @@
     "farm": "Farm",
     "reBond": "Re-bond",
     "migrate": "Migrate",
-    "NA": "N/A"
+    "NA": "N/A",
+    "tomStakingPool": "Tom Staking Pool"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -109,15 +110,15 @@
   },
   "deposits": {
     "withdrawLoPo": "Withdraw from Loyalty pool",
-    "depositsLimitReached": "Pool deposits limit reached",    
+    "depositsLimitReached": "Pool deposits limit reached",
     "allTimeRewards": "All-time rewards",
     "currentRewards": "Current Rewards",
-    "tomStakingPool": "Tom Staking Pool",
     "type": "Type",
     "amount": "Amount",
     "blockNumber": "Block number",
-    "pendingToUnlockTotalMax": "Pending to unlock (Total Max)",
-    "readyToWithdrawTotalMax": "Ready to withdraw (Total Max)"
+    "pendingToUnlockTotalMax": "Pending to unlock (Max)",
+    "readyToWithdrawTotalMax": "Ready to withdraw (Max)",
+    "leave": "Leave"
   },
   "bonds": {
     "bondAmount": "Bond amount",

@@ -17,12 +17,16 @@ import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
+
 import { useTranslation } from "react-i18next"
 
 const iconByPoolId = poolId => {
 	switch (poolId) {
 		case "adex-loyalty-pool":
 			return LoyaltyIcon
+		case "adex-staking-pool":
+			return TomIcon
 		default:
 			return null
 	}
@@ -59,20 +63,22 @@ const getStakingPool = ({
 		label: t("common.tomStakingPool"),
 		balance: (
 			<Fragment>
-				<AmountText
-					text={`${formatADXPretty(
-						tomStakingV5PoolStats.balanceShares
-					)} ${"shares"}`}
-					fontSize={17}
-				/>
-				(=
-				<AmountText
-					text={`${formatADXPretty(
-						tomStakingV5PoolStats.currentBalanceADX
-					)} ${"ADX"}`}
-					fontSize={17}
-				/>
-				)
+				<Box>
+					<AmountText
+						text={`${formatADXPretty(
+							tomStakingV5PoolStats.balanceShares
+						)} ${"shares"}`}
+						fontSize={17}
+					/>
+				</Box>
+				<Box>
+					<AmountText
+						text={`(=${formatADXPretty(
+							tomStakingV5PoolStats.currentBalanceADX
+						)} ${"ADX"})`}
+						fontSize={17}
+					/>
+				</Box>
 			</Fragment>
 		),
 		allTimeReward: (
@@ -120,6 +126,18 @@ const getStakingPool = ({
 				depositPool={DEPOSIT_POOLS[1].id}
 			/>,
 			<DepositsDialog
+				id="staking-pool-tom-leave-form"
+				title={t("deposits.withdrawLoPo")}
+				btnLabel={t("deposits.leave")}
+				color="default"
+				size="small"
+				variant="contained"
+				disabled={!!disabledWithdrawsMsg}
+				depositPool={DEPOSIT_POOLS[1].id}
+				tooltipTitle={disabledWithdrawsMsg}
+				leave
+			/>,
+			<DepositsDialog
 				id="staking-pool-tom-withdraw-form"
 				title={t("deposits.withdrawLoPo")}
 				btnLabel={t("common.withdraw")}
@@ -147,18 +165,22 @@ const getLoyaltyPoolDeposit = ({
 		label: t("common.loPo"),
 		balance: (
 			<Fragment>
-				<AmountText
-					text={`${formatADXPretty(
-						loyaltyPoolStats.balanceLpToken
-					)} ${"ADX-LOYALTY"}`}
-					fontSize={17}
-				/>
-				(=
-				<AmountText
-					text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
-					fontSize={17}
-				/>
-				)
+				<Box>
+					<AmountText
+						text={`${formatADXPretty(
+							loyaltyPoolStats.balanceLpToken
+						)} ${"ADX-LOYALTY"}`}
+						fontSize={17}
+					/>
+				</Box>
+				<Box>
+					<AmountText
+						text={`(=${formatADXPretty(
+							loyaltyPoolStats.balanceLpADX
+						)} ${"ADX"})`}
+						fontSize={17}
+					/>
+				</Box>
 			</Fragment>
 		),
 		allTimeReward: loyaltyPoolStats.allTimeRewardADX ? (
