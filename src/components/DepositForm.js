@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useContext } from "react"
 import {
 	getDepositPool,
-	getDepositActionByPoolId,
-	getWithdrawActionByPoolId,
+	getDepositActionByTypeAndPoolId,
 	getPoolStatsByPoolId,
-	isValidNumberString
+	isValidNumberString,
+	DEPOSIT_ACTION_TYPES
 } from "../actions"
 import {
 	parseADX,
 	formatADX,
 	formatADXPretty,
-	toIdAttributeString
+	toIdAttributeString,
+	formatDateTime
 } from "../helpers/formatting"
-import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { ZERO } from "../helpers/constants"
 import {
 	Grid,
 	TextField,
@@ -29,7 +30,13 @@ import {
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 
-export default function DepositForm({ depositPool, closeDialog, withdraw }) {
+export default function DepositForm({
+	depositPool,
+	closeDialog,
+	actionType = DEPOSIT_ACTION_TYPES.deposit,
+	userUnbondCommitments,
+	withdraw
+}) {
 	const { t } = useTranslation()
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
@@ -38,6 +45,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
 	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
+	const [unbondCommitment, setUnbondCommitment] = useState(null)
 
 	const activePool = getDepositPool(newDepositPool)
 	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
@@ -55,9 +63,7 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
 
-		const action = withdraw
-			? getWithdrawActionByPoolId(activePool.id)
-			: getDepositActionByPoolId(activePool.id)
+		const action = getDepositActionByTypeAndPoolId(actionType, activePool.id)
 
 		await wrapDoingTxns(
 			action.bind(null, stats, chosenWalletType, parseADX(actionAmount))
@@ -160,33 +166,38 @@ export default function DepositForm({ depositPool, closeDialog, withdraw }) {
 						</Button>
 					</Box>
 				</Grid>
-				{!depositPool && (
-					<Grid item xs={12} sm={6}>
-						<FormControl fullWidth required>
-							<InputLabel>{t("common.pool")}</InputLabel>
-							<Select
-								id={`new-${actionName}-form-pool-select`}
-								value={newDepositPool}
-								onChange={ev => updatePool(ev.target.value)}
-							>
-								<MenuItem value={""}>
-									<em>{t("common.none")}</em>
-								</MenuItem>
-								{DEPOSIT_POOLS.map(({ label, id }) => (
-									<MenuItem
-										id={`new-${actionName}-form-values-${toIdAttributeString(
-											t(label)
-										)}`}
-										key={id}
-										value={id}
-									>
-										{t(label)}
+				{actionType === DEPOSIT_ACTION_TYPES.withdraw &&
+					userUnbondCommitments &&
+					userUnbondCommitments.length && (
+						<Grid item xs={12} sm={6}>
+							<FormControl fullWidth required>
+								<InputLabel>{t("common.unbondCommitments")}</InputLabel>
+								<Select
+									id={`new-${actionName}-unbond-commitment-withdraw-select`}
+									value={unbondCommitment}
+									onChange={ev => setUnbondCommitment(ev.target.value)}
+								>
+									<MenuItem value={""}>
+										<em>{t("common.none")}</em>
 									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-				)}
+									{userUnbondCommitments.map(
+										({ unlocksAt, maxTokens, canWithdraw }) => (
+											<MenuItem
+												id={`new-${actionName}-form-values-${unlocksAt}`}
+												key={unlocksAt}
+												value={unlocksAt}
+												disabled={!canWithdraw}
+											>
+												{`${t("deposits.unlocksAt")} ${formatDateTime(
+													Math.ceil(unlocksAt * 1000)
+												)} - max ${formatADXPretty(maxTokens)} ADX`}
+											</MenuItem>
+										)
+									)}
+								</Select>
+							</FormControl>
+						</Grid>
+					)}
 				{activePool ? (
 					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
