@@ -16,6 +16,7 @@ import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
+import { DEPOSIT_ACTION_TYPES } from "../actions"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
@@ -125,6 +126,7 @@ const getStakingPool = ({
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
+				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-leave-form"
@@ -137,7 +139,7 @@ const getStakingPool = ({
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
-				leave
+				actionType={DEPOSIT_ACTION_TYPES.unbondCommitment}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-withdraw-form"
@@ -150,7 +152,8 @@ const getStakingPool = ({
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
-				withdraw
+				actionType={DEPOSIT_ACTION_TYPES.withdraw}
+				userUnbondCommitments={tomStakingV5PoolStats.userLeaves}
 			/>
 		]
 	}
