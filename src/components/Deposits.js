@@ -121,6 +121,7 @@ const getStakingPool = ({
 				color="secondary"
 				size="small"
 				variant="contained"
+				fullWidth
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
@@ -132,6 +133,7 @@ const getStakingPool = ({
 				color="default"
 				size="small"
 				variant="contained"
+				fullWidth
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
@@ -144,6 +146,7 @@ const getStakingPool = ({
 				color="default"
 				size="small"
 				variant="contained"
+				fullWidth
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
@@ -202,6 +205,7 @@ const getLoyaltyPoolDeposit = ({
 				color="secondary"
 				size="small"
 				variant="contained"
+				fullWidth
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
@@ -213,6 +217,7 @@ const getLoyaltyPoolDeposit = ({
 				color="default"
 				size="small"
 				variant="contained"
+				fullWidth
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 				tooltipTitle={disabledWithdrawsMsg}
@@ -326,12 +331,19 @@ export default function Deposits() {
 				<TableCell align="right">{deposit.currentReward}</TableCell>
 				<TableCell align="right">{deposit.pendingToUnlockTotalMax}</TableCell>
 				<TableCell align="right">{deposit.readyToWithdrawTotalMax}</TableCell>
-				<TableCell align="right">
-					{deposit.actions.map((action, index) => (
-						<Box key={index} display="inline-block" m={0.5}>
-							{action}
-						</Box>
-					))}
+				<TableCell align="center">
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignItems="stretch"
+						justifyContent="center"
+					>
+						{deposit.actions.map((action, index) => (
+							<Box key={index} my={0.25}>
+								{action}
+							</Box>
+						))}
+					</Box>
 				</TableCell>
 			</TableRow>
 		)
