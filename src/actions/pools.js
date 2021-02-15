@@ -10,7 +10,10 @@ import {
 	onLoyaltyPoolWithdraw
 } from "./loyaltyPoolActions"
 import { claimRewards } from "./actions"
-import { onStakingPoolV5Deposit } from "./v5actions"
+import {
+	onStakingPoolV5Deposit,
+	onStakingPoolV5UnbondCommitment
+} from "./v5actions"
 import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
 import ERC20ABI from "../abi/ERC20"
@@ -22,6 +25,12 @@ const defaultProvider = getDefaultProvider
 const MARKET_URL = "https://market.adex.network"
 const TOM_URL = "https://tom.adex.network"
 const DaiToken = new Contract(DAI_TOKEN_ADDR, ERC20ABI, defaultProvider)
+
+export const DEPOSIT_ACTION_TYPES = {
+	deposit: "deposit",
+	unbondCommitment: "unbondCommitment",
+	withdraw: "withdraw"
+}
 
 export const getDepositPool = poolId =>
 	DEPOSIT_POOLS.concat(POOLS).find(x => x.id === poolId)
@@ -44,6 +53,12 @@ export const getWithdrawActionByPoolId = poolId => {
 	}
 }
 
+export const getUnbondCommitmentActionByPoolId = poolId => {
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return onStakingPoolV5UnbondCommitment
+	}
+}
+
 export const getPoolStatsByPoolId = (stats, poolId) => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return stats.loyaltyPoolStats
@@ -53,6 +68,19 @@ export const getPoolStatsByPoolId = (stats, poolId) => {
 	}
 	if (poolId === DEPOSIT_POOLS[1].id) {
 		return stats.tomStakingV5PoolStats
+	}
+}
+
+export const getDepositActionByTypeAndPoolId = (actionType, poolId) => {
+	switch (actionType) {
+		case DEPOSIT_ACTION_TYPES.withdraw:
+			return getWithdrawActionByPoolId(poolId)
+		case DEPOSIT_ACTION_TYPES.deposit:
+			return getDepositActionByPoolId(poolId)
+		case DEPOSIT_ACTION_TYPES.unbondCommitment:
+			return getDepositActionByPoolId(poolId)
+		default:
+			break
 	}
 }
 
