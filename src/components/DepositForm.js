@@ -28,6 +28,7 @@ import {
 	Box,
 	FormHelperText
 } from "@material-ui/core"
+import Tooltip from "./Tooltip"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 
@@ -166,17 +167,29 @@ export default function DepositForm({
 									<em>{t("common.none")}</em>
 								</MenuItem>
 								{userUnbondCommitments.map(
-									({ unlocksAt, maxTokens, canWithdraw }) => (
-										<MenuItem
-											id={`new-${actionType}-form-values-${unlocksAt}`}
+									({ unlocksAt, maxTokens, canWithdraw, withdrawTx }) => (
+										<Tooltip
 											key={unlocksAt}
-											value={unlocksAt}
-											disabled={!canWithdraw}
+											title={
+												canWithdraw
+													? ""
+													: !!withdrawTx
+													? t("deposits.alreadyWithdrawn")
+													: t("deposits.notUnlockedYet")
+											}
 										>
-											{`${t("deposits.unlocksAt")} ${formatDateTime(
-												Math.ceil(unlocksAt * 1000)
-											)} - max ${formatADXPretty(maxTokens)} ADX`}
-										</MenuItem>
+											<Box>
+												<MenuItem
+													id={`new-${actionType}-form-values-${unlocksAt}`}
+													value={unlocksAt}
+													disabled={!canWithdraw}
+												>
+													{`${t("deposits.unlocksAt")} ${formatDateTime(
+														Math.ceil(unlocksAt * 1000)
+													)} - max ${formatADXPretty(maxTokens)} ADX`}
+												</MenuItem>
+											</Box>
+										</Tooltip>
 									)
 								)}
 							</Select>
