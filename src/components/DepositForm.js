@@ -25,7 +25,8 @@ import {
 	MenuItem,
 	FormControlLabel,
 	Checkbox,
-	Box
+	Box,
+	FormHelperText
 } from "@material-ui/core"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
@@ -49,7 +50,6 @@ export default function DepositForm({
 
 	const activePool = getDepositPool(newDepositPool)
 	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
-	const actionName = withdraw ? "withdraw" : "deposit"
 
 	const maxAmount = withdraw
 		? poolStats.balanceLpADX || ZERO
@@ -133,71 +133,90 @@ export default function DepositForm({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [newDepositPool])
 
+	const getActionBtnText = () => {
+		switch (actionType) {
+			case DEPOSIT_ACTION_TYPES.deposit:
+				return t("common.depositCurrency", { currency: "ADX" })
+			case DEPOSIT_ACTION_TYPES.withdraw:
+				return t("common.withdrawCurrency", { currency: "ADX" })
+			case DEPOSIT_ACTION_TYPES.unbondCommitment:
+				return t("deposits.makeUnbondCommitment")
+			default:
+				return "Do it now"
+		}
+	}
+
 	return (
 		<Box width={1}>
 			<Grid container spacing={2}>
-				<Grid item xs={12} sm={6}>
-					<TextField
-						fullWidth
-						id={`new-${actionName}-form-amount-field`}
-						required
-						label={t("common.labelADXAmount")}
-						type="text"
-						value={actionAmount}
-						error={amountErr}
-						onChange={ev => {
-							onAmountChange(ev.target.value)
-						}}
-						helperText={amountErr ? amountErrText : null}
-					/>
-					<Box mt={1}>
-						<Button
-							fullWidth
-							size="small"
-							id={`new-${actionName}-form-max-amount-btn`}
-							onClick={() => {
-								onAmountChange(formatADX(maxAmount))
-							}}
-						>
-							{t("common.maxAmountBtn", {
-								amount: formatADXPretty(maxAmount),
-								currency: "ADX"
-							})}
-						</Button>
-					</Box>
-				</Grid>
 				{actionType === DEPOSIT_ACTION_TYPES.withdraw &&
-					userUnbondCommitments &&
-					userUnbondCommitments.length && (
-						<Grid item xs={12} sm={6}>
-							<FormControl fullWidth required>
-								<InputLabel>{t("common.unbondCommitments")}</InputLabel>
-								<Select
-									id={`new-${actionName}-unbond-commitment-withdraw-select`}
-									value={unbondCommitment}
-									onChange={ev => setUnbondCommitment(ev.target.value)}
-								>
-									<MenuItem value={""}>
-										<em>{t("common.none")}</em>
-									</MenuItem>
-									{userUnbondCommitments.map(
-										({ unlocksAt, maxTokens, canWithdraw }) => (
-											<MenuItem
-												id={`new-${actionName}-form-values-${unlocksAt}`}
-												key={unlocksAt}
-												value={unlocksAt}
-												disabled={!canWithdraw}
-											>
-												{`${t("deposits.unlocksAt")} ${formatDateTime(
-													Math.ceil(unlocksAt * 1000)
-												)} - max ${formatADXPretty(maxTokens)} ADX`}
-											</MenuItem>
-										)
-									)}
-								</Select>
-							</FormControl>
-						</Grid>
-					)}
+				userUnbondCommitments &&
+				userUnbondCommitments.length ? (
+					<Grid item xs={12}>
+						<FormControl fullWidth required>
+							<InputLabel>
+								{t("deposits.selectUnbondCommitmentToWithdraw")}
+							</InputLabel>
+							<Select
+								id={`new-${actionType}-unbond-commitment-withdraw-select`}
+								value={unbondCommitment || ""}
+								onChange={ev => setUnbondCommitment(ev.target.value)}
+							>
+								<MenuItem value={""}>
+									<em>{t("common.none")}</em>
+								</MenuItem>
+								{userUnbondCommitments.map(
+									({ unlocksAt, maxTokens, canWithdraw }) => (
+										<MenuItem
+											id={`new-${actionType}-form-values-${unlocksAt}`}
+											key={unlocksAt}
+											value={unlocksAt}
+											disabled={!canWithdraw}
+										>
+											{`${t("deposits.unlocksAt")} ${formatDateTime(
+												Math.ceil(unlocksAt * 1000)
+											)} - max ${formatADXPretty(maxTokens)} ADX`}
+										</MenuItem>
+									)
+								)}
+							</Select>
+							<FormHelperText>
+								{t("deposits.selectUnbondCommitmentToWithdrawInfo")}
+							</FormHelperText>
+						</FormControl>
+					</Grid>
+				) : (
+					<Grid item xs={12}>
+						<TextField
+							fullWidth
+							id={`new-${actionType}-form-amount-field`}
+							required
+							label={t("common.labelADXAmount")}
+							type="text"
+							value={actionAmount}
+							error={amountErr}
+							onChange={ev => {
+								onAmountChange(ev.target.value)
+							}}
+							helperText={amountErr ? amountErrText : null}
+						/>
+						<Box mt={1}>
+							<Button
+								fullWidth
+								size="small"
+								id={`new-${actionType}-form-max-amount-btn`}
+								onClick={() => {
+									onAmountChange(formatADX(maxAmount))
+								}}
+							>
+								{t("common.maxAmountBtn", {
+									amount: formatADXPretty(maxAmount),
+									currency: "ADX"
+								})}
+							</Button>
+						</Box>
+					</Grid>
+				)}
 				{activePool ? (
 					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
@@ -246,7 +265,7 @@ export default function DepositForm({
 							label={t(confirmationLabel)}
 							control={
 								<Checkbox
-									id={`new-${actionName}-form-tos-check`}
+									id={`new-${actionType}-form-tos-check`}
 									checked={confirmation}
 									onChange={ev => setConfirmation(ev.target.checked)}
 								/>
@@ -257,10 +276,8 @@ export default function DepositForm({
 				<Grid item xs={12}>
 					<FormControl style={{ display: "flex" }}>
 						<Button
-							id={`new-${actionName}-stake-btn-${toIdAttributeString(
-								activePool
-									? activePool.poolId || actionName
-									: "-deposit-pool-not-selected"
+							id={`new-${actionType}-stake-btn-${toIdAttributeString(
+								activePool ? activePool.poolId || actionType : "-not-selected"
 							)}`}
 							disableElevation
 							disabled={!confirmed || !!amountErr || !activePool}
@@ -268,9 +285,7 @@ export default function DepositForm({
 							variant="contained"
 							onClick={onAction}
 						>
-							{withdraw
-								? t("common.withdrawCurrency", { currency: "ADX" })
-								: t("common.depositCurrency", { currency: "ADX" })}
+							{getActionBtnText()}
 						</Button>
 					</FormControl>
 				</Grid>
