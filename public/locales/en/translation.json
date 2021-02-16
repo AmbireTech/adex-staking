@@ -118,7 +118,11 @@
     "blockNumber": "Block number",
     "pendingToUnlockTotalMax": "Pending to unlock (Max)",
     "readyToWithdrawTotalMax": "Ready to withdraw (Max)",
-    "leave": "Leave"
+    "leave": "Leave",
+    "selectUnbondCommitmentToWithdraw": "Unbond commitments",
+    "selectUnbondCommitmentToWithdrawInfo": "Select unbond commitment to withdraw",
+    "unlockAt": "Unlocks at",
+    "makeUnbondCommitment": "Make unbond commitment"
   },
   "bonds": {
     "bondAmount": "Bond amount",
