@@ -117,7 +117,7 @@ const getStakingPool = ({
 		actions: [
 			<DepositsDialog
 				id="staking-pool-tom-deposit-form"
-				title={t("common.addNewDeposit")}
+				title={t("deposits.depositTo", { pool: t("common.tomStakingPool") })}
 				btnLabel={t("common.deposit")}
 				color="secondary"
 				size="small"
@@ -130,8 +130,10 @@ const getStakingPool = ({
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-leave-form"
-				title={t("deposits.withdrawLoPo")}
-				btnLabel={t("deposits.leave")}
+				title={t("deposits.unbondCommitmentFrom", {
+					pool: t("common.tomStakingPool")
+				})}
+				btnLabel={t("common.unbond")}
 				color="default"
 				size="small"
 				variant="contained"
@@ -143,7 +145,7 @@ const getStakingPool = ({
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-withdraw-form"
-				title={t("deposits.withdrawLoPo")}
+				title={t("deposits.withdrawFrom", { pool: t("common.tomStakingPool") })}
 				btnLabel={t("common.withdraw")}
 				color="default"
 				size="small"
@@ -203,7 +205,7 @@ const getLoyaltyPoolDeposit = ({
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
-				title={t("common.addNewDeposit")}
+				title={t("deposits.depositTo", { pool: t("common.loPo") })}
 				btnLabel={t("common.deposit")}
 				color="secondary"
 				size="small"
@@ -215,7 +217,7 @@ const getLoyaltyPoolDeposit = ({
 			/>,
 			<DepositsDialog
 				id="loyalty-pool-withdraw-form"
-				title={t("deposits.withdrawLoPo")}
+				title={t("deposits.withdrawFrom", { pool: t("common.loPo") })}
 				btnLabel={t("common.withdraw")}
 				color="default"
 				size="small"

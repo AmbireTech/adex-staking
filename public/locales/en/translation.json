@@ -122,7 +122,12 @@
     "selectUnbondCommitmentToWithdraw": "Unbond commitments",
     "selectUnbondCommitmentToWithdrawInfo": "Select unbond commitment to withdraw",
     "unlockAt": "Unlocks at",
-    "makeUnbondCommitment": "Make unbond commitment"
+    "makeUnbondCommitment": "Make unbond commitment",
+    "alreadyWithdrawn": "Already withdrawn",
+    "notUnlockedYet": "Not unlocked yet",
+    "depositTo": "Deposit to {{pool}}",
+    "withdrawFrom": "Withdraw from {{pool}}",
+    "unbondCommitmentFrom": "Make unbond commitment from {{pool}}"
   },
   "bonds": {
     "bondAmount": "Bond amount",
