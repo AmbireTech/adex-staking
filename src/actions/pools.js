@@ -64,6 +64,10 @@ export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
 		return stats.balanceLpADX || ZERO
 	}
 
+	return ZERO
+}
+
+export const getMaxUnbondCommitmentAmountByPoolId = (poolId, stats) => {
 	if (poolId === DEPOSIT_POOLS[1].id) {
 		return stats.currentBalanceADX || ZERO
 	}
@@ -105,6 +109,8 @@ export const getDepositActionMaxAmountByTypeAndPoolId = (
 	switch (actionType) {
 		case DEPOSIT_ACTION_TYPES.withdraw:
 			return getMaxWithdrawAmountByPoolId(poolId, poolStats)
+		case DEPOSIT_ACTION_TYPES.unbondCommitment:
+			return getMaxUnbondCommitmentAmountByPoolId(poolId, poolStats)
 		case DEPOSIT_ACTION_TYPES.deposit:
 			return userWalletBalance
 		default:

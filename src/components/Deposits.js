@@ -214,6 +214,7 @@ const getLoyaltyPoolDeposit = ({
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
+				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
 			<DepositsDialog
 				id="loyalty-pool-withdraw-form"
@@ -226,7 +227,7 @@ const getLoyaltyPoolDeposit = ({
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 				tooltipTitle={disabledWithdrawsMsg}
-				withdraw
+				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 			/>
 		]
 	}

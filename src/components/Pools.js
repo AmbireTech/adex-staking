@@ -11,6 +11,7 @@ import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
 import { useTranslation } from "react-i18next"
+import { DEPOSIT_ACTION_TYPES } from "../actions"
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -134,6 +135,7 @@ const Pools = () => {
 								variant="contained"
 								disabled={!canStake}
 								depositPool={DEPOSIT_POOLS[0].id}
+								actionType={DEPOSIT_ACTION_TYPES.deposit}
 							/>
 						}
 						// comingSoon
