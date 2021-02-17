@@ -4,6 +4,7 @@ import {
 	getDepositActionByTypeAndPoolId,
 	getPoolStatsByPoolId,
 	isValidNumberString,
+	getDepositActionMaxAmountByTypeAndPoolId,
 	DEPOSIT_ACTION_TYPES
 } from "../actions"
 import {
@@ -46,15 +47,27 @@ export default function DepositForm({
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [confirmation, setConfirmation] = useState(false)
-	const [newDepositPool, setNewDepositPool] = useState(depositPool || {})
+	const [activePool, setActivePool] = useState({})
 	const [unbondCommitment, setUnbondCommitment] = useState(null)
+	const [maxAmount, setMaxAmount] = useState(ZERO)
+	const [poolStats, setPoolStats] = useState({})
 
-	const activePool = getDepositPool(newDepositPool)
-	const poolStats = activePool ? getPoolStatsByPoolId(stats, activePool.id) : {}
+	useEffect(() => {
+		const newActivePool = getDepositPool(depositPool || {})
+		const newPoolStats = newActivePool
+			? getPoolStatsByPoolId(stats, newActivePool.id)
+			: {}
+		const newMaxAmount = getDepositActionMaxAmountByTypeAndPoolId(
+			actionType,
+			newActivePool.id,
+			newPoolStats,
+			stats.userWalletBalance
+		)
 
-	const maxAmount = withdraw
-		? poolStats.balanceLpADX || ZERO
-		: stats.userWalletBalance
+		setPoolStats(newPoolStats)
+		setActivePool(newActivePool)
+		setMaxAmount(newMaxAmount)
+	}, [actionType, depositPool, stats])
 
 	const onAction = async () => {
 		if (!activePool) {
@@ -67,7 +80,13 @@ export default function DepositForm({
 		const action = getDepositActionByTypeAndPoolId(actionType, activePool.id)
 
 		await wrapDoingTxns(
-			action.bind(null, stats, chosenWalletType, parseADX(actionAmount))
+			action.bind(
+				null,
+				stats,
+				chosenWalletType,
+				parseADX(actionAmount),
+				unbondCommitment
+			)
 		)()
 	}
 
@@ -115,10 +134,6 @@ export default function DepositForm({
 		return
 	}
 
-	const updatePool = value => {
-		setNewDepositPool(value)
-	}
-
 	const onAmountChange = amountStr => {
 		setActionAmount(amountStr)
 		validateFields({
@@ -129,10 +144,9 @@ export default function DepositForm({
 	}
 
 	useEffect(() => {
-		const poolToValidate = getDepositPool(newDepositPool)
-		validateFields({ userInputAmount: actionAmount, poolToValidate, poolStats })
+		validateFields({ userInputAmount: actionAmount, activePool, poolStats })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [newDepositPool])
+	}, [activePool])
 
 	const getActionBtnText = () => {
 		switch (actionType) {

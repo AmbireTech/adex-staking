@@ -97,7 +97,7 @@ export async function getTomStakingV5PoolData() {
 			: (incentivePerSecond
 					.mul(PRECISION)
 					.mul(secondsInYear)
-					.div(incentivePerSecond)
+					.div(poolTotalStaked)
 					.toNumber() /
 					PRECISION) *
 			  100

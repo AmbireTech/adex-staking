@@ -59,6 +59,18 @@ export const getUnbondCommitmentActionByPoolId = poolId => {
 	}
 }
 
+export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
+	if (poolId === DEPOSIT_POOLS[0].id) {
+		return stats.balanceLpADX || ZERO
+	}
+
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return stats.currentBalanceADX || ZERO
+	}
+
+	return ZERO
+}
+
 export const getPoolStatsByPoolId = (stats, poolId) => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return stats.loyaltyPoolStats
@@ -81,6 +93,22 @@ export const getDepositActionByTypeAndPoolId = (actionType, poolId) => {
 			return getDepositActionByPoolId(poolId)
 		default:
 			break
+	}
+}
+
+export const getDepositActionMaxAmountByTypeAndPoolId = (
+	actionType,
+	poolId,
+	poolStats,
+	userWalletBalance
+) => {
+	switch (actionType) {
+		case DEPOSIT_ACTION_TYPES.withdraw:
+			return getMaxWithdrawAmountByPoolId(poolId, poolStats)
+		case DEPOSIT_ACTION_TYPES.deposit:
+			return userWalletBalance
+		default:
+			return
 	}
 }
 
