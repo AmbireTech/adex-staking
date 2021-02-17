@@ -62,6 +62,7 @@ const getStakingPool = ({
 	return {
 		poolId: "adex-staking-pool",
 		label: t("common.tomStakingPool"),
+		currentAPY: tomStakingV5PoolStats.currentAPY,
 		balance: (
 			<Fragment>
 				<Box>
@@ -171,6 +172,7 @@ const getLoyaltyPoolDeposit = ({
 	return {
 		poolId: "adex-loyalty-pool",
 		label: t("common.loPo"),
+		currentAPY: loyaltyPoolStats.currentAPY,
 		balance: (
 			<Fragment>
 				<Box>
@@ -332,6 +334,9 @@ export default function Deposits() {
 						<Box>{deposit.label}</Box>
 					</Box>
 				</TableCell>
+				<TableCell align="right">{`${(deposit.currentAPY * 100).toFixed(
+					2
+				)} %`}</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.allTimeReward}</TableCell>
 				<TableCell align="right">{deposit.currentReward}</TableCell>
@@ -375,6 +380,7 @@ export default function Deposits() {
 						<TableHead>
 							<TableRow>
 								<TableCell>{t("common.pool")}</TableCell>
+								<TableCell>{t("APY")}</TableCell>
 								<TableCell align="right">{t("common.balance")}</TableCell>
 								<TableCell align="right">
 									{t("deposits.allTimeRewards")}
