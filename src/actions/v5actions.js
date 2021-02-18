@@ -103,7 +103,22 @@ export async function onStakingPoolV5Withdraw(
 	unbondCommitment
 ) {
 	console.log("onStakingPoolV5Withdraw", unbondCommitment)
-	// TODO:
+
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!unbondCommitment) throw new Error("errors.noUnbondCommitmentProvided")
+	// TODO: validate unbondCommitment
+
+	const signer = await getSigner(chosenWalletType)
+
+	const stakingPoolWithSigner = new Contract(
+		ADDR_STAKING_POOL,
+		supplyControllerABI,
+		signer
+	)
+
+	const { shares, unlocksAt } = unbondCommitment
+
+	await stakingPoolWithSigner.withdraw(shares, unlocksAt, false)
 }
 
 export async function onStakingPoolV5UnbondCommitment(
@@ -134,7 +149,7 @@ export async function onStakingPoolV5UnbondCommitment(
 		.mul(balanceShares)
 		.div(currentBalanceADX)
 
-	await stakingPoolWithSigner.leave(sharesToWithdraw)
+	await stakingPoolWithSigner.leave(sharesToWithdraw, false)
 }
 
 export async function getTomStakingV5PoolData() {
