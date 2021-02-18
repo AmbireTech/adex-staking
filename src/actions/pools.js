@@ -12,7 +12,8 @@ import {
 import { claimRewards } from "./actions"
 import {
 	onStakingPoolV5Deposit,
-	onStakingPoolV5UnbondCommitment
+	onStakingPoolV5UnbondCommitment,
+	onStakingPoolV5Withdraw
 } from "./v5actions"
 import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
@@ -56,6 +57,10 @@ export const getWithdrawActionByPoolId = poolId => {
 	}
 	if (poolId === POOLS[0].id) {
 		return claimRewards
+	}
+
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return onStakingPoolV5Withdraw
 	}
 
 	throw new TranslatableError("errors.noActionForPool", {

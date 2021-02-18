@@ -283,7 +283,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
-		loadUserTomStakingV5PoolStats({ identityAddr })
+		loadUserTomStakingV5PoolStats({ walletAddr: addr })
 	])
 
 	const { tomPoolStats } = poolsStats
