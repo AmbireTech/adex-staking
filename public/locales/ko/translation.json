@@ -149,7 +149,7 @@
   "errors": {
     "invalidAmountInput": "잘못된 금액이 입력되었습니다!",
     "lowADXAmount": "ADX 양이 충분하지 않습니다!",
-    "lessDanMinPoolADX": "ADX 양이 선택된 풀의 최소 요구량 보다 낮습니다!",
+    "lessThanMinPoolADX": "ADX 양이 선택된 풀의 최소 요구량 보다 낮습니다!",
     "amountOverPoolLimit": "ADX 양이 너무 많습니다 – 이는 풀 총 예금 한도를 초과합니다!",
     "statsNotProvided": "정보가 제공되지 않았습니다",
     "noDepositAmount": "입금액이 없습니다",

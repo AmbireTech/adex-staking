@@ -172,7 +172,7 @@
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
     "lowADXAmount": "Insufficient ADX amount!",
-    "lessDanMinPoolADX": "ADX amount less than minimum required for selected pool!",
+    "lessThanMinPoolADX": "ADX amount less than minimum required for selected pool!",
     "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!",
     "statsNotProvided": "Stats not provided",
     "noDepositAmount": "No deposit amount provided",
@@ -204,7 +204,10 @@
     "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
     "zeroDepositToken": "Can not deposit 0 {{currency}}",
     "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
-    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices.",
+    "invalidActionType": "Invalid Action type {{actionType}}",
+    "noActionForPool": "NO {{actionName}} for pool ID: \"{{poolId}}\"",
+    "unbondCommitmentNotSelected": "Unbond commitment not selected"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
