@@ -32,6 +32,7 @@ import {
 import Tooltip from "./Tooltip"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
+import StatsCard from "./StatsCard"
 
 export default function DepositForm({
 	depositPool,
@@ -116,6 +117,14 @@ export default function DepositForm({
 			return
 		}
 
+		if (
+			actionType === DEPOSIT_ACTION_TYPES.withdraw &&
+			activePool.id === DEPOSIT_POOLS[1].id &&
+			unbondCommitment
+		) {
+			return
+		}
+
 		if (!isValidNumberString(actionAmount)) {
 			setAmountErr(true)
 			setAmountErrText("errors.invalidAmountInput")
@@ -163,6 +172,12 @@ export default function DepositForm({
 		setDirtyInputs(true)
 	}
 
+	const onUnbondCommitmentChange = ev => {
+		console.log("ev", ev)
+		setUnbondCommitment(ev.target.value)
+		setDirtyInputs(true)
+	}
+
 	const getActionBtnText = () => {
 		switch (actionType) {
 			case DEPOSIT_ACTION_TYPES.deposit:
@@ -190,37 +205,35 @@ export default function DepositForm({
 							<Select
 								id={`new-${actionType}-unbond-commitment-withdraw-select`}
 								value={unbondCommitment || ""}
-								onChange={ev => setUnbondCommitment(ev.target.value)}
+								onChange={onUnbondCommitmentChange}
 							>
 								<MenuItem value={""}>
 									<em>{t("common.none")}</em>
 								</MenuItem>
-								{userUnbondCommitments.map(
-									({ unlocksAt, maxTokens, canWithdraw, withdrawTx }) => (
-										<Tooltip
-											key={unlocksAt}
-											title={
-												canWithdraw
+								{userUnbondCommitments.map(uc => {
+									const disabled = !uc.canWithdraw
+									return (
+										<MenuItem
+											disabled={disabled}
+											id={`new-${actionType}-form-values-${uc.unlocksAt}`}
+											key={uc.unlocksAt}
+											value={uc.unlocksAt}
+										>
+											{StatsCard({
+												loaded: true,
+												title: `${t("deposits.unlocksAt")} ${formatDateTime(
+													Math.ceil(uc.unlocksAt * 1000)
+												)}`,
+												subtitle: `max ${formatADXPretty(uc.maxTokens)} ADX`,
+												extra: uc.canWithdraw
 													? ""
-													: !!withdrawTx
+													: !!uc.withdrawTx
 													? t("deposits.alreadyWithdrawn")
 													: t("deposits.notUnlockedYet")
-											}
-										>
-											<Box>
-												<MenuItem
-													id={`new-${actionType}-form-values-${unlocksAt}`}
-													value={unlocksAt}
-													disabled={!canWithdraw}
-												>
-													{`${t("deposits.unlocksAt")} ${formatDateTime(
-														Math.ceil(unlocksAt * 1000)
-													)} - max ${formatADXPretty(maxTokens)} ADX`}
-												</MenuItem>
-											</Box>
-										</Tooltip>
+											})}
+										</MenuItem>
 									)
-								)}
+								})}
 							</Select>
 							<FormHelperText>
 								{t("deposits.selectUnbondCommitmentToWithdrawInfo")}
