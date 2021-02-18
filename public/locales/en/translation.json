@@ -127,7 +127,9 @@
     "notUnlockedYet": "Not unlocked yet",
     "depositTo": "Deposit to {{pool}}",
     "withdrawFrom": "Withdraw from {{pool}}",
-    "unbondCommitmentFrom": "Make unbond commitment from {{pool}}"
+    "unbondCommitmentFrom": "Make unbond commitment from {{pool}}",
+    "rageLeave": "Rage Leave",
+    "rageLeaveFrom": "Rage Leave form {{pool}} "
   },
   "bonds": {
     "bondAmount": "Bond amount",
@@ -207,7 +209,9 @@
     "canCalcLPTokensPrices": "Error while calculating LP tokens prices.",
     "invalidActionType": "Invalid Action type {{actionType}}",
     "noActionForPool": "NO {{actionName}} for pool ID: \"{{poolId}}\"",
-    "unbondCommitmentNotSelected": "Unbond commitment not selected"
+    "unbondCommitmentNotSelected": "Unbond commitment not selected",
+    "zeroBalanceADX": "0 ADX balance",
+    "noUnbondCommitmentProvided": "No unbond commitment data provided"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
