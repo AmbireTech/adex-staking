@@ -96,7 +96,7 @@ export default function NewBondForm({
 		}
 		if (poolToValidate && amountBN.lt(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.lessDanMinPoolADX"))
+			setAmountErrText(t("errors.lessThanMinPoolADX"))
 			return
 		}
 		setAmountErr(false)

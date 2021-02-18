@@ -14,7 +14,7 @@ import {
 	toIdAttributeString,
 	formatDateTime
 } from "../helpers/formatting"
-import { ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
 import {
 	Grid,
 	TextField,
@@ -46,6 +46,9 @@ export default function DepositForm({
 	const [actionAmount, setActionAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
+	const [selectErr, setSelectErr] = useState(false)
+	const [selectErrText, setSelectErrText] = useState("")
+	const [dirtyInputs, setDirtyInputs] = useState(false)
 	const [confirmation, setConfirmation] = useState(false)
 	const [activePool, setActivePool] = useState({})
 	const [unbondCommitment, setUnbondCommitment] = useState(null)
@@ -93,60 +96,72 @@ export default function DepositForm({
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
 	const confirmed = !confirmationLabel || confirmation
 
-	const validateFields = params => {
-		const { userInputAmount, poolToValidate, poolStats } = params
+	useEffect(() => {
+		setAmountErr(false)
+		setSelectErr(false)
+		setAmountErrText("")
+		setAmountErrText("")
 
-		if (!isValidNumberString(userInputAmount)) {
-			setAmountErr(true)
-			setAmountErrText(t("errors.invalidAmountInput"))
+		if (
+			actionType === DEPOSIT_ACTION_TYPES.withdraw &&
+			activePool.id === DEPOSIT_POOLS[1].id &&
+			!unbondCommitment
+		) {
+			setAmountErr(false)
+			setAmountErrText("")
+
+			setSelectErr(true)
+			setSelectErrText("errors.unbondCommitmentNotSelected")
+
 			return
 		}
 
-		const amountBN = parseADX(userInputAmount)
+		if (!isValidNumberString(actionAmount)) {
+			setAmountErr(true)
+			setAmountErrText("errors.invalidAmountInput")
+			return
+		}
 
-		const minStakingAmountBN = poolToValidate
-			? parseADX(poolToValidate.minStakingAmount || "0")
+		const amountBN = parseADX(actionAmount)
+
+		const minStakingAmountBN = activePool
+			? parseADX(activePool.minStakingAmount || "0")
 			: ZERO
 		if (amountBN.gt(maxAmount)) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.lowADXAmount"))
+			setAmountErrText("errors.lowADXAmount")
 			return
 		}
-		if (poolToValidate && amountBN.lte(minStakingAmountBN)) {
+		if (activePool && amountBN.lte(minStakingAmountBN)) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.lessDanMinPoolADX"))
+			setAmountErrText("errors.lessThanMinPoolADX")
 			return
 		}
 
 		if (
-			!withdraw &&
+			actionType === DEPOSIT_ACTION_TYPES.deposit &&
 			poolStats &&
 			poolStats.poolTotalStaked &&
 			poolStats.poolDepositsLimit &&
 			amountBN.add(poolStats.poolTotalStaked).gt(poolStats.poolDepositsLimit)
 		) {
 			setAmountErr(true)
-			setAmountErrText(t("errors.amountOverPoolLimit"))
+			setAmountErrText("errors.amountOverPoolLimit")
 			return
 		}
-
-		setAmountErr(false)
-		return
-	}
+	}, [
+		actionAmount,
+		actionType,
+		activePool,
+		maxAmount,
+		poolStats,
+		unbondCommitment
+	])
 
 	const onAmountChange = amountStr => {
 		setActionAmount(amountStr)
-		validateFields({
-			userInputAmount: amountStr,
-			poolToValidate: activePool,
-			poolStats
-		})
+		setDirtyInputs(true)
 	}
-
-	useEffect(() => {
-		validateFields({ userInputAmount: actionAmount, activePool, poolStats })
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [activePool])
 
 	const getActionBtnText = () => {
 		switch (actionType) {
@@ -221,11 +236,11 @@ export default function DepositForm({
 							label={t("common.labelADXAmount")}
 							type="text"
 							value={actionAmount}
-							error={amountErr}
+							error={dirtyInputs && amountErr}
 							onChange={ev => {
 								onAmountChange(ev.target.value)
 							}}
-							helperText={amountErr ? amountErrText : null}
+							helperText={t(dirtyInputs && amountErr ? amountErrText : "")}
 						/>
 						<Box mt={1}>
 							<Button
@@ -301,20 +316,24 @@ export default function DepositForm({
 					</Grid>
 				)}
 				<Grid item xs={12}>
-					<FormControl style={{ display: "flex" }}>
-						<Button
-							id={`new-${actionType}-stake-btn-${toIdAttributeString(
-								activePool ? activePool.poolId || actionType : "-not-selected"
-							)}`}
-							disableElevation
-							disabled={!confirmed || !!amountErr || !activePool}
-							color="primary"
-							variant="contained"
-							onClick={onAction}
-						>
-							{getActionBtnText()}
-						</Button>
-					</FormControl>
+					<Tooltip title={t(amountErrText || selectErrText || "")}>
+						<FormControl style={{ display: "flex" }}>
+							<Button
+								id={`new-${actionType}-stake-btn-${toIdAttributeString(
+									activePool ? activePool.poolId || actionType : "-not-selected"
+								)}`}
+								disableElevation
+								disabled={
+									!confirmed || !!amountErr || !activePool || !!selectErr
+								}
+								color="primary"
+								variant="contained"
+								onClick={onAction}
+							>
+								{getActionBtnText()}
+							</Button>
+						</FormControl>
+					</Tooltip>
 				</Grid>
 			</Grid>
 		</Box>
