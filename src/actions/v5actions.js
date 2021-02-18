@@ -2,8 +2,8 @@ import { Contract, BigNumber } from "ethers"
 import ERC20ABI from "../abi/ERC20"
 import ADXTokenABI from "../abi/ADXToken"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
-import { ADDR_ADX, ZERO } from "../helpers/constants"
-import { getDefaultProvider } from "../ethereum"
+import { ADDR_ADX, ZERO, MAX_UINT } from "../helpers/constants"
+import { getDefaultProvider, getSigner } from "../ethereum"
 // import { getPrices, executeOnIdentity } from './common'
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
@@ -60,26 +60,58 @@ export async function onMigrationToV5(
 }
 
 export async function onStakingPoolV5Deposit(
+	stats,
 	chosenWalletType,
-	{ amount, poolId }
+	adxDepositAmount
 ) {
-	console.log("onStakingPoolV5Deposit")
-	// TODO:
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!adxDepositAmount) throw new Error("errors.noDepositAmount")
+	if (adxDepositAmount.isZero()) throw new Error("errors.zeroDeposit")
+	if (adxDepositAmount.gt(stats.userBalance))
+		throw new Error("errors.amountTooLarge")
+
+	const signer = await getSigner(chosenWalletType)
+	const walletAddr = await signer.getAddress()
+
+	const [allowanceStkingPool] = await Promise.all([
+		ADXToken.allowance(walletAddr, StakingPool.address)
+	])
+
+	const setAllowance = allowanceStkingPool.lt(adxDepositAmount)
+
+	if (setAllowance) {
+		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
+		await tokenWithSigner.approve(StakingPool.address, MAX_UINT)
+	}
+
+	const stakingPoolWithSigner = new Contract(
+		ADDR_STAKING_POOL,
+		supplyControllerABI,
+		signer
+	)
+
+	await stakingPoolWithSigner.enter(
+		adxDepositAmount,
+		setAllowance ? { gasLimit: 150000 } : {}
+	)
 }
 
 export async function onStakingPoolV5Withdraw(
+	stats,
 	chosenWalletType,
-	{ amount, poolId }
+	_,
+	unbondCommitment
 ) {
-	console.log("onStakingPoolV5Withdraw", amount)
+	console.log("onStakingPoolV5Withdraw", unbondCommitment)
 	// TODO:
 }
 
 export async function onStakingPoolV5UnbondCommitment(
+	stats,
 	chosenWalletType,
-	{ amount, poolId }
+	unbondCommitmentAmountADX
 ) {
-	console.log("onStakingPoolV5UnbondCommitment", amount)
+	console.log("onStakingPoolV5UnbondCommitment", unbondCommitmentAmountADX)
 	// TODO:
 }
 
@@ -105,9 +137,9 @@ export async function getTomStakingV5PoolData() {
 }
 
 // to test the ui component
-export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
+export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const poolData = await getTomStakingV5PoolData()
-	if (!identityAddr) {
+	if (!walletAddr) {
 		return {
 			...STAKING_POOL_EMPTY_STATS,
 			...poolData,
@@ -149,7 +181,7 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 			label: "Tom Staking Pool V5",
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares: BigNumber.from(480 + decimalsString),
-			maxTokens: BigNumber.from(5000 + decimalsString),
+			maxTokens: BigNumber.from(500 + decimalsString),
 			unlocksAt: 1610340386,
 			canWithdraw: true,
 			blockNumber: 11482999,
@@ -223,9 +255,9 @@ export async function loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 	}
 }
 
-export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
+export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const poolData = await getTomStakingV5PoolData()
-	if (!identityAddr) {
+	if (!walletAddr) {
 		return {
 			...STAKING_POOL_EMPTY_STATS,
 			...poolData,
@@ -243,23 +275,23 @@ export async function _loadUserTomStakingV5PoolStats({ identityAddr } = {}) {
 		sharesTokensTransfersInLogs,
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
-		StakingPool.balanceOf(identityAddr),
+		StakingPool.balanceOf(walletAddr),
 		StakingPool.shareValue(),
 		provider.getLogs({
 			fromBlock: 0,
-			...ADXToken.filters.Transfer(identityAddr, ADDR_STAKING_POOL, null)
+			...ADXToken.filters.Transfer(walletAddr, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.LogLeave(identityAddr, null, null, null)
+			...StakingPool.filters.LogLeave(walletAddr, null, null, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(null, identityAddr, null)
+			...StakingPool.filters.Transfer(null, walletAddr, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(identityAddr, null, null)
+			...StakingPool.filters.Transfer(walletAddr, null, null)
 		})
 	])
 
