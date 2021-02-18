@@ -19,6 +19,7 @@ import { formatDAI } from "../helpers/formatting"
 import ERC20ABI from "../abi/ERC20"
 import { Contract } from "ethers"
 import { getDefaultProvider } from "../ethereum"
+import { TranslatableError } from "../helpers/errors"
 
 const defaultProvider = getDefaultProvider
 
@@ -42,6 +43,11 @@ export const getDepositActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[1].id) {
 		return onStakingPoolV5Deposit
 	}
+
+	throw new TranslatableError("errors.noActionForPool", {
+		actionName: "deposit",
+		poolId
+	})
 }
 
 export const getWithdrawActionByPoolId = poolId => {
@@ -51,12 +57,22 @@ export const getWithdrawActionByPoolId = poolId => {
 	if (poolId === POOLS[0].id) {
 		return claimRewards
 	}
+
+	throw new TranslatableError("errors.noActionForPool", {
+		actionName: "withdraw",
+		poolId
+	})
 }
 
 export const getUnbondCommitmentActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[1].id) {
 		return onStakingPoolV5UnbondCommitment
 	}
+
+	throw new TranslatableError("errors.noActionForPool", {
+		actionName: "unbond commitment (leave)",
+		poolId
+	})
 }
 
 export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
@@ -94,9 +110,9 @@ export const getDepositActionByTypeAndPoolId = (actionType, poolId) => {
 		case DEPOSIT_ACTION_TYPES.deposit:
 			return getDepositActionByPoolId(poolId)
 		case DEPOSIT_ACTION_TYPES.unbondCommitment:
-			return getDepositActionByPoolId(poolId)
+			return getUnbondCommitmentActionByPoolId(poolId)
 		default:
-			break
+			throw new TranslatableError("errors.invalidActionType", { actionType })
 	}
 }
 
@@ -114,7 +130,7 @@ export const getDepositActionMaxAmountByTypeAndPoolId = (
 		case DEPOSIT_ACTION_TYPES.deposit:
 			return userWalletBalance
 		default:
-			return
+			return ZERO
 	}
 }
 
