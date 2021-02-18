@@ -112,7 +112,29 @@ export async function onStakingPoolV5UnbondCommitment(
 	unbondCommitmentAmountADX
 ) {
 	console.log("onStakingPoolV5UnbondCommitment", unbondCommitmentAmountADX)
-	// TODO:
+
+	if (!stats) throw new Error("errors.statsNotProvided")
+
+	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
+
+	if (!unbondCommitmentAmountADX) throw new Error("errors.noWithdrawAmount")
+	if (currentBalanceADX.isZero()) throw new Error("errors.zeroBalanceADX")
+	if (unbondCommitmentAmountADX.gt(currentBalanceADX))
+		throw new Error("errors.amountTooLarge")
+
+	const signer = await getSigner(chosenWalletType)
+
+	const stakingPoolWithSigner = new Contract(
+		ADDR_STAKING_POOL,
+		supplyControllerABI,
+		signer
+	)
+
+	const sharesToWithdraw = unbondCommitmentAmountADX
+		.mul(balanceShares)
+		.div(currentBalanceADX)
+
+	await stakingPoolWithSigner.leave(sharesToWithdraw)
 }
 
 export async function getTomStakingV5PoolData() {
