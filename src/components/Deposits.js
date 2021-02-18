@@ -157,6 +157,21 @@ const getStakingPool = ({
 				tooltipTitle={disabledWithdrawsMsg}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 				userUnbondCommitments={tomStakingV5PoolStats.userLeaves}
+			/>,
+			<DepositsDialog
+				id="staking-pool-tom-rage-leave-form"
+				title={t("deposits.rageLeaveFrom", {
+					pool: t("common.tomStakingPool")
+				})}
+				btnLabel={t("deposits.rageLeave")}
+				color="default"
+				size="small"
+				variant="contained"
+				fullWidth
+				disabled={!!disabledWithdrawsMsg}
+				depositPool={DEPOSIT_POOLS[1].id}
+				tooltipTitle={disabledWithdrawsMsg}
+				actionType={DEPOSIT_ACTION_TYPES.rageLeave}
 			/>
 		]
 	}
