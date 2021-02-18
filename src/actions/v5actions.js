@@ -121,6 +121,33 @@ export async function onStakingPoolV5Withdraw(
 	await stakingPoolWithSigner.withdraw(shares, unlocksAt, false)
 }
 
+export async function onStakingPoolV5RageLeave(
+	stats,
+	chosenWalletType,
+	rageLeveADXAmount
+) {
+	console.log("onStakingPoolV5RageLeave", rageLeveADXAmount)
+
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!rageLeveADXAmount) throw new Error("errors.noRageLeaveAAmount")
+
+	const signer = await getSigner(chosenWalletType)
+
+	const stakingPoolWithSigner = new Contract(
+		ADDR_STAKING_POOL,
+		supplyControllerABI,
+		signer
+	)
+
+	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
+
+	const sharesToWithdraw = rageLeveADXAmount
+		.mul(balanceShares)
+		.div(currentBalanceADX)
+
+	await stakingPoolWithSigner.rageLeave(sharesToWithdraw, false)
+}
+
 export async function onStakingPoolV5UnbondCommitment(
 	stats,
 	chosenWalletType,

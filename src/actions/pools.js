@@ -31,7 +31,8 @@ const DaiToken = new Contract(DAI_TOKEN_ADDR, ERC20ABI, defaultProvider)
 export const DEPOSIT_ACTION_TYPES = {
 	deposit: "deposit",
 	unbondCommitment: "unbondCommitment",
-	withdraw: "withdraw"
+	withdraw: "withdraw",
+	rageLeave: "rageLeave"
 }
 
 export const getDepositPool = poolId =>
@@ -80,6 +81,17 @@ export const getUnbondCommitmentActionByPoolId = poolId => {
 	})
 }
 
+export const getRageLeaveActionByPoolId = poolId => {
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return onStakingPoolV5UnbondCommitment
+	}
+
+	throw new TranslatableError("errors.noActionForPool", {
+		actionName: "unbond commitment (leave)",
+		poolId
+	})
+}
+
 export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return stats.balanceLpADX || ZERO
@@ -115,6 +127,8 @@ export const getDepositActionByTypeAndPoolId = (actionType, poolId) => {
 		case DEPOSIT_ACTION_TYPES.deposit:
 			return getDepositActionByPoolId(poolId)
 		case DEPOSIT_ACTION_TYPES.unbondCommitment:
+			return getUnbondCommitmentActionByPoolId(poolId)
+		case DEPOSIT_ACTION_TYPES.rageLeave:
 			return getUnbondCommitmentActionByPoolId(poolId)
 		default:
 			throw new TranslatableError("errors.invalidActionType", { actionType })
