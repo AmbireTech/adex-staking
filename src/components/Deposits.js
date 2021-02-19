@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => {
 			width: 42,
 			height: 42,
 			backgroundColor: theme.palette.common.white,
-			color: theme.palette.background.default,
+			color: theme.palette.common.black,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
@@ -68,16 +68,16 @@ const getStakingPool = ({
 				<Box>
 					<AmountText
 						text={`${formatADXPretty(
-							tomStakingV5PoolStats.balanceShares
-						)} ${"shares"}`}
+							tomStakingV5PoolStats.currentBalanceADX
+						)} ${"ADX"}`}
 						fontSize={17}
 					/>
 				</Box>
 				<Box>
 					<AmountText
 						text={`(=${formatADXPretty(
-							tomStakingV5PoolStats.currentBalanceADX
-						)} ${"ADX"})`}
+							tomStakingV5PoolStats.balanceShares
+						)} ${"shares"})`}
 						fontSize={17}
 					/>
 				</Box>

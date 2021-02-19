@@ -225,18 +225,20 @@ export default function DepositForm({
 											key={uc.unlocksAt}
 											value={uc.unlocksAt}
 										>
-											{StatsCard({
-												loaded: true,
-												title: `${t("deposits.unlocksAt")} ${formatDateTime(
-													Math.ceil(uc.unlocksAt * 1000)
-												)}`,
-												subtitle: `max ${formatADXPretty(uc.maxTokens)} ADX`,
-												extra: uc.canWithdraw
-													? ""
-													: !!uc.withdrawTx
-													? t("deposits.alreadyWithdrawn")
-													: t("deposits.notUnlockedYet")
-											})}
+											<Box px={1}>
+												{StatsCard({
+													loaded: true,
+													title: `${t("deposits.unlocksAt")} ${formatDateTime(
+														Math.ceil(uc.unlocksAt * 1000)
+													)}`,
+													subtitle: `max ${formatADXPretty(uc.maxTokens)} ADX`,
+													extra: uc.canWithdraw
+														? ""
+														: !!uc.withdrawTx
+														? t("deposits.alreadyWithdrawn")
+														: t("deposits.notUnlockedYet")
+												})}
+											</Box>
 										</MenuItem>
 									)
 								})}
