@@ -190,6 +190,8 @@ export default function DepositForm({
 				return t("common.withdrawCurrency", { currency: "ADX" })
 			case DEPOSIT_ACTION_TYPES.unbondCommitment:
 				return t("deposits.makeUnbondCommitment")
+			case DEPOSIT_ACTION_TYPES.rageLeave:
+				return t("deposits.rageLeave")
 			default:
 				return "Do it now"
 		}
