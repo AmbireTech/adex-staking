@@ -33,6 +33,7 @@ import Tooltip from "./Tooltip"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 import StatsCard from "./StatsCard"
+import { Alert } from "@material-ui/lab"
 
 export default function DepositForm({
 	depositPool,
@@ -51,6 +52,7 @@ export default function DepositForm({
 	const [selectErrText, setSelectErrText] = useState("")
 	const [dirtyInputs, setDirtyInputs] = useState(false)
 	const [confirmation, setConfirmation] = useState(false)
+	const [rageConfirmed, setRageConfirmed] = useState(false)
 	const [activePool, setActivePool] = useState({})
 	const [unbondCommitment, setUnbondCommitment] = useState(null)
 	const [maxAmount, setMaxAmount] = useState(ZERO)
@@ -95,7 +97,9 @@ export default function DepositForm({
 	}
 
 	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
-	const confirmed = !confirmationLabel || confirmation
+	const rageLeaveConfirmed =
+		rageConfirmed || actionType !== DEPOSIT_ACTION_TYPES.rageLeave
+	const confirmed = (!confirmationLabel || confirmation) && rageLeaveConfirmed
 
 	useEffect(() => {
 		setAmountErr(false)
@@ -272,6 +276,27 @@ export default function DepositForm({
 						</Box>
 					</Grid>
 				)}
+				{actionType === DEPOSIT_ACTION_TYPES.rageLeave && (
+					<Grid item xs={12}>
+						<Alert severity="warning">
+							<FormControlLabel
+								style={{ userSelect: "none" }}
+								label={t("deposits.rageLeaveWarning", {
+									lockupPeriod: activePool.lockupPeriod,
+									percent: (activePool.rageLeaveMul * 100).toFixed(2),
+									token: "ADX"
+								})}
+								control={
+									<Checkbox
+										id={`new-${actionType}-tos-check`}
+										checked={rageConfirmed}
+										onChange={ev => setRageConfirmed(ev.target.checked)}
+									/>
+								}
+							></FormControlLabel>
+						</Alert>
+					</Grid>
+				)}
 				{activePool ? (
 					<Grid item xs={12} container spacing={2}>
 						<Grid item xs={12}>
@@ -313,6 +338,7 @@ export default function DepositForm({
 				) : (
 					""
 				)}
+
 				{confirmationLabel && (
 					<Grid item xs={12}>
 						<FormControlLabel
