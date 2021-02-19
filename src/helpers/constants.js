@@ -90,8 +90,9 @@ export const DEPOSIT_POOLS = [
 		id: utils.id("V5validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
 		selectable: true,
 		minStakingAmount: "0.0",
-		purpose: "pools.tomPurpose",
+		purpose: "pools.tomPurposeV5",
 		lockupPeriod: 20,
+		rageLeaveMul: 0.8,
 		lockupPeriodText: "pools.tomLockupPeriodTxt",
 		rewardPolicy: "pools.tomRewardPolicy",
 		slashPolicy: "pools.tomSlashPolicy",
