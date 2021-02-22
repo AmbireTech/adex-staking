@@ -3,7 +3,7 @@ import { Box, Typography } from "@material-ui/core"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
-import StakingPoolV5 from "./StakingPoolV5"
+// import StakingPoolV5 from "./StakingPoolV5"
 import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 
@@ -13,7 +13,8 @@ const Stakings = () => {
 		stats,
 		setToUnbond,
 		onUnbond,
-		onMigration,
+		onMigrationRequest,
+		onMigrationFinalize,
 		setToRestake,
 		onClaimRewards,
 		onRebond
@@ -22,7 +23,7 @@ const Stakings = () => {
 	return (
 		<Box>
 			<SectionHeader title={t("common.staked")} />
-			<Box mt={2}>
+			{/* <Box mt={2}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
 						{t("common.stakings")}
@@ -35,7 +36,7 @@ const Stakings = () => {
 						})}
 					</Box>
 				</Box>
-			</Box>
+			</Box> */}
 			<Box mt={2}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
@@ -48,7 +49,8 @@ const Stakings = () => {
 							stats,
 							onRequestUnbond: setToUnbond,
 							onUnbond,
-							onMigration,
+							onMigrationRequest,
+							onMigrationFinalize,
 							onClaimRewards,
 							onRestake: setToRestake,
 							onRebond

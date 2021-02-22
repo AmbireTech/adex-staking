@@ -23,11 +23,12 @@ export default function Bonds({
 	// onRequestUnbond,
 	onMigrationRequest,
 	onUnbond,
-	onMigration
+	onMigrationFinalize
 }) {
 	const { t } = useTranslation()
 	const [migrationOpen, setMigrationOpen] = useState(false)
 	const [bondToMigrate, setBondToMigrate] = useState(null)
+	const [isMigrationFinalization, setIsMigrationFinalization] = useState(false)
 
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
@@ -51,7 +52,11 @@ export default function Bonds({
 
 	const migrate = async () => {
 		setMigrationOpen(false)
-		onMigration(bondToMigrate)
+		if (isMigrationFinalization) {
+			onMigrationFinalize(bondToMigrate)
+		} else {
+			onMigrationRequest(bondToMigrate)
+		}
 	}
 
 	const renderBondRow = bond => {
@@ -101,11 +106,15 @@ export default function Bonds({
 							<Tooltip title={t("bonds.requestMigrate")}>
 								<Box display="inline-block">
 									<Button
-										id={`request-unbond-${bondId}`}
+										id={`request-migration-${bondId}`}
 										size="small"
 										variant="contained"
 										color="primary"
-										onClick={() => onMigrationRequest(bond)}
+										onClick={() => {
+											setBondToMigrate(bond)
+											setIsMigrationFinalization(false)
+											setMigrationOpen(true)
+										}}
 									>
 										{t("bonds.requestMigrate")}
 									</Button>
@@ -119,17 +128,18 @@ export default function Bonds({
 							<Tooltip title={migrationDisableMsg}>
 								<Box display="inline-block">
 									<Button
-										id={`migrate-${bondId}`}
+										id={`migrate-finalize-${bondId}`}
 										size="small"
 										variant="contained"
 										disabled={!!migrationDisableMsg}
 										onClick={() => {
 											setBondToMigrate(bond)
+											setIsMigrationFinalization(true)
 											setMigrationOpen(true)
 										}}
 										color="secondary"
 									>
-										{t("common.migrate")}
+										{t("bonds.finalizeMigration")}
 									</Button>
 								</Box>
 							</Tooltip>
@@ -196,10 +206,16 @@ export default function Bonds({
 				onConfirm: () => {
 					migrate()
 				},
-				confirmActionName: t("common.migrate"),
+				confirmActionName: isMigrationFinalization
+					? t("bonds.finalizeMigration")
+					: t("bonds.requestMigrate"),
 				content: (
 					<Trans
-						i18nKey="dialogs.migrationConfirmation"
+						i18nKey={
+							isMigrationFinalization
+								? "dialogs.migrationFinalizationConfirmation"
+								: "dialogs.migrationRequestConfirmation"
+						}
 						values={{
 							amount: bondToMigrate
 								? `${formatADXPretty(bondToMigrate.currentAmount)}`
@@ -209,7 +225,9 @@ export default function Bonds({
 								: "",
 							currency: "ADX",
 							unbondDays: UNBOND_DAYS_V5,
-							extraInfo: t("bonds.migrationInfo")
+							extraInfo: isMigrationFinalization
+								? t("bonds.migrationFinalizationsInfo")
+								: t("bonds.migrationInfo")
 						}}
 						components={{
 							box: <Box mb={2}></Box>
