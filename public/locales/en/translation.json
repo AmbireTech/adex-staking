@@ -154,7 +154,8 @@
     "willUnlockIn": "Can unbond on {{unlockTime}}",
     "reBondInfo": "You can re-bond while there is pending or ready unbond request",
     "migrationInfo": "TODO: Some extra migration info",
-    "requestUnbondOrMigrate": "Migrate / Request Unbond"
+    "requestUnbondOrMigrate": "Migrate / Request Unbond",
+    "requestMigrate": "Migrate"
   },
   "gasless": {
     "staking": "Gasless Staking",

@@ -1,9 +1,11 @@
 import { Contract, BigNumber } from "ethers"
 import ERC20ABI from "../abi/ERC20"
 import ADXTokenABI from "../abi/ADXToken"
+import StakingABI from "adex-protocol-eth/abi/Staking"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
-import { ADDR_ADX, ZERO, MAX_UINT } from "../helpers/constants"
+import { ADDR_ADX, ADDR_STAKING, ZERO, MAX_UINT } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
+import { executeOnIdentity } from "./common"
 // import { getPrices, executeOnIdentity } from './common'
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
@@ -16,6 +18,7 @@ const PRECISION = 1_000_000
 
 const provider = getDefaultProvider
 
+const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const ADXToken = new Contract(ADDR_ADX, ADXTokenABI, provider)
 const ADXSupplyController = new Contract(
 	ADDR_ADX_SUPPLY_CONTROLLER,
@@ -55,8 +58,46 @@ export async function onMigrationToV5(
 	chosenWalletType,
 	{ amount, poolId, nonce }
 ) {
-	// TODO: waiting for migration contract
-	console.log(chosenWalletType, amount, poolId, nonce)
+	const bond = [amount, poolId, nonce || ZERO]
+	await executeOnIdentity(chosenWalletType, [
+		[
+			Staking.address,
+			Staking.interface.encodeFunctionData("requestUnbond", [bond])
+		]
+		// [
+		// 	// TODO: waiting for migration contract
+		// ]
+	])
+
+	console.log("onMigrationToV5", chosenWalletType, amount, poolId, nonce)
+}
+
+export async function onMigrationToV5Finalize(
+	chosenWalletType,
+	{ amount, poolId, nonce }
+) {
+	const bond = [amount, poolId, nonce || ZERO]
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	// const walletAddr = await signer.getAddress()
+
+	await executeOnIdentity(chosenWalletType, [
+		[
+			Staking.address,
+			Staking.interface.encodeFunctionData("requestUnbond", [bond])
+		]
+		// [
+		// 	// TODO: waiting for migration contract
+		// ]
+	])
+
+	console.log(
+		"onMigrationToV5Finalize",
+		chosenWalletType,
+		amount,
+		poolId,
+		nonce
+	)
 }
 
 export async function onStakingPoolV5Deposit(

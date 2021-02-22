@@ -348,6 +348,7 @@ export async function loadBondStats(addr, identityAddr) {
 		[userWalletBalance, userIdentityBalance],
 		logs,
 		slashLogs
+		// TODO: migrations logs
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		defaultProvider.getLogs({
@@ -371,6 +372,8 @@ export async function loadBondStats(addr, identityAddr) {
 
 	const userBonds = logs.reduce((bonds, log) => {
 		const topic = log.topics[0]
+		// TODO: add is migrations Unbond request and migrated status
+		// status = "MigrationRequested"
 		if (topic === Staking.interface.getEventTopic("LogBond")) {
 			const vals = Staking.interface.parseLog(log).args
 			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals

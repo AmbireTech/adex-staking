@@ -24,7 +24,8 @@ import {
 	restake,
 	getPrices,
 	reBond,
-	onMigrationToV5
+	onMigrationToV5,
+	onMigrationToV5Finalize
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
@@ -209,11 +210,16 @@ export default function useApp() {
 	const onRequestUnbond = wrapDoingTxns(
 		onUnbondOrRequest.bind(null, false, chosenWalletType)
 	)
+
+	const onMigrationRequest = wrapDoingTxns(
+		onMigrationToV5.bind(null, chosenWalletType)
+	)
+
 	const onUnbond = wrapDoingTxns(
 		onUnbondOrRequest.bind(null, true, chosenWalletType)
 	)
-	const onMigration = wrapDoingTxns(
-		onMigrationToV5.bind(null, chosenWalletType)
+	const onMigrationFinalize = wrapDoingTxns(
+		onMigrationToV5Finalize.bind(null, chosenWalletType)
 	)
 	const onRebond = wrapDoingTxns(reBond.bind(null, chosenWalletType))
 	const onClaimRewards = wrapDoingTxns(
@@ -255,7 +261,8 @@ export default function useApp() {
 		toUnbond,
 		setToUnbond,
 		onRebond,
-		onMigration,
+		onMigrationRequest,
+		onMigrationFinalize,
 		toRestake,
 		setToRestake,
 		openErr,

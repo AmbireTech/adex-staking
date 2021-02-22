@@ -20,7 +20,8 @@ import { useTranslation, Trans } from "react-i18next"
 
 export default function Bonds({
 	stats,
-	onRequestUnbond,
+	// onRequestUnbond,
+	onMigrationRequest,
 	onUnbond,
 	onMigration
 }) {
@@ -73,8 +74,8 @@ export default function Bonds({
 				: ""
 
 		const migrationDisableMsg = ""
-		// bond.status === "Unbonded"
-		// 	? t("bonds.alreadyUnbonded")
+		// bond.status === "Migrated"
+		// 	? t("bonds.alreadyMigrated")
 		// 	: !bond.willUnlock
 		// 		? t("bonds.migrationNotReady")
 		// 		: bond.willUnlock.getTime() > Date.now()
@@ -95,61 +96,64 @@ export default function Bonds({
 				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					{bond.status !== "Active" ? (
+					{bond.status === "Active" && (
 						<Box display="inline-block" m={0.5}>
-							<Tooltip title={t("bonds.requestUnbondOrMigrate")}>
+							<Tooltip title={t("bonds.requestMigrate")}>
 								<Box display="inline-block">
 									<Button
 										id={`request-unbond-${bondId}`}
 										size="small"
 										variant="contained"
 										color="primary"
-										onClick={() => onRequestUnbond(bond)}
+										onClick={() => onMigrationRequest(bond)}
 									>
-										{t("bonds.requestUnbondOrMigrate")}
+										{t("bonds.requestMigrate")}
 									</Button>
 								</Box>
 							</Tooltip>
 						</Box>
-					) : (
-						<>
-							<Box display="inline-block" m={0.5}>
-								<Tooltip title={migrationDisableMsg}>
-									<Box display="inline-block">
-										<Button
-											id={`migrate-${bondId}`}
-											size="small"
-											variant="contained"
-											disabled={!!migrationDisableMsg}
-											onClick={() => {
-												setBondToMigrate(bond)
-												setMigrationOpen(true)
-											}}
-											color="secondary"
-										>
-											{t("common.migrate")}
-										</Button>
-									</Box>
-								</Tooltip>
-							</Box>
+					)}
 
-							<Box display="inline-block" m={0.5}>
-								<Tooltip title={unbondDisableMsg}>
-									<Box display="inline-block">
-										<Button
-											id={`unbond-${bondId}`}
-											size="small"
-											variant="contained"
-											disabled={!!unbondDisableMsg}
-											onClick={() => onUnbond(bond)}
-											color="primary"
-										>
-											{t("common.unbond")}
-										</Button>
-									</Box>
-								</Tooltip>
-							</Box>
-						</>
+					{bond.status === "MigrationRequested" && (
+						<Box display="inline-block" m={0.5}>
+							<Tooltip title={migrationDisableMsg}>
+								<Box display="inline-block">
+									<Button
+										id={`migrate-${bondId}`}
+										size="small"
+										variant="contained"
+										disabled={!!migrationDisableMsg}
+										onClick={() => {
+											setBondToMigrate(bond)
+											setMigrationOpen(true)
+										}}
+										color="secondary"
+									>
+										{t("common.migrate")}
+									</Button>
+								</Box>
+							</Tooltip>
+						</Box>
+					)}
+
+					{(bond.status === "UnbondRequested" ||
+						bond.status === "Unbonded") && (
+						<Box display="inline-block" m={0.5}>
+							<Tooltip title={unbondDisableMsg}>
+								<Box display="inline-block">
+									<Button
+										id={`unbond-${bondId}`}
+										size="small"
+										variant="contained"
+										disabled={!!unbondDisableMsg}
+										onClick={() => onUnbond(bond)}
+										color="primary"
+									>
+										{t("common.unbond")}
+									</Button>
+								</Box>
+							</Tooltip>
+						</Box>
 					)}
 				</TableCell>
 			</TableRow>
