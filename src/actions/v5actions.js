@@ -4,15 +4,14 @@ import ADXTokenABI from "../abi/ADXToken"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
 import StakingMigratorABI from "../abi/StakingMigrator.json"
-import StakingPoolABI from "../abi/StakingPool.json.json"
+import StakingPoolABI from "../abi/StakingPool.json"
 import { ADDR_ADX, ADDR_STAKING, ZERO, MAX_UINT } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity } from "./common"
-// import { getPrices, executeOnIdentity } from './common'
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
-const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000"
-const ADDR_STAKING_MIGRATOR = "0x0000000000000000000000000000000000000000"
+const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000" // TODO
+const ADDR_STAKING_MIGRATOR = "0x0000000000000000000000000000000000000000" // TODO
 const ADDR_ADX_SUPPLY_CONTROLLER = "0x617e6f354d288fcb33e148b1bb6d2cc9be1f7695"
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
