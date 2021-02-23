@@ -53,7 +53,7 @@ export default function Bonds({
 	const migrate = async () => {
 		setMigrationOpen(false)
 		if (isMigrationFinalization) {
-			onMigrationFinalize(bondToMigrate)
+			onMigrationFinalize(bondToMigrate, stats.rewardChannels)
 		} else {
 			onMigrationRequest(bondToMigrate)
 		}
