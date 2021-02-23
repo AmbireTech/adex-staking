@@ -68,7 +68,9 @@
     "reBond": "Re-bond",
     "migrate": "Migrate",
     "NA": "N/A",
-    "tomStakingPool": "Tom Staking Pool"
+    "tomStakingPool": "Tom Staking Pool",
+    "txnHash": "Txn Hash",
+    "txnsHistory": "Txns history"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
