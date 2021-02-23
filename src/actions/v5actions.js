@@ -3,6 +3,8 @@ import ERC20ABI from "../abi/ERC20"
 import ADXTokenABI from "../abi/ADXToken"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
+import StakingMigratorABI from "../abi/StakingMigrator.json"
+import StakingPoolABI from "../abi/StakingPool.json.json"
 import { ADDR_ADX, ADDR_STAKING, ZERO, MAX_UINT } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity } from "./common"
@@ -10,8 +12,8 @@ import { executeOnIdentity } from "./common"
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000"
+const ADDR_STAKING_MIGRATOR = "0x0000000000000000000000000000000000000000"
 const ADDR_ADX_SUPPLY_CONTROLLER = "0x617e6f354d288fcb33e148b1bb6d2cc9be1f7695"
-const stakingPoolABI = ERC20ABI //TODO
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
 const PRECISION = 1_000_000
@@ -25,7 +27,12 @@ const ADXSupplyController = new Contract(
 	supplyControllerABI,
 	provider
 )
-const StakingPool = new Contract(ADDR_STAKING_POOL, stakingPoolABI, provider)
+const StakingPool = new Contract(ADDR_STAKING_POOL, StakingPoolABI, provider)
+const StakingMigrator = new Contract(
+	ADDR_STAKING_MIGRATOR,
+	StakingMigratorABI,
+	provider
+)
 
 export const STAKING_POOL_EVENT_TYPES = {
 	enter: "enter",
@@ -63,13 +70,15 @@ export async function onMigrationToV5(
 		[
 			Staking.address,
 			Staking.interface.encodeFunctionData("requestUnbond", [bond])
+		],
+		[
+			StakingMigrator.address,
+			StakingMigrator.interface.encodeFunctionData("requestMigrate", [
+				amount,
+				nonce
+			])
 		]
-		// [
-		// 	// TODO: waiting for migration contract
-		// ]
 	])
-
-	console.log("onMigrationToV5", chosenWalletType, amount, poolId, nonce)
 }
 
 export async function onMigrationToV5Finalize(
