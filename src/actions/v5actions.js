@@ -11,15 +11,15 @@ import {
 	ADDR_STAKING,
 	ADDR_CORE,
 	ZERO,
-	MAX_UINT
+	MAX_UINT,
+	ZERO_ADDR,
+	ADDR_STAKING_POOL,
+	ADDR_STAKING_MIGRATOR,
+	ADDR_ADX_SUPPLY_CONTROLLER
 } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity, toChannelTuple } from "./common"
 
-const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
-const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000" // TODO
-const ADDR_STAKING_MIGRATOR = "0x0000000000000000000000000000000000000000" // TODO
-const ADDR_ADX_SUPPLY_CONTROLLER = "0x617e6f354d288fcb33e148b1bb6d2cc9be1f7695"
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
 const PRECISION = 1_000_000
