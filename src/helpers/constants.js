@@ -11,6 +11,8 @@ import { ReactComponent as ADXIcon } from "./../resources/adex-logo-clean.svg"
 import { ReactComponent as ETHIcon } from "./../resources/eth-logo.svg"
 import { ReactComponent as YFIIcon } from "./../resources/yfi-logo.svg"
 import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
+import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
 export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
 export const ZERO = BigNumber.from(0)
@@ -103,6 +105,21 @@ export const DEPOSIT_POOLS = [
 		)
 	}
 ]
+
+export const iconByPoolId = ({ poolId, id }) => {
+	switch (poolId || id) {
+		case "adex-loyalty-pool":
+		case DEPOSIT_POOLS[0].id:
+			return LoyaltyIcon
+		case "adex-staking-pool":
+		case POOLS[0].id:
+		case POOLS[1].id:
+		case DEPOSIT_POOLS[1].id:
+			return TomIcon
+		default:
+			return null
+	}
+}
 
 export const METAMASK = "Metamask"
 export const WALLET_CONNECT = "WalletConnect"
