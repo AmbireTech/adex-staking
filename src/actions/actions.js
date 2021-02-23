@@ -4,13 +4,15 @@ import BalanceTree from "adex-protocol-eth/js/BalanceTree"
 import StakingABI from "adex-protocol-eth/abi/Staking"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import ERC20ABI from "../abi/ERC20"
+import StakingMigratorABI from "../abi/StakingMigrator.json"
 import {
 	ADDR_STAKING,
 	ADDR_ADX,
 	MAX_UINT,
 	ZERO,
 	POOLS,
-	ADDR_CORE
+	ADDR_CORE,
+	ADDR_STAKING_MIGRATOR
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity } from "../helpers/identity"
@@ -33,6 +35,11 @@ const defaultProvider = getDefaultProvider
 const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 const Core = new Contract(ADDR_CORE, CoreABI, defaultProvider)
+const StakingMigrator = new Contract(
+	ADDR_STAKING_MIGRATOR,
+	StakingMigratorABI,
+	defaultProvider
+)
 
 const MAX_SLASH = BigNumber.from("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -347,8 +354,9 @@ export async function loadBondStats(addr, identityAddr) {
 	const [
 		[userWalletBalance, userIdentityBalance],
 		logs,
-		slashLogs
-		// TODO: migrations logs
+		slashLogs,
+		migrationRequestsLogs,
+		stakingMigratorPoolId
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		defaultProvider.getLogs({
@@ -359,7 +367,12 @@ export async function loadBondStats(addr, identityAddr) {
 		defaultProvider.getLogs({
 			fromBlock: 0,
 			...Staking.filters.LogSlash(null, null)
-		})
+		}),
+		defaultProvider.getLogs({
+			fromBlock: 0,
+			...StakingMigrator.filter.LogRequestMigrate(identityAddr, null, null)
+		}),
+		StakingMigrator.poolId()
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -368,6 +381,11 @@ export async function loadBondStats(addr, identityAddr) {
 		const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
 		pools[poolId] = newSlashPts
 		return pools
+	}, {})
+
+	const migrationLogsByTxnHash = migrationRequestsLogs.reduce((byHash, log) => {
+		byHash[log.transactionHash] = log
+		return byHash
 	}, {})
 
 	const userBonds = logs.reduce((bonds, log) => {
@@ -392,7 +410,18 @@ export async function loadBondStats(addr, identityAddr) {
 			// NOTE: assuming that .find() will return something is safe, as long as the logs are properly ordered
 			const { bondId, willUnlock } = Staking.interface.parseLog(log).args
 			const bond = bonds.find(({ id }) => id === bondId)
-			bond.status = "UnbondRequested"
+
+			const migrationLog = migrationLogsByTxnHash[log.transactionHash]
+			const migrationBondData = !migrationLog
+				? {}
+				: StakingMigrator.interface.parseLog(migrationLog).args
+			const migrationBondId =
+				!migrationBondData.owner || !migrationBondData.amount
+					? null
+					: getBondId({ poolId: stakingMigratorPoolId, ...migrationBondData })
+
+			bond.status =
+				migrationBondId === bondId ? "MigrationRequested" : "UnbondRequested"
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
 			const { bondId } = Staking.interface.parseLog(log).args
