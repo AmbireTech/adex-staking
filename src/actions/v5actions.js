@@ -88,25 +88,19 @@ export async function onMigrationToV5Finalize(
 	const bond = [amount, poolId, nonce || ZERO]
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
-	// const walletAddr = await signer.getAddress()
+	const walletAddr = await signer.getAddress()
 
 	await executeOnIdentity(chosenWalletType, [
+		[Staking.address, Staking.interface.encodeFunctionData("unbond", [bond])],
 		[
-			Staking.address,
-			Staking.interface.encodeFunctionData("requestUnbond", [bond])
+			StakingMigrator.address,
+			StakingMigrator.interface.encodeFunctionData("finishMigration", [
+				amount,
+				nonce,
+				walletAddr
+			])
 		]
-		// [
-		// 	// TODO: waiting for migration contract
-		// ]
 	])
-
-	console.log(
-		"onMigrationToV5Finalize",
-		chosenWalletType,
-		amount,
-		poolId,
-		nonce
-	)
 }
 
 export async function onStakingPoolV5Deposit(
@@ -123,11 +117,11 @@ export async function onStakingPoolV5Deposit(
 	const signer = await getSigner(chosenWalletType)
 	const walletAddr = await signer.getAddress()
 
-	const [allowanceStkingPool] = await Promise.all([
+	const [allowanceStakingPool] = await Promise.all([
 		ADXToken.allowance(walletAddr, StakingPool.address)
 	])
 
-	const setAllowance = allowanceStkingPool.lt(adxDepositAmount)
+	const setAllowance = allowanceStakingPool.lt(adxDepositAmount)
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
