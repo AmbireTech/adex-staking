@@ -1,5 +1,12 @@
 import React, { useContext } from "react"
-import { Box, Typography } from "@material-ui/core"
+import {
+	Box,
+	Typography,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails
+} from "@material-ui/core"
+import { ExpandMore } from "@material-ui/icons"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
@@ -58,18 +65,22 @@ const Stakings = () => {
 				</Box>
 			</Box>
 			<Box mt={2}>
-				<Box color="text.main">
-					<Typography variant="h5" gutterBottom>
-						{t("common.txnsHistory")}
-					</Typography>
-				</Box>
-				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box p={3}>
-						{StakingPoolTxnsHistory({
-							stats
-						})}
-					</Box>
-				</Box>
+				<Accordion square>
+					<AccordionSummary
+						expandIcon={<ExpandMore />}
+						aria-controls="panel1a-content"
+						id="panel1a-header"
+					>
+						<Typography>{t("common.txnsHistory")}</Typography>
+					</AccordionSummary>
+					<AccordionDetails>
+						<Box mt={2} bgcolor="background.darkerPaper" width={1}>
+							{StakingPoolTxnsHistory({
+								stats
+							})}
+						</Box>
+					</AccordionDetails>
+				</Accordion>
 			</Box>
 		</Box>
 	)
