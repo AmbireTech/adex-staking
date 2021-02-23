@@ -20,7 +20,7 @@ import {
 	loadUserLoyaltyPoolsStats,
 	LOYALTY_POOP_EMPTY_STATS
 } from "./loyaltyPoolActions"
-import { executeOnIdentity } from "./common"
+import { executeOnIdentity, toChannelTuple } from "./common"
 import {
 	STAKING_POOL_EMPTY_STATS,
 	loadUserTomStakingV5PoolStats
@@ -740,15 +740,4 @@ export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
 			]
 		])
 	)
-}
-
-function toChannelTuple(args) {
-	return [
-		args.creator,
-		args.tokenAddr,
-		args.tokenAmount,
-		args.validUntil,
-		args.validators,
-		args.spec
-	]
 }

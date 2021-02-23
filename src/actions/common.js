@@ -96,3 +96,14 @@ export async function executeOnIdentity(
 		)
 	}
 }
+
+export function toChannelTuple(args) {
+	return [
+		args.creator,
+		args.tokenAddr,
+		args.tokenAmount,
+		args.validUntil,
+		args.validators,
+		args.spec
+	]
+}

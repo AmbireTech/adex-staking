@@ -5,9 +5,16 @@ import StakingABI from "adex-protocol-eth/abi/Staking"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
 import StakingMigratorABI from "../abi/StakingMigrator.json"
 import StakingPoolABI from "../abi/StakingPool.json"
-import { ADDR_ADX, ADDR_STAKING, ZERO, MAX_UINT } from "../helpers/constants"
+import CoreABI from "adex-protocol-eth/abi/AdExCore"
+import {
+	ADDR_ADX,
+	ADDR_STAKING,
+	ADDR_CORE,
+	ZERO,
+	MAX_UINT
+} from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
-import { executeOnIdentity } from "./common"
+import { executeOnIdentity, toChannelTuple } from "./common"
 
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000" // TODO
@@ -32,6 +39,7 @@ const StakingMigrator = new Contract(
 	StakingMigratorABI,
 	provider
 )
+const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
 export const STAKING_POOL_EVENT_TYPES = {
 	enter: "enter",
@@ -82,19 +90,46 @@ export async function onMigrationToV5(
 
 export async function onMigrationToV5Finalize(
 	chosenWalletType,
-	{ amount, poolId, nonce }
+	{ amount, poolId, nonce },
+	rewardChannels
 ) {
 	const bond = [amount, poolId, nonce || ZERO]
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 
+	const identityADXIncentiveChannels = rewardChannels.filter(
+		channel =>
+			channel.claimFrom !== walletAddr &&
+			channel.channelArgs.tokenAddr === ADDR_ADX &&
+			channel.outstandingReward.gt(ZERO)
+	)
+
+	const rewardsAmount = identityADXIncentiveChannels
+		.map(x => x.outstandingReward)
+		.reduce((a, b) => a.add(b), ZERO)
+
+	const identityTxns = identityADXIncentiveChannels.map(channel => {
+		const channelTuple = toChannelTuple(channel.channelArgs)
+		return [
+			Core.address,
+			Core.interface.encodeFunctionData("channelWithdraw", [
+				channelTuple,
+				channel.stateRoot,
+				channel.signatures,
+				channel.proof,
+				channel.amount
+			])
+		]
+	})
+
 	await executeOnIdentity(chosenWalletType, [
 		[Staking.address, Staking.interface.encodeFunctionData("unbond", [bond])],
+		...identityTxns,
 		[
 			StakingMigrator.address,
 			StakingMigrator.interface.encodeFunctionData("finishMigration", [
-				amount,
+				amount.add(rewardsAmount),
 				nonce,
 				walletAddr
 			])
