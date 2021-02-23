@@ -10,28 +10,15 @@ import {
 	TableBody,
 	SvgIcon
 } from "@material-ui/core"
-import { DEPOSIT_POOLS } from "../helpers/constants"
+import { DEPOSIT_POOLS, iconByPoolId } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
 import { DEPOSIT_ACTION_TYPES } from "../actions"
-import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
-import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
 import { useTranslation } from "react-i18next"
-
-const iconByPoolId = poolId => {
-	switch (poolId) {
-		case "adex-loyalty-pool":
-			return LoyaltyIcon
-		case "adex-staking-pool":
-			return TomIcon
-		default:
-			return null
-	}
-}
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -327,7 +314,7 @@ export default function Deposits() {
 	}, [stats])
 
 	const renderDepositRow = deposit => {
-		const PoolIcon = iconByPoolId(deposit.poolId)
+		const PoolIcon = iconByPoolId(deposit)
 		return (
 			<TableRow key={deposit.poolId}>
 				<TableCell>
