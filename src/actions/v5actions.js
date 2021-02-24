@@ -91,23 +91,14 @@ export async function onMigrationToV5(
 export async function onMigrationToV5Finalize(
 	chosenWalletType,
 	{ amount, poolId, nonce },
-	rewardChannels
+	stats
 ) {
 	const bond = [amount, poolId, nonce || ZERO]
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 
-	const identityADXIncentiveChannels = rewardChannels.filter(
-		channel =>
-			channel.claimFrom !== walletAddr &&
-			channel.channelArgs.tokenAddr === ADDR_ADX &&
-			channel.outstandingReward.gt(ZERO)
-	)
-
-	const rewardsAmount = identityADXIncentiveChannels
-		.map(x => x.outstandingReward)
-		.reduce((a, b) => a.add(b), ZERO)
+	const { identityADXIncentiveChannels, identityAdxRewardsAmount } = stats
 
 	const identityTxns = identityADXIncentiveChannels.map(channel => {
 		const channelTuple = toChannelTuple(channel.channelArgs)
@@ -129,7 +120,7 @@ export async function onMigrationToV5Finalize(
 		[
 			StakingMigrator.address,
 			StakingMigrator.interface.encodeFunctionData("finishMigration", [
-				amount.add(rewardsAmount),
+				amount.add(identityAdxRewardsAmount),
 				nonce,
 				walletAddr
 			])

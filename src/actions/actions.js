@@ -69,6 +69,8 @@ export const EMPTY_STATS = {
 	totalStake: ZERO,
 	totalStakeTom: ZERO,
 	rewardChannels: [],
+	identityADXIncentiveChannels: [],
+	identityAdxRewardsAmount: ZERO,
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
 	tomRewardADX: ZERO,
@@ -300,13 +302,19 @@ export async function loadUserStats(chosenWalletType, prices) {
 		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
-	const tomAdxRewardsChannels = tomPoolUserRewardChannels.filter(
+	const tomAdxRewardsChannels = [...tomPoolUserRewardChannels].filter(
 		x => x.type === "incentive"
 	)
 
+	const identityADXIncentiveChannels = [...tomAdxRewardsChannels].filter(
+		channel => channel.claimFrom !== addr && channel.outstandingReward.gt(ZERO)
+	)
+
+	const identityAdxRewardsAmount = sumRewards(identityADXIncentiveChannels)
+
 	const tomRewardADX = sumRewards(tomAdxRewardsChannels)
 
-	const tomPoolDaiRewardsChannels = tomPoolUserRewardChannels.filter(
+	const tomPoolDaiRewardsChannels = [...tomPoolUserRewardChannels].filter(
 		x => x.type === "fees"
 	)
 
@@ -314,6 +322,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const tomPoolStatsWithUserData = {
 		...tomPoolStats,
+		identityADXIncentiveChannels,
+		identityAdxRewardsAmount,
 		userRewardsADX: tomRewardADX,
 		userRewardsDAI: tomRewardDAI,
 		userDataLoaded: true,
@@ -356,7 +366,8 @@ export async function loadBondStats(addr, identityAddr) {
 		logs,
 		slashLogs,
 		migrationRequestsLogs,
-		stakingMigratorPoolId
+		stakingMigratorPoolId,
+		migrationBonusPromiles = 97
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		defaultProvider.getLogs({
@@ -373,7 +384,9 @@ export async function loadBondStats(addr, identityAddr) {
 			...StakingMigrator.filters.LogRequestMigrate(identityAddr, null, null)
 		}),
 		// StakingMigrator.poolId()
-		() => null
+		() => null,
+		// StakingMigrator.BONUS_PROMILLES()
+		() => undefined
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -421,8 +434,8 @@ export async function loadBondStats(addr, identityAddr) {
 					? null
 					: getBondId({ poolId: stakingMigratorPoolId, ...migrationBondData })
 
-			bond.status =
-				migrationBondId === bondId ? "MigrationRequested" : "UnbondRequested"
+			const migrationReward = (bond.status =
+				migrationBondId === bondId ? "MigrationRequested" : "UnbondRequested")
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
 			const { bondId } = Staking.interface.parseLog(log).args
