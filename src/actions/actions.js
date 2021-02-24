@@ -370,9 +370,10 @@ export async function loadBondStats(addr, identityAddr) {
 		}),
 		defaultProvider.getLogs({
 			fromBlock: 0,
-			...StakingMigrator.filter.LogRequestMigrate(identityAddr, null, null)
+			...StakingMigrator.filters.LogRequestMigrate(identityAddr, null, null)
 		}),
-		StakingMigrator.poolId()
+		// StakingMigrator.poolId()
+		() => null
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)

@@ -71,7 +71,7 @@ const Stakings = () => {
 						aria-controls="panel1a-content"
 						id="panel1a-header"
 					>
-						<Typography>{t("common.txnsHistory")}</Typography>
+						<Typography>{t("deposits.txnsHistory")}</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
 						<Box mt={2} bgcolor="background.darkerPaper" width={1}>

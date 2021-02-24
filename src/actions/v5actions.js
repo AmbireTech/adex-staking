@@ -298,7 +298,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			shares: BigNumber.from(4000 + decimalsString),
 			adxAmount: BigNumber.from(3000 + decimalsString),
 			blockNumber: 11295886,
-			transactionHash: 1
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
 		{
 			label: "Tom Staking Pool V5",
@@ -308,7 +308,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			maxTokens: BigNumber.from(420 + decimalsString),
 			unlocksAt: 1608353186,
 			blockNumber: 11482093,
-			transactionHash: 2,
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6",
 			withdrawTx: {
 				label: "Tom Staking Pool V5",
 				type: STAKING_POOL_EVENT_TYPES.withdraw,
@@ -316,7 +316,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 				maxTokens: BigNumber.from(420 + decimalsString),
 				receivedTokens: BigNumber.from(420 + decimalsString),
 				blockNumber: 11661741,
-				transactionHash: 4
+				transactionHash: "4"
 			}
 		},
 		{
@@ -327,7 +327,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			unlocksAt: 1610340386,
 			canWithdraw: true,
 			blockNumber: 11482999,
-			transactionHash: 3
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
 		{
 			label: "Tom Staking Pool V5",
@@ -336,7 +336,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			maxTokens: BigNumber.from(200 + decimalsString),
 			unlocksAt: 1611981986,
 			blockNumber: 11481850,
-			transactionHash: 3
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
 		{
 			label: "Tom Staking Pool V5",
@@ -345,7 +345,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			maxTokens: BigNumber.from(420 + decimalsString),
 			receivedTokens: BigNumber.from(420 + decimalsString),
 			blockNumber: 11661741,
-			transactionHash: 4
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
 		{
 			label: "Tom Staking Pool V5",
@@ -354,7 +354,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			adxAmount: BigNumber.from(220 + decimalsString),
 			receivedTokens: BigNumber.from(170 + decimalsString),
 			blockNumber: 11789046,
-			transactionHash: 5
+			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		}
 	]
 

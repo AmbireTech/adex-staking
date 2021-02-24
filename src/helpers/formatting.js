@@ -101,6 +101,10 @@ export const formatAddress = (address = "", joinSymbol = "...") => {
 	return `${address.substring(0, 6)}${joinSymbol}${address.substring(38, 42)}`
 }
 
+export const formatTxnHash = (hash = "") => {
+	return `${hash.substring(0, 16)}...`
+}
+
 export const toIdAttributeString = (string, defaultValue) => {
 	if (typeof string === "string") {
 		return string.replace(/([^a-z0-9]+)/gi, "-").toLowerCase()

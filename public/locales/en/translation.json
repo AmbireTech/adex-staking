@@ -69,8 +69,7 @@
     "migrate": "Migrate",
     "NA": "N/A",
     "tomStakingPool": "Tom Staking Pool",
-    "txnHash": "Txn Hash",
-    "txnsHistory": "Txns history"
+    "from": "From"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -135,7 +134,11 @@
     "unbondCommitmentFrom": "Make unbond commitment from {{pool}}",
     "rageLeave": "Rage Leave",
     "rageLeaveFrom": "Rage Leave form {{pool}} ",
-    "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} amount will stay for the pool total balance. "
+    "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} amount will stay for the pool total balance. ",
+    "eventType": "Event Type",   
+    "txnHash": "Txn Hash",
+    "txnsHistory": "Txns history",
+    "from": "From"
   },
   "bonds": {
     "bondAmount": "Bond amount",

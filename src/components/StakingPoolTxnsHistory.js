@@ -10,7 +10,11 @@ import {
 	TableBody,
 	SvgIcon
 } from "@material-ui/core"
-import { formatADXPretty, formatDateTime } from "../helpers/formatting"
+import {
+	formatADXPretty,
+	formatDateTime,
+	formatTxnHash
+} from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { AmountText } from "./cardCommon"
 import { useTranslation } from "react-i18next"
@@ -70,16 +74,25 @@ const StakingEventRow = ({ stakingEvent }) => {
 			<TableCell align="right">
 				{formatDateTime(new Date(stakingEvent.timestamp))}
 			</TableCell>
-			<TableCell align="right">{stakingEvent.blockNumber}</TableCell>
+			<TableCell align="right">
+				<ExternalAnchor
+					color="inherit"
+					id={`staking-v5-tx-block-on-etherscan-${stakingEvent.blockNumber}`}
+					target="_blank"
+					href={`https://etherscan.io/block/${stakingEvent.blockNumber}`}
+				>
+					{stakingEvent.blockNumber}
+				</ExternalAnchor>
+			</TableCell>
 			<TableCell align="right">
 				{
 					<ExternalAnchor
 						color="inherit"
-						id={`stakinf-v5-tx-on-etherscan-${stakingEvent.transactionHash}`}
+						id={`staking-v5-tx-on-etherscan-${stakingEvent.transactionHash}`}
 						target="_blank"
 						href={`https://etherscan.io/tx/${stakingEvent.transactionHash}`}
 					>
-						{stakingEvent.transactionHash}
+						{formatTxnHash(stakingEvent.transactionHash)}
 					</ExternalAnchor>
 				}
 			</TableCell>
@@ -101,11 +114,11 @@ export default function StakingPoolTxnsHistory() {
 						<TableHead>
 							<TableRow>
 								<TableCell>{t("common.pool")}</TableCell>
-								<TableCell align="right">{t("common.type")}</TableCell>
-								<TableCell align="right">{t("common.amount")}</TableCell>
-								<TableCell align="right">{t("common.timestamp")}</TableCell>
-								<TableCell align="right">{t("common.blockNumber")}</TableCell>
-								<TableCell align="right">{t("common.txnHash")}</TableCell>
+								<TableCell align="right">{t("deposits.eventType")}</TableCell>
+								<TableCell align="right">{t("deposits.amount")}</TableCell>
+								<TableCell align="right">{t("deposits.from")}</TableCell>
+								<TableCell align="right">{t("deposits.blockNumber")}</TableCell>
+								<TableCell align="right">{t("deposits.txnHash")}</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
