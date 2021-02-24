@@ -16,7 +16,7 @@ import { Alert } from "@material-ui/lab"
 import Tooltip from "./Tooltip"
 import {
 	formatAmountPretty,
-	formatADXPretty,
+	// formatADXPretty,
 	getDAIInUSD,
 	getADXInUSD,
 	getUSDFormatted
@@ -24,15 +24,21 @@ import {
 import AppContext from "../AppContext"
 import {
 	// DEPOSIT_POOLS,
-	ZERO,
-	UNBOND_DAYS
+	ZERO
+	// UNBOND_DAYS
 } from "../helpers/constants"
-import { getWithdrawActionBySelectedRewardChannels, restake } from "../actions"
+import {
+	getWithdrawActionBySelectedRewardChannels
+	// restake
+} from "../actions"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
 import { AmountText } from "./cardCommon"
-import { useTranslation, Trans } from "react-i18next"
+import {
+	useTranslation
+	// Trans
+} from "react-i18next"
 
 const getTotalSelectedRewards = (rewards, selected, getTotal) => {
 	return rewards
@@ -67,7 +73,7 @@ export default function Rewards() {
 	} = stats
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
-	const [reStakeOpen, setReStakeOpen] = useState(false)
+	// const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [claimOpen, setClaimOpen] = useState(false)
 
 	const totalRewardsAmounts = getTotalSelectedRewards(rewards, "all", true)
@@ -96,11 +102,11 @@ export default function Rewards() {
 		? t("common.noSelection")
 		: ""
 
-	const disableReStakeMsg = !!disableActionsMsg
-		? disableActionsMsg
-		: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
-		? t("rewards.reStakeUnsupportedSelected")
-		: ""
+	// const disableReStakeMsg = !!disableActionsMsg
+	// 	? disableActionsMsg
+	// 	: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
+	// 		? t("rewards.reStakeUnsupportedSelected")
+	// 		: ""
 
 	useEffect(() => {
 		const {
@@ -192,18 +198,18 @@ export default function Rewards() {
 		}
 	}
 
-	const onReStake = async () => {
-		setSelected({})
-		setTotalAmountsSelected({})
-		await wrapDoingTxns(
-			restake.bind(null, chosenWalletType, {
-				// NOTE: now only tom channels are valid for re-stake at the moment
-				// TODO: update when more pools
-				rewardChannels: selectedRewards.map(x => x.rewardChannel),
-				userBonds: tomPoolStats.userBonds
-			})
-		)()
-	}
+	// const onReStake = async () => {
+	// 	setSelected({})
+	// 	setTotalAmountsSelected({})
+	// 	await wrapDoingTxns(
+	// 		restake.bind(null, chosenWalletType, {
+	// 			// NOTE: now only tom channels are valid for re-stake at the moment
+	// 			// TODO: update when more pools
+	// 			rewardChannels: selectedRewards.map(x => x.rewardChannel),
+	// 			userBonds: tomPoolStats.userBonds
+	// 		})
+	// 	)()
+	// }
 
 	const totalSelectedLabel = totalAmountsLabel(totalAmountsSelected)
 	const totalRewardsLabel = totalAmountsLabel(totalRewardsAmounts) || "0.00"
@@ -325,7 +331,7 @@ export default function Rewards() {
 								</Box>
 							</Tooltip>
 						</Box>
-						<Box m={1}>
+						{/* <Box m={1}>
 							<Tooltip title={disableReStakeMsg}>
 								<Box display="inline-block">
 									<Button
@@ -339,7 +345,7 @@ export default function Rewards() {
 									</Button>
 								</Box>
 							</Tooltip>
-						</Box>
+						</Box> */}
 					</Box>
 				</Box>
 				<Box p={2}>
@@ -369,7 +375,7 @@ export default function Rewards() {
 					)}
 				</Box>
 
-				{ConfirmationDialog({
+				{/* {ConfirmationDialog({
 					isOpen: reStakeOpen,
 					onDeny: () => setReStakeOpen(false),
 					onConfirm: () => {
@@ -393,7 +399,7 @@ export default function Rewards() {
 							}}
 						/>
 					)
-				})}
+				})} */}
 
 				{ConfirmationDialog({
 					isOpen: claimOpen,

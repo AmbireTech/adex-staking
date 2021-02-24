@@ -33,11 +33,12 @@ export default function RewardCard({
 		})
 	}
 
-	const restakeEnabled =
-		totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
+	// const restakeEnabled =
+	// 	totalRewardADX.gt(ZERO) && userBonds.find(x => x.status !== "Unbonded")
+
 	const rewardActions = (
 		<Box display="flex" flexDirection="row" paddingTop={1} flex={1}>
-			<Box width={1 / 2} pr={0.5}>
+			<Box width={1} pr={0.5}>
 				<Button
 					id="claim-reward-tom-side-nav"
 					fullWidth
@@ -50,7 +51,7 @@ export default function RewardCard({
 					{t("common.claim")}
 				</Button>
 			</Box>
-			<Box width={1 / 2} pl={0.5}>
+			{/* <Box width={1 / 2} pl={0.5}>
 				<Button
 					id="re-stake-tom-side-nav"
 					fullWidth
@@ -62,7 +63,7 @@ export default function RewardCard({
 				>
 					{t("common.reStake")}
 				</Button>
-			</Box>
+			</Box> */}
 		</Box>
 	)
 	return StatsCard({
