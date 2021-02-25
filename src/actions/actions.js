@@ -328,14 +328,17 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const userBonds = userBondsData.map(bond => ({
 		...bond,
-		...(bond.status === "Active"
-			? {
-					migrationReward: bond.amount
+		migrationReward:
+			bond.status === "MigrationRequested"
+				? bond.amount
 						.add(identityAdxRewardsAmount)
 						.mul(migrationBonusPromille)
 						.div(1000)
-			  }
-			: {})
+				: // Min migration reward when "Active" as the full reward is based ont the total migration
+				// amount that includes current rewards in the time of migration finalization
+				bond.status === "Active"
+				? bond.amount.mul(migrationBonusPromille).div(1000)
+				: null
 	}))
 
 	const userTotalStake = userBonds
@@ -456,6 +459,7 @@ export async function loadBondStats(addr, identityAddr) {
 
 			bond.status =
 				migrationBondId === bondId ? "MigrationRequested" : "UnbondRequested"
+
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
 			const { bondId } = Staking.interface.parseLog(log).args
