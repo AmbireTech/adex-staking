@@ -225,6 +225,10 @@ export default function Bonds({
 								: "",
 							currency: "ADX",
 							unbondDays: UNBOND_DAYS_V5,
+							migrationReward:
+								bondToMigrate && bondToMigrate.migrationReward
+									? `${formatADXPretty(bondToMigrate.migrationReward)}`
+									: "",
 							extraInfo: isMigrationFinalization
 								? t("bonds.migrationFinalizationsInfo")
 								: t("bonds.migrationInfo")
