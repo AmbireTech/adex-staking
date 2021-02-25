@@ -224,7 +224,8 @@ export default function Bonds({
 								? t((getPool(bondToMigrate.poolId) || {}).label || "")
 								: "",
 							currency: "ADX",
-							unbondDays: UNBOND_DAYS_V5,
+							unbondDaysV5: UNBOND_DAYS_V5,
+							unbondDays: UNBOND_DAYS,
 							migrationReward:
 								bondToMigrate && bondToMigrate.migrationReward
 									? `${formatADXPretty(bondToMigrate.migrationReward)}`
@@ -234,7 +235,9 @@ export default function Bonds({
 								: t("bonds.migrationInfo")
 						}}
 						components={{
-							box: <Box mb={2}></Box>
+							box: <Box mb={2}></Box>,
+							ol: <ol></ol>,
+							li: <li></li>
 						}}
 					/>
 				)
