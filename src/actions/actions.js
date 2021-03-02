@@ -218,12 +218,6 @@ export async function getPoolStats(pool, prices) {
 		ZERO
 	)
 
-	console.log(
-		"totalCurrentTotalActiveStake",
-		totalCurrentTotalActiveStake.toString()
-	)
-	console.log("totalStake", totalStake.toString())
-
 	const currentAdxIncentiveAPY = currentActiveIncentiveChannels.reduce(
 		(totalAPY, channel) =>
 			totalAPY +

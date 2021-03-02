@@ -156,11 +156,13 @@ const Pools = () => {
 						}
 						name={t("common.tom")}
 						totalStakedADX={`${formatADXPretty(
-							tomPoolStats.totalCurrentTotalActiveStake
+							// tomPoolStats.totalCurrentTotalActiveStake
+							tomPoolStats.totalStake
 						)} ADX`}
 						totalStakedUSD={`${getADXInUSDFormatted(
 							prices,
-							tomPoolStats.totalCurrentTotalActiveStake
+							// tomPoolStats.totalCurrentTotalActiveStake
+							tomPoolStats.totalStake
 						)}`}
 						currentAPY={`${tomAPY.toFixed(2)} %`}
 						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
