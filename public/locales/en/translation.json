@@ -12,7 +12,7 @@
     "termsAndConditions": "Terms and conditions",
     "claim": "Claim",
     "reStake": "Re-stake",
-    "tom": "Tom",
+    "tom": "Tom Legacy",
     "loPo": "Loyalty Pool",
     "liPo": "Liquidity Pool",
     "validatorTom": "Validator Tom",
@@ -69,7 +69,8 @@
     "migrate": "Migrate",
     "NA": "N/A",
     "tomStakingPool": "Tom Staking Pool",
-    "from": "From"
+    "from": "From",
+    "tomV5": "Tom"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
