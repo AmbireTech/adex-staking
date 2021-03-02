@@ -14,6 +14,9 @@ import { useTranslation } from "react-i18next"
 import { DEPOSIT_ACTION_TYPES } from "../actions"
 
 const DepositsDialog = WithDialog(DepositForm)
+const TOM_LEGACY_POOL = POOLS[0]
+const TOM_V5_POOL = DEPOSIT_POOLS[1]
+const LOYALTY_POOL = DEPOSIT_POOLS[0]
 
 const Pools = () => {
 	const { t } = useTranslation()
@@ -24,10 +27,11 @@ const Pools = () => {
 		prices,
 		setNewBondPool
 	} = useContext(AppContext)
-	const { loyaltyPoolStats, tomPoolStats } = stats
+	const { loyaltyPoolStats, tomPoolStats, tomStakingV5PoolStats } = stats
 
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 	const tomAPY = tomPoolStats.totalAPY * 100
+	const tomV5APY = tomStakingV5PoolStats.currentAPY * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
 	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY * 100
@@ -45,40 +49,42 @@ const Pools = () => {
 					justifyContent={justifyCenter ? "center" : "flex-start"}
 				>
 					<PoolCard
-						id="validator-tom"
+						id="validator-tom-v5"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
 								<TomIcon width="100%" height="100%" />
 							</SvgIcon>
 						}
-						name={t("common.tom")}
+						name={t("common.tomV5")}
 						totalStakedADX={`${formatADXPretty(
-							tomPoolStats.totalCurrentTotalActiveStake
+							tomStakingV5PoolStats.currentTotalActiveStake
 						)} ADX`}
 						totalStakedUSD={`${getADXInUSDFormatted(
 							prices,
-							tomPoolStats.totalCurrentTotalActiveStake
+							tomStakingV5PoolStats.currentTotalActiveStake
 						)}`}
-						currentAPY={`${tomAPY.toFixed(2)} %`}
-						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
+						currentAPY={`${tomV5APY.toFixed(2)} %`}
+						weeklyYield={`${(tomV5APY / (365 / 7)).toFixed(4)} %`}
 						weeklyYieldInfo={[
 							t("pools.currentDailyYield", {
-								yield: (tomAPY / 365).toFixed(4)
+								yield: (tomV5APY / 365).toFixed(4)
 							})
 						]}
 						onStakeBtnClick={() => {
-							setNewBondPool(POOLS[0].id)
+							setNewBondPool(TOM_V5_POOL.id)
 							setNewBondOpen(true)
 						}}
-						loading={!tomPoolStats.loaded}
+						loading={!tomStakingV5PoolStats.loaded}
 						disabled={!canStake}
 						disabledInfo={t("pools.connectWalletToStake")}
 						lockupPeriodTitle={t("common.unbondPeriod")}
 						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
-							count: UNBOND_DAYS
+							count: TOM_V5_POOL.lockupPeriod
 						})}
-						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
-						statsPath={`/stats?validator=${t(POOLS[0].label)}`}
+						lockupPeriod={t("pools.unbondPeriodDay", {
+							count: TOM_V5_POOL.lockupPeriod
+						})}
+						statsPath={`/stats?validator=${t(TOM_V5_POOL.label)}`}
 					/>
 
 					<PoolCard
@@ -134,11 +140,48 @@ const Pools = () => {
 								size="large"
 								variant="contained"
 								disabled={!canStake}
-								depositPool={DEPOSIT_POOLS[0].id}
+								depositPool={LOYALTY_POOL.id}
 								actionType={DEPOSIT_ACTION_TYPES.deposit}
 							/>
 						}
 						// comingSoon
+					/>
+
+					<PoolCard
+						id="validator-tom"
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<TomIcon width="100%" height="100%" />
+							</SvgIcon>
+						}
+						name={t("common.tom")}
+						totalStakedADX={`${formatADXPretty(
+							tomPoolStats.totalCurrentTotalActiveStake
+						)} ADX`}
+						totalStakedUSD={`${getADXInUSDFormatted(
+							prices,
+							tomPoolStats.totalCurrentTotalActiveStake
+						)}`}
+						currentAPY={`${tomAPY.toFixed(2)} %`}
+						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
+						weeklyYieldInfo={[
+							t("pools.currentDailyYield", {
+								yield: (tomAPY / 365).toFixed(4)
+							})
+						]}
+						onStakeBtnClick={() => {
+							setNewBondPool(TOM_LEGACY_POOL.id)
+							setNewBondOpen(true)
+						}}
+						loading={!tomPoolStats.loaded}
+						disabled={!canStake}
+						disabledInfo={t("pools.connectWalletToStake")}
+						lockupPeriodTitle={t("common.unbondPeriod")}
+						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
+							count: UNBOND_DAYS
+						})}
+						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
+						statsPath={`/stats?validator=${t(TOM_LEGACY_POOL.label)}`}
 					/>
 					{/* <PoolCard
 						id="liquidity-pool"
