@@ -60,6 +60,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentReward: ZERO,
 	totalSharesInTransfers: ZERO,
 	currentAPY: 0,
+	currentTotalActiveStake: ZERO,
 	stakings: [],
 	userLeaves: [],
 	leavesPendingToUnlockTotalMax: ZERO,
@@ -372,6 +373,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const leavesReadyToWithdrawTotalMax = BigNumber.from(200 + decimalsString)
 
 	return {
+		...STAKING_POOL_EMPTY_STATS,
 		...poolData,
 		balanceShares,
 		currentBalanceADX,
