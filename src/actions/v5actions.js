@@ -65,6 +65,8 @@ export const STAKING_POOL_EMPTY_STATS = {
 	userLeaves: [],
 	leavesPendingToUnlockTotalMax: ZERO,
 	leavesReadyToWithdrawTotalMax: ZERO,
+	leavesPendingToUnlockTotalADX: ZERO,
+	leavesReadyToWithdrawTotalADX: ZERO,
 	loaded: false,
 	userDataLoaded: false
 }
@@ -377,6 +379,8 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const currentReward = BigNumber.from(2 + decimalsString)
 	const leavesPendingToUnlockTotalMax = BigNumber.from(500 + decimalsString)
 	const leavesReadyToWithdrawTotalMax = BigNumber.from(200 + decimalsString)
+	const leavesPendingToUnlockTotalADX = BigNumber.from(500 + decimalsString)
+	const leavesReadyToWithdrawTotalADX = BigNumber.from(200 + decimalsString)
 
 	return {
 		...STAKING_POOL_EMPTY_STATS,
@@ -391,12 +395,15 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		userLeaves,
 		leavesPendingToUnlockTotalMax,
 		leavesReadyToWithdrawTotalMax,
+		leavesPendingToUnlockTotalADX,
+		leavesReadyToWithdrawTotalADX,
 		loaded: true,
 		userDataLoaded: true
 	}
 }
 
 export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
+	const owner = walletAddr
 	const poolData = await getTomStakingV5PoolData()
 	if (!walletAddr) {
 		return {
@@ -552,32 +559,42 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const now = Date.now() / 1000
 
-	const userLeaves = leaveLogs.map(log => {
-		const parsedLog = StakingPool.interface.parseLog(log)
-		const { shares, unlocksAt, maxTokens } = parsedLog.args
+	const userLeaves = await Promise.all(
+		leaveLogs.map(async log => {
+			const parsedLog = StakingPool.interface.parseLog(log)
+			const { shares, unlocksAt, maxTokens } = parsedLog.args
 
-		const withdrawTx = userWithdraws.find(
-			event =>
-				event.unlocksAt === unlocksAt &&
-				event.shares === shares &&
-				event.maxTokens === maxTokens
-		)
+			const withdrawTx = userWithdraws.find(
+				event =>
+					event.unlocksAt === unlocksAt &&
+					event.shares === shares &&
+					event.maxTokens === maxTokens
+			)
 
-		return {
-			transactionHash: log.transactionHash,
-			type: STAKING_POOL_EVENT_TYPES.leave,
-			shares, // [1]
-			unlocksAt, //[2]
-			maxTokens, // [3]
-			canWithdraw: unlocksAt < now && !withdrawTx,
-			blockNumber: log.blockNumber,
-			withdrawTx
-		}
-	})
+			const adxValue = await StakingPool.unbondingCommitmentWorth(
+				owner,
+				log.shares,
+				log.unlocksAt
+			)
+
+			return {
+				transactionHash: log.transactionHash,
+				type: STAKING_POOL_EVENT_TYPES.leave,
+				shares, // [1]
+				unlocksAt, //[2]
+				maxTokens, // [3]
+				adxValue,
+				canWithdraw: unlocksAt < now && !withdrawTx,
+				blockNumber: log.blockNumber,
+				withdrawTx
+			}
+		})
+	)
 
 	const leavesPendingToUnlock = [...userLeaves].filter(
 		event => event.unlocksAt > now
 	)
+
 	const leavesReadyToWithdraw = [...userLeaves].filter(
 		event => event.unlocksAt < now && !event.withdrawTx
 	)
@@ -587,8 +604,18 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		ZERO
 	)
 
+	const leavesPendingToUnlockTotalADX = leavesPendingToUnlock.reduce(
+		(a, b) => a.adxValue.add(b.adxValue),
+		ZERO
+	)
+
 	const leavesReadyToWithdrawTotalMax = leavesReadyToWithdraw.reduce(
 		(a, b) => a.maxTokens.add(b.maxTokens),
+		ZERO
+	)
+
+	const leavesReadyToWithdrawTotalADX = leavesReadyToWithdraw.reduce(
+		(a, b) => a.adxValue.add(b.adxValue),
 		ZERO
 	)
 
@@ -681,6 +708,8 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		userLeaves,
 		leavesPendingToUnlockTotalMax,
 		leavesReadyToWithdrawTotalMax,
+		leavesPendingToUnlockTotalADX,
+		leavesReadyToWithdrawTotalADX,
 		loaded: true,
 		userDataLoaded: true
 	}
