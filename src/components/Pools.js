@@ -57,11 +57,11 @@ const Pools = () => {
 						}
 						name={t("common.tomV5")}
 						totalStakedADX={`${formatADXPretty(
-							tomStakingV5PoolStats.currentTotalActiveStake
+							tomStakingV5PoolStats.poolTotalStaked
 						)} ADX`}
 						totalStakedUSD={`${getADXInUSDFormatted(
 							prices,
-							tomStakingV5PoolStats.currentTotalActiveStake
+							tomStakingV5PoolStats.poolTotalStaked
 						)}`}
 						currentAPY={`${tomV5APY.toFixed(2)} %`}
 						weeklyYield={`${(tomV5APY / (365 / 7)).toFixed(4)} %`}
@@ -70,10 +70,6 @@ const Pools = () => {
 								yield: (tomV5APY / 365).toFixed(4)
 							})
 						]}
-						onStakeBtnClick={() => {
-							setNewBondPool(TOM_V5_POOL.id)
-							setNewBondOpen(true)
-						}}
 						loading={!tomStakingV5PoolStats.loaded}
 						disabled={!canStake}
 						disabledInfo={t("pools.connectWalletToStake")}
@@ -85,6 +81,23 @@ const Pools = () => {
 							count: TOM_V5_POOL.lockupPeriod
 						})}
 						statsPath={`/stats?validator=${t(TOM_V5_POOL.label)}`}
+						actionBtn={
+							<DepositsDialog
+								id="staking-pool-tom-deposit-form-card"
+								title={t("deposits.depositTo", {
+									pool: t("common.tomStakingPool")
+								})}
+								btnLabel={t("common.deposit")}
+								color="secondary"
+								size="large"
+								variant="contained"
+								fullWidth
+								disabled={!canStake}
+								// tooltipTitle={disabledDepositsMsg}
+								depositPool={DEPOSIT_POOLS[1].id}
+								actionType={DEPOSIT_ACTION_TYPES.deposit}
+							/>
+						}
 					/>
 
 					<PoolCard
@@ -109,9 +122,6 @@ const Pools = () => {
 								yield: (loyaltyPoolAPY / 365).toFixed(4)
 							})
 						]}
-						onStakeBtnClick={() => {
-							setNewBondOpen(true)
-						}}
 						loading={!loyaltyPoolStats.loaded}
 						disabled={!canStake}
 						disabledInfo={t("pools.connectWalletToDeposit")}
