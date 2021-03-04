@@ -405,7 +405,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const owner = walletAddr
 	const poolData = await getTomStakingV5PoolData()
-	if (!walletAddr) {
+	if (!owner) {
 		return {
 			...STAKING_POOL_EMPTY_STATS,
 			...poolData,
@@ -422,22 +422,22 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		sharesTokensTransfersInLogs,
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
-		StakingPool.balanceOf(walletAddr),
+		StakingPool.balanceOf(owner),
 		provider.getLogs({
 			fromBlock: 0,
-			...ADXToken.filters.Transfer(walletAddr, ADDR_STAKING_POOL, null)
+			...ADXToken.filters.Transfer(owner, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.LogLeave(walletAddr, null, null, null)
+			...StakingPool.filters.LogLeave(owner, null, null, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(null, walletAddr, null)
+			...StakingPool.filters.Transfer(null, owner, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(walletAddr, null, null)
+			...StakingPool.filters.Transfer(owner, null, null)
 		})
 	])
 

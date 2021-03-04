@@ -391,10 +391,10 @@ export default function Deposits() {
 									{t("deposits.currentRewards")}
 								</TableCell>
 								<TableCell align="right">
-									{t("deposits.pendingToUnlockTotal", { type: "ADX" })}
+									{t("deposits.pendingToUnlockTotal")}
 								</TableCell>
 								<TableCell align="right">
-									{t("deposits.readyToWithdrawTotal", { type: "ADX" })}
+									{t("deposits.readyToWithdrawTotal")}
 								</TableCell>
 								<TableCell align="right">{t("common.actions")}</TableCell>
 							</TableRow>
