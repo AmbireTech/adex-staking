@@ -52,6 +52,7 @@ export const STAKING_POOL_EVENT_TYPES = {
 }
 
 export const STAKING_POOL_EMPTY_STATS = {
+	shareValue: ZERO,
 	balanceShares: ZERO,
 	currentBalanceADX: ZERO,
 	withdrawnReward: ZERO,
@@ -249,14 +250,20 @@ export async function onStakingPoolV5UnbondCommitment(
 }
 
 export async function getTomStakingV5PoolData() {
-	const [poolTotalStaked, incentivePerSecond] = await Promise.all([
+	const [
+		poolTotalStaked,
+		incentivePerSecond,
+		shareValue = ZERO
+	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL)
+		// StakingPool.shareValue(), // TODO
 	])
 
 	return {
 		poolTotalStaked,
 		incentivePerSecond,
+		shareValue,
 		currentAPY: incentivePerSecond.isZero()
 			? 0
 			: (incentivePerSecond
@@ -401,7 +408,6 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const [
 		balanceShares,
-		currentShareValue,
 		enterADXTransferLogs,
 		leaveLogs,
 		withdrawLogs,
@@ -410,7 +416,6 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
 		StakingPool.balanceOf(walletAddr),
-		StakingPool.shareValue(),
 		provider.getLogs({
 			fromBlock: 0,
 			...ADXToken.filters.Transfer(walletAddr, ADDR_STAKING_POOL, null)
@@ -429,7 +434,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	])
 
-	const currentBalanceADX = balanceShares.mul(currentShareValue)
+	const currentBalanceADX = balanceShares.mul(poolData.shareValue)
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
 		const parsedLog = StakingPool.interface.parseLog(log)
