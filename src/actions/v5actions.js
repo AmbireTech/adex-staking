@@ -68,7 +68,9 @@ export const STAKING_POOL_EMPTY_STATS = {
 	leavesPendingToUnlockTotalADX: ZERO,
 	leavesReadyToWithdrawTotalADX: ZERO,
 	loaded: false,
-	userDataLoaded: false
+	userDataLoaded: false,
+	rageReceivedPromilles: 700,
+	timeToUnbond: 20
 }
 
 export async function onMigrationToV5(
@@ -255,17 +257,23 @@ export async function getTomStakingV5PoolData() {
 	const [
 		poolTotalStaked,
 		incentivePerSecond,
+		rageReceivedPromilles = 700,
+		unbondDays = 20,
 		shareValue = ZERO
 	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL)
 		// StakingPool.shareValue(), // TODO
+		// StakingPool.RAGE_RECEIVED_PROMILLES(), // TODO
+		// StakingPool.TIME_TO_UNBOND(), // TODO
 	])
 
 	return {
 		poolTotalStaked,
 		incentivePerSecond,
 		shareValue,
+		rageReceivedPromilles,
+		unbondDays,
 		currentAPY: incentivePerSecond.isZero()
 			? 0
 			: (incentivePerSecond
