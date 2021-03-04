@@ -379,8 +379,8 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const currentReward = BigNumber.from(2 + decimalsString)
 	const leavesPendingToUnlockTotalMax = BigNumber.from(500 + decimalsString)
 	const leavesReadyToWithdrawTotalMax = BigNumber.from(200 + decimalsString)
-	const leavesPendingToUnlockTotalADX = BigNumber.from(500 + decimalsString)
-	const leavesReadyToWithdrawTotalADX = BigNumber.from(200 + decimalsString)
+	const leavesPendingToUnlockTotalADX = BigNumber.from(490 + decimalsString)
+	const leavesReadyToWithdrawTotalADX = BigNumber.from(190 + decimalsString)
 
 	return {
 		...STAKING_POOL_EMPTY_STATS,

@@ -86,18 +86,18 @@ const getStakingPool = ({
 				fontSize={17}
 			/>
 		),
-		pendingToUnlockTotalMax: (
+		pendingToUnlockTotalADX: (
 			<AmountText
 				text={`${formatADXPretty(
-					tomStakingV5PoolStats.leavesPendingToUnlockTotalMax
+					tomStakingV5PoolStats.leavesPendingToUnlockTotalADX
 				)} ${"ADX"}`}
 				fontSize={17}
 			/>
 		),
-		readyToWithdrawTotalMax: (
+		readyToWithdrawTotalADX: (
 			<AmountText
 				text={`${formatADXPretty(
-					tomStakingV5PoolStats.leavesReadyToWithdrawTotalMax
+					tomStakingV5PoolStats.leavesReadyToWithdrawTotalADX
 				)} ${"ADX"}`}
 				fontSize={17}
 			/>
@@ -204,8 +204,8 @@ const getLoyaltyPoolDeposit = ({
 			t("common.unknown")
 		),
 		currentReward: t("common.NA"),
-		pendingToUnlockTotalMax: t("common.NA"),
-		readyToWithdrawTotalMax: t("common.NA"),
+		pendingToUnlockTotalADX: t("common.NA"),
+		readyToWithdrawTotalADX: t("common.NA"),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
@@ -342,8 +342,8 @@ export default function Deposits() {
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.allTimeReward}</TableCell>
 				<TableCell align="right">{deposit.currentReward}</TableCell>
-				<TableCell align="right">{deposit.pendingToUnlockTotalMax}</TableCell>
-				<TableCell align="right">{deposit.readyToWithdrawTotalMax}</TableCell>
+				<TableCell align="right">{deposit.pendingToUnlockTotalADX}</TableCell>
+				<TableCell align="right">{deposit.readyToWithdrawTotalADX}</TableCell>
 				<TableCell align="center">
 					<Box
 						display="flex"
@@ -391,10 +391,10 @@ export default function Deposits() {
 									{t("deposits.currentRewards")}
 								</TableCell>
 								<TableCell align="right">
-									{t("deposits.pendingToUnlockTotalMax")}
+									{t("deposits.pendingToUnlockTotal", { type: "ADX" })}
 								</TableCell>
 								<TableCell align="right">
-									{t("deposits.readyToWithdrawTotalMax")}
+									{t("deposits.readyToWithdrawTotal", { type: "ADX" })}
 								</TableCell>
 								<TableCell align="right">{t("common.actions")}</TableCell>
 							</TableRow>
