@@ -287,7 +287,7 @@ export async function getTomStakingV5PoolData() {
 }
 
 // to test the ui component
-export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
+export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const poolData = await getTomStakingV5PoolData()
 	if (!walletAddr) {
 		return {
@@ -367,10 +367,10 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	]
 
 	const withTimestamp = await Promise.all(
-		stakings.map(async stakngEvent => {
-			const { timestamp } = await provider.getBlock(stakngEvent.blockNumber)
+		stakings.map(async stakingEvent => {
+			const { timestamp } = await provider.getBlock(stakingEvent.blockNumber)
 			return {
-				...stakngEvent,
+				...stakingEvent,
 				timestamp: timestamp * 1000
 			}
 		})
@@ -410,7 +410,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	}
 }
 
-export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
+export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const owner = walletAddr
 	const poolData = await getTomStakingV5PoolData()
 	if (!owner) {
@@ -438,6 +438,14 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		provider.getLogs({
 			fromBlock: 0,
 			...StakingPool.filters.LogLeave(owner, null, null, null)
+		}),
+		provider.getLogs({
+			fromBlock: 0,
+			...StakingPool.filters.Transfer(ADDR_STAKING_POOL, owner, null)
+		}),
+		provider.getLogs({
+			fromBlock: 0,
+			...StakingPool.filters.LogRageLeave(owner, null, null, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
@@ -510,8 +518,9 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		{ shareTokensEnterMintByHash: {}, shareTokensTransfersInByTxHas: {} }
 	)
 
+	console.log("enterADXTransferLogs", enterADXTransferLogs)
 	const userEnters = enterADXTransferLogs
-		.msp(log => {
+		.map(log => {
 			const sharesMintEvent = shareTokensEnterMintByHash[log.transactionHash]
 
 			if (sharesMintEvent) {
@@ -678,8 +687,13 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		shareTokensTransfersInByTxHas
 	).reduce((a, b) => a.shares.add(b).shares, ZERO)
 
-	const avgShareBuyPrice = buySharesByPrice.div(buyTotalShares)
-	const avgShareSellPrice = sellSharesByPrice.div(sellTotalShares)
+	// TODO: precision ??]
+	const avgShareBuyPrice = buyTotalShares.isZero()
+		? ZERO
+		: buySharesByPrice.div(buyTotalShares)
+	const avgShareSellPrice = sellTotalShares.isZero()
+		? ZERO
+		: sellSharesByPrice.div(sellTotalShares)
 	const isPositiveTardeDelta = avgShareSellPrice.gt(avgShareBuyPrice)
 	const avgTradeDelta = isPositiveTardeDelta
 		? avgShareSellPrice.sub(avgShareBuyPrice)

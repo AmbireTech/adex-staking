@@ -1,6 +1,6 @@
 import { providers, utils } from "ethers"
 
-import { REACT_APP_RPC_URL } from "./helpers/constants"
+import { useTestnet, REACT_APP_RPC_URL } from "./helpers/constants"
 
 const LocalProvider = REACT_APP_RPC_URL.startsWith("wss://")
 	? providers.WebSocketProvider
@@ -8,11 +8,17 @@ const LocalProvider = REACT_APP_RPC_URL.startsWith("wss://")
 
 // TODO: async
 export const getDefaultProvider = (function() {
-	let defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+	let defaultProvider = new LocalProvider(
+		REACT_APP_RPC_URL,
+		useTestnet ? "goerli" : "homestead"
+	)
 
 	defaultProvider.on("error", e => {
 		console.error("WS Error", e)
-		defaultProvider = new LocalProvider(REACT_APP_RPC_URL, "homestead")
+		defaultProvider = new LocalProvider(
+			REACT_APP_RPC_URL,
+			useTestnet ? "goerli" : "homestead"
+		)
 	})
 
 	return defaultProvider

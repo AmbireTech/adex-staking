@@ -14,7 +14,12 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
-export const ADDR_STAKING = "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
+export const useTestnet = true // TODO env cfg
+
+export const ADDR_STAKING = useTestnet
+	? "0xe7309bad1E57381E3686625c555ce8553f77dbB8"
+	: "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
+
 export const ZERO = BigNumber.from(0)
 // export const PRICES_API_URL =
 // 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
@@ -27,7 +32,9 @@ export const STAKING_RULES_URL = null
 export const IDLE_TIMEOUT_MINUTES = 10
 
 export const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
-export const ADDR_ADX = "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
+export const ADDR_ADX = useTestnet
+	? "0x6170ea3629a1E49B77EEd0e0A18460ac184CA71e"
+	: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
 export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
 export const ADDR_ADX_LOYALTY_TOKEN =
 	"0xd9A4cB9dc9296e111c66dFACAb8Be034EE2E1c2C"
@@ -35,9 +42,12 @@ export const DAI_TOKEN_ADDR = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
 export const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 
-export const ADDR_STAKING_POOL = "0x0000000000000000000000000000000000000000" // TODO
-export const ADDR_STAKING_MIGRATOR =
-	"0x0000000000000000000000000000000000000000" // TODO
+export const ADDR_STAKING_POOL = useTestnet
+	? "0xe7309bad1E57381E3686625c555ce8553f77dbB8"
+	: "0x0000000000000000000000000000000000000000" // TODO
+export const ADDR_STAKING_MIGRATOR = useTestnet
+	? "0x732d7DF3d9684C911aBD5235D440A1D9f1F4f6F6"
+	: "0x0000000000000000000000000000000000000000" // TODO
 export const ADDR_ADX_SUPPLY_CONTROLLER =
 	"0x617e6f354d288fcb33e148b1bb6d2cc9be1f7695"
 
@@ -159,7 +169,9 @@ export const Wallets = [
 	// }
 ]
 
-export const SUPPORTED_CHAINS = [{ id: 1, name: "mainnet" }]
+export const SUPPORTED_CHAINS = useTestnet
+	? [{ id: 5, name: "goerli" }]
+	: [{ id: 1, name: "mainnet" }]
 
 export const TOKEN_OLD_TO_NEW_MULTIPLIER = BigNumber.from("100000000000000")
 
@@ -168,10 +180,13 @@ export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 // export const REACT_APP_RPC_URL =
 // 	"wss://mainnet.infura.io/ws/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
-export const REACT_APP_RPC_URL =
-	"https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+export const REACT_APP_RPC_URL = useTestnet
+	? "https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	: "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
-export const ADEX_RELAYER_HOST = "https://relayer.adex.network"
+export const ADEX_RELAYER_HOST = useTestnet
+	? "https://goerli-relayer.adex.network"
+	: "https://relayer.adex.network"
 // export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
 
 const MAIN_START_BLOCK = 11296000
