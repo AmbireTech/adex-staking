@@ -41,6 +41,8 @@ const StakingMigrator = new Contract(
 )
 const Core = new Contract(ADDR_CORE, CoreABI, provider)
 
+const POOL_SHARES_TOKEN_DECIMALS_MUL = "1000000000000000000"
+
 export const STAKING_POOL_EVENT_TYPES = {
 	enter: "enter",
 	leave: "leave",
@@ -160,13 +162,14 @@ export async function onStakingPoolV5Deposit(
 
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
-		supplyControllerABI,
+		StakingPoolABI,
 		signer
 	)
 
 	await stakingPoolWithSigner.enter(
 		adxDepositAmount,
-		setAllowance ? { gasLimit: 150000 } : {}
+		{ gasLimit: 250000 }
+		// setAllowance ? { gasLimit: 250000 } : {}
 	)
 }
 
@@ -186,7 +189,7 @@ export async function onStakingPoolV5Withdraw(
 
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
-		supplyControllerABI,
+		StakingPoolABI,
 		signer
 	)
 
@@ -209,7 +212,7 @@ export async function onStakingPoolV5RageLeave(
 
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
-		supplyControllerABI,
+		StakingPoolABI,
 		signer
 	)
 
@@ -242,7 +245,7 @@ export async function onStakingPoolV5UnbondCommitment(
 
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
-		supplyControllerABI,
+		StakingPoolABI,
 		signer
 	)
 
@@ -262,10 +265,10 @@ export async function getTomStakingV5PoolData() {
 		shareValue = ZERO
 	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),
-		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL)
-		// StakingPool.shareValue(), // TODO
-		// StakingPool.RAGE_RECEIVED_PROMILLES(), // TODO
-		// StakingPool.TIME_TO_UNBOND(), // TODO
+		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL),
+		StakingPool.RAGE_RECEIVED_PROMILLES(), // TODO
+		StakingPool.TIME_TO_UNBOND(), // TODO
+		StakingPool.shareValue() // TODO
 	])
 
 	return {
@@ -280,6 +283,7 @@ export async function getTomStakingV5PoolData() {
 					.mul(PRECISION)
 					.mul(secondsInYear)
 					.div(poolTotalStaked)
+					.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 					.toNumber() /
 					PRECISION) *
 			  100
@@ -457,7 +461,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	])
 
-	const currentBalanceADX = balanceShares.mul(poolData.shareValue)
+	const currentBalanceADX = balanceShares
+		.mul(poolData.shareValue)
+		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
 		const parsedLog = StakingPool.interface.parseLog(log)
@@ -465,7 +471,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		const {
 			from, // [0]
 			amount // [2]
-		} = parsedLog
+		} = parsedLog.args
 
 		return {
 			transactionHash: log.transactionHash,
@@ -488,7 +494,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			const {
 				to, // [1]
 				amount // [2]
-			} = parsedLog
+			} = parsedLog.args
 
 			return {
 				transactionHash: log.transactionHash,
@@ -502,7 +508,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const {
 		shareTokensEnterMintByHash,
-		shareTokensTransfersInByTxHas
+		shareTokensTransfersInByTxHash
 	} = sharesTokensTransfersIn.reduce(
 		(txns, event) => {
 			if (event.type === STAKING_POOL_EVENT_TYPES.enter) {
@@ -510,12 +516,16 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			}
 
 			if (event.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn) {
-				txns.shareTokensTransfersInByTxHas[event.transactionHash] = event
+				txns.shareTokensTransfersInByTxHash[event.transactionHash] = event
 			}
 
 			return txns
 		},
-		{ shareTokensEnterMintByHash: {}, shareTokensTransfersInByTxHas: {} }
+		{ shareTokensEnterMintByHash: {}, shareTokensTransfersInByTxHash: {} }
+	)
+
+	const sharesTokensTransfersInFromExternal = Object.values(
+		shareTokensTransfersInByTxHash
 	)
 
 	console.log("enterADXTransferLogs", enterADXTransferLogs)
@@ -640,7 +650,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		.concat(userLeaves)
 		.concat(userWithdraws)
 		.concat(userRageLeaves)
-		.concat(sharesTokensTransfersIn)
+		.concat(sharesTokensTransfersInFromExternal)
 		.concat(sharesTokensTransfersOut)
 
 	const withTimestamp = await Promise.all(
@@ -683,9 +693,10 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		(a, b) => a.shares.add(b.shares),
 		ZERO
 	)
-	const totalSharesInTransfers = Object.values(
-		shareTokensTransfersInByTxHas
-	).reduce((a, b) => a.shares.add(b).shares, ZERO)
+	const totalSharesInTransfers = sharesTokensTransfersInFromExternal.reduce(
+		(a, b) => a.shares.add(b.shares),
+		ZERO
+	)
 
 	// TODO: precision ??]
 	const avgShareBuyPrice = buyTotalShares.isZero()
@@ -718,7 +729,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const currentReward = rewardWithOutstanding.sub(withdrawnReward)
 
-	return {
+	const stats = {
 		...poolData,
 		balanceShares,
 		currentBalanceADX,
@@ -735,4 +746,6 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		loaded: true,
 		userDataLoaded: true
 	}
+
+	return stats
 }
