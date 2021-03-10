@@ -59,7 +59,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentBalanceADX: ZERO,
 	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
-	rewardWithOutstanding: ZERO,
+	totalRewards: ZERO,
 	currentReward: ZERO,
 	totalSharesInTransfers: ZERO,
 	currentAPY: 0,
@@ -72,7 +72,8 @@ export const STAKING_POOL_EMPTY_STATS = {
 	loaded: false,
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
-	timeToUnbond: 20
+	timeToUnbond: 20,
+	userShare: 0
 }
 
 export async function onMigrationToV5(
@@ -279,14 +280,11 @@ export async function getTomStakingV5PoolData() {
 		unbondDays,
 		currentAPY: incentivePerSecond.isZero()
 			? 0
-			: (incentivePerSecond
+			: incentivePerSecond
 					.mul(PRECISION)
 					.mul(secondsInYear)
 					.div(poolTotalStaked)
-					.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
-					.toNumber() /
-					PRECISION) *
-			  100
+					.toNumber() / PRECISION
 	}
 }
 
@@ -461,9 +459,17 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	])
 
+	const { shareValue, poolTotalStaked } = poolData
+
 	const currentBalanceADX = balanceShares
-		.mul(poolData.shareValue)
+		.mul(shareValue)
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+
+	const userShare =
+		balanceShares
+			.mul(PRECISION)
+			.div(poolTotalStaked)
+			.toNumber() / PRECISION
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
 		const parsedLog = StakingPool.interface.parseLog(log)
@@ -698,43 +704,44 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		ZERO
 	)
 
-	// TODO: precision ??]
+	// TODO: precision ??
 	const avgShareBuyPrice = buyTotalShares.isZero()
 		? ZERO
 		: buySharesByPrice.div(buyTotalShares)
+
 	const avgShareSellPrice = sellTotalShares.isZero()
 		? ZERO
 		: sellSharesByPrice.div(sellTotalShares)
+
 	const isPositiveTardeDelta = avgShareSellPrice.gt(avgShareBuyPrice)
-	const avgTradeDelta = isPositiveTardeDelta
-		? avgShareSellPrice.sub(avgShareBuyPrice)
-		: avgShareBuyPrice.sub(avgShareSellPrice)
+
+	const avgTradeDelta =
+		sellTotalShares.isZero() || buyTotalShares.isZero()
+			? ZERO
+			: isPositiveTardeDelta
+			? avgShareSellPrice.sub(avgShareBuyPrice)
+			: avgShareBuyPrice.sub(avgShareSellPrice)
+
 	const withdrawnReward = buyTotalShares
 		.sub(totalSharesOutTransfers)
 		.mul(avgTradeDelta)
 
-	const avgSellPriceWithOutstanding = sellSharesByPrice.add(
-		balanceShares.mul(currentBalanceADX)
-	)
-	const isPositiveTardeDeltaWithOutstanding = avgSellPriceWithOutstanding.gt(
-		avgShareBuyPrice
-	)
-	const avgTradeDeltaWithOutstanding = isPositiveTardeDeltaWithOutstanding
-		? avgSellPriceWithOutstanding.sub(avgShareBuyPrice)
-		: avgShareBuyPrice.sub(avgSellPriceWithOutstanding)
-	const rewardWithOutstanding = buyTotalShares
-		.add(balanceShares)
+	// TODO:
+	const totalRewards = buyTotalShares
+		.sub(sellTotalShares)
+		// .add(balanceShares)
 		.sub(totalSharesOutTransfers)
-		.mul(avgTradeDeltaWithOutstanding)
+		.mul(shareValue)
+		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
-	const currentReward = rewardWithOutstanding.sub(withdrawnReward)
+	const currentReward = totalRewards.sub(withdrawnReward)
 
 	const stats = {
 		...poolData,
 		balanceShares,
 		currentBalanceADX,
 		withdrawnReward,
-		rewardWithOutstanding,
+		totalRewards,
 		currentReward,
 		totalSharesInTransfers,
 		stakings: withTimestamp,
@@ -744,7 +751,8 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		leavesPendingToUnlockTotalADX,
 		leavesReadyToWithdrawTotalADX,
 		loaded: true,
-		userDataLoaded: true
+		userDataLoaded: true,
+		userShare
 	}
 
 	return stats

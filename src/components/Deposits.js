@@ -67,14 +67,15 @@ const getStakingPool = ({
 						)} ${"shares"})`}
 						fontSize={17}
 					/>
+					<Box>
+						{`(${(tomStakingV5PoolStats.userShare * 100).toFixed(4)} %)`}
+					</Box>
 				</Box>
 			</Fragment>
 		),
 		allTimeReward: (
 			<AmountText
-				text={`${formatADXPretty(
-					tomStakingV5PoolStats.rewardWithOutstanding
-				)} ${"ADX"}`}
+				text={`${formatADXPretty(tomStakingV5PoolStats.totalRewards)} ${"ADX"}`}
 				fontSize={17}
 			/>
 		),
