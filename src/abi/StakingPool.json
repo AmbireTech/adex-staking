@@ -7,6 +7,16 @@
 				"type": "address"
 			},
 			{
+				"internalType": "contract IUniswapSimple",
+				"name": "uni",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IChainlink",
+				"name": "oracle",
+				"type": "address"
+			},
+			{
 				"internalType": "address",
 				"name": "guardianAddr",
 				"type": "address"
@@ -17,9 +27,9 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
-				"name": "dailyPenalties",
-				"type": "uint256"
+				"internalType": "address",
+				"name": "governanceAddr",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -75,6 +85,24 @@
 				"indexed": false,
 				"internalType": "uint256",
 				"name": "burnedValidatorShares",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "usedADX",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "totalADX",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "totalShares",
 				"type": "uint256"
 			}
 		],
@@ -464,6 +492,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "governance",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "guardian",
 		"outputs": [
 			{
@@ -647,6 +688,58 @@
 	{
 		"inputs": [],
 		"name": "resetLimits",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "max",
+				"type": "uint256"
+			}
+		],
+		"name": "setDailyPenaltyMax",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "setGovernance",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "rageReceived",
+				"type": "uint256"
+			}
+		],
+		"name": "setRageReceived",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "time",
+				"type": "uint256"
+			}
+		],
+		"name": "setTimeToUnbond",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
