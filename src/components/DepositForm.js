@@ -201,8 +201,7 @@ export default function DepositForm({
 		<Box width={1}>
 			<Grid container spacing={2}>
 				{actionType === DEPOSIT_ACTION_TYPES.withdraw &&
-				userUnbondCommitments &&
-				userUnbondCommitments.length ? (
+				userUnbondCommitments ? (
 					<Grid item xs={12}>
 						<FormControl fullWidth required>
 							<InputLabel>

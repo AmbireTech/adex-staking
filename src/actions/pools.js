@@ -97,6 +97,10 @@ export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
 		return stats.balanceLpADX || ZERO
 	}
 
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return stats.currentBalanceADX || ZERO
+	}
+
 	return ZERO
 }
 
