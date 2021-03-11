@@ -427,14 +427,22 @@ export async function loadBondStats(addr, identityAddr) {
 			const vals = Staking.interface.parseLog(log).args
 			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals
 			const bond = { owner, amount, poolId, nonce, slashedAtStart, time }
-			bonds.push({
+			const bondWithData = {
 				id: getBondId(bond),
 				status: "Active",
 				currentAmount: bond.amount
 					.mul(MAX_SLASH.sub(slashedByPool[poolId] || ZERO))
 					.div(MAX_SLASH.sub(slashedAtStart)),
 				...bond
-			})
+			}
+
+			const replacedBondIndex = bonds.findIndex(x => x.id === bondWithData.id)
+
+			if (replacedBondIndex > -1) {
+				bonds[replacedBondIndex] = bondWithData
+			} else {
+				bonds.push(bondWithData)
+			}
 		} else if (
 			topic === Staking.interface.getEventTopic("LogUnbondRequested")
 		) {
@@ -457,7 +465,8 @@ export async function loadBondStats(addr, identityAddr) {
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
 			const { bondId } = Staking.interface.parseLog(log).args
-			bonds.find(({ id }) => id === bondId).status = "Unbonded"
+			const bond = bonds.find(({ id }) => id === bondId)
+			bond.status = "Unbonded"
 		}
 		return bonds
 	}, [])

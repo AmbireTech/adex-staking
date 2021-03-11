@@ -1,24 +1,46 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
-import { Box, SvgIcon, useMediaQuery } from "@material-ui/core"
+import {
+	Box,
+	Grid,
+	SvgIcon,
+	Typography,
+	useMediaQuery
+} from "@material-ui/core"
 import PoolCard from "./PoolCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
 import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
+import StarsIcon from "@material-ui/icons/Stars"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos"
+import Anchor from "components/Anchor"
 import { useTranslation } from "react-i18next"
 import { DEPOSIT_ACTION_TYPES } from "../actions"
+import { makeStyles } from "@material-ui/core/styles"
 
 const DepositsDialog = WithDialog(DepositForm)
 const TOM_LEGACY_POOL = POOLS[0]
 const TOM_V5_POOL = DEPOSIT_POOLS[1]
 const LOYALTY_POOL = DEPOSIT_POOLS[0]
 
+const useStyles = makeStyles(theme => {
+	return {
+		fontSizeSmall: {
+			fontSize: 12
+		},
+		textWhite: {
+			color: "white"
+		}
+	}
+})
+
 const Pools = () => {
+	const classes = useStyles()
 	const { t } = useTranslation()
 	const {
 		stats,
@@ -206,7 +228,60 @@ const Pools = () => {
 						loading={!stats.loaded}
 						comingSoon
 					/> */}
-					<EmailSignUp formId={2} formName="stakingportalleads" />
+					<Box>
+						<Box
+							bgcolor={"background.card"}
+							p={2}
+							my={3}
+							mx={1.5}
+							width={270}
+							display="flex"
+							flexDirection="column"
+							alignItems="center"
+							boxShadow={25}
+							position="relative"
+						>
+							<Grid
+								container
+								direction="row"
+								justify="center"
+								alignItems="center"
+								spacing={2}
+							>
+								<Grid container xs={2} justify="center" alignItems="center">
+									<StarsIcon color="secondary" />
+								</Grid>
+								<Grid item xs={10}>
+									<Typography
+										align="left"
+										variant="h5"
+										classes={{ root: classes.textWhite }}
+									>
+										<strong>New to staking?</strong>
+									</Typography>
+									<Typography align="left" variant="p" color="secondary">
+										<Box display="flex" alignItems="center">
+											<Anchor
+												target="_blank"
+												href="https://help.adex.network/hc/en-us/articles/360019465979-New-to-staking-A-summary-of-all-you-need-to-know"
+											>
+												Learn more{" "}
+												<Box pl={"3px"} display="flex">
+													<ArrowForwardIosIcon
+														fontSize="small"
+														classes={{
+															fontSizeSmall: classes.fontSizeSmall
+														}}
+													/>
+												</Box>
+											</Anchor>
+										</Box>
+									</Typography>
+								</Grid>
+							</Grid>
+						</Box>
+						<EmailSignUp formId={2} formName="stakingportalleads" />
+					</Box>
 				</Box>
 			</Box>
 		</Box>
