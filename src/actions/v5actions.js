@@ -204,12 +204,10 @@ export async function onStakingPoolV5Withdraw(
 export async function onStakingPoolV5RageLeave(
 	stats,
 	chosenWalletType,
-	rageLeveADXAmount
+	rageLeaveADXAmount
 ) {
-	console.log("onStakingPoolV5RageLeave", rageLeveADXAmount)
-
 	if (!stats) throw new Error("errors.statsNotProvided")
-	if (!rageLeveADXAmount) throw new Error("errors.noRageLeaveAAmount")
+	if (!rageLeaveADXAmount) throw new Error("errors.noRageLeaveAAmount")
 
 	const signer = await getSigner(chosenWalletType)
 
@@ -221,7 +219,7 @@ export async function onStakingPoolV5RageLeave(
 
 	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
 
-	const sharesToWithdraw = rageLeveADXAmount
+	const sharesToWithdraw = rageLeaveADXAmount
 		.mul(balanceShares)
 		.div(currentBalanceADX)
 

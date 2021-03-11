@@ -13,7 +13,8 @@ import { claimRewards } from "./actions"
 import {
 	onStakingPoolV5Deposit,
 	onStakingPoolV5UnbondCommitment,
-	onStakingPoolV5Withdraw
+	onStakingPoolV5Withdraw,
+	onStakingPoolV5RageLeave
 } from "./v5actions"
 import { fetchJSON } from "../helpers/fetch"
 import { formatDAI } from "../helpers/formatting"
@@ -83,7 +84,7 @@ export const getUnbondCommitmentActionByPoolId = poolId => {
 
 export const getRageLeaveActionByPoolId = poolId => {
 	if (poolId === DEPOSIT_POOLS[1].id) {
-		return onStakingPoolV5UnbondCommitment
+		return onStakingPoolV5RageLeave
 	}
 
 	throw new TranslatableError("errors.noActionForPool", {
@@ -141,7 +142,7 @@ export const getDepositActionByTypeAndPoolId = (actionType, poolId) => {
 		case DEPOSIT_ACTION_TYPES.unbondCommitment:
 			return getUnbondCommitmentActionByPoolId(poolId)
 		case DEPOSIT_ACTION_TYPES.rageLeave:
-			return getUnbondCommitmentActionByPoolId(poolId)
+			return getRageLeaveActionByPoolId(poolId)
 		default:
 			throw new TranslatableError("errors.invalidActionType", { actionType })
 	}
