@@ -126,7 +126,7 @@
     "leave": "Leave",
     "selectUnbondCommitmentToWithdraw": "Unbond commitments",
     "selectUnbondCommitmentToWithdrawInfo": "Select unbond commitment to withdraw",
-    "unlocksAt": "Unlocks at",
+    "unlockAt": "Unlocks at",
     "makeUnbondCommitment": "Make unbond commitment",
     "alreadyWithdrawn": "Already withdrawn",
     "notUnlockedYet": "Not unlocked yet",

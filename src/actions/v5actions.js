@@ -196,9 +196,9 @@ export async function onStakingPoolV5Withdraw(
 		signer
 	)
 
-	const { shares, unlocksAt } = unbondCommitment
+	const { shares, unlockAt } = unbondCommitment
 
-	await stakingPoolWithSigner.withdraw(shares, unlocksAt, false)
+	await stakingPoolWithSigner.withdraw(shares, unlockAt, false)
 }
 
 export async function onStakingPoolV5RageLeave(
@@ -325,7 +325,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			withdrawTxHash: 4,
 			shares: BigNumber.from(400 + decimalsString),
 			maxTokens: BigNumber.from(420 + decimalsString),
-			unlocksAt: 1608353186,
+			unlockAt: 1608353186,
 			blockNumber: 11482093,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6",
 			withdrawTx: {
@@ -343,7 +343,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares: BigNumber.from(480 + decimalsString),
 			maxTokens: BigNumber.from(500 + decimalsString),
-			unlocksAt: 1610340386,
+			unlockAt: 1610340386,
 			canWithdraw: true,
 			blockNumber: 11482999,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
@@ -353,7 +353,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares: BigNumber.from(170 + decimalsString),
 			maxTokens: BigNumber.from(200 + decimalsString),
-			unlocksAt: 1611981986,
+			unlockAt: 1611981986,
 			blockNumber: 11481850,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
@@ -568,7 +568,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		const parsedWithdrawLog = StakingPool.interface.parseLog(log)
 		const {
 			shares,
-			unlocksAt,
+			unlockAt,
 			maxTokens,
 			receivedTokens
 		} = parsedWithdrawLog.args
@@ -577,7 +577,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			transactionHash: log.transactionHash,
 			type: STAKING_POOL_EVENT_TYPES.withdraw,
 			shares, //[1]
-			unlocksAt, //[2]
+			unlockAt, //[2]
 			maxTokens, //[3]
 			receivedTokens, //[4]
 			blockNumber: log.blockNumber
@@ -604,29 +604,29 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const userLeaves = await Promise.all(
 		leaveLogs.map(async log => {
 			const parsedLog = StakingPool.interface.parseLog(log)
-			const { shares, unlocksAt, maxTokens } = parsedLog.args
+			const { shares, unlockAt, maxTokens } = parsedLog.args
 
 			const withdrawTx = userWithdraws.find(
 				event =>
-					event.unlocksAt === unlocksAt &&
+					event.unlockAt === unlockAt &&
 					event.shares === shares &&
 					event.maxTokens === maxTokens
 			)
 
 			const adxValue = await StakingPool.unbondingCommitmentWorth(
 				owner,
-				log.shares,
-				log.unlocksAt
+				shares,
+				unlockAt
 			)
 
 			return {
 				transactionHash: log.transactionHash,
 				type: STAKING_POOL_EVENT_TYPES.leave,
 				shares, // [1]
-				unlocksAt, //[2]
+				unlockAt, //[2]
 				maxTokens, // [3]
 				adxValue,
-				canWithdraw: unlocksAt < now && !withdrawTx,
+				canWithdraw: unlockAt < now && !withdrawTx,
 				blockNumber: log.blockNumber,
 				withdrawTx
 			}
@@ -634,30 +634,30 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	)
 
 	const leavesPendingToUnlock = [...userLeaves].filter(
-		event => event.unlocksAt > now
+		event => event.unlockAt > now
 	)
 
 	const leavesReadyToWithdraw = [...userLeaves].filter(
-		event => event.unlocksAt < now && !event.withdrawTx
+		event => event.unlockAt < now && !event.withdrawTx
 	)
 
 	const leavesPendingToUnlockTotalMax = leavesPendingToUnlock.reduce(
-		(a, b) => a.maxTokens.add(b.maxTokens),
+		(a, b) => a.add(b.maxTokens),
 		ZERO
 	)
 
 	const leavesPendingToUnlockTotalADX = leavesPendingToUnlock.reduce(
-		(a, b) => a.adxValue.add(b.adxValue),
+		(a, b) => a.add(b.adxValue),
 		ZERO
 	)
 
 	const leavesReadyToWithdrawTotalMax = leavesReadyToWithdraw.reduce(
-		(a, b) => a.maxTokens.add(b.maxTokens),
+		(a, b) => a.add(b.maxTokens),
 		ZERO
 	)
 
 	const leavesReadyToWithdrawTotalADX = leavesReadyToWithdraw.reduce(
-		(a, b) => a.adxValue.add(b.adxValue),
+		(a, b) => a.add(b.adxValue),
 		ZERO
 	)
 

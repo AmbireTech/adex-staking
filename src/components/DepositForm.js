@@ -220,15 +220,15 @@ export default function DepositForm({
 									return (
 										<MenuItem
 											disabled={disabled}
-											id={`new-${actionType}-form-values-${uc.unlocksAt}`}
-											key={uc.unlocksAt}
-											value={uc.unlocksAt}
+											id={`new-${actionType}-form-values-${uc.unlockAt}`}
+											key={uc.unlockAt}
+											value={uc.unlockAt}
 										>
 											<Box px={1}>
 												{StatsCard({
 													loaded: true,
-													title: `${t("deposits.unlocksAt")} ${formatDateTime(
-														Math.ceil(uc.unlocksAt * 1000)
+													title: `${t("deposits.unlockAt")} ${formatDateTime(
+														Math.ceil(uc.unlockAt * 1000)
 													)}`,
 													subtitle: `max ${formatADXPretty(uc.maxTokens)} ADX`,
 													extra: uc.canWithdraw
