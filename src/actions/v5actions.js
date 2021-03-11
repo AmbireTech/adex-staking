@@ -669,31 +669,47 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	)
 
-	const { buySharesByPrice, buyTotalShares } = userEnters.reduce(
+	const {
+		depositsSharesWeightedSum,
+		depositsSharesTotal,
+		depositsADXTotal
+	} = userEnters.reduce(
 		(data, log) => {
-			data.buySharesByPrice = data.buySharesByPrice.add(
+			data.depositsSharesWeightedSum = data.depositsSharesWeightedSum.add(
 				log.shares.mul(log.adxAmount)
 			)
-			data.buyTotalShares = data.buyTotalShares.add(log.shares)
+			data.depositsSharesTotal = data.depositsSharesTotal.add(log.shares)
+			data.depositsADXTotal = data.depositsADXTotal.add(log.adxAmount)
 
 			return data
 		},
-		{ buySharesByPrice: ZERO, buyTotalShares: ZERO }
+		{
+			depositsSharesWeightedSum: ZERO,
+			depositsSharesTotal: ZERO,
+			depositsADXTotal: ZERO
+		}
 	)
 
-	const { sellSharesByPrice, sellTotalShares } = userWithdraws
-		.concat(userRageLeaves)
-		.reduce(
-			(data, log) => {
-				data.sellSharesByPrice = data.sellSharesByPrice.add(
-					log.shares.mul(log.adxAmount)
-				)
-				data.sellTotalShares = data.sellTotalShares.add(log.shares)
+	const {
+		withdrawsSharesWeightedSum,
+		withdrawsSharesTotal,
+		withdrawsADXTotal
+	} = userWithdraws.concat(userRageLeaves).reduce(
+		(data, log) => {
+			data.withdrawsSharesWeightedSum = data.withdrawsSharesWeightedSum.add(
+				log.shares.mul(log.adxAmount)
+			)
+			data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
+			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.adxAmount)
 
-				return data
-			},
-			{ sellSharesByPrice: ZERO, sellTotalShares: ZERO }
-		)
+			return data
+		},
+		{
+			withdrawsSharesWeightedSum: ZERO,
+			withdrawsSharesTotal: ZERO,
+			withdrawsADXTotal: ZERO
+		}
+	)
 
 	const totalSharesOutTransfers = sharesTokensTransfersOut.reduce(
 		(a, b) => a.shares.add(b.shares),
@@ -705,33 +721,36 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	)
 
 	// TODO: precision ??
-	const avgShareBuyPrice = buyTotalShares.isZero()
+	const avgShareDepositPrice = depositsSharesTotal.isZero()
 		? ZERO
-		: buySharesByPrice.div(buyTotalShares)
+		: depositsSharesWeightedSum.div(depositsSharesTotal)
 
-	const avgShareSellPrice = sellTotalShares.isZero()
+	const avgShareWithdrawPrice = withdrawsSharesTotal.isZero()
 		? ZERO
-		: sellSharesByPrice.div(sellTotalShares)
+		: withdrawsSharesWeightedSum.div(withdrawsSharesTotal)
 
-	const isPositiveTardeDelta = avgShareSellPrice.gt(avgShareBuyPrice)
+	const isPositiveTardeDelta = avgShareWithdrawPrice.gt(avgShareDepositPrice)
 
 	const avgTradeDelta =
-		sellTotalShares.isZero() || buyTotalShares.isZero()
+		withdrawsSharesTotal.isZero() || depositsSharesTotal.isZero()
 			? ZERO
 			: isPositiveTardeDelta
-			? avgShareSellPrice.sub(avgShareBuyPrice)
-			: avgShareBuyPrice.sub(avgShareSellPrice)
+			? avgShareWithdrawPrice.sub(avgShareDepositPrice)
+			: avgShareDepositPrice.sub(avgShareWithdrawPrice)
 
-	const withdrawnReward = buyTotalShares
+	const withdrawnReward = depositsSharesTotal
 		.sub(totalSharesOutTransfers)
 		.mul(avgTradeDelta)
 
+	const avgDepositShareValue = depositsADXTotal.isZero()
+		? ZERO
+		: depositsSharesTotal
+				.mul(POOL_SHARES_TOKEN_DECIMALS_MUL)
+				.div(depositsADXTotal)
+
 	// TODO:
-	const totalRewards = buyTotalShares
-		.sub(sellTotalShares)
-		// .add(balanceShares)
-		.sub(totalSharesOutTransfers)
-		.mul(shareValue)
+	const totalRewards = balanceShares
+		.mul(shareValue.sub(avgDepositShareValue))
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
 	const currentReward = totalRewards.sub(withdrawnReward)
