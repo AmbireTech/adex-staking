@@ -22,7 +22,7 @@ import { executeOnIdentity, toChannelTuple } from "./common"
 
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
-const PRECISION = 1_000_000
+const PRECISION = 1_000_000_000_000
 
 const provider = getDefaultProvider
 
@@ -59,6 +59,8 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentBalanceADX: ZERO,
 	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
+	poolTotalBalanceADX: ZERO,
+	sharesTotalSupply: ZERO,
 	totalRewards: ZERO,
 	currentReward: ZERO,
 	totalSharesInTransfers: ZERO,
@@ -260,12 +262,16 @@ export async function onStakingPoolV5UnbondCommitment(
 export async function getTomStakingV5PoolData() {
 	const [
 		poolTotalStaked,
+		mintableIncentive,
+		sharesTotalSupply,
 		incentivePerSecond,
 		rageReceivedPromilles = 700,
 		unbondDays = 20,
 		shareValue = ZERO
 	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),
+		ADXSupplyController.mintableIncentive(ADDR_STAKING_POOL),
+		StakingPool.totalSupply(),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL),
 		StakingPool.RAGE_RECEIVED_PROMILLES(), // TODO
 		StakingPool.TIME_TO_UNBOND(), // TODO
@@ -274,6 +280,9 @@ export async function getTomStakingV5PoolData() {
 
 	return {
 		poolTotalStaked,
+		mintableIncentive,
+		poolTotalBalanceADX: poolTotalStaked.add(mintableIncentive),
+		sharesTotalSupply,
 		incentivePerSecond,
 		shareValue,
 		rageReceivedPromilles,
@@ -459,7 +468,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	])
 
-	const { shareValue, poolTotalStaked } = poolData
+	const { shareValue, sharesTotalSupply } = poolData
 
 	const currentBalanceADX = balanceShares
 		.mul(shareValue)
@@ -468,7 +477,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const userShare =
 		balanceShares
 			.mul(PRECISION)
-			.div(poolTotalStaked)
+			.div(sharesTotalSupply)
 			.toNumber() / PRECISION
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
@@ -744,11 +753,11 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const avgDepositShareValue = depositsADXTotal.isZero()
 		? ZERO
-		: depositsSharesTotal
+		: depositsADXTotal
 				.mul(POOL_SHARES_TOKEN_DECIMALS_MUL)
-				.div(depositsADXTotal)
+				.div(depositsSharesTotal)
 
-	// TODO:
+	// TODO: depositsSharesTotal instead balanceShares
 	const totalRewards = balanceShares
 		.mul(shareValue.sub(avgDepositShareValue))
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
