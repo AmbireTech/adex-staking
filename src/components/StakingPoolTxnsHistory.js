@@ -122,7 +122,7 @@ export default function StakingPoolTxnsHistory() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{[...(stakings || [])].map((stakingEvent, i) => (
+							{[...(stakings || [])].reverse().map((stakingEvent, i) => (
 								<StakingEventRow
 									key={stakingEvent.blockNumber + i}
 									stakingEvent={stakingEvent}
