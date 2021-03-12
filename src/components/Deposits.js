@@ -79,10 +79,10 @@ const getStakingPool = ({
 				fontSize={17}
 			/>
 		),
-		currentReward: (
+		depositsADXTotal: (
 			<AmountText
 				text={`${formatADXPretty(
-					tomStakingV5PoolStats.currentReward
+					tomStakingV5PoolStats.depositsADXTotal
 				)} ${"ADX"}`}
 				fontSize={17}
 			/>
@@ -91,6 +91,14 @@ const getStakingPool = ({
 			<AmountText
 				text={`${formatADXPretty(
 					tomStakingV5PoolStats.leavesPendingToUnlockTotalADX
+				)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		),
+		withdrawsADXTotal: (
+			<AmountText
+				text={`${formatADXPretty(
+					tomStakingV5PoolStats.withdrawsADXTotal
 				)} ${"ADX"}`}
 				fontSize={17}
 			/>
@@ -204,9 +212,10 @@ const getLoyaltyPoolDeposit = ({
 		) : (
 			t("common.unknown")
 		),
-		currentReward: t("common.NA"),
+		depositsADXTotal: t("common.NA"),
 		pendingToUnlockTotalADX: t("common.NA"),
 		readyToWithdrawTotalADX: t("common.NA"),
+		withdrawsADXTotal: t("common.NA"),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
@@ -342,7 +351,8 @@ export default function Deposits() {
 				)} %`}</TableCell>
 				<TableCell align="right">{deposit.balance}</TableCell>
 				<TableCell align="right">{deposit.allTimeReward}</TableCell>
-				<TableCell align="right">{deposit.currentReward}</TableCell>
+				<TableCell align="right">{deposit.depositsADXTotal}</TableCell>
+				<TableCell align="right">{deposit.withdrawsADXTotal}</TableCell>
 				<TableCell align="right">{deposit.pendingToUnlockTotalADX}</TableCell>
 				<TableCell align="right">{deposit.readyToWithdrawTotalADX}</TableCell>
 				<TableCell align="center">
@@ -389,7 +399,10 @@ export default function Deposits() {
 									{t("deposits.allTimeRewards")}
 								</TableCell>
 								<TableCell align="right">
-									{t("deposits.currentRewards")}
+									{t("deposits.depositsADXTotal")}
+								</TableCell>
+								<TableCell align="right">
+									{t("deposits.withdrawsADXTotal")}
 								</TableCell>
 								<TableCell align="right">
 									{t("deposits.pendingToUnlockTotal")}
