@@ -230,7 +230,7 @@ export default function DepositForm({
 													title: `${t("deposits.unlockAt")} ${formatDateTime(
 														Math.ceil(uc.unlockAt * 1000)
 													)}`,
-													subtitle: `max ${formatADXPretty(uc.maxTokens)} ADX`,
+													subtitle: `value ${formatADXPretty(uc.adxValue)} ADX`,
 													extra: uc.canWithdraw
 														? ""
 														: !!uc.withdrawTx

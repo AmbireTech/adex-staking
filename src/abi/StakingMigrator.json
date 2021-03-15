@@ -65,7 +65,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "bondAmount",
 				"type": "uint256"
 			},
 			{
@@ -77,6 +77,11 @@
 				"internalType": "address",
 				"name": "recipient",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "actualAmount",
+				"type": "uint256"
 			}
 		],
 		"name": "finishMigration",

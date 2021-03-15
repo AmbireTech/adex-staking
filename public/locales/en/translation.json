@@ -139,7 +139,10 @@
     "eventType": "Event Type",
     "txnHash": "Txn Hash",
     "txnsHistory": "Txns history",
-    "from": "From"
+    "from": "From",
+    "depositsADXTotal": "Total deposits",
+    "withdrawsADXTotal": "Total withdraws",
+    "extraInfo": "Extra info"
   },
   "bonds": {
     "bondAmount": "Bond amount",

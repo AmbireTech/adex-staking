@@ -617,7 +617,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			)
 
 			const adxValue = sharesTotalSupply.isZero()
-				? maxTokens
+				? ZERO // maxTokens
 				: await StakingPool.unbondingCommitmentWorth(owner, shares, unlockAt)
 
 			return {

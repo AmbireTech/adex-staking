@@ -81,7 +81,7 @@ const StakingEventRow = ({ stakingEvent }) => {
 					target="_blank"
 					href={`https://etherscan.io/block/${stakingEvent.blockNumber}`}
 				>
-					{stakingEvent.blockNumber}
+					{stakingEvent.blockNumbe}
 				</ExternalAnchor>
 			</TableCell>
 			<TableCell align="right">
@@ -117,7 +117,7 @@ export default function StakingPoolTxnsHistory() {
 								<TableCell align="right">{t("deposits.eventType")}</TableCell>
 								<TableCell align="right">{t("deposits.amount")}</TableCell>
 								<TableCell align="right">{t("deposits.from")}</TableCell>
-								<TableCell align="right">{t("deposits.blockNumber")}</TableCell>
+								<TableCell align="right">{t("deposits.extraInfo")}</TableCell>
 								<TableCell align="right">{t("deposits.txnHash")}</TableCell>
 							</TableRow>
 						</TableHead>
