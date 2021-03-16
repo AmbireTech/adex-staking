@@ -385,8 +385,7 @@ export async function loadBondStats(addr, identityAddr) {
 		[userWalletBalance, userIdentityBalance],
 		logs,
 		slashLogs,
-		migrationRequestsLogs,
-		stakingMigratorPoolId
+		migrationLogs
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		defaultProvider.getLogs({
@@ -400,10 +399,8 @@ export async function loadBondStats(addr, identityAddr) {
 		}),
 		defaultProvider.getLogs({
 			fromBlock: 0,
-			...StakingMigrator.filters.LogRequestMigrate(identityAddr, null, null)
-		}),
-		// StakingMigrator.poolId()
-		() => null
+			...StakingMigrator.filters.LogBondMigrated(null)
+		})
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -414,8 +411,9 @@ export async function loadBondStats(addr, identityAddr) {
 		return pools
 	}, {})
 
-	const migrationLogsByTxnHash = migrationRequestsLogs.reduce((byHash, log) => {
-		byHash[log.transactionHash] = log
+	const migrationLogsByBondId = migrationLogs.reduce((byHash, log) => {
+		const { bondId } = StakingMigrator.interface.parseLog(log).args
+		byHash[bondId] = log
 		return byHash
 	}, {})
 
@@ -423,13 +421,19 @@ export async function loadBondStats(addr, identityAddr) {
 		const topic = log.topics[0]
 		// TODO: add is migrations Unbond request and migrated status
 		// status = "MigrationRequested"
+
 		if (topic === Staking.interface.getEventTopic("LogBond")) {
 			const vals = Staking.interface.parseLog(log).args
 			const { owner, amount, poolId, nonce, slashedAtStart, time } = vals
 			const bond = { owner, amount, poolId, nonce, slashedAtStart, time }
+
+			const id = getBondId(bond)
+
+			const bondMigrationLog = migrationLogsByBondId[id]
+
 			const bondWithData = {
-				id: getBondId(bond),
-				status: "Active",
+				id,
+				status: bondMigrationLog ? "Migrated" : "Active",
 				currentAmount: bond.amount
 					.mul(MAX_SLASH.sub(slashedByPool[poolId] || ZERO))
 					.div(MAX_SLASH.sub(slashedAtStart)),
@@ -450,17 +454,7 @@ export async function loadBondStats(addr, identityAddr) {
 			const { bondId, willUnlock } = Staking.interface.parseLog(log).args
 			const bond = bonds.find(({ id }) => id === bondId)
 
-			const migrationLog = migrationLogsByTxnHash[log.transactionHash]
-			const migrationBondData = !migrationLog
-				? {}
-				: StakingMigrator.interface.parseLog(migrationLog).args
-			const migrationBondId =
-				!migrationBondData.owner || !migrationBondData.amount
-					? null
-					: getBondId({ poolId: stakingMigratorPoolId, ...migrationBondData })
-
-			bond.status =
-				migrationBondId === bondId ? "MigrationRequested" : "UnbondRequested"
+			bond.status = "UnbondRequested"
 
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
@@ -468,6 +462,7 @@ export async function loadBondStats(addr, identityAddr) {
 			const bond = bonds.find(({ id }) => id === bondId)
 			bond.status = "Unbonded"
 		}
+
 		return bonds
 	}, [])
 
