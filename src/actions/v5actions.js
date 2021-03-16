@@ -103,38 +103,50 @@ export async function onMigrationToV5(
 export async function onMigrationToV5Finalize(
 	chosenWalletType,
 	{ amount, poolId, nonce },
+	claimPendingRewards,
 	stats
 ) {
-	const bond = [amount, poolId, nonce || ZERO]
+	console.log("stats", stats)
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 
-	const { identityADXIncentiveChannels, identityAdxRewardsAmount } = stats
+	const {
+		identityADXIncentiveChannels,
+		identityAdxRewardsAmount
+	} = stats.tomPoolStats
 
-	const identityTxns = identityADXIncentiveChannels.map(channel => {
-		const channelTuple = toChannelTuple(channel.channelArgs)
-		return [
-			Core.address,
-			Core.interface.encodeFunctionData("channelWithdraw", [
-				channelTuple,
-				channel.stateRoot,
-				channel.signatures,
-				channel.proof,
-				channel.amount
-			])
-		]
-	})
+	const identityTxns = []
+
+	if (claimPendingRewards) {
+		identityTxns.concat(
+			identityADXIncentiveChannels.map(channel => {
+				const channelTuple = toChannelTuple(channel.channelArgs)
+				return [
+					Core.address,
+					Core.interface.encodeFunctionData("channelWithdraw", [
+						channelTuple,
+						channel.stateRoot,
+						channel.signatures,
+						channel.proof,
+						channel.amount
+					])
+				]
+			})
+		)
+
+		// TODO: Transfer rewards to staking migrator
+	}
 
 	await executeOnIdentity(chosenWalletType, [
-		[Staking.address, Staking.interface.encodeFunctionData("unbond", [bond])],
 		...identityTxns,
 		[
 			StakingMigrator.address,
 			StakingMigrator.interface.encodeFunctionData("finishMigration", [
-				amount.add(identityAdxRewardsAmount),
+				amount,
 				nonce,
-				walletAddr
+				walletAddr,
+				identityAdxRewardsAmount
 			])
 		]
 	])
