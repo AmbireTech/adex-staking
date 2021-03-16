@@ -1,65 +1,16 @@
 [
 	{
-		"inputs": [
-			{
-				"internalType": "contract StakingPool",
-				"name": "_newStaking",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
 				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "nonce",
-				"type": "uint256"
+				"internalType": "bytes32",
+				"name": "bondId",
+				"type": "bytes32"
 			}
 		],
-		"name": "LogRequestMigrate",
+		"name": "LogBondMigrated",
 		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "ADXToken",
-		"outputs": [
-			{
-				"internalType": "contract IADXToken",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "BONUS_PROMILLES",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -80,13 +31,69 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "actualAmount",
+				"name": "extraAmount",
 				"type": "uint256"
 			}
 		],
-		"name": "finishMigration",
+		"name": "migrate",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract StakingPool",
+				"name": "_newStaking",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "ADXToken",
+		"outputs": [
+			{
+				"internalType": "contract IADXToken",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "legacyStaking",
+		"outputs": [
+			{
+				"internalType": "contract ILegacyStaking",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "migratedBonds",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -116,31 +123,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "nonce",
-				"type": "uint256"
-			}
-		],
-		"name": "requestMigrate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
-		"name": "staking",
+		"name": "WITH_BONUS_PROMILLES",
 		"outputs": [
 			{
-				"internalType": "contract ILegacyStaking",
+				"internalType": "uint256",
 				"name": "",
-				"type": "address"
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
