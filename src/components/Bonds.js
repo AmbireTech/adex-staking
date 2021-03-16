@@ -1,8 +1,7 @@
-import React, { useState } from "react"
+import React from "react"
 import {
 	TableRow,
 	TableCell,
-	Button,
 	Box,
 	Table,
 	TableContainer,
@@ -10,26 +9,19 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { UNBOND_DAYS, UNBOND_DAYS_V5, ZERO } from "../helpers/constants"
+import { UNBOND_DAYS, ZERO } from "../helpers/constants"
 import { formatADXPretty, formatDate } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
-import Tooltip from "./Tooltip"
-import ConfirmationDialog from "./ConfirmationDialog"
+import { useTranslation } from "react-i18next"
 import { getPool, getBondId } from "../helpers/bonds"
-import { useTranslation, Trans } from "react-i18next"
 
-export default function Bonds({
-	stats,
-	// onRequestUnbond,
-	onMigrationRequest,
-	onUnbond,
-	onMigrationFinalize
-}) {
+import WithDialog from "./WithDialog"
+import MigrationForm from "./MigrationForm"
+
+const MigrationDialog = WithDialog(MigrationForm)
+
+export default function Bonds({ stats }) {
 	const { t } = useTranslation()
-	const [migrationOpen, setMigrationOpen] = useState(false)
-	const [bondToMigrate, setBondToMigrate] = useState(null)
-	const [isMigrationFinalization, setIsMigrationFinalization] = useState(false)
-
 	// Render all stats cards + bond table
 	const bondStatus = bond => {
 		if (bond.status === "UnbondRequested") {
@@ -50,15 +42,6 @@ export default function Bonds({
 		return bond.status
 	}
 
-	const migrate = async () => {
-		setMigrationOpen(false)
-		if (isMigrationFinalization) {
-			onMigrationFinalize(bondToMigrate, stats.rewardChannels)
-		} else {
-			onMigrationRequest(bondToMigrate)
-		}
-	}
-
 	const renderBondRow = bond => {
 		const pool = getPool(bond.poolId)
 		const poolLabel = pool ? pool.label : bond.poolId
@@ -67,18 +50,18 @@ export default function Bonds({
 		)
 		const bondId = getBondId(bond)
 
-		const unbondDisableMsg =
-			bond.status === "Unbonded"
-				? t("bonds.alreadyUnbonded")
-				: !bond.willUnlock
-				? t("bonds.unbondNotReady")
-				: bond.willUnlock.getTime() > Date.now()
-				? t("bonds.willUnlockIn", {
-						unlockTime: new Date(bond.willUnlock.getTime()).toLocaleDateString()
-				  })
-				: ""
+		// const unbondDisableMsg =
+		// 	bond.status === "Unbonded"
+		// 		? t("bonds.alreadyUnbonded")
+		// 		: !bond.willUnlock
+		// 			? t("bonds.unbondNotReady")
+		// 			: bond.willUnlock.getTime() > Date.now()
+		// 				? t("bonds.willUnlockIn", {
+		// 					unlockTime: new Date(bond.willUnlock.getTime()).toLocaleDateString()
+		// 				})
+		// 				: ""
 
-		const migrationDisableMsg = ""
+		// const migrationDisableMsg = ""
 		// bond.status === "Migrated"
 		// 	? t("bonds.alreadyMigrated")
 		// 	: !bond.willUnlock
@@ -101,68 +84,22 @@ export default function Bonds({
 				<TableCell align="right">{formatDate(created)}</TableCell>
 				<TableCell align="right">{bondStatus(bond)}</TableCell>
 				<TableCell align="right">
-					{bond.status === "Active" && (
+					{(bond.status === "Active" || bond.status === "UnbondRequested") && (
 						<Box display="inline-block" m={0.5}>
-							<Tooltip title={t("bonds.requestMigrate")}>
-								<Box display="inline-block">
-									<Button
-										id={`request-migration-${bondId}`}
-										size="small"
-										variant="contained"
-										color="primary"
-										onClick={() => {
-											setBondToMigrate(bond)
-											setIsMigrationFinalization(false)
-											setMigrationOpen(true)
-										}}
-									>
-										{t("bonds.requestMigrate")}
-									</Button>
-								</Box>
-							</Tooltip>
-						</Box>
-					)}
-
-					{bond.status === "MigrationRequested" && (
-						<Box display="inline-block" m={0.5}>
-							<Tooltip title={migrationDisableMsg}>
-								<Box display="inline-block">
-									<Button
-										id={`migrate-finalize-${bondId}`}
-										size="small"
-										variant="contained"
-										disabled={!!migrationDisableMsg}
-										onClick={() => {
-											setBondToMigrate(bond)
-											setIsMigrationFinalization(true)
-											setMigrationOpen(true)
-										}}
-										color="secondary"
-									>
-										{t("bonds.finalizeMigration")}
-									</Button>
-								</Box>
-							</Tooltip>
-						</Box>
-					)}
-
-					{(bond.status === "UnbondRequested" ||
-						bond.status === "Unbonded") && (
-						<Box display="inline-block" m={0.5}>
-							<Tooltip title={unbondDisableMsg}>
-								<Box display="inline-block">
-									<Button
-										id={`unbond-${bondId}`}
-										size="small"
-										variant="contained"
-										disabled={!!unbondDisableMsg}
-										onClick={() => onUnbond(bond)}
-										color="primary"
-									>
-										{t("common.unbond")}
-									</Button>
-								</Box>
-							</Tooltip>
+							<MigrationDialog
+								id="staking-pool-tom-deposit-form"
+								title={t("bonds.requestMigrate")}
+								btnLabel={t("bonds.requestMigrate")}
+								color="secondary"
+								size="small"
+								variant="contained"
+								bond={bond}
+								fullWidth
+								// disabled={!!disabledDepositsMsg}
+								// tooltipTitle={disabledDepositsMsg}
+								// depositPool={DEPOSIT_POOLS[1].id}
+								// actionType={DEPOSIT_ACTION_TYPES.deposit}
+							/>
 						</Box>
 					)}
 				</TableCell>
@@ -185,7 +122,7 @@ export default function Bonds({
 					</TableHead>
 					<TableBody>
 						{[...(stats.userBonds || [])]
-							.filter(x => x.status !== "Unbonded")
+							.filter(x => x.status !== "Unbonded" && x.stats !== "Migrated")
 							.reverse()
 							.map(renderBondRow)}
 					</TableBody>
@@ -199,49 +136,6 @@ export default function Bonds({
 					</Alert>
 				</Box>
 			)}
-
-			{ConfirmationDialog({
-				isOpen: migrationOpen,
-				onDeny: () => setMigrationOpen(false),
-				onConfirm: () => {
-					migrate()
-				},
-				confirmActionName: isMigrationFinalization
-					? t("bonds.finalizeMigration")
-					: t("bonds.requestMigrate"),
-				content: (
-					<Trans
-						i18nKey={
-							isMigrationFinalization
-								? "dialogs.migrationFinalizationConfirmation"
-								: "dialogs.migrationRequestConfirmation"
-						}
-						values={{
-							amount: bondToMigrate
-								? `${formatADXPretty(bondToMigrate.currentAmount)}`
-								: "",
-							poolName: bondToMigrate
-								? t((getPool(bondToMigrate.poolId) || {}).label || "")
-								: "",
-							currency: "ADX",
-							unbondDaysV5: UNBOND_DAYS_V5,
-							unbondDays: UNBOND_DAYS,
-							migrationReward:
-								bondToMigrate && bondToMigrate.migrationReward
-									? `${formatADXPretty(bondToMigrate.migrationReward)}`
-									: "",
-							extraInfo: isMigrationFinalization
-								? t("bonds.migrationFinalizationsInfo")
-								: t("bonds.migrationInfo")
-						}}
-						components={{
-							box: <Box mb={2}></Box>,
-							ol: <ol></ol>,
-							li: <li></li>
-						}}
-					/>
-				)
-			})}
 		</Box>
 	)
 }
