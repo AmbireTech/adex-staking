@@ -165,7 +165,11 @@
     "migrationInfo": "TODO: Some extra migration info",
     "requestUnbondOrMigrate": "Migrate / Request Unbond",
     "requestMigrate": "Migrate",
-    "finalizeMigration": "Finalize migration"
+    "finalizeMigration": "Finalize migration",
+    "migrationClaimPendingRewards": "Claim pending rewards. ({{amount}} {{currency}}). [Uses more gas]",
+    "stakeWalletBalance": "Stake wallet balance. ({{amount}} {{currency}}). [Uses more gas]",
+    "migrateNow": "Migrate now",
+    "tosNotConfirmed":"Confirm terms of service"
   },
   "gasless": {
     "staking": "Gasless Staking",

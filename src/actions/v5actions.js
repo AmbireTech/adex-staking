@@ -104,6 +104,7 @@ export async function onMigrationToV5Finalize(
 	chosenWalletType,
 	{ amount, poolId, nonce },
 	claimPendingRewards,
+	stakeWalletBalance,
 	stats
 ) {
 	console.log("stats", stats)

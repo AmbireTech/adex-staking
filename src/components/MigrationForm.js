@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import { getPoolStatsByPoolId, onMigrationToV5Finalize } from "../actions"
-import { toIdAttributeString } from "../helpers/formatting"
-import { DEPOSIT_POOLS } from "../helpers/constants"
+import { toIdAttributeString, formatADXPretty } from "../helpers/formatting"
+import { DEPOSIT_POOLS, STAKING_RULES_URL } from "../helpers/constants"
 import {
 	Grid,
 	Typography,
@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core"
 import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
+import { ExternalAnchor } from "./Anchor"
+import Tooltip from "./Tooltip"
 
 const activePool = DEPOSIT_POOLS[1]
 
@@ -20,7 +22,12 @@ export default function MigrationForm({ closeDialog, bond }) {
 	const { t } = useTranslation()
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
+	const { userWalletBalance, tomPoolStats, tomStakingV5PoolStats } = stats
+	const { identityAdxRewardsAmount } = tomPoolStats
+	const { timeToUnbond } = tomStakingV5PoolStats
+
 	const [claimPendingRewards, setClaimPendingRewards] = useState(true)
+	const [stakeWalletBalance, setStakeWalletBalance] = useState(false)
 	const [confirmed, setConfirmed] = useState(false)
 
 	const [poolStats, setPoolStats] = useState({})
@@ -45,10 +52,40 @@ export default function MigrationForm({ closeDialog, bond }) {
 				chosenWalletType,
 				bond,
 				claimPendingRewards,
+				stakeWalletBalance,
 				stats
 			)
 		)()
 	}
+
+	const confirmationLabel = (
+		<Trans
+			i18nKey="bonds.confirmationLabel"
+			values={{
+				unbondDays: timeToUnbond
+			}}
+			components={{
+				e1: (
+					<ExternalAnchor
+						id="new-bond-form-adex-network-tos"
+						target="_blank"
+						href="https://www.adex.network/tos/"
+					/>
+				),
+				e2: STAKING_RULES_URL ? (
+					<ExternalAnchor
+						id="new-bond-form-adex-staking-rules"
+						target="_blank"
+						href={STAKING_RULES_URL}
+					/>
+				) : (
+					<></>
+				)
+			}}
+		/>
+	)
+
+	const disableMigrationMsg = !confirmed ? t("bonds.tosNotConfirmed") : ""
 
 	return (
 		<Box width={1}>
@@ -98,7 +135,10 @@ export default function MigrationForm({ closeDialog, bond }) {
 				<Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}
-						label={t("bonds.migrationClainPendingRewards")}
+						label={t("bonds.migrationClaimPendingRewards", {
+							amount: formatADXPretty(identityAdxRewardsAmount),
+							currency: "ADX"
+						})}
 						control={
 							<Checkbox
 								id={`new-migration-v5-form-claim-pending-rewards-check`}
@@ -109,10 +149,29 @@ export default function MigrationForm({ closeDialog, bond }) {
 					></FormControlLabel>
 				</Grid>
 
+				{!userWalletBalance.isZero() && (
+					<Grid item xs={12}>
+						<FormControlLabel
+							style={{ userSelect: "none" }}
+							label={t("bonds.stakeWalletBalance", {
+								amount: formatADXPretty(userWalletBalance),
+								currency: "ADX"
+							})}
+							control={
+								<Checkbox
+									id={`new-migration-v5-form-stake-wallet-balance-check`}
+									checked={stakeWalletBalance}
+									onChange={ev => setStakeWalletBalance(ev.target.checked)}
+								/>
+							}
+						></FormControlLabel>
+					</Grid>
+				)}
+
 				<Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}
-						label={t(activePool.confirmationLabel)}
+						label={confirmationLabel}
 						control={
 							<Checkbox
 								id={`new-migration-v5-form-tos-check`}
@@ -124,22 +183,22 @@ export default function MigrationForm({ closeDialog, bond }) {
 				</Grid>
 
 				<Grid item xs={12}>
-					{/* <Tooltip title={}> */}
-					<FormControl style={{ display: "flex" }}>
-						<Button
-							id={`new-migration-to-v5-stake-btn-${toIdAttributeString(
-								activePool ? activePool.poolId : "-not-selected"
-							)}`}
-							disableElevation
-							disabled={!confirmed}
-							color="primary"
-							variant="contained"
-							onClick={onAction}
-						>
-							{t("bonds.migrateNow")}
-						</Button>
-					</FormControl>
-					{/* </Tooltip> */}
+					<Tooltip title={disableMigrationMsg}>
+						<FormControl style={{ display: "flex" }}>
+							<Button
+								id={`new-migration-to-v5-stake-btn-${toIdAttributeString(
+									activePool ? activePool.poolId : "-not-selected"
+								)}`}
+								disableElevation
+								disabled={!!disableMigrationMsg}
+								color="primary"
+								variant="contained"
+								onClick={onAction}
+							>
+								{t("bonds.migrateNow")}
+							</Button>
+						</FormControl>
+					</Tooltip>
 				</Grid>
 			</Grid>
 		</Box>
