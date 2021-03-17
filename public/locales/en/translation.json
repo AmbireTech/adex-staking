@@ -132,7 +132,8 @@
     "migrationAlertText3": "Upgrade timeline:",
     "migrationAlertText4": "23 March: unbonding on the old pool disabled.",
     "migrationAlertText5": "31 March: Migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive",
-    "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  "
+    "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
+    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "
   },
   "gasless": {
     "staking": "Gasless Staking",
