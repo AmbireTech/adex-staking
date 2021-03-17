@@ -126,7 +126,13 @@
     "alreadyUnbonded": "Already unbonded",
     "unbondNotReady": "Not ready for unbonding",
     "willUnlockIn": "Can unbond on {{unlockTime}}",
-    "reBondInfo": "You can re-bond while there is pending or ready unbond request"
+    "reBondInfo": "You can re-bond while there is pending or ready unbond request",
+    "migrationAlertText1": "Important !",
+    "migrationAlertText2": "AdEx Staking Update: Migrating the Validator Tom Contract",
+    "migrationAlertText3": "Upgrade timeline:",
+    "migrationAlertText4": "23 March: unbonding on the old pool disabled.",
+    "migrationAlertText5": "31 March: Migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive",
+    "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  "
   },
   "gasless": {
     "staking": "Gasless Staking",
