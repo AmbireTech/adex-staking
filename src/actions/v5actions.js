@@ -112,42 +112,65 @@ export async function onMigrationToV5Finalize(
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
 
+	const { userWalletBalance, tomPoolStats } = stats
 	const {
 		identityADXIncentiveChannels,
 		identityAdxRewardsAmount
-	} = stats.tomPoolStats
+	} = tomPoolStats
 
 	const identityTxns = []
 
-	if (claimPendingRewards) {
-		identityTxns.concat(
-			identityADXIncentiveChannels.map(channel => {
-				const channelTuple = toChannelTuple(channel.channelArgs)
-				return [
-					Core.address,
-					Core.interface.encodeFunctionData("channelWithdraw", [
-						channelTuple,
-						channel.stateRoot,
-						channel.signatures,
-						channel.proof,
-						channel.amount
-					])
-				]
-			})
-		)
+	let extraAmount = ZERO
 
-		// TODO: Transfer rewards to staking migrator
+	if (claimPendingRewards) {
+		identityADXIncentiveChannels.forEach(channel => {
+			const channelTuple = toChannelTuple(channel.channelArgs)
+			identityTxns.push([
+				Core.address,
+				Core.interface.encodeFunctionData("channelWithdraw", [
+					channelTuple,
+					channel.stateRoot,
+					channel.signatures,
+					channel.proof,
+					channel.amount
+				])
+			])
+		})
+
+		identityTxns.push([
+			ADXToken.address,
+			ADXToken.interface.encodeFunctionData("transfer", [
+				ADDR_STAKING_MIGRATOR,
+				identityAdxRewardsAmount
+			])
+		])
+
+		extraAmount = extraAmount.add(identityAdxRewardsAmount)
+	}
+
+	// TODO: check allowance
+	if (stakeWalletBalance) {
+		identityTxns.push([
+			ADXToken.address,
+			ADXToken.interface.encodeFunctionData("transferFrom", [
+				walletAddr,
+				ADDR_STAKING_MIGRATOR,
+				userWalletBalance
+			])
+		])
+
+		extraAmount = extraAmount.add(userWalletBalance)
 	}
 
 	await executeOnIdentity(chosenWalletType, [
 		...identityTxns,
 		[
 			StakingMigrator.address,
-			StakingMigrator.interface.encodeFunctionData("finishMigration", [
+			StakingMigrator.interface.encodeFunctionData("migrate", [
 				amount,
 				nonce,
 				walletAddr,
-				identityAdxRewardsAmount
+				extraAmount
 			])
 		]
 	])
