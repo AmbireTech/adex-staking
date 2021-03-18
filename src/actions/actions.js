@@ -129,6 +129,10 @@ export function getIncentiveChannelCurrentAPY({ channel, totalStake }) {
 }
 
 export function getValidatorFeesAPY({ channel, prices, totalStake }) {
+	if (!channel) {
+		return 0
+	}
+
 	const { periodStart, periodEnd, channelArgs, stats = {} } = channel
 	const { tokenAmount } = channelArgs
 	const { currentTotalActiveStake } = stats
@@ -434,9 +438,9 @@ export async function loadBondStats(addr, identityAddr) {
 			const bondWithData = {
 				id,
 				status: bondMigrationLog ? "Migrated" : "Active",
-				currentAmount: bond.amount
-					.mul(MAX_SLASH.sub(slashedByPool[poolId] || ZERO))
-					.div(MAX_SLASH.sub(slashedAtStart)),
+				currentAmount: bond.amount,
+				// .mul(MAX_SLASH.sub(slashedByPool[poolId] || ZERO))
+				// .div(MAX_SLASH.sub(slashedAtStart)),
 				...bond
 			}
 

@@ -77,7 +77,7 @@ export const POOLS = [
 		rewardPolicy: "pools.tomRewardPolicy",
 		slashPolicy: "pools.tomSlashPolicy",
 		apyStability: "pools.tomApyStability",
-		url: "https://tom.adex.network",
+		url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network",
 		estimatedAnnualFeeYield: 182500,
 		estimatedAnnualADXYield: 15103448.2758,
 		estimatedAnnualADXEarlyYield: 12166666.6666
