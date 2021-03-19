@@ -470,7 +470,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const [
 		balanceShares,
-		enterADXTransferLogs,
+		allEnterADXTransferLogs,
 		leaveLogs,
 		withdrawLogs,
 		rageLeaveLogs,
@@ -480,7 +480,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		StakingPool.balanceOf(owner),
 		provider.getLogs({
 			fromBlock: 0,
-			...ADXToken.filters.Transfer(owner, ADDR_STAKING_POOL, null)
+			...ADXToken.filters.Transfer(null, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
@@ -488,7 +488,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		}),
 		provider.getLogs({
 			fromBlock: 0,
-			...StakingPool.filters.Transfer(ADDR_STAKING_POOL, owner, null)
+			...StakingPool.filters.LogWithdraw(owner, null, null, null, null)
 		}),
 		provider.getLogs({
 			fromBlock: 0,
@@ -516,6 +516,14 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 				.mul(PRECISION)
 				.div(sharesTotalSupply)
 				.toNumber() / PRECISION
+
+	const enterAdexTokensByTxHash = allEnterADXTransferLogs.reduce(
+		(byHash, log) => {
+			byHash[log.transactionHash] = log
+			return byHash
+		},
+		{}
+	)
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
 		const parsedLog = StakingPool.interface.parseLog(log)
@@ -580,20 +588,21 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		shareTokensTransfersInByTxHash
 	)
 
-	console.log("enterADXTransferLogs", enterADXTransferLogs)
-	const userEnters = enterADXTransferLogs
-		.map(log => {
-			const sharesMintEvent = shareTokensEnterMintByHash[log.transactionHash]
+	const userEnters = Object.values(shareTokensEnterMintByHash)
+		.map(sharesMintEvent => {
+			const adexTokenTransfersLog =
+				enterAdexTokensByTxHash[sharesMintEvent.transactionHash]
 
-			if (sharesMintEvent) {
-				const parsedAdxLog = ADXToken.interface.parseLog(log)
+			if (adexTokenTransfersLog) {
+				const parsedAdxLog = ADXToken.interface.parseLog(adexTokenTransfersLog)
 
 				return {
-					transactionHash: log.transactionHash,
+					transactionHash: sharesMintEvent.transactionHash,
 					type: STAKING_POOL_EVENT_TYPES.enter,
 					shares: sharesMintEvent.shares,
 					adxAmount: parsedAdxLog.args.amount, // [2]
-					blockNumber: log.blockNumber
+					from: parsedAdxLog.args.from,
+					blockNumber: sharesMintEvent.blockNumber
 				}
 			} else {
 				return null
@@ -704,6 +713,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		.concat(userRageLeaves)
 		.concat(sharesTokensTransfersInFromExternal)
 		.concat(sharesTokensTransfersOut)
+		.sort((a, b) => a.blockNumber - b.blockNumber)
 
 	const withTimestamp = await Promise.all(
 		stakings.map(async stakingEvent => {
@@ -717,14 +727,14 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const {
 		// depositsSharesWeightedSum,
-		depositsSharesTotal,
+		// depositsSharesTotal,
 		depositsADXTotal
 	} = userEnters.reduce(
 		(data, log) => {
-			data.depositsSharesWeightedSum = data.depositsSharesWeightedSum.add(
-				log.shares.mul(log.adxAmount)
-			)
-			data.depositsSharesTotal = data.depositsSharesTotal.add(log.shares)
+			// data.depositsSharesWeightedSum = data.depositsSharesWeightedSum.add(
+			// 	log.shares.mul(log.adxAmount)
+			// )
+			// data.depositsSharesTotal = data.depositsSharesTotal.add(log.shares)
 
 			data.depositsADXTotal = data.depositsADXTotal.add(log.adxAmount)
 
@@ -739,14 +749,14 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const {
 		// withdrawsSharesWeightedSum,
-		withdrawsSharesTotal,
+		// withdrawsSharesTotal,
 		withdrawsADXTotal
 	} = userWithdraws.concat(userRageLeaves).reduce(
 		(data, log) => {
-			data.withdrawsSharesWeightedSum = data.withdrawsSharesWeightedSum.add(
-				log.shares.mul(log.adxAmount)
-			)
-			data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
+			// data.withdrawsSharesWeightedSum = data.withdrawsSharesWeightedSum.add(
+			// 	log.shares.mul(log.adxAmount)
+			// )
+			// data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
 
 			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.adxAmount)
 
@@ -768,22 +778,11 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		ZERO
 	)
 
-	const avgDepositShareValue = depositsADXTotal.isZero()
-		? ZERO
-		: depositsADXTotal
-				.mul(POOL_SHARES_TOKEN_DECIMALS_MUL)
-				.div(depositsSharesTotal)
-
-	const avgWithdrawShareValue = withdrawsADXTotal.isZero()
-		? ZERO
-		: withdrawsADXTotal
-				.mul(POOL_SHARES_TOKEN_DECIMALS_MUL)
-				.div(withdrawsSharesTotal)
-
-	// TODO: depositsSharesTotal instead balanceShares ??
-	const totalRewards = depositsSharesTotal
-		.mul(avgWithdrawShareValue.sub(avgDepositShareValue))
-		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+	const totalRewards = currentBalanceADX
+		.add(withdrawsADXTotal)
+		.add(leavesPendingToUnlockTotalADX)
+		.add(leavesReadyToWithdrawTotalADX)
+		.sub(depositsADXTotal)
 
 	const stats = {
 		...poolData,
