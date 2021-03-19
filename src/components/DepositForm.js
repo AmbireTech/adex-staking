@@ -222,7 +222,7 @@ export default function DepositForm({
 											disabled={disabled}
 											id={`new-${actionType}-form-values-${uc.unlockAt}`}
 											key={uc.unlockAt}
-											value={uc.unlockAt}
+											value={uc}
 										>
 											<Box px={1}>
 												{StatsCard({

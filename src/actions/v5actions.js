@@ -220,8 +220,6 @@ export async function onStakingPoolV5Withdraw(
 	_,
 	unbondCommitment
 ) {
-	console.log("onStakingPoolV5Withdraw", unbondCommitment)
-
 	if (!stats) throw new Error("errors.statsNotProvided")
 	if (!unbondCommitment) throw new Error("errors.noUnbondCommitmentProvided")
 	// TODO: validate unbondCommitment
