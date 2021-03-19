@@ -756,7 +756,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			// )
 			// data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
 
-			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.adxAmount)
+			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.receivedTokens)
 
 			return data
 		},
