@@ -319,8 +319,8 @@ export async function getTomStakingV5PoolData() {
 		sharesTotalSupply,
 		incentivePerSecond,
 		shareValue,
-		rageReceivedPromilles,
-		unbondDays,
+		rageReceivedPromilles: rageReceivedPromilles.toNumber(),
+		unbondDays: unbondDays.div(60 * 60 * 24).toNumber(),
 		currentAPY: incentivePerSecond.isZero()
 			? 0
 			: incentivePerSecond

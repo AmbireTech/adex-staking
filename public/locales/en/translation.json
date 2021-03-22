@@ -142,7 +142,9 @@
     "from": "From",
     "depositsADXTotal": "Total deposits",
     "withdrawsADXTotal": "Total withdraws",
-    "extraInfo": "Extra info"
+    "extraInfo": "Extra info",
+    "lockupPeriodLabel": "Lockup period",
+    "lockupDays": "{{count}} days"
   },
   "bonds": {
     "bondAmount": "Bond amount",

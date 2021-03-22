@@ -285,8 +285,8 @@ export default function DepositForm({
 							<FormControlLabel
 								style={{ userSelect: "none" }}
 								label={t("deposits.rageLeaveWarning", {
-									lockupPeriod: activePool.lockupPeriod,
-									percent: (activePool.rageLeaveMul * 100).toFixed(2),
+									lockupPeriod: poolStats.unbondDays,
+									percent: (poolStats.rageReceivedPromilles / 10).toFixed(2),
 									token: "ADX"
 								})}
 								control={
@@ -316,6 +316,14 @@ export default function DepositForm({
 							</Typography>
 							<Typography variant="body1">
 								{t(activePool.slashPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="h6">
+								{t("deposits.lockupPeriodLabel")}:
+							</Typography>
+							<Typography variant="body1">
+								{t("deposits.lockupDays", { count: poolStats.unbondDays })}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
