@@ -79,7 +79,12 @@
     "activeStake": "Active Stake",
     "activeStakeInfo": "Active, earning {{apy}} % APY",
     "unclaimed": "Unclaimed rewards",
-    "total": "Total"
+    "total": "Total",
+    "totalStakings": "Total stakings",
+    "activeDepositsInfoLocked": "Locked: {{amount}} {{currency}}",
+    "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
+    "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
+    "activeDepositsInfoUnclaimed": "Unclaimed rewards: {{amount}} {{currency}}"
   },
   "pools": {
     "currentDailyYield": "Current daily yield {{yield}}",
@@ -171,7 +176,7 @@
     "migrationClaimPendingRewards": "Claim pending rewards. ({{amount}} {{currency}}). [Uses more gas]",
     "stakeWalletBalance": "Stake wallet balance. ({{amount}} {{currency}}). [Uses more gas]",
     "migrateNow": "Migrate now",
-    "tosNotConfirmed":"Confirm terms of service"
+    "tosNotConfirmed": "Confirm terms of service"
   },
   "gasless": {
     "staking": "Gasless Staking",

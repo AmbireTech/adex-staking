@@ -53,7 +53,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				})}
 			</Box>
 
-			<Box mb={1.5}>
+			{/* <Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
 					title: t("userData.activeStake"),
@@ -63,9 +63,36 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 					subtitle: formatADXPretty(stats.userTotalStake) + " ADX",
 					extra: getADXInUSDFormatted(prices, stats.userTotalStake)
 				})}
+			</Box> */}
+
+			<Box mb={1.5}>
+				{StatsCard({
+					loaded: stats.loaded,
+					title: t("userData.totalStakings"),
+					titleInfo: [
+						t("userData.activeDepositsInfoLocked", {
+							amount: formatADXPretty(stats.totalLockedOnDeposits),
+							currency: "ADX"
+						}),
+						t("userData.activeDepositsInfoPendingToUnlock", {
+							amount: formatADXPretty(stats.totalPendingToUnlock),
+							currency: "ADX"
+						}),
+						t("userData.activeDepositsInfoUnlocked", {
+							amount: formatADXPretty(stats.totalUnlockedDeposits),
+							currency: "ADX"
+						}),
+						t("userData.activeDepositsInfoUnclaimed", {
+							amount: formatADXPretty(stats.tomRewardADX),
+							currency: "ADX"
+						})
+					],
+					subtitle: formatADXPretty(stats.totalStakings) + " ADX",
+					extra: getADXInUSDFormatted(prices, stats.totalStakings)
+				})}
 			</Box>
 
-			<Box>
+			{/* <Box>
 				{RewardCard({
 					prices,
 					rewardChannels: identityChannels,
@@ -75,7 +102,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 					onClaimRewards,
 					onRestake
 				})}
-			</Box>
+			</Box> */}
 		</Box>
 	)
 }

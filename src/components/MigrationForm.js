@@ -132,22 +132,24 @@ export default function MigrationForm({ closeDialog, bond }) {
 					""
 				)}
 
-				<Grid item xs={12}>
-					<FormControlLabel
-						style={{ userSelect: "none" }}
-						label={t("bonds.migrationClaimPendingRewards", {
-							amount: formatADXPretty(identityAdxRewardsAmount),
-							currency: "ADX"
-						})}
-						control={
-							<Checkbox
-								id={`new-migration-v5-form-claim-pending-rewards-check`}
-								checked={claimPendingRewards}
-								onChange={ev => setClaimPendingRewards(ev.target.checked)}
-							/>
-						}
-					></FormControlLabel>
-				</Grid>
+				{!identityAdxRewardsAmount.isZero() && (
+					<Grid item xs={12}>
+						<FormControlLabel
+							style={{ userSelect: "none" }}
+							label={t("bonds.migrationClaimPendingRewards", {
+								amount: formatADXPretty(identityAdxRewardsAmount),
+								currency: "ADX"
+							})}
+							control={
+								<Checkbox
+									id={`new-migration-v5-form-claim-pending-rewards-check`}
+									checked={claimPendingRewards}
+									onChange={ev => setClaimPendingRewards(ev.target.checked)}
+								/>
+							}
+						></FormControlLabel>
+					</Grid>
+				)}
 
 				{!userWalletBalance.isZero() && (
 					<Grid item xs={12}>

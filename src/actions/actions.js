@@ -74,6 +74,10 @@ export const EMPTY_STATS = {
 	totalRewardADX: ZERO,
 	totalRewardDAI: ZERO,
 	tomRewardADX: ZERO,
+	totalLockedOnDeposits: ZERO,
+	totalPendingToUnlock: ZERO,
+	totalUnlockedDeposits: ZERO,
+	totalStakings: ZERO,
 	apyTomADX: 0,
 	userTotalStake: ZERO,
 	totalBalanceADX: ZERO,
@@ -339,8 +343,16 @@ export async function loadUserStats(chosenWalletType, prices) {
 				: null
 	}))
 
+	console.log("userBonds", userBonds)
+
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")
+		.map(x => x.currentAmount)
+		.reduce((a, b) => a.add(b), ZERO)
+
+	// NOTE: with the migration enabled All unbond requests will be available for withdraw
+	const tomUnbondRequestedWithdraw = userBonds
+		.filter(x => x.status === "UnbondRequested")
 		.map(x => x.currentAmount)
 		.reduce((a, b) => a.add(b), ZERO)
 
@@ -355,10 +367,26 @@ export async function loadUserStats(chosenWalletType, prices) {
 		userBonds
 	}
 
-	const totalBalanceADX = userBalance
-		.add(tomRewardADX)
-		.add(userTotalStake)
-		.add(loyaltyPoolStats.balanceLpADX)
+	const {
+		currentBalanceADX,
+		leavesPendingToUnlockTotalADX,
+		leavesReadyToWithdrawTotalADX
+	} = tomStakingV5PoolStatsWithUserData
+
+	const { balanceLpADX } = loyaltyPoolStats
+
+	const totalLockedOnDeposits = currentBalanceADX
+
+	const totalPendingToUnlock = leavesPendingToUnlockTotalADX
+	const totalUnlockedDeposits = balanceLpADX.add(leavesReadyToWithdrawTotalADX)
+
+	const totalStakings = userTotalStake
+		.add(totalLockedOnDeposits)
+		.add(totalPendingToUnlock)
+		.add(totalUnlockedDeposits)
+		.add(tomUnbondRequestedWithdraw)
+
+	const totalBalanceADX = userBalance.add(tomRewardADX).add(totalStakings)
 
 	return {
 		identityAddr,
@@ -372,9 +400,13 @@ export async function loadUserStats(chosenWalletType, prices) {
 		totalRewardDAI: tomRewardDAI,
 		tomRewardADX,
 		userTotalStake,
+		totalStakings,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
 		userIdentityBalance,
+		totalLockedOnDeposits,
+		totalUnlockedDeposits,
+		totalPendingToUnlock,
 		// canExecuteGasless,
 		// canExecuteGaslessError,
 		loyaltyPoolStats,
