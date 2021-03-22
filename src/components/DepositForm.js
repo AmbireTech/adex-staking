@@ -217,18 +217,20 @@ export default function DepositForm({
 								</MenuItem>
 								{userUnbondCommitments.map(uc => {
 									const disabled = !uc.canWithdraw
+									const unlockAt = uc.unlockAt.toNumber()
+
 									return (
 										<MenuItem
 											disabled={disabled}
-											id={`new-${actionType}-form-values-${uc.unlockAt}`}
-											key={uc.unlockAt}
+											id={`new-${actionType}-form-values-${unlockAt}`}
+											key={unlockAt}
 											value={uc}
 										>
 											<Box px={1}>
 												{StatsCard({
 													loaded: true,
 													title: `${t("deposits.unlockAt")} ${formatDateTime(
-														Math.ceil(uc.unlockAt * 1000)
+														Math.ceil(unlockAt * 1000)
 													)}`,
 													subtitle: `value ${formatADXPretty(uc.adxValue)} ADX`,
 													extra: uc.canWithdraw

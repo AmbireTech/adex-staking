@@ -42,7 +42,7 @@ const StakingEventRow = ({ stakingEvent }) => {
 	const PoolIcon = iconByPoolId({ poolId: "adex-staking-pool" })
 
 	return (
-		<TableRow key={stakingEvent.blockNumber + stakingEvent.type}>
+		<TableRow>
 			<TableCell>
 				<Box
 					display="flex"
@@ -124,7 +124,7 @@ export default function StakingPoolTxnsHistory() {
 						<TableBody>
 							{[...(stakings || [])].reverse().map((stakingEvent, i) => (
 								<StakingEventRow
-									key={stakingEvent.blockNumber + i}
+									key={stakingEvent.blockNumber + stakingEvent.type + i}
 									stakingEvent={stakingEvent}
 								/>
 							))}
