@@ -19,6 +19,7 @@ import WithDialog from "./WithDialog"
 import MigrationForm from "./MigrationForm"
 
 const MigrationDialog = WithDialog(MigrationForm)
+const MIGRATION_UNBOND_BEFORE = 1619182800000
 
 export default function Bonds({ stats }) {
 	const { t } = useTranslation()
@@ -49,6 +50,10 @@ export default function Bonds({ stats }) {
 			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
 		)
 		const bondId = getBondId(bond)
+		const isWithdrawMigration =
+			bond.status === "UnbondRequested" &&
+			bond.willUnlock &&
+			bond.willUnlock.getTime() < MIGRATION_UNBOND_BEFORE
 
 		// const unbondDisableMsg =
 		// 	bond.status === "Unbonded"
@@ -88,13 +93,24 @@ export default function Bonds({ stats }) {
 						<Box display="inline-block" m={0.5}>
 							<MigrationDialog
 								id="staking-pool-tom-deposit-form"
-								title={t("bonds.requestMigrate")}
-								btnLabel={t("bonds.requestMigrate")}
+								title={
+									isWithdrawMigration
+										? t("bonds.unbond")
+										: t("bonds.requestMigrate")
+								}
+								btnLabel={
+									isWithdrawMigration
+										? t("bonds.unbond")
+										: t("bonds.requestMigrate")
+								}
 								color="secondary"
 								size="small"
 								variant="contained"
 								bond={bond}
+								poolLabel={poolLabel}
+								created={created}
 								fullWidth
+								isWithdrawMigration
 								// disabled={!!disabledDepositsMsg}
 								// tooltipTitle={disabledDepositsMsg}
 								// depositPool={DEPOSIT_POOLS[1].id}
@@ -122,7 +138,7 @@ export default function Bonds({ stats }) {
 					</TableHead>
 					<TableBody>
 						{[...(stats.userBonds || [])]
-							.filter(x => x.status !== "Unbonded" && x.stats !== "Migrated")
+							.filter(x => x.status !== "Unbonded" && x.status !== "Migrated")
 							.reverse()
 							.map(renderBondRow)}
 					</TableBody>
