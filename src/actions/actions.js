@@ -490,7 +490,9 @@ export async function loadBondStats(addr, identityAddr) {
 			const { bondId, willUnlock } = Staking.interface.parseLog(log).args
 			const bond = bonds.find(({ id }) => id === bondId)
 
-			bond.status = "UnbondRequested"
+			if (bond.status !== "Migrated") {
+				bond.status = "UnbondRequested"
+			}
 
 			bond.willUnlock = new Date(willUnlock * 1000)
 		} else if (topic === Staking.interface.getEventTopic("LogUnbonded")) {
