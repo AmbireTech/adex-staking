@@ -160,6 +160,7 @@
     "bondExplanationMsg": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} day lock-up period.",
     "bondExplanationMsg_plural": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} days lock-up period.",
     "confirmationLabel": "I understand I am locking up my ADX for at least {{unbondDays}} days and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
+    "confirmationLabelMigrationWithdraw": "I understand I will receive total amount of {{amount}} {{currency}} on my wallet address {{walletAddr}}",
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
@@ -176,7 +177,10 @@
     "migrationClaimPendingRewards": "Claim pending rewards. ({{amount}} {{currency}}). [Uses more gas]",
     "stakeWalletBalance": "Stake wallet balance. ({{amount}} {{currency}}). [Uses more gas]",
     "migrateNow": "Migrate now",
-    "tosNotConfirmed": "Confirm terms of service"
+    "tosNotConfirmed": "Confirm terms of service",
+    "unbond": "Unbond",
+    "unbondNow": "Unbond now",
+    "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box>"
   },
   "gasless": {
     "staking": "Gasless Staking",
