@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import { getPoolStatsByPoolId, onMigrationToV5Finalize } from "../actions"
 import { toIdAttributeString, formatADXPretty } from "../helpers/formatting"
-import { DEPOSIT_POOLS, STAKING_RULES_URL } from "../helpers/constants"
+import { DEPOSIT_POOLS, STAKING_RULES_URL, ZERO } from "../helpers/constants"
 import {
 	Grid,
 	Typography,
@@ -18,9 +18,17 @@ import Tooltip from "./Tooltip"
 
 const activePool = DEPOSIT_POOLS[1]
 
-export default function MigrationForm({ closeDialog, bond }) {
+export default function MigrationForm({
+	closeDialog,
+	bond,
+	isWithdrawMigration,
+	poolLabel,
+	created
+}) {
 	const { t } = useTranslation()
-	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+	const { stats, chosenWalletType, account, wrapDoingTxns } = useContext(
+		AppContext
+	)
 
 	const { userWalletBalance, tomPoolStats, tomStakingV5PoolStats } = stats
 	const { identityAdxRewardsAmount } = tomPoolStats
@@ -31,6 +39,8 @@ export default function MigrationForm({ closeDialog, bond }) {
 	const [confirmed, setConfirmed] = useState(false)
 
 	const [poolStats, setPoolStats] = useState({})
+
+	const withdrawOnMigration = isWithdrawMigration // TODO: double check this
 
 	useEffect(() => {
 		const newPoolStats = getPoolStatsByPoolId(stats, activePool.id)
@@ -53,12 +63,24 @@ export default function MigrationForm({ closeDialog, bond }) {
 				bond,
 				claimPendingRewards,
 				stakeWalletBalance,
+				withdrawOnMigration,
 				stats
 			)
 		)()
 	}
 
-	const confirmationLabel = (
+	const confirmationLabel = withdrawOnMigration ? (
+		<Trans
+			i18nKey="bonds.confirmationLabelMigrationWithdraw"
+			values={{
+				amount: formatADXPretty(
+					bond.amount.add(withdrawOnMigration ? identityAdxRewardsAmount : ZERO)
+				),
+				currency: "ADX",
+				walletAddr: account
+			}}
+		/>
+	) : (
 		<Trans
 			i18nKey="bonds.confirmationLabel"
 			values={{
@@ -91,43 +113,62 @@ export default function MigrationForm({ closeDialog, bond }) {
 		<Box width={1}>
 			<Grid container spacing={2}>
 				{activePool ? (
-					<Grid item xs={12} container spacing={2}>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolRewardPolicy")}:
-							</Typography>
-							<Typography variant="body1">
-								{t(activePool.rewardPolicy)}
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolSlashingPolicy")}:
-							</Typography>
-							<Typography variant="body1">
-								{t(activePool.slashPolicy)}
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
-							<Typography variant="body1">
+					withdrawOnMigration ? (
+						<Box>
+							<Typography variant="subtitle1">
 								<Trans
-									i18nKey="bonds.currentYield"
+									i18nKey="bonds.bondInfo"
 									values={{
-										apy: (poolStats.currentAPY * 100).toFixed(2),
-										sign: "%"
+										amount: formatADXPretty(bond.amount),
+										currency: "ADX",
+										pool: t(poolLabel),
+										created
 									}}
 									components={{
-										farmer: (
-											<span role="img" aria-label="farmer">
-												🌾
-											</span>
-										)
+										box: <Box m={2}></Box>
 									}}
 								/>
 							</Typography>
+						</Box>
+					) : (
+						<Grid item xs={12} container spacing={2}>
+							<Grid item xs={12}>
+								<Typography variant="h6">
+									{t("common.poolRewardPolicy")}:
+								</Typography>
+								<Typography variant="body1">
+									{t(activePool.rewardPolicy)}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography variant="h6">
+									{t("common.poolSlashingPolicy")}:
+								</Typography>
+								<Typography variant="body1">
+									{t(activePool.slashPolicy)}
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography variant="h6">{t("common.poolAPY")}:</Typography>
+								<Typography variant="body1">
+									<Trans
+										i18nKey="bonds.currentYield"
+										values={{
+											apy: (poolStats.currentAPY * 100).toFixed(2),
+											sign: "%"
+										}}
+										components={{
+											farmer: (
+												<span role="img" aria-label="farmer">
+													🌾
+												</span>
+											)
+										}}
+									/>
+								</Typography>
+							</Grid>
 						</Grid>
-					</Grid>
+					)
 				) : (
 					""
 				)}
@@ -151,7 +192,7 @@ export default function MigrationForm({ closeDialog, bond }) {
 					</Grid>
 				)}
 
-				{!userWalletBalance.isZero() && (
+				{!withdrawOnMigration && !userWalletBalance.isZero() && (
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
@@ -197,7 +238,9 @@ export default function MigrationForm({ closeDialog, bond }) {
 								variant="contained"
 								onClick={onAction}
 							>
-								{t("bonds.migrateNow")}
+								{withdrawOnMigration
+									? t("bonds.unbondNow")
+									: t("bonds.migrateNow")}
 							</Button>
 						</FormControl>
 					</Tooltip>
