@@ -105,6 +105,7 @@ export async function onMigrationToV5Finalize(
 	{ amount, poolId, nonce },
 	claimPendingRewards,
 	stakeWalletBalance,
+	withdrawOnMigration, // TODO: check it here
 	stats
 ) {
 	console.log("stats", stats)
@@ -117,6 +118,8 @@ export async function onMigrationToV5Finalize(
 		identityADXIncentiveChannels,
 		identityAdxRewardsAmount
 	} = tomPoolStats
+
+	const willWithdrawOnMigration = withdrawOnMigration
 
 	const identityTxns = []
 
@@ -140,7 +143,7 @@ export async function onMigrationToV5Finalize(
 		identityTxns.push([
 			ADXToken.address,
 			ADXToken.interface.encodeFunctionData("transfer", [
-				ADDR_STAKING_MIGRATOR,
+				willWithdrawOnMigration ? walletAddr : ADDR_STAKING_MIGRATOR,
 				identityAdxRewardsAmount
 			])
 		])
@@ -149,7 +152,7 @@ export async function onMigrationToV5Finalize(
 	}
 
 	// TODO: check allowance
-	if (stakeWalletBalance) {
+	if (!willWithdrawOnMigration && stakeWalletBalance) {
 		identityTxns.push([
 			ADXToken.address,
 			ADXToken.interface.encodeFunctionData("transferFrom", [
