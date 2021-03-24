@@ -12,7 +12,7 @@ const MigrationDialog = WithDialog(MigrationForm)
 
 const RRButton = WithRouterLink(Button)
 
-export default function RewardCard({ rewardChannels, userBonds }) {
+export default function RewardCard({ userBonds }) {
 	const { t } = useTranslation()
 
 	const migratableBonds = [...userBonds].filter(

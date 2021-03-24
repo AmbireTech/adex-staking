@@ -20,6 +20,7 @@ import Farm from "./Farm"
 import Stats from "./Stats"
 import Pools from "./Pools"
 import StakeNowPopup from "./StakeNowPopup"
+import MigrateNowPopup from "./MigrateNowPopup"
 import NewBondForm from "./NewBondForm"
 import LegacyADXSwapDialog from "./LegacyADXSwapDialog"
 import ConfirmationDialog from "./ConfirmationDialog"
@@ -346,6 +347,7 @@ export default function Root() {
 						</Fade>
 					</Modal>
 					<StakeNowPopup />
+					<MigrateNowPopup />
 				</div>
 			</main>
 		</div>
