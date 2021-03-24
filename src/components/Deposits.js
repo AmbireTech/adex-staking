@@ -152,7 +152,6 @@ const getStakingPool = ({
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
-				userUnbondCommitments={tomStakingV5PoolStats.userLeaves}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-rage-leave-form"

@@ -38,9 +38,7 @@ import { Alert } from "@material-ui/lab"
 export default function DepositForm({
 	depositPool,
 	closeDialog,
-	actionType = DEPOSIT_ACTION_TYPES.deposit,
-	userUnbondCommitments,
-	withdraw
+	actionType = DEPOSIT_ACTION_TYPES.deposit
 }) {
 	const { t } = useTranslation()
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
@@ -55,6 +53,7 @@ export default function DepositForm({
 	const [rageConfirmed, setRageConfirmed] = useState(false)
 	const [activePool, setActivePool] = useState({})
 	const [unbondCommitment, setUnbondCommitment] = useState(null)
+	const [activeUnbondCommitments, setActiveUnbondCommitments] = useState(null)
 	const [maxAmount, setMaxAmount] = useState(ZERO)
 	const [poolStats, setPoolStats] = useState({})
 
@@ -70,7 +69,12 @@ export default function DepositForm({
 			stats.userWalletBalance
 		)
 
+		const newActiveUnbondCommitments = newPoolStats.userLeaves
+			? [...newPoolStats.userLeaves].filter(x => !x.withdrawTx)
+			: null
+
 		setPoolStats(newPoolStats)
+		setActiveUnbondCommitments(newActiveUnbondCommitments)
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
 	}, [actionType, depositPool, stats])
@@ -201,7 +205,7 @@ export default function DepositForm({
 		<Box width={1}>
 			<Grid container spacing={2}>
 				{actionType === DEPOSIT_ACTION_TYPES.withdraw &&
-				userUnbondCommitments ? (
+				activeUnbondCommitments ? (
 					<Grid item xs={12}>
 						<FormControl fullWidth required>
 							<InputLabel>
@@ -215,7 +219,7 @@ export default function DepositForm({
 								<MenuItem value={""}>
 									<em>{t("common.none")}</em>
 								</MenuItem>
-								{userUnbondCommitments.map(uc => {
+								{activeUnbondCommitments.map(uc => {
 									const disabled = !uc.canWithdraw
 									const unlockAt = uc.unlockAt.toNumber()
 
