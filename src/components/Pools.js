@@ -208,8 +208,8 @@ const Pools = () => {
 							setNewBondOpen(true)
 						}}
 						loading={!tomPoolStats.loaded}
-						disabled={!canStake}
-						disabledInfo={t("pools.connectWalletToStake")}
+						disabled={true}
+						disabledInfo={t("pools.tomLegacyPoolDisabledInfo")}
 						lockupPeriodTitle={t("common.unbondPeriod")}
 						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
 							count: UNBOND_DAYS
