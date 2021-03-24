@@ -110,7 +110,7 @@ export default function Bonds({ stats }) {
 								poolLabel={poolLabel}
 								created={created}
 								fullWidth
-								isWithdrawMigration
+								isWithdrawMigration={isWithdrawMigration}
 								// disabled={!!disabledDepositsMsg}
 								// tooltipTitle={disabledDepositsMsg}
 								// depositPool={DEPOSIT_POOLS[1].id}
