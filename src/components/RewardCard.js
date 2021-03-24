@@ -1,37 +1,77 @@
 import React from "react"
-import StatsCard from "./StatsCard"
-import { Button, Box } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 
 import WithRouterLink from "./WithRouterLink"
 import { useTranslation } from "react-i18next"
+import WithDialog from "./WithDialog"
+import MigrationForm from "./MigrationForm"
+import { MIGRATION_UNBOND_BEFORE, ZERO } from "../helpers/constants"
+import { getPool } from "../helpers/bonds"
+
+const MigrationDialog = WithDialog(MigrationForm)
 
 const RRButton = WithRouterLink(Button)
 
 export default function RewardCard({ rewardChannels, userBonds }) {
 	const { t } = useTranslation()
 
-	const hasMigratableBonds = userBonds.find(
+	const migratableBonds = [...userBonds].filter(
 		x => x.status !== "Unbonded" && x.status !== "Migrated"
 	)
 
-	const rewardActions = (
-		<Box display="flex" flexDirection="row" paddingTop={1} flex={1}>
-			<Box width={1} pr={0.5}>
-				{hasMigratableBonds && (
-					<RRButton
-						fullWidth
-						to={{ pathname: "/stakings" }}
-						color="primary"
-						variant="contained"
-					>
-						{t("rewards.migrateYourBondsIfYouWandMigrate")}
-					</RRButton>
-				)}
-			</Box>
-		</Box>
-	)
-	return StatsCard({
-		loaded: true,
-		actions: rewardActions
-	})
+	if (!migratableBonds.length) {
+		return null
+	}
+
+	if (migratableBonds.length > 1) {
+		return (
+			<RRButton
+				fullWidth
+				to={{ pathname: "/stakings" }}
+				color="primary"
+				variant="contained"
+			>
+				{t("rewards.migrateYourBondsIfYouWandMigrate")}
+			</RRButton>
+		)
+	}
+
+	const bond = migratableBonds.length > 1 ? migratableBonds[0] : null
+	const isWithdrawMigration =
+		bond &&
+		bond.status === "UnbondRequested" &&
+		bond.willUnlock &&
+		bond.willUnlock.getTime() < MIGRATION_UNBOND_BEFORE
+
+	console.log("isWithdrawMigration", isWithdrawMigration)
+
+	if (bond) {
+		const pool = getPool(bond.poolId)
+		const poolLabel = pool ? pool.label : bond.poolId
+		const created = new Date(
+			(bond.nonce.gt(ZERO) ? bond.nonce : bond.time).toNumber() * 1000
+		)
+
+		return (
+			<MigrationDialog
+				id="staking-pool-tom-deposit-form"
+				title={
+					isWithdrawMigration ? t("bonds.unbond") : t("bonds.requestMigrate")
+				}
+				btnLabel={
+					isWithdrawMigration ? t("bonds.unbond") : t("bonds.requestMigrate")
+				}
+				color="primary"
+				size="small"
+				variant="contained"
+				bond={bond}
+				poolLabel={poolLabel}
+				created={created}
+				fullWidth
+				isWithdrawMigration={isWithdrawMigration}
+			/>
+		)
+	} else {
+		return null
+	}
 }

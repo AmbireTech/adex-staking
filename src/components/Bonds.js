@@ -9,7 +9,11 @@ import {
 	TableBody
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { UNBOND_DAYS, ZERO } from "../helpers/constants"
+import {
+	UNBOND_DAYS,
+	ZERO,
+	MIGRATION_UNBOND_BEFORE
+} from "../helpers/constants"
 import { formatADXPretty, formatDate } from "../helpers/formatting"
 import { AmountText } from "./cardCommon"
 import { useTranslation } from "react-i18next"
@@ -19,7 +23,6 @@ import WithDialog from "./WithDialog"
 import MigrationForm from "./MigrationForm"
 
 const MigrationDialog = WithDialog(MigrationForm)
-const MIGRATION_UNBOND_BEFORE = 1619182800000
 
 export default function Bonds({ stats }) {
 	const { t } = useTranslation()
