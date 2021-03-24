@@ -92,7 +92,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 				})}
 			</Box>
 
-			{/* <Box>
+			<Box>
 				{RewardCard({
 					prices,
 					rewardChannels: identityChannels,
@@ -102,7 +102,7 @@ export default function UserData({ stats, prices, onClaimRewards, onRestake }) {
 					onClaimRewards,
 					onRestake
 				})}
-			</Box> */}
+			</Box>
 		</Box>
 	)
 }

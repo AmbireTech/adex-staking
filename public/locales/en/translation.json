@@ -296,7 +296,8 @@
     "totalSelected": "Total selected",
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
-    "poolName": "{{pool}} ({{type}}) {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}",
+    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
