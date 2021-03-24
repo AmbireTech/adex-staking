@@ -1,10 +1,16 @@
 import React, { useContext } from "react"
 import AppContext from "../AppContext"
 import { makeStyles } from "@material-ui/core/styles"
-import { Fab, Box, Typography } from "@material-ui/core"
+import { Box, Typography } from "@material-ui/core"
 import { AddSharp as AddIcon } from "@material-ui/icons"
 import { toIdAttributeString } from "../helpers/formatting"
 import { useTranslation } from "react-i18next"
+import WithDialog from "./WithDialog"
+import DepositForm from "./DepositForm"
+import { DEPOSIT_POOLS } from "../helpers/constants"
+import { DEPOSIT_ACTION_TYPES } from "../actions"
+
+const DepositsDialog = WithDialog(DepositForm)
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -16,12 +22,7 @@ const SectionHeader = ({ title, actions }) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 
-	const {
-		stats,
-		setNewBondOpen,
-		chosenWalletType,
-		setNewBondPool
-	} = useContext(AppContext)
+	const { stats, chosenWalletType } = useContext(AppContext)
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
 
 	return (
@@ -41,23 +42,25 @@ const SectionHeader = ({ title, actions }) => {
 				{!!actions
 					? actions
 					: chosenWalletType.name && (
-							<Fab
+							<DepositsDialog
 								id={`section-header-fab-stake-adx-${toIdAttributeString(
 									title
 								)}`}
-								disabled={!stats.loaded || !canStake}
-								onClick={() => {
-									setNewBondPool("")
-									setNewBondOpen(true)
-								}}
-								variant="extended"
+								title={t("deposits.depositTo", {
+									pool: t("common.tomStakingPool")
+								})}
+								btnLabel={t("bonds.stakeADX")}
 								color="secondary"
 								size="medium"
-							>
-								<AddIcon className={classes.fabIcon} />
-
-								{t("bonds.stakeADX")}
-							</Fab>
+								variant="extended"
+								fabButton
+								fullWidth
+								icon={<AddIcon className={classes.fabIcon} />}
+								disabled={!stats.loaded || !canStake}
+								tooltipTitle={t("common.connectWallet")}
+								depositPool={DEPOSIT_POOLS[1].id}
+								actionType={DEPOSIT_ACTION_TYPES.deposit}
+							/>
 					  )}
 			</Box>
 		</Box>
