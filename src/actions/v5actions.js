@@ -657,9 +657,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 			const withdrawTx = userWithdraws.find(
 				event =>
-					event.unlockAt === unlockAt &&
-					event.shares === shares &&
-					event.maxTokens === maxTokens
+					event.unlockAt.toString() === unlockAt.toString() &&
+					event.shares.toString() === shares.toString() &&
+					event.maxTokens.toString() === maxTokens.toString()
 			)
 
 			const adxValue = sharesTotalSupply.isZero()
