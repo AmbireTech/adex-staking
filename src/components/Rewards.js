@@ -134,11 +134,13 @@ export default function Rewards() {
 			// 	poolId: DEPOSIT_POOLS[0].id
 			// }
 
-			const rewards = tomRewardChannels.map(channel => {
+			const rewards = tomRewardChannels.map((channel, index) => {
 				const startDate = new Date(channel.periodStart)
 				const endDate = new Date(channel.periodEnd)
 				const rewardData = {
-					id: `tom_${channel.type}_${startDate.getTime()}_${endDate.getTime()}`,
+					id: `tom_${
+						channel.type
+					}_${startDate.getTime()}_${endDate.getTime()}_${channel._id}`,
 					name: t("rewards.poolName", {
 						pool: "Tom",
 						type: t(`common.${channel.type}`),
