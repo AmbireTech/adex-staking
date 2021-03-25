@@ -109,6 +109,7 @@ export default function WithDialogHoc(Decorated) {
 			onClick,
 			fullWidth,
 			onBeforeOpen,
+			onCloseDialog,
 			tooltipTitle,
 			...rest
 		} = props
@@ -138,6 +139,10 @@ export default function WithDialogHoc(Decorated) {
 		}
 
 		const closeDialog = () => {
+			if (onCloseDialog) {
+				onCloseDialog()
+			}
+
 			setOpen(false)
 		}
 
