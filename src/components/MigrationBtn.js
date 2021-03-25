@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Button } from "@material-ui/core"
+import { Button, Fab } from "@material-ui/core"
 
 import WithRouterLink from "./WithRouterLink"
 import { useTranslation } from "react-i18next"
@@ -12,8 +12,9 @@ import { getPool } from "../helpers/bonds"
 const MigrationDialog = WithDialog(MigrationForm)
 
 const RRButton = WithRouterLink(Button)
+const RRFab = WithRouterLink(Fab)
 
-export default function MigrationBtn({ onBeforeOpen }) {
+export default function MigrationBtn({ onBeforeOpen, fabButton, color, size }) {
 	const { t } = useTranslation()
 	const { stats } = useContext(AppContext)
 
@@ -27,17 +28,19 @@ export default function MigrationBtn({ onBeforeOpen }) {
 		return null
 	}
 
+	const ButtonComponent = fabButton ? RRFab : RRButton
+
 	if (hasToMigrate && !bondToMigrate) {
 		return (
-			<RRButton
-				fullWidth
+			<ButtonComponent
 				onClick={onBeforeOpen}
 				to={{ pathname: "/stakings" }}
-				color="primary"
-				variant="contained"
+				color={color || "primary"}
+				size={size || "small"}
+				variant={fabButton ? "extended" : "contained"}
 			>
 				{t("rewards.migrateYourBondsIfYouWandMigrate")}
-			</RRButton>
+			</ButtonComponent>
 		)
 	}
 
@@ -60,9 +63,10 @@ export default function MigrationBtn({ onBeforeOpen }) {
 				btnLabel={
 					isWithdrawMigration ? t("bonds.unbond") : t("bonds.requestMigrate")
 				}
-				color="primary"
-				size="small"
-				variant="contained"
+				color={color || "primary"}
+				size={size || "small"}
+				variant={fabButton ? "extended" : "outlined"}
+				fabButton={!!fabButton}
 				bond={bondToMigrate}
 				poolLabel={poolLabel}
 				created={created}

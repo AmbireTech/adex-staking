@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { fade } from "@material-ui/core/styles/colorManipulator"
 import {
-	SvgIcon,
 	Box,
 	Modal,
 	Fade,
@@ -10,7 +8,7 @@ import {
 	Typography,
 	Button
 } from "@material-ui/core"
-import { ReactComponent as AdExIcon } from "./../resources/adex-logo-clean.svg"
+import { ReactComponent as MigrationIcon } from "./../resources/migration-ic.svg"
 import AppContext from "../AppContext"
 import MigrationBtn from "./MigrationBtn"
 
@@ -18,34 +16,18 @@ import { useTranslation } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
 	return {
-		iconBoxBack: {
+		iconBox: {
 			borderRadius: "100%",
 			position: "absolute",
 			width: 92,
 			height: 92,
-			top: -46,
+			top: -56,
 			left: "calc(50% - 46px)",
-			background: `linear-gradient(69deg, ${fade(
-				theme.palette.lightGrey.main,
-				0.69
-			)} 0%, ${fade(theme.palette.common.white, 0.69)} 100%)`,
 			display: "flex",
 			flexDirection: "column",
 			alignItems: "center",
 			justifyContent: "center"
 		},
-		iconBox: {
-			borderRadius: "5%",
-			width: 82,
-			height: 82,
-			backgroundColor: theme.palette.common.white,
-			color: theme.palette.background.default,
-			display: "flex",
-			flexDirection: "column",
-			alignItems: "center",
-			justifyContent: "center"
-		},
-
 		top: {
 			background: `radial-gradient(
                 ellipse at bottom,
@@ -103,12 +85,8 @@ const MigrateNowPopup = () => {
 					<Box overflow="hidden" width={420} maxWidth={"100%"} m={1}>
 						<Box height={200} classes={{ root: classes.top }}></Box>
 						<Box classes={{ root: classes.bottom }}>
-							<Box classes={{ root: classes.iconBoxBack }}>
-								<Box classes={{ root: classes.iconBox }} fontSize={50}>
-									<SvgIcon fontSize="inherit" color="inherit">
-										<AdExIcon width="100%" height="100%" />
-									</SvgIcon>
-								</Box>
+							<Box classes={{ root: classes.iconBox }}>
+								<MigrationIcon width="100%" height="100%" />
 							</Box>
 							<Box
 								display="flex"
@@ -134,14 +112,17 @@ const MigrateNowPopup = () => {
 										count: hasToMigrate && !bondToMigrate ? 2 : 1
 									})}
 								</Typography>
-							</Box>
 
-							<Box my={1}>
-								<Box my={1}>
-									<MigrationBtn onBeforeOpen={() => setOpen(false)} />
+								<Box my={2}>
+									<MigrationBtn
+										onBeforeOpen={() => setOpen(false)}
+										fabButton
+										color="secondary"
+										size="medium"
+									/>
 								</Box>
 
-								<Box my={1}>
+								<Box my={2}>
 									<Button
 										id={`stake-popup-close-btn`}
 										size="small"
