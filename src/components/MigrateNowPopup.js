@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core"
 import { ReactComponent as AdExIcon } from "./../resources/adex-logo-clean.svg"
 import AppContext from "../AppContext"
-import RewardCard from "./RewardCard"
+import MigrationBtn from "./MigrationBtn"
 
 import { useTranslation } from "react-i18next"
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => {
 			justifyContent: "center"
 		},
 		iconBox: {
-			borderRadius: "100%",
+			borderRadius: "5%",
 			width: 82,
 			height: 82,
 			backgroundColor: theme.palette.common.white,
@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => {
 			alignItems: "center",
 			justifyContent: "center"
 		},
+
 		top: {
 			background: `radial-gradient(
                 ellipse at bottom,
@@ -76,19 +77,15 @@ const useStyles = makeStyles(theme => {
 const MigrateNowPopup = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(true)
 
 	const { stats } = useContext(AppContext)
 
-	const { userBonds } = stats
+	const { hasToMigrate, bondToMigrate } = stats.tomBondsMigrationData
 
 	useEffect(() => {
-		const migratableBonds = [...userBonds].filter(
-			x => x.status !== "Unbonded" && x.status !== "Migrated"
-		)
-
-		setOpen(!!migratableBonds.length)
-	}, [userBonds])
+		setOpen(hasToMigrate)
+	}, [hasToMigrate])
 
 	return (
 		<Box>
@@ -133,15 +130,15 @@ const MigrateNowPopup = () => {
 									gutterBottom
 									align="center"
 								>
-									{t("popups.migrationAlertInfo")}
+									{t("popups.migrationAlertInfoMigrate", {
+										count: hasToMigrate && !bondToMigrate ? 2 : 1
+									})}
 								</Typography>
 							</Box>
 
 							<Box my={1}>
 								<Box my={1}>
-									{RewardCard({
-										userBonds
-									})}
+									<MigrationBtn onBeforeOpen={() => setOpen(false)} />
 								</Box>
 
 								<Box my={1}>
