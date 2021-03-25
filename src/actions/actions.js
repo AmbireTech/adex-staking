@@ -12,7 +12,8 @@ import {
 	ZERO,
 	POOLS,
 	ADDR_CORE,
-	ADDR_STAKING_MIGRATOR
+	ADDR_STAKING_MIGRATOR,
+	MIGRATION_UNBOND_BEFORE
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity } from "../helpers/identity"
@@ -90,7 +91,12 @@ export const EMPTY_STATS = {
 	tomStakingV5PoolStats: STAKING_POOL_EMPTY_STATS,
 	prices: {},
 	legacyTokenBalance: ZERO,
-	identityDeployed: false
+	identityDeployed: false,
+	tomBondsMigrationData: {
+		hasToMigrate: false,
+		bondToMigrate: null,
+		isWithdrawMigration: false
+	}
 }
 
 const sumRewards = all =>
@@ -388,6 +394,22 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const totalBalanceADX = userBalance.add(tomRewardADX).add(totalStakings)
 
+	const migratableBonds = [...userBonds].filter(
+		x => x.status !== "Unbonded" && x.status !== "Migrated"
+	)
+
+	const bondToMigrate = migratableBonds.length === 1 ? migratableBonds[0] : null
+
+	const tomBondsMigrationData = {
+		hasToMigrate: !!migratableBonds.length,
+		bondToMigrate,
+		isWithdrawMigration:
+			bondToMigrate &&
+			bondToMigrate.status === "UnbondRequested" &&
+			bondToMigrate.willUnlock &&
+			bondToMigrate.willUnlock.getTime() < MIGRATION_UNBOND_BEFORE
+	}
+
 	return {
 		identityAddr,
 		identityDeployed,
@@ -412,7 +434,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loyaltyPoolStats,
 		tomPoolStats: tomPoolStatsWithUserData,
 		tomStakingV5PoolStats: tomStakingV5PoolStatsWithUserData,
-		prices
+		prices,
+		tomBondsMigrationData
 	}
 }
 
