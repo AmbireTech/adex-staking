@@ -181,7 +181,14 @@
     "tosNotConfirmed": "Confirm terms of service",
     "unbond": "Unbond",
     "unbondNow": "Unbond now",
-    "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box>"
+    "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box>",
+    "migrationAlertText1": "Important!",
+    "migrationAlertText2": "AdEx Staking Update: Migrating the Validator Tom Contract",
+    "migrationAlertText3": "Upgrade timeline:",
+    "migrationAlertText4": "23 March: unbonding on the old pool disabled.",
+    "migrationAlertText5": "31 March: Migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
+    "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
+    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "
   },
   "gasless": {
     "staking": "Gasless Staking",
