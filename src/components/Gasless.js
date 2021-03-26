@@ -1,82 +1,89 @@
-import React, { useContext, useEffect, useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import React from // useContext,
+// useEffect,
+// useState
+"react"
+// import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	SvgIcon,
-	Typography,
-	IconButton,
-	Button,
-	Modal,
-	Fade,
-	Backdrop
+	Typography
+	// IconButton,
+	// Button,
+	// Modal,
+	// Fade,
+	// Backdrop
 } from "@material-ui/core"
-import {
-	FileCopySharp as CopyIcon,
-	HelpSharp as HelpIcon
-} from "@material-ui/icons"
-import copy from "copy-to-clipboard"
+// import {
+// 	FileCopySharp as CopyIcon,
+// 	HelpSharp as HelpIcon
+// } from "@material-ui/icons"
+// import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
-import AppContext from "../AppContext"
-import { createNewBond, restake, getGaslessInfo } from "../actions"
+// import AppContext from "../AppContext"
+// import { createNewBond, restake, getGaslessInfo } from "../actions"
+// import {
+// 	POOLS,
+// 	MIN_BALANCE_FOR_GASLESS_TXNS,
+// 	UNBOND_DAYS,
+// 	ZERO
+// } from "../helpers/constants"
+// import StatsCard from "./StatsCard"
+// import { formatADXPretty } from "../helpers/formatting"
+// import NewGaslessBondForm from "./NewGaslessBondForm"
+// import { ExternalAnchor } from "./Anchor"
+// import Tooltip from "./Tooltip"
+// import ConfirmationDialog from "./ConfirmationDialog"
 import {
-	POOLS,
-	MIN_BALANCE_FOR_GASLESS_TXNS,
-	UNBOND_DAYS,
-	ZERO
-} from "../helpers/constants"
-import StatsCard from "./StatsCard"
-import { formatADXPretty } from "../helpers/formatting"
-import NewGaslessBondForm from "./NewGaslessBondForm"
-import { ExternalAnchor } from "./Anchor"
-import Tooltip from "./Tooltip"
-import ConfirmationDialog from "./ConfirmationDialog"
-import { useTranslation, Trans } from "react-i18next"
+	useTranslation
+	// Trans
+} from "react-i18next"
 
-const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
+// const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
-const useStyles = makeStyles(theme => {
-	return {
-		overlay: {
-			position: "absolute",
-			left: 0,
-			top: 0,
-			right: 0,
-			bottom: 0,
-			backgroundColor: "transparent"
-		},
-		noUserData: {
-			opacity: 0.23
-		},
-		address: {
-			wordBreak: "break-all"
-		},
-		modal: {
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center"
-		},
-		bullets: {
-			[theme.breakpoints.up("md")]: {
-				maxWidth: 800
-			}
-		},
-		actions: {
-			maxWidth: 400,
-			margin: theme.spacing(1)
-		}
-	}
-})
+// const useStyles = makeStyles(theme => {
+// 	return {
+// 		overlay: {
+// 			position: "absolute",
+// 			left: 0,
+// 			top: 0,
+// 			right: 0,
+// 			bottom: 0,
+// 			backgroundColor: "transparent"
+// 		},
+// 		noUserData: {
+// 			opacity: 0.23
+// 		},
+// 		address: {
+// 			wordBreak: "break-all"
+// 		},
+// 		modal: {
+// 			display: "flex",
+// 			alignItems: "center",
+// 			justifyContent: "center"
+// 		},
+// 		bullets: {
+// 			[theme.breakpoints.up("md")]: {
+// 				maxWidth: 800
+// 			}
+// 		},
+// 		actions: {
+// 			maxWidth: 400,
+// 			margin: theme.spacing(1)
+// 		}
+// 	}
+// })
 
-const defaultGaslessInfo = {
-	canExecuteGasless: false,
-	canExecuteGaslessError: {
-		message: "common.connectWallet"
-	}
-}
+// const defaultGaslessInfo = {
+// 	canExecuteGasless: false,
+// 	canExecuteGaslessError: {
+// 		message: "common.connectWallet"
+// 	}
+// }
 
 const Gasless = () => {
 	const { t } = useTranslation()
+	/*
 	const classes = useStyles()
 	const [bondOpen, setBondOpen] = useState(false)
 	const [reStakeOpen, setReStakeOpen] = useState(false)
@@ -127,16 +134,16 @@ const Gasless = () => {
 	const mainErr = !walletConnected
 		? "common.connectWallet"
 		: !canExecuteGasless
-		? t(gaslessError.message || "", gaslessError.data || {})
-		: ""
+			? t(gaslessError.message || "", gaslessError.data || {})
+			: ""
 
 	const canExecuteGaslessReStakeError =
 		mainErr ||
 		(!hasEnoughForReStake
 			? t("errors.minGaslessReStake", {
-					amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
-					currency: "ADX"
-			  })
+				amount: formatADXPretty(MIN_GASLESS_RE_STAKE_REWARDS),
+				currency: "ADX"
+			})
 			: "")
 
 	const canExecuteGaslessError =
@@ -194,6 +201,8 @@ const Gasless = () => {
 			amount: userIdentityBalance
 		})
 	}, [identityAddr, userIdentityBalance, loaded])
+	
+	*/
 
 	return (
 		<Box>
@@ -214,6 +223,11 @@ const Gasless = () => {
 				}
 			/>
 			<Box>
+				<Typography variant="h4" gutterBottom>
+					{t("gasless.tempDisabled")}
+				</Typography>
+			</Box>
+			{/* <Box>
 				<Box>
 					<Box>
 						<Box
@@ -464,7 +478,7 @@ const Gasless = () => {
 						/>
 					)
 				})}
-			</Box>
+			</Box> */}
 		</Box>
 	)
 }
