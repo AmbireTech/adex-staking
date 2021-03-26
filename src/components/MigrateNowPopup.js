@@ -8,6 +8,7 @@ import {
 	Typography,
 	Button
 } from "@material-ui/core"
+import { Alert, AlertTitle } from "@material-ui/lab"
 import { ReactComponent as MigrationIcon } from "./../resources/migration-ic.svg"
 import AppContext from "../AppContext"
 import MigrationBtn from "./MigrationBtn"
@@ -56,7 +57,46 @@ const useStyles = makeStyles(theme => {
 	}
 })
 
-const MigrateNowPopup = () => {
+export const MigrateNowAlert = () => {
+	const { t } = useTranslation()
+
+	const { stats } = useContext(AppContext)
+
+	const { hasToMigrate, bondToMigrate } = stats.tomBondsMigrationData
+
+	return (
+		// hasToMigrate &&
+		<Box>
+			<Alert severity="info" variant="filled">
+				<AlertTitle id="alert-chain-warning-title">
+					{/* <Typography
+						variant="caption"
+						gutterBottom
+						align="center"
+					> */}
+					{t("popups.migrationAlert")}
+					{/* </Typography> */}
+				</AlertTitle>
+				<Box id="alert-chain-description" display="flex" flexDirection="column">
+					{/* <Typography
+						variant="caption"
+						gutterBottom
+						align="center"
+					> */}
+					{t("popups.migrationAlertInfoMigrate", {
+						count: hasToMigrate && !bondToMigrate ? 2 : 1
+					})}
+					{/* </Typography> */}
+					<Box mt={1}>
+						<MigrationBtn variant="contained" color="secondary" size="small" />
+					</Box>
+				</Box>
+			</Alert>
+		</Box>
+	)
+}
+
+export const MigrateNowPopup = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const [open, setOpen] = useState(true)
@@ -140,5 +180,3 @@ const MigrateNowPopup = () => {
 		</Box>
 	)
 }
-
-export default MigrateNowPopup
