@@ -331,8 +331,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const tomRewardDAI = sumRewards(tomPoolDaiRewardsChannels)
 
-	console.log("migrationBonusPromille", migrationBonusPromille)
-	console.log("identityAdxRewardsAmount", identityAdxRewardsAmount)
+	// console.log("migrationBonusPromille", migrationBonusPromille)
+	// console.log("identityAdxRewardsAmount", identityAdxRewardsAmount)
 
 	const userBonds = userBondsData.map(bond => ({
 		...bond,
@@ -349,7 +349,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 				: null
 	}))
 
-	console.log("userBonds", userBonds)
+	// console.log("userBonds", userBonds)
 
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")
@@ -382,6 +382,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 	const { balanceLpADX } = loyaltyPoolStats
 
 	const totalLockedOnDeposits = currentBalanceADX
+		.sub(leavesPendingToUnlockTotalADX)
+		.sub(leavesReadyToWithdrawTotalADX)
 
 	const totalPendingToUnlock = leavesPendingToUnlockTotalADX
 	const totalUnlockedDeposits = balanceLpADX.add(leavesReadyToWithdrawTotalADX)

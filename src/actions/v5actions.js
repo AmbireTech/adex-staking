@@ -212,8 +212,8 @@ export async function onStakingPoolV5Deposit(
 
 	await stakingPoolWithSigner.enter(
 		adxDepositAmount,
-		{ gasLimit: 250000 }
-		// setAllowance ? { gasLimit: 250000 } : {}
+		// { gasLimit: 250000 }
+		setAllowance ? { gasLimit: 250000 } : {}
 	)
 }
 
@@ -781,8 +781,8 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const totalRewards = currentBalanceADX
 		.add(withdrawsADXTotal)
-		.add(leavesPendingToUnlockTotalADX)
-		.add(leavesReadyToWithdrawTotalADX)
+		// .add(leavesPendingToUnlockTotalADX)
+		// .add(leavesReadyToWithdrawTotalADX)
 		.sub(depositsADXTotal)
 
 	const stats = {
