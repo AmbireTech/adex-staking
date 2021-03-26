@@ -18,6 +18,7 @@ import packageJson from "./../../package.json"
 import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
+import MigrationBtn from "./MigrationBtn"
 import {
 	HomeSharp as HomeIcon,
 	DashboardSharp as DashboardIcon
@@ -170,14 +171,22 @@ function SideNav({
 									[classes.noUserData]: !stats.connectedWalletAddress
 								})}
 							>
-								{UserData({
-									prices,
-									stats,
-									onRequestUnbond,
-									onUnbond,
-									onClaimRewards,
-									onRestake
-								})}
+								<Box width={1}>
+									{UserData({
+										prices,
+										stats,
+										onRequestUnbond,
+										onUnbond,
+										onClaimRewards,
+										onRestake
+									})}
+
+									{path !== "/stakings" && (
+										<Box>
+											<MigrationBtn />
+										</Box>
+									)}
+								</Box>
 							</ListItem>
 							<Divider />
 
