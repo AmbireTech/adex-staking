@@ -204,7 +204,7 @@
     "reStakeRewards": "RE-STAKE REWARDS",
     "info": "Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient. Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load. You can see all transactions of your gasless address <external> HERE </external>",
     "createNewBond": "Create a bond - gasless",
-    "tempDisabled": "Gasless staking is Temporarily Unavailable"
+    "tempDisabled": "Temporarily Unavailable"
   },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
