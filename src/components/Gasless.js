@@ -32,6 +32,7 @@ import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
 import ConfirmationDialog from "./ConfirmationDialog"
 import { useTranslation, Trans } from "react-i18next"
+import { Alert } from "@material-ui/lab"
 
 const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
 
@@ -97,7 +98,8 @@ const Gasless = () => {
 		identityAddr,
 		loaded,
 		tomRewardADX,
-		userBonds
+		userBonds,
+		identityDeployed
 	} = stats
 
 	const {
@@ -223,64 +225,99 @@ const Gasless = () => {
 							flexDirection="column"
 							alignItems="flex-start"
 						>
-							<Box>
-								<Typography component="div" variant="h5">
-									{t("gasless.accountAddr")}
-								</Typography>
-							</Box>
-							<Box
-								my={2}
-								display="flex"
-								flexDirection="row"
-								alignItems="center"
-								justifyContent="flex-start"
-								flexGrow={0}
-								// flexWrap="wrap"
-							>
-								<Box
-									display="flex"
-									flexDirection="row"
-									alignItems="center"
-									justifyContent="flex-start"
-									bgcolor="background.card"
-									color="text.main"
-									fontSize={23}
-									boxShadow={25}
-								>
-									<Box
-										onClick={() => !identityAddr && setConnectWallet(true)}
-										m={1}
-										mx={2}
-										classes={{ root: classes.address }}
-										{...(!identityAddr ? { style: { cursor: "pointer" } } : {})}
-									>
-										{identityAddr || t("gasless.connectWalletToSeeAddr")}
-									</Box>
-									{identityAddr && (
-										<Box m={1}>
-											<IconButton
-												id="mobile-burger-btn"
-												color="secondary"
-												aria-label="open drawer"
-												onClick={() => {
-													copy(identityAddr)
-													addSnack(
-														t("gasless.copiedToClipboard", { identityAddr }),
-														"success"
-													)
-												}}
-											>
-												<CopyIcon />
-											</IconButton>
+							{walletConnected ? (
+								identityDeployed ? (
+									<Box>
+										<Box>
+											<Typography component="div" variant="h5">
+												{t("gasless.accountAddr")}
+											</Typography>
 										</Box>
-									)}
-								</Box>
-								<Box m={1}>
-									<Tooltip title={t("gasless.addrTooltip")}>
-										<HelpIcon color="primary" />
-									</Tooltip>
-								</Box>
-							</Box>
+										<Box
+											my={2}
+											display="flex"
+											flexDirection="row"
+											alignItems="center"
+											justifyContent="flex-start"
+											flexGrow={0}
+											// flexWrap="wrap"
+										>
+											<Box
+												display="flex"
+												flexDirection="row"
+												alignItems="center"
+												justifyContent="flex-start"
+												bgcolor="background.card"
+												color="text.main"
+												fontSize={23}
+												boxShadow={25}
+											>
+												<Box
+													onClick={() =>
+														!identityAddr && setConnectWallet(true)
+													}
+													m={1}
+													mx={2}
+													classes={{ root: classes.address }}
+													{...(!identityAddr
+														? { style: { cursor: "pointer" } }
+														: {})}
+												>
+													{identityAddr || t("gasless.connectWalletToSeeAddr")}
+												</Box>
+												{identityAddr && (
+													<Box m={1}>
+														<IconButton
+															id="mobile-burger-btn"
+															color="secondary"
+															aria-label="open drawer"
+															onClick={() => {
+																copy(identityAddr)
+																addSnack(
+																	t("gasless.copiedToClipboard", {
+																		identityAddr
+																	}),
+																	"success"
+																)
+															}}
+														>
+															<CopyIcon />
+														</IconButton>
+													</Box>
+												)}
+											</Box>
+											<Box m={1}>
+												<Tooltip title={t("gasless.addrTooltip")}>
+													<HelpIcon color="primary" />
+												</Tooltip>
+											</Box>
+										</Box>
+									</Box>
+								) : (
+									<Box my={2} width={1}>
+										<Alert variant="filled" severity="info">
+											<Box>{t("gasless.bulletMigration")}</Box>
+											<Box>
+												<Trans
+													i18nKey="bonds.migrationAlertText6"
+													components={{
+														externalLink: (
+															<ExternalAnchor
+																// className={classes.getLink}
+																color="secondary"
+																id={`migration--alert-blogpost-link`}
+																target="_blank"
+																href={`https://www.adex.network/blog/staking-portal-upgrade/`}
+															/>
+														)
+													}}
+												/>
+											</Box>
+										</Alert>
+									</Box>
+								)
+							) : null}
+
 							<Box className={classes.bullets}>
 								<Typography variant="h6" gutterBottom>
 									{" • "}
