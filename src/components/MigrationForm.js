@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useContext } from "react"
 import { getPoolStatsByPoolId, onMigrationToV5Finalize } from "../actions"
-import { toIdAttributeString, formatADXPretty } from "../helpers/formatting"
+import {
+	toIdAttributeString,
+	formatADXPretty,
+	formatDate
+} from "../helpers/formatting"
 import { DEPOSIT_POOLS, STAKING_RULES_URL, ZERO } from "../helpers/constants"
 import {
 	Grid,
@@ -112,65 +116,61 @@ export default function MigrationForm({
 	return (
 		<Box width={1}>
 			<Grid container spacing={2}>
-				{activePool ? (
-					withdrawOnMigration ? (
-						<Box>
-							<Typography variant="subtitle1">
+				<Box m={1}>
+					<Typography variant="subtitle1">
+						<Trans
+							i18nKey="bonds.bondInfo"
+							values={{
+								amount: formatADXPretty(bond.amount),
+								currency: "ADX",
+								pool: t(poolLabel),
+								created: formatDate(created)
+							}}
+							components={{
+								box: <Box mt={0.5}></Box>
+							}}
+						/>
+					</Typography>
+				</Box>
+
+				{!withdrawOnMigration && (
+					<Grid item xs={12} container spacing={2}>
+						<Grid item xs={12}>
+							<Typography variant="h6">
+								{t("common.poolRewardPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.rewardPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="h6">
+								{t("common.poolSlashingPolicy")}:
+							</Typography>
+							<Typography variant="body1">
+								{t(activePool.slashPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
+							<Typography variant="body1">
 								<Trans
-									i18nKey="bonds.bondInfo"
+									i18nKey="bonds.currentYield"
 									values={{
-										amount: formatADXPretty(bond.amount),
-										currency: "ADX",
-										pool: t(poolLabel),
-										created
+										apy: (poolStats.currentAPY * 100).toFixed(2),
+										sign: "%"
 									}}
 									components={{
-										box: <Box m={2}></Box>
+										farmer: (
+											<span role="img" aria-label="farmer">
+												🌾
+											</span>
+										)
 									}}
 								/>
 							</Typography>
-						</Box>
-					) : (
-						<Grid item xs={12} container spacing={2}>
-							<Grid item xs={12}>
-								<Typography variant="h6">
-									{t("common.poolRewardPolicy")}:
-								</Typography>
-								<Typography variant="body1">
-									{t(activePool.rewardPolicy)}
-								</Typography>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="h6">
-									{t("common.poolSlashingPolicy")}:
-								</Typography>
-								<Typography variant="body1">
-									{t(activePool.slashPolicy)}
-								</Typography>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="h6">{t("common.poolAPY")}:</Typography>
-								<Typography variant="body1">
-									<Trans
-										i18nKey="bonds.currentYield"
-										values={{
-											apy: (poolStats.currentAPY * 100).toFixed(2),
-											sign: "%"
-										}}
-										components={{
-											farmer: (
-												<span role="img" aria-label="farmer">
-													🌾
-												</span>
-											)
-										}}
-									/>
-								</Typography>
-							</Grid>
 						</Grid>
-					)
-				) : (
-					""
+					</Grid>
 				)}
 
 				{!identityAdxRewardsAmount.isZero() && (
