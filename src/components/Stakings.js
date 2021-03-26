@@ -38,31 +38,6 @@ const Stakings = () => {
 						{t("common.bonds")}
 					</Typography>
 				</Box>
-				<Box mt={2}>
-					<Alert variant="filled" severity="info">
-						<Box>{t("bonds.migrationAlertText1")}</Box>
-						<Box>{t("bonds.migrationAlertText2")}</Box>
-						<Box>{t("bonds.migrationAlertText3")}</Box>
-						<Box>{t("bonds.migrationAlertText4")}</Box>
-						<Box>{t("bonds.migrationAlertText5")}</Box>
-						<Box>
-							<Trans
-								i18nKey="bonds.migrationAlertText6"
-								components={{
-									externalLink: (
-										<ExternalAnchor
-											// className={classes.getLink}
-											color="secondary"
-											id={`migration--alert-blogpost-link`}
-											target="_blank"
-											href={`https://www.adex.network/blog/staking-portal-upgrade/`}
-										/>
-									)
-								}}
-							/>
-						</Box>
-					</Alert>
-				</Box>
 				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
 					<Box p={3}>
 						{Bonds({

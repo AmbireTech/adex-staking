@@ -182,11 +182,7 @@
     "unbond": "Unbond",
     "unbondNow": "Unbond now",
     "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box>",
-    "migrationAlertText1": "Important!",
-    "migrationAlertText2": "AdEx Staking Update: Migrating the Validator Tom Contract",
-    "migrationAlertText3": "Upgrade timeline:",
-    "migrationAlertText4": "23 March: unbonding on the old pool disabled.",
-    "migrationAlertText5": "31 March: Migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
+    "migrationAlertText5": "AdEx Staking migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
     "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
     "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "
   },
@@ -294,8 +290,8 @@
     "congratulations": "Congratulations!",
     "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards",
     "migrationAlert": " Migration Alert",
-    "migrationAlertInfoMigrate": "You have Tom staking pool bond ready to be migrated",
-    "migrationAlertInfoMigrate_plural": "You have Tom staking pool bonds ready to be migrated",
+    "migrationAlertInfoMigrate": "You have Tom staking pool bond ready to be migrated!",
+    "migrationAlertInfoMigrate_plural": "You have Tom staking pool bonds ready to be migrated!",
     "notNow": "Not now"
   },
   "rewards": {

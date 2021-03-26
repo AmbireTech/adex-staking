@@ -12,8 +12,10 @@ import { Alert, AlertTitle } from "@material-ui/lab"
 import { ReactComponent as MigrationIcon } from "./../resources/migration-ic.svg"
 import AppContext from "../AppContext"
 import MigrationBtn from "./MigrationBtn"
+import { ExternalAnchor } from "./Anchor"
+import { useLocation } from "react-router-dom"
 
-import { useTranslation } from "react-i18next"
+import { useTranslation, Trans } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -61,38 +63,58 @@ export const MigrateNowAlert = () => {
 	const { t } = useTranslation()
 
 	const { stats } = useContext(AppContext)
+	const location = useLocation()
+	const path = location.pathname
 
 	const { hasToMigrate, bondToMigrate } = stats.tomBondsMigrationData
 
 	return (
-		// hasToMigrate &&
-		<Box>
-			<Alert severity="info" variant="filled">
-				<AlertTitle id="alert-chain-warning-title">
-					{/* <Typography
-						variant="caption"
-						gutterBottom
-						align="center"
-					> */}
-					{t("popups.migrationAlert")}
-					{/* </Typography> */}
-				</AlertTitle>
-				<Box id="alert-chain-description" display="flex" flexDirection="column">
-					{/* <Typography
-						variant="caption"
-						gutterBottom
-						align="center"
-					> */}
-					{t("popups.migrationAlertInfoMigrate", {
-						count: hasToMigrate && !bondToMigrate ? 2 : 1
-					})}
-					{/* </Typography> */}
-					<Box mt={1}>
-						<MigrationBtn variant="contained" color="secondary" size="small" />
+		hasToMigrate && (
+			<Box mb={2}>
+				<Alert severity="info" variant="filled">
+					<AlertTitle id="alert-chain-warning-title">
+						{t("popups.migrationAlert")}
+					</AlertTitle>
+					<Box
+						id="alert-chain-description"
+						display="flex"
+						flexDirection="column"
+					>
+						<Box>{t("bonds.migrationAlertText5")}</Box>
+						<Box>
+							<Trans
+								i18nKey="bonds.migrationAlertText6"
+								components={{
+									externalLink: (
+										<ExternalAnchor
+											color="secondary"
+											id={`migration--alert-blogpost-link`}
+											target="_blank"
+											href={`https://www.adex.network/blog/staking-portal-upgrade/`}
+										/>
+									)
+								}}
+							/>
+						</Box>
+
+						<Box mt={1}>
+							{t("popups.migrationAlertInfoMigrate", {
+								count: hasToMigrate && !bondToMigrate ? 2 : 1
+							})}
+						</Box>
+						{path !== "/stakings" && (
+							<Box mt={1}>
+								<MigrationBtn
+									variant="contained"
+									color="secondary"
+									size="small"
+								/>
+							</Box>
+						)}
 					</Box>
-				</Box>
-			</Alert>
-		</Box>
+				</Alert>
+			</Box>
+		)
 	)
 }
 
