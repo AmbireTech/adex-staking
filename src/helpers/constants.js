@@ -132,7 +132,8 @@ export const DEPOSIT_POOLS = [
 		url: "https://tom.adex.network",
 		legacyPoolId: utils.id(
 			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
-		)
+		),
+		userDepositsLimit: "15000000000000000000000000" // 15 000 000
 	}
 ]
 
