@@ -61,6 +61,10 @@ export default function UserData({ stats, prices }) {
 							amount: formatADXPretty(stats.totalLockedOnDeposits),
 							currency: "ADX"
 						}),
+						t("userData.activeUsersStakeLegacy", {
+							amount: formatADXPretty(stats.userTotalStake),
+							currency: "ADX"
+						}),
 						t("userData.activeDepositsInfoPendingToUnlock", {
 							amount: formatADXPretty(stats.totalPendingToUnlock),
 							currency: "ADX"
