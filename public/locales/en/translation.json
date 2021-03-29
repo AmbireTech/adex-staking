@@ -247,7 +247,8 @@
     "noActionForPool": "NO {{actionName}} for pool ID: \"{{poolId}}\"",
     "unbondCommitmentNotSelected": "Unbond commitment not selected",
     "zeroBalanceADX": "0 ADX balance",
-    "noUnbondCommitmentProvided": "No unbond commitment data provided"
+    "noUnbondCommitmentProvided": "No unbond commitment data provided",
+    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

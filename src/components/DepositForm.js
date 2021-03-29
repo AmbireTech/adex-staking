@@ -34,6 +34,7 @@ import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { Alert } from "@material-ui/lab"
+import { BigNumber } from "ethers"
 
 export default function DepositForm({
 	depositPool,
@@ -46,6 +47,7 @@ export default function DepositForm({
 	const [actionAmount, setActionAmount] = useState("0.0")
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
+	const [amountErrVals, setAmountErrVals] = useState({})
 	const [selectErr, setSelectErr] = useState(false)
 	const [selectErrText, setSelectErrText] = useState("")
 	const [dirtyInputs, setDirtyInputs] = useState(false)
@@ -109,7 +111,7 @@ export default function DepositForm({
 		setAmountErr(false)
 		setSelectErr(false)
 		setAmountErrText("")
-		setAmountErrText("")
+		setAmountErrVals({})
 
 		if (
 			actionType === DEPOSIT_ACTION_TYPES.withdraw &&
@@ -164,6 +166,26 @@ export default function DepositForm({
 		) {
 			setAmountErr(true)
 			setAmountErrText("errors.amountOverPoolLimit")
+			return
+		}
+
+		if (
+			actionType === DEPOSIT_ACTION_TYPES.deposit &&
+			poolStats &&
+			activePool.id === DEPOSIT_POOLS[1].id &&
+			amountBN.add(poolStats.currentBalanceADX).gt(activePool.userDepositsLimit)
+		) {
+			setAmountErr(true)
+			setAmountErrText("errors.poolMaxDepositReached")
+			setAmountErrVals({
+				currentDeposited: formatADXPretty(poolStats.currentBalanceADX),
+				depositAmount: formatADXPretty(amountBN),
+				userDepositsLimit: formatADXPretty(
+					BigNumber.from(activePool.userDepositsLimit)
+				),
+				currency: "ADX"
+			})
+
 			return
 		}
 	}, [
@@ -266,7 +288,10 @@ export default function DepositForm({
 							onChange={ev => {
 								onAmountChange(ev.target.value)
 							}}
-							helperText={t(dirtyInputs && amountErr ? amountErrText : "")}
+							helperText={t(
+								dirtyInputs && amountErr ? amountErrText : "",
+								amountErrVals
+							)}
 						/>
 						<Box mt={1}>
 							<Button
