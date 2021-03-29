@@ -386,13 +386,15 @@ export async function loadUserStats(chosenWalletType, prices) {
 		.sub(leavesReadyToWithdrawTotalADX)
 
 	const totalPendingToUnlock = leavesPendingToUnlockTotalADX
-	const totalUnlockedDeposits = balanceLpADX.add(leavesReadyToWithdrawTotalADX)
+	const totalUnlockedDeposits = balanceLpADX
+		.add(leavesReadyToWithdrawTotalADX)
+		.add(tomUnbondRequestedWithdraw) // unlocked with migration
 
 	const totalStakings = userTotalStake
 		.add(totalLockedOnDeposits)
 		.add(totalPendingToUnlock)
 		.add(totalUnlockedDeposits)
-		.add(tomUnbondRequestedWithdraw)
+		.add(tomRewardADX)
 
 	const totalBalanceADX = userBalance.add(tomRewardADX).add(totalStakings)
 
