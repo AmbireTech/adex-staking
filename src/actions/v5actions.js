@@ -73,6 +73,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	leavesReadyToWithdrawTotalMax: ZERO,
 	leavesPendingToUnlockTotalADX: ZERO,
 	leavesReadyToWithdrawTotalADX: ZERO,
+	unbondDays: 33,
 	loaded: false,
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
@@ -303,7 +304,7 @@ export async function getTomStakingV5PoolData() {
 		sharesTotalSupply,
 		incentivePerSecond,
 		rageReceivedPromilles = 700,
-		unbondDays = 20,
+		unbondDays = 0,
 		shareValue = ZERO
 	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),

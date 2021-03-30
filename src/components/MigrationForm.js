@@ -36,7 +36,7 @@ export default function MigrationForm({
 
 	const { userWalletBalance, tomPoolStats, tomStakingV5PoolStats } = stats
 	const { identityAdxRewardsAmount } = tomPoolStats
-	const { timeToUnbond } = tomStakingV5PoolStats
+	const { unbondDays } = tomStakingV5PoolStats
 
 	const [claimPendingRewards, setClaimPendingRewards] = useState(true)
 	const [stakeWalletBalance, setStakeWalletBalance] = useState(false)
@@ -88,7 +88,14 @@ export default function MigrationForm({
 		<Trans
 			i18nKey="bonds.confirmationLabel"
 			values={{
-				unbondDays: timeToUnbond
+				unbondDays,
+				totalBondAmount: formatADXPretty(
+					bond.amount
+						.add(bond.migrationReward || ZERO)
+						.add(stakeWalletBalance ? userWalletBalance : ZERO)
+						.add(claimPendingRewards ? identityAdxRewardsAmount : ZERO)
+				),
+				currency: "ADX"
 			}}
 			components={{
 				e1: (
@@ -126,8 +133,9 @@ export default function MigrationForm({
 								pool: t(poolLabel),
 								created: formatDate(created),
 								migrationBonus: withdrawOnMigration
-									? t("NA")
-									: formatADXPretty(bond.migrationReward)
+									? t("common.NA")
+									: formatADXPretty(bond.migrationReward),
+								migrationBonusCurrency: withdrawOnMigration ? "" : "ADX"
 							}}
 							components={{
 								box: <Box mt={0.5}></Box>
@@ -152,6 +160,14 @@ export default function MigrationForm({
 							</Typography>
 							<Typography variant="body1">
 								{t(activePool.slashPolicy)}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="h6">
+								{t("deposits.lockupPeriodLabel")}:
+							</Typography>
+							<Typography variant="body1">
+								{t("deposits.lockupDays", { count: unbondDays })}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
@@ -180,10 +196,17 @@ export default function MigrationForm({
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
-							label={t("bonds.migrationClaimPendingRewards", {
-								amount: formatADXPretty(identityAdxRewardsAmount),
-								currency: "ADX"
-							})}
+							label={t(
+								`bonds.${
+									withdrawOnMigration
+										? "migrationClaimPendingRewards"
+										: "migrationStakePendingRewards"
+								}`,
+								{
+									amount: formatADXPretty(identityAdxRewardsAmount),
+									currency: "ADX"
+								}
+							)}
 							control={
 								<Checkbox
 									id={`new-migration-v5-form-claim-pending-rewards-check`}
@@ -213,6 +236,23 @@ export default function MigrationForm({
 						></FormControlLabel>
 					</Grid>
 				)}
+
+				{/* <Grid item xs={12}>
+					<FormControlLabel
+						style={{ userSelect: "none" }}
+						label={t("bonds.stakeWalletBalance", {
+							amount: formatADXPretty(userWalletBalance),
+							currency: "ADX"
+						})}
+						control={
+							<Checkbox
+								id={`new-migration-v5-form-stake-wallet-balance-check`}
+								checked={stakeWalletBalance}
+								onChange={ev => setStakeWalletBalance(ev.target.checked)}
+							/>
+						}
+					></FormControlLabel>
+				</Grid> */}
 
 				<Grid item xs={12}>
 					<FormControlLabel
