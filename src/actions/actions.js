@@ -36,11 +36,11 @@ const defaultProvider = getDefaultProvider
 const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 const Core = new Contract(ADDR_CORE, CoreABI, defaultProvider)
-// const StakingMigrator = new Contract(
-// 	ADDR_STAKING_MIGRATOR,
-// 	StakingMigratorABI,
-// 	defaultProvider
-// )
+const StakingMigrator = new Contract(
+	ADDR_STAKING_MIGRATOR,
+	StakingMigratorABI,
+	defaultProvider
+)
 
 const MAX_SLASH = BigNumber.from("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -299,7 +299,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loyaltyPoolStats,
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
-		migrationBonusPromilles = 48
+		migrationBonusPromilles = BigNumber.from(1048)
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
@@ -307,7 +307,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr })
-		// StakingMigrator.WITH_BONUS_PROMILLES()
+		// StakingMigrator.WITH_BONUS_PROMILLES() // TODO: uncomment when migrator deployed
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -451,11 +451,11 @@ export async function loadBondStats(addr, identityAddr) {
 		defaultProvider.getLogs({
 			fromBlock: 0,
 			...Staking.filters.LogSlash(null, null)
+		}),
+		defaultProvider.getLogs({
+			fromBlock: 0,
+			...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
 		})
-		// defaultProvider.getLogs({
-		// 	fromBlock: 0,
-		// 	...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
-		// })
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -466,10 +466,8 @@ export async function loadBondStats(addr, identityAddr) {
 	// 	return pools
 	// }, {})
 
-	console.log("migrationLogs", migrationLogs)
-
 	const migrationLogsByBondId = migrationLogs.reduce((byHash, log) => {
-		const { bondId } = "" // StakingMigrator.interface.parseLog(log).args
+		const { bondId } = StakingMigrator.interface.parseLog(log).args
 		byHash[bondId] = log
 		return byHash
 	}, {})
