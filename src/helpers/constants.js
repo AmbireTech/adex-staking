@@ -14,7 +14,7 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
-export const useTestnet = true // TODO env cfg
+export const useTestnet = false // true // TODO env cfg
 
 export const MIGRATION_UNBOND_BEFORE = 1619182800000 // 24.04.2021
 
@@ -48,7 +48,7 @@ export const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 export const ADDR_STAKING_POOL = useTestnet
 	? "0x01C43e275085bc5364f43C3980695e9BbAa4E7Fe"
 	: // ? "0xf43ced622ea1656e4c7070b1c03d868801362183"
-	  "0x0000000000000000000000000000000000000000" // TODO
+	  "0xB6456b57f03352bE48Bf101B46c1752a0813491a" // TODO
 
 export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
@@ -58,7 +58,7 @@ export const ADDR_STAKING_MIGRATOR = useTestnet
 
 export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
 	? "0x1DD8Fb8aE154B780973Ff21D163ad8710c145B79"
-	: "0x617e6f354d288fcb33e148b1bb6d2cc9be1f7695"
+	: "0x9d47f1c6ba4d66d8aa5e19226191a8968bc9094e"
 
 export const MAX_UINT = BigNumber.from(
 	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
@@ -74,20 +74,6 @@ export const DEFAULT_BOND = {
 }
 
 export const POOLS = [
-	// TODO: tom first - just for goerli temp testing
-	{
-		label: "common.validatorJerry",
-		id: utils.id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
-		selectable: true,
-		minStakingAmount: "0.0",
-		purpose: "pools.jerryPurpose",
-		lockupPeriod: 30,
-		lockupPeriodText: "pools.jerryLockupPeriodTxt",
-		rewardPolicy: "pools.jerryRewardPolicy",
-		slashPolicy: "pools.jerrySlashPolicy",
-		apyStability: "pools.jerryApyStability",
-		url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network"
-	},
 	{
 		label: "common.validatorTom",
 		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
@@ -103,6 +89,19 @@ export const POOLS = [
 		estimatedAnnualFeeYield: 182500,
 		estimatedAnnualADXYield: 15103448.2758,
 		estimatedAnnualADXEarlyYield: 12166666.6666
+	},
+	{
+		label: "common.validatorJerry",
+		id: utils.id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
+		selectable: true,
+		minStakingAmount: "0.0",
+		purpose: "pools.jerryPurpose",
+		lockupPeriod: 30,
+		lockupPeriodText: "pools.jerryLockupPeriodTxt",
+		rewardPolicy: "pools.jerryRewardPolicy",
+		slashPolicy: "pools.jerrySlashPolicy",
+		apyStability: "pools.jerryApyStability",
+		url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network"
 	}
 ]
 
