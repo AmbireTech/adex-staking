@@ -23,12 +23,17 @@
 			},
 			{
 				"internalType": "address",
-				"name": "validatorAddr",
+				"name": "validatorStakingWallet",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
 				"name": "governanceAddr",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "claimToken",
 				"type": "address"
 			}
 		],
@@ -127,7 +132,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "unlockAt",
+				"name": "unlocksAt",
 				"type": "uint256"
 			},
 			{
@@ -138,6 +143,19 @@
 			}
 		],
 		"name": "LogLeave",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "newGuardian",
+				"type": "address"
+			}
+		],
+		"name": "LogNewGuardian",
 		"type": "event"
 	},
 	{
@@ -202,7 +220,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "unlockAt",
+				"name": "unlocksAt",
 				"type": "uint256"
 			},
 			{
@@ -287,51 +305,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "MAX_DAILY_PENALTIES_PROMILLES",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "PERMIT_TYPEHASH",
 		"outputs": [
 			{
 				"internalType": "bytes32",
 				"name": "",
 				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "RAGE_RECEIVED_PROMILLES",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TIME_TO_UNBOND",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -581,6 +560,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "maxDailyPenaltiesPromilles",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "name",
 		"outputs": [
 			{
@@ -687,9 +679,15 @@
 	},
 	{
 		"inputs": [],
-		"name": "resetLimits",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"name": "rageReceivedPromilles",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -721,6 +719,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "newGuardian",
+				"type": "address"
+			}
+		],
+		"name": "setGuardian",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "rageReceived",
 				"type": "uint256"
@@ -740,6 +751,24 @@
 			}
 		],
 		"name": "setTimeToUnbond",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "whitelisted",
+				"type": "bool"
+			}
+		],
+		"name": "setWhitelistedClaimToken",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -765,6 +794,19 @@
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "timeToUnbond",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -850,7 +892,7 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "unlockAt",
+				"name": "unlocksAt",
 				"type": "uint256"
 			}
 		],
@@ -894,13 +936,32 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "whitelistedClaimTokens",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "shares",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "unlockAt",
+				"name": "unlocksAt",
 				"type": "uint256"
 			},
 			{
