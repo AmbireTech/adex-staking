@@ -16,8 +16,9 @@ import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
 export const useTestnet = true // TODO env cfg
 
-export const MIGRATION_UNBOND_BEFORE = 1619182800000
+export const MIGRATION_UNBOND_BEFORE = 1619182800000 // 24.04.2021
 
+// Legacy staking
 export const ADDR_STAKING = useTestnet
 	? "0xA83675086d99ef52ac78EDd534059C0Ae7f504f4"
 	: "0x4846c6837ec670bbd1f5b485471c8f64ecb9c534"
@@ -28,12 +29,12 @@ export const ZERO = BigNumber.from(0)
 
 export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
 export const UNBOND_DAYS = 30
-export const UNBOND_DAYS_V5 = 20
 export const STAKING_RULES_URL = null
 
 export const IDLE_TIMEOUT_MINUTES = 10
 
 export const ADDR_CORE = "0x333420fc6a897356e69b62417cd17ff012177d2b"
+
 export const ADDR_ADX = useTestnet
 	? "0x6170ea3629a1E49B77EEd0e0A18460ac184CA71e"
 	: "0xADE00C28244d5CE17D72E40330B1c318cD12B7c3"
@@ -46,11 +47,13 @@ export const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 
 export const ADDR_STAKING_POOL = useTestnet
 	? "0x01C43e275085bc5364f43C3980695e9BbAa4E7Fe"
-	: "0x0000000000000000000000000000000000000000" // TODO
+	: // ? "0xf43ced622ea1656e4c7070b1c03d868801362183"
+	  "0x0000000000000000000000000000000000000000" // TODO
 
 export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
-	  "0x555660ccf94b40ee8d7ddca8dd3c4dbf7bd51312" // with Jerry pool id
+	  // ? "0x555660ccf94b40ee8d7ddca8dd3c4dbf7bd51312" // with Jerry pool id
+	  "0x7dc5737cddd06975dc1e1dd246636ed526c93fc7" // with Jerry pool id - updated abi - log owner
 	: "0x0000000000000000000000000000000000000000" // TODO
 
 export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
@@ -71,22 +74,7 @@ export const DEFAULT_BOND = {
 }
 
 export const POOLS = [
-	// {
-	// 	label: "common.validatorTom",
-	// 	id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
-	// 	selectable: true,
-	// 	minStakingAmount: "0.0",
-	// 	purpose: "pools.tomPurpose",
-	// 	lockupPeriod: 30,
-	// 	lockupPeriodText: "pools.tomLockupPeriodTxt",
-	// 	rewardPolicy: "pools.tomRewardPolicy",
-	// 	slashPolicy: "pools.tomSlashPolicy",
-	// 	apyStability: "pools.tomApyStability",
-	// 	url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network",
-	// 	estimatedAnnualFeeYield: 182500,
-	// 	estimatedAnnualADXYield: 15103448.2758,
-	// 	estimatedAnnualADXEarlyYield: 12166666.6666
-	// },
+	// TODO: tom first - just for goerli temp testing
 	{
 		label: "common.validatorJerry",
 		id: utils.id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
@@ -99,10 +87,25 @@ export const POOLS = [
 		slashPolicy: "pools.jerrySlashPolicy",
 		apyStability: "pools.jerryApyStability",
 		url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network"
+	},
+	{
+		label: "common.validatorTom",
+		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"),
+		selectable: true,
+		minStakingAmount: "0.0",
+		purpose: "pools.tomPurpose",
+		lockupPeriod: 30,
+		lockupPeriodText: "pools.tomLockupPeriodTxt",
+		rewardPolicy: "pools.tomRewardPolicy",
+		slashPolicy: "pools.tomSlashPolicy",
+		apyStability: "pools.tomApyStability",
+		url: useTestnet ? "http://localhost:8005" : "https://tom.adex.network",
+		estimatedAnnualFeeYield: 182500,
+		estimatedAnnualADXYield: 15103448.2758,
+		estimatedAnnualADXEarlyYield: 12166666.6666
 	}
 ]
 
-console.log("pools", POOLS)
 export const DEPOSIT_POOLS = [
 	{
 		label: "common.loPo",
@@ -122,18 +125,18 @@ export const DEPOSIT_POOLS = [
 		id: utils.id("V5validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
 		selectable: true,
 		minStakingAmount: "0.0",
-		purpose: "pools.tomPurposeV5",
+		purpose: "pools.tomV5Purpose",
 		lockupPeriod: 20,
-		rageLeaveMul: 0.8,
 		lockupPeriodText: "pools.tomLockupPeriodTxt",
-		rewardPolicy: "pools.tomRewardPolicy",
-		slashPolicy: "pools.tomSlashPolicy",
+		rewardPolicy: "pools.tomV5RewardPolicy",
+		slashPolicy: "pools.tomV5SlashPolicy",
 		apyStability: "pools.tomApyStability",
 		url: "https://tom.adex.network",
 		legacyPoolId: utils.id(
 			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
 		),
-		userDepositsLimit: "15000000000000000000000000" // 15 000 000
+		// userDepositsLimit: '15000000000000000000000000' // 15 000 000
+		userDepositsLimit: "50000000000000000000000" // 50 000
 	}
 ]
 
