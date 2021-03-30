@@ -36,11 +36,11 @@ const defaultProvider = getDefaultProvider
 const Staking = new Contract(ADDR_STAKING, StakingABI, defaultProvider)
 const Token = new Contract(ADDR_ADX, ERC20ABI, defaultProvider)
 const Core = new Contract(ADDR_CORE, CoreABI, defaultProvider)
-const StakingMigrator = new Contract(
-	ADDR_STAKING_MIGRATOR,
-	StakingMigratorABI,
-	defaultProvider
-)
+// const StakingMigrator = new Contract(
+// 	ADDR_STAKING_MIGRATOR,
+// 	StakingMigratorABI,
+// 	defaultProvider
+// )
 
 const MAX_SLASH = BigNumber.from("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
@@ -306,8 +306,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
-		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
-		StakingMigrator.WITH_BONUS_PROMILLES()
+		loadUserTomStakingV5PoolStats({ walletAddr: addr })
+		// StakingMigrator.WITH_BONUS_PROMILLES()
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -388,7 +388,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		.add(totalUnlockedDeposits)
 		.add(tomRewardADX)
 
-	const totalBalanceADX = userBalance.add(tomRewardADX).add(totalStakings)
+	const totalBalanceADX = userBalance.add(totalStakings)
 
 	const migratableBonds = [...userBonds].filter(
 		x => x.status !== "Unbonded" && x.status !== "Migrated"
@@ -440,7 +440,7 @@ export async function loadBondStats(addr, identityAddr) {
 		[userWalletBalance, userIdentityBalance],
 		logs,
 		slashLogs,
-		migrationLogs
+		migrationLogs = []
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
 		defaultProvider.getLogs({
@@ -451,11 +451,11 @@ export async function loadBondStats(addr, identityAddr) {
 		defaultProvider.getLogs({
 			fromBlock: 0,
 			...Staking.filters.LogSlash(null, null)
-		}),
-		defaultProvider.getLogs({
-			fromBlock: 0,
-			...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
 		})
+		// defaultProvider.getLogs({
+		// 	fromBlock: 0,
+		// 	...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
+		// })
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
@@ -466,8 +466,10 @@ export async function loadBondStats(addr, identityAddr) {
 	// 	return pools
 	// }, {})
 
+	console.log("migrationLogs", migrationLogs)
+
 	const migrationLogsByBondId = migrationLogs.reduce((byHash, log) => {
-		const { bondId } = StakingMigrator.interface.parseLog(log).args
+		const { bondId } = "" // StakingMigrator.interface.parseLog(log).args
 		byHash[bondId] = log
 		return byHash
 	}, {})
