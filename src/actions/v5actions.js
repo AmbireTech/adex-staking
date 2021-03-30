@@ -109,7 +109,6 @@ export async function onMigrationToV5Finalize(
 	withdrawOnMigration, // TODO: check it here
 	stats
 ) {
-	console.log("stats", stats)
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
@@ -271,8 +270,6 @@ export async function onStakingPoolV5UnbondCommitment(
 	chosenWalletType,
 	unbondCommitmentAmountADX
 ) {
-	console.log("onStakingPoolV5UnbondCommitment", unbondCommitmentAmountADX)
-
 	if (!stats) throw new Error("errors.statsNotProvided")
 
 	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
@@ -805,8 +802,6 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		userDataLoaded: true,
 		userShare
 	}
-
-	console.log("stats", stats)
 
 	return stats
 }

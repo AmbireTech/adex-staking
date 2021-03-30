@@ -203,7 +203,6 @@ export default function DepositForm({
 	}
 
 	const onUnbondCommitmentChange = ev => {
-		console.log("ev", ev)
 		setUnbondCommitment(ev.target.value)
 		setDirtyInputs(true)
 	}
