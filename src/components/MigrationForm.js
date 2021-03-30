@@ -124,7 +124,10 @@ export default function MigrationForm({
 								amount: formatADXPretty(bond.amount),
 								currency: "ADX",
 								pool: t(poolLabel),
-								created: formatDate(created)
+								created: formatDate(created),
+								migrationBonus: withdrawOnMigration
+									? t("NA")
+									: formatADXPretty(bond.migrationReward)
 							}}
 							components={{
 								box: <Box mt={0.5}></Box>

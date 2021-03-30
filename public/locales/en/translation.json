@@ -182,7 +182,7 @@
     "tosNotConfirmed": "Confirm terms of service",
     "unbond": "Unbond",
     "unbondNow": "Unbond now",
-    "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box>",
+    "bondInfo": "<box>Bond amount: {{amount}} {{currency}}</box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box> <box> Migration bonus: {{migrationBonus}} {{currency}} </box>",
     "migrationAlertText5": "AdEx Staking migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
     "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
     "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "

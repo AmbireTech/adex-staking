@@ -335,17 +335,10 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const userBonds = userBondsData.map(bond => ({
 		...bond,
-		migrationReward:
-			bond.status === "MigrationRequested"
-				? bond.amount
-						// .add(identityAdxRewardsAmount)
-						.mul(migrationBonusPromilles)
-						.div(1000)
-				: // Min migration reward when "Active" as the full reward is based ont the total migration
-				// amount that includes current rewards in the time of migration finalization
-				bond.status === "Active"
-				? bond.amount.mul(migrationBonusPromilles).div(1000)
-				: null
+		migrationReward: bond.amount
+			.mul(migrationBonusPromilles)
+			.div(1000)
+			.sub(bond.amount)
 	}))
 
 	// console.log("userBonds", userBonds)
