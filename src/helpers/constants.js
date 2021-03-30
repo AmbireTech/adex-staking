@@ -54,7 +54,7 @@ export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
 	  // ? "0x555660ccf94b40ee8d7ddca8dd3c4dbf7bd51312" // with Jerry pool id
 	  "0x7dc5737cddd06975dc1e1dd246636ed526c93fc7" // with Jerry pool id - updated abi - log owner
-	: "0x0000000000000000000000000000000000000000" // TODO
+	: "0x8eF560918fe15E76b0791d5D5220Ee69bf69dce9" // TODO
 
 export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
 	? "0x1DD8Fb8aE154B780973Ff21D163ad8710c145B79"

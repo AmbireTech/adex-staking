@@ -306,8 +306,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
-		loadUserTomStakingV5PoolStats({ walletAddr: addr })
-		// StakingMigrator.WITH_BONUS_PROMILLES() // TODO: uncomment when migrator deployed
+		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
+		StakingMigrator.WITH_BONUS_PROMILLES() // TODO: uncomment when migrator deployed
 	])
 
 	const { tomPoolStats } = poolsStats
