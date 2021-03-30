@@ -19,6 +19,7 @@ import AppContext from "../AppContext"
 import { useTranslation, Trans } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
+import { AmountText } from "./cardCommon"
 
 const activePool = DEPOSIT_POOLS[1]
 
@@ -78,10 +79,13 @@ export default function MigrationForm({
 			i18nKey="bonds.confirmationLabelMigrationWithdraw"
 			values={{
 				amount: formatADXPretty(
-					bond.amount.add(withdrawOnMigration ? identityAdxRewardsAmount : ZERO)
+					bond.amount.add(claimPendingRewards ? identityAdxRewardsAmount : ZERO)
 				),
 				currency: "ADX",
 				walletAddr: account
+			}}
+			components={{
+				amount: <AmountText fontSize={21}></AmountText>
 			}}
 		/>
 	) : (
@@ -98,6 +102,7 @@ export default function MigrationForm({
 				currency: "ADX"
 			}}
 			components={{
+				amount: <AmountText fontSize={21}></AmountText>,
 				e1: (
 					<ExternalAnchor
 						id="new-bond-form-adex-network-tos"
@@ -138,7 +143,8 @@ export default function MigrationForm({
 								migrationBonusCurrency: withdrawOnMigration ? "" : "ADX"
 							}}
 							components={{
-								box: <Box mt={0.5}></Box>
+								box: <Box mt={0.5}></Box>,
+								amount: <AmountText fontSize={17}></AmountText>
 							}}
 						/>
 					</Typography>
@@ -196,17 +202,22 @@ export default function MigrationForm({
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
-							label={t(
-								`bonds.${
-									withdrawOnMigration
-										? "migrationClaimPendingRewards"
-										: "migrationStakePendingRewards"
-								}`,
-								{
-									amount: formatADXPretty(identityAdxRewardsAmount),
-									currency: "ADX"
-								}
-							)}
+							label={
+								<Trans
+									i18nKey={`bonds.${
+										withdrawOnMigration
+											? "migrationClaimPendingRewards"
+											: "migrationStakePendingRewards"
+									}`}
+									values={{
+										amount: formatADXPretty(identityAdxRewardsAmount),
+										currency: "ADX"
+									}}
+									components={{
+										amount: <AmountText fontSize={17}></AmountText>
+									}}
+								/>
+							}
 							control={
 								<Checkbox
 									id={`new-migration-v5-form-claim-pending-rewards-check`}
@@ -222,10 +233,18 @@ export default function MigrationForm({
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
-							label={t("bonds.stakeWalletBalance", {
-								amount: formatADXPretty(userWalletBalance),
-								currency: "ADX"
-							})}
+							label={
+								<Trans
+									i18nKey={"bonds.stakeWalletBalance"}
+									values={{
+										amount: formatADXPretty(userWalletBalance),
+										currency: "ADX"
+									}}
+									components={{
+										amount: <AmountText fontSize={17}></AmountText>
+									}}
+								/>
+							}
 							control={
 								<Checkbox
 									id={`new-migration-v5-form-stake-wallet-balance-check`}
