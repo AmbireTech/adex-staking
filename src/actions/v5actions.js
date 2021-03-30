@@ -235,9 +235,9 @@ export async function onStakingPoolV5Withdraw(
 		signer
 	)
 
-	const { shares, unlockAt } = unbondCommitment
+	const { shares, unlocksAt } = unbondCommitment
 
-	await stakingPoolWithSigner.withdraw(shares, unlockAt, false)
+	await stakingPoolWithSigner.withdraw(shares, unlocksAt, false)
 }
 
 export async function onStakingPoolV5RageLeave(
@@ -300,16 +300,16 @@ export async function getTomStakingV5PoolData() {
 		mintableIncentive,
 		sharesTotalSupply,
 		incentivePerSecond,
-		rageReceivedPromilles = 700,
-		unbondDays = 0,
+		rageReceivedPromilles = BigNumber.from(700),
+		unbondDays = ZERO,
 		shareValue = ZERO
 	] = await Promise.all([
 		ADXToken.balanceOf(ADDR_STAKING_POOL),
 		ADXSupplyController.mintableIncentive(ADDR_STAKING_POOL),
 		StakingPool.totalSupply(),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL),
-		StakingPool.RAGE_RECEIVED_PROMILLES(), // TODO
-		StakingPool.TIME_TO_UNBOND(), // TODO
+		StakingPool.rageReceivedPromilles(), // TODO
+		StakingPool.timeToUnbond(), // TODO
 		StakingPool.shareValue() // TODO
 	])
 
@@ -360,7 +360,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			withdrawTxHash: 4,
 			shares: BigNumber.from(400 + decimalsString),
 			maxTokens: BigNumber.from(420 + decimalsString),
-			unlockAt: 1608353186,
+			unlocksAt: 1608353186,
 			blockNumber: 11482093,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6",
 			withdrawTx: {
@@ -378,7 +378,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares: BigNumber.from(480 + decimalsString),
 			maxTokens: BigNumber.from(500 + decimalsString),
-			unlockAt: 1610340386,
+			unlocksAt: 1610340386,
 			canWithdraw: true,
 			blockNumber: 11482999,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
@@ -388,7 +388,7 @@ export async function _loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			type: STAKING_POOL_EVENT_TYPES.leave,
 			shares: BigNumber.from(170 + decimalsString),
 			maxTokens: BigNumber.from(200 + decimalsString),
-			unlockAt: 1611981986,
+			unlocksAt: 1611981986,
 			blockNumber: 11481850,
 			transactionHash: "0x782536dc0125f6d3dfa801a88df09a4250914fa6"
 		},
@@ -613,7 +613,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		const parsedWithdrawLog = StakingPool.interface.parseLog(log)
 		const {
 			shares,
-			unlockAt,
+			unlocksAt,
 			maxTokens,
 			receivedTokens
 		} = parsedWithdrawLog.args
@@ -622,7 +622,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 			transactionHash: log.transactionHash,
 			type: STAKING_POOL_EVENT_TYPES.withdraw,
 			shares, //[1]
-			unlockAt, //[2]
+			unlocksAt, //[2]
 			maxTokens, //[3]
 			receivedTokens, //[4]
 			blockNumber: log.blockNumber
@@ -651,27 +651,27 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		leaveLogs.map(async log => {
 			const parsedLog = StakingPool.interface.parseLog(log)
 
-			const { shares, unlockAt, maxTokens } = parsedLog.args
+			const { shares, unlocksAt, maxTokens } = parsedLog.args
 
 			const withdrawTx = userWithdraws.find(
 				event =>
-					event.unlockAt.toString() === unlockAt.toString() &&
+					event.unlocksAt.toString() === unlocksAt.toString() &&
 					event.shares.toString() === shares.toString() &&
 					event.maxTokens.toString() === maxTokens.toString()
 			)
 
 			const adxValue = sharesTotalSupply.isZero()
 				? ZERO // maxTokens
-				: await StakingPool.unbondingCommitmentWorth(owner, shares, unlockAt)
+				: await StakingPool.unbondingCommitmentWorth(owner, shares, unlocksAt)
 
 			return {
 				transactionHash: log.transactionHash,
 				type: STAKING_POOL_EVENT_TYPES.leave,
 				shares, // [1]
-				unlockAt, //[2]
+				unlocksAt, //[2]
 				maxTokens, // [3]
 				adxValue,
-				canWithdraw: unlockAt < now && !withdrawTx,
+				canWithdraw: unlocksAt < now && !withdrawTx,
 				blockNumber: log.blockNumber,
 				withdrawTx
 			}
@@ -679,11 +679,11 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	)
 
 	const leavesPendingToUnlock = [...userLeaves].filter(
-		event => event.unlockAt > now
+		event => event.unlocksAt > now
 	)
 
 	const leavesReadyToWithdraw = [...userLeaves].filter(
-		event => event.unlockAt < now && !event.withdrawTx
+		event => event.unlocksAt < now && !event.withdrawTx
 	)
 
 	const leavesPendingToUnlockTotalMax = leavesPendingToUnlock.reduce(
