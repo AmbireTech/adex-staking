@@ -40,6 +40,7 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 				component="div"
 				display={multiline ? "block" : "inline"}
 				width={multiline ? 1 : "auto"}
+				fontSize={fontSize}
 			>
 				<Box component="div" display="inline">
 					{decimalSeparatorSplit[0]}
@@ -72,24 +73,28 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 	}
 }
 
-export function AmountText({ text = "", fontSize, multiline }) {
-	const multipleAmountsSplit = text
+export function AmountText({ text = "", fontSize, multiline, children }) {
+	const transValue = children ? children.join(";") : ""
+
+	const multipleAmountsSplit = (text || transValue)
 		.split(";")
 		.map(x => x.trim())
 		.filter(x => !!x)
 
 	return (
 		<Fragment>
-			{multipleAmountsSplit
-				.map((x, i) => (
-					<AmountTextSingle
-						key={i + x.toString()}
-						text={x}
-						fontSize={fontSize}
-						multiline={multiline}
-					/>
-				))
-				.reduce((prev, curr) => [prev, multiline ? null : "; ", curr])}
+			{multipleAmountsSplit.length
+				? multipleAmountsSplit
+						.map((x, i) => (
+							<AmountTextSingle
+								key={i + x.toString()}
+								text={x}
+								fontSize={fontSize}
+								multiline={multiline}
+							/>
+						))
+						.reduce((prev, curr) => [prev, multiline ? null : "; ", curr])
+				: text}
 		</Fragment>
 	)
 }
