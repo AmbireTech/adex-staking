@@ -12,9 +12,7 @@ import Bonds from "./Bonds"
 import Deposits from "./Deposits"
 import StakingPoolTxnsHistory from "./StakingPoolTxnsHistory"
 import SectionHeader from "./SectionHeader"
-import { useTranslation, Trans } from "react-i18next"
-import { ExternalAnchor } from "./Anchor"
-import { Alert } from "@material-ui/lab"
+import { useTranslation } from "react-i18next"
 
 const Stakings = () => {
 	const { t } = useTranslation()
@@ -22,7 +20,6 @@ const Stakings = () => {
 		stats,
 		setToUnbond,
 		onUnbond,
-		onMigrationRequest,
 		onMigrationFinalize,
 		setToRestake,
 		onClaimRewards,
@@ -44,7 +41,6 @@ const Stakings = () => {
 							stats,
 							onRequestUnbond: setToUnbond,
 							onUnbond,
-							onMigrationRequest,
 							onMigrationFinalize,
 							onClaimRewards,
 							onRestake: setToRestake,

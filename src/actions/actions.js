@@ -299,7 +299,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loyaltyPoolStats,
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
-		migrationBonusPromille = 97
+		migrationBonusPromilles = 48
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
@@ -307,8 +307,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
-		// StakingMigrator.BONUS_PROMILLES()
-		undefined
+		StakingMigrator.WITH_BONUS_PROMILLES()
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -339,13 +338,13 @@ export async function loadUserStats(chosenWalletType, prices) {
 		migrationReward:
 			bond.status === "MigrationRequested"
 				? bond.amount
-						.add(identityAdxRewardsAmount)
-						.mul(migrationBonusPromille)
+						// .add(identityAdxRewardsAmount)
+						.mul(migrationBonusPromilles)
 						.div(1000)
 				: // Min migration reward when "Active" as the full reward is based ont the total migration
 				// amount that includes current rewards in the time of migration finalization
 				bond.status === "Active"
-				? bond.amount.mul(migrationBonusPromille).div(1000)
+				? bond.amount.mul(migrationBonusPromilles).div(1000)
 				: null
 	}))
 
@@ -462,17 +461,17 @@ export async function loadBondStats(addr, identityAddr) {
 		}),
 		defaultProvider.getLogs({
 			fromBlock: 0,
-			...StakingMigrator.filters.LogBondMigrated(null)
+			...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
 		})
 	])
 
 	const userBalance = userWalletBalance.add(userIdentityBalance)
 
-	const slashedByPool = slashLogs.reduce((pools, log) => {
-		const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
-		pools[poolId] = newSlashPts
-		return pools
-	}, {})
+	// const slashedByPool = slashLogs.reduce((pools, log) => {
+	// 	const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
+	// 	pools[poolId] = newSlashPts
+	// 	return pools
+	// }, {})
 
 	const migrationLogsByBondId = migrationLogs.reduce((byHash, log) => {
 		const { bondId } = StakingMigrator.interface.parseLog(log).args

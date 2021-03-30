@@ -24,7 +24,6 @@ import {
 	restake,
 	getPrices,
 	reBond,
-	onMigrationToV5,
 	onMigrationToV5Finalize
 } from "./actions"
 import { useInactiveListener } from "./helpers/hooks"
@@ -211,10 +210,6 @@ export default function useApp() {
 		onUnbondOrRequest.bind(null, false, chosenWalletType)
 	)
 
-	const onMigrationRequest = wrapDoingTxns(
-		onMigrationToV5.bind(null, chosenWalletType)
-	)
-
 	const onUnbond = wrapDoingTxns(
 		onUnbondOrRequest.bind(null, true, chosenWalletType)
 	)
@@ -261,7 +256,6 @@ export default function useApp() {
 		toUnbond,
 		setToUnbond,
 		onRebond,
-		onMigrationRequest,
 		onMigrationFinalize,
 		toRestake,
 		setToRestake,
