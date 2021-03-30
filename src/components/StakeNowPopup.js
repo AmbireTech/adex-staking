@@ -16,6 +16,8 @@ import { ReactComponent as AdExIcon } from "./../resources/adex-logo-clean.svg"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import { ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS } from "../helpers/constants"
+import { DEPOSIT_ACTION_TYPES } from "../actions"
 
 import {
 	loadFromLocalStorage,
@@ -23,6 +25,10 @@ import {
 } from "../helpers/localStorage"
 
 import { useTranslation } from "react-i18next"
+import WithDialog from "./WithDialog"
+import DepositForm from "./DepositForm"
+
+const DepositsDialog = WithDialog(DepositForm)
 
 const HIDE_FOR = 10 * 24 * 60 * 60 * 1000 // 10 day
 
@@ -88,14 +94,9 @@ const StakeNowPopup = () => {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
-	const {
-		stats,
-		setNewBondOpen,
-		setNewBondPool,
-		account,
-		legacySwapOpen,
-		legacySwapInPrg
-	} = useContext(AppContext)
+	const { stats, account, legacySwapOpen, legacySwapInPrg } = useContext(
+		AppContext
+	)
 
 	const { userBalance } = stats
 
@@ -182,19 +183,22 @@ const StakeNowPopup = () => {
 								</Box>
 
 								<Box my={1}>
-									<Fab
+									<DepositsDialog
 										id={`stake-popup-stake-btn`}
-										onClick={() => {
-											setOpen(false)
-											setNewBondPool("")
-											setNewBondOpen(true)
-										}}
-										variant="extended"
+										title={t("deposits.depositTo", {
+											pool: t("common.tomStakingPool")
+										})}
+										btnLabel={t("bonds.stakeADX")}
 										color="secondary"
-										size="large"
-									>
-										{t("bonds.stakeADX")}
-									</Fab>
+										size="medium"
+										variant="extended"
+										fabButton
+										fullWidth
+										tooltipTitle={t("common.connectWallet")}
+										depositPool={DEPOSIT_POOLS[1].id}
+										actionType={DEPOSIT_ACTION_TYPES.deposit}
+										onCloseDialog={() => setOpen(false)}
+									/>
 								</Box>
 
 								<Box my={1}>
