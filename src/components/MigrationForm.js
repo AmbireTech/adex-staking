@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react"
+import { useLocation } from "react-router-dom"
 import { getPoolStatsByPoolId, onMigrationToV5Finalize } from "../actions"
 import {
 	toIdAttributeString,
@@ -20,6 +21,7 @@ import { useTranslation, Trans } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
 import { AmountText } from "./cardCommon"
+import { utils } from "ethers"
 
 const activePool = DEPOSIT_POOLS[1]
 
@@ -30,6 +32,7 @@ export default function MigrationForm({
 	poolLabel,
 	created
 }) {
+	const location = useLocation()
 	const { t } = useTranslation()
 	const { stats, chosenWalletType, account, wrapDoingTxns } = useContext(
 		AppContext
@@ -41,11 +44,25 @@ export default function MigrationForm({
 
 	const [claimPendingRewards, setClaimPendingRewards] = useState(true)
 	const [stakeWalletBalance, setStakeWalletBalance] = useState(false)
+	const [confirmEnterTo, setConfirmEnterTo] = useState(false)
+	const [enterTo, setEnterTo] = useState(null)
+
 	const [confirmed, setConfirmed] = useState(false)
+
+	const params = new URLSearchParams(location.search)
+	const enterToParam = params.get("enterTo")
 
 	const [poolStats, setPoolStats] = useState({})
 
 	const withdrawOnMigration = isWithdrawMigration // TODO: double check this
+
+	useEffect(() => {
+		try {
+			setEnterTo(utils.getAddress(enterToParam))
+		} catch {
+			setEnterTo(null)
+		}
+	}, [enterToParam])
 
 	useEffect(() => {
 		const newPoolStats = getPoolStatsByPoolId(stats, activePool.id)
@@ -61,6 +78,8 @@ export default function MigrationForm({
 		setConfirmed(false)
 		if (closeDialog) closeDialog()
 
+		const interactionAddress = enterTo && confirmEnterTo ? enterTo : null
+
 		await wrapDoingTxns(
 			onMigrationToV5Finalize.bind(
 				null,
@@ -69,7 +88,8 @@ export default function MigrationForm({
 				claimPendingRewards,
 				stakeWalletBalance,
 				withdrawOnMigration,
-				stats
+				stats,
+				interactionAddress
 			)
 		)()
 	}
@@ -256,6 +276,32 @@ export default function MigrationForm({
 					</Grid>
 				)}
 
+				{!!enterTo && (
+					<Grid item xs={12}>
+						<FormControlLabel
+							style={{ userSelect: "none" }}
+							label={
+								<Trans
+									i18nKey={`bonds.${
+										withdrawOnMigration
+											? "migrationEnterToUnbondWithdraw"
+											: "migrationEnterTo"
+									}`}
+									values={{
+										address: enterTo
+									}}
+								/>
+							}
+							control={
+								<Checkbox
+									id={`new-migration-v5-enter-to-extra-field`}
+									checked={confirmEnterTo}
+									onChange={ev => setConfirmEnterTo(ev.target.checked)}
+								/>
+							}
+						></FormControlLabel>
+					</Grid>
+				)}
 				{/* <Grid item xs={12}>
 					<FormControlLabel
 						style={{ userSelect: "none" }}

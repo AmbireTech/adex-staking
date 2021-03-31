@@ -187,7 +187,9 @@
     "bondInfo": "<box>Bond amount: <strong> <amount> {{amount}} {{currency}} </amount> </strong> </box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box> <box> Migration bonus: <strong> <amount> {{migrationBonus}} {{migrationBonusCurrency}} </amount> </strong></box>",
     "migrationAlertText5": "AdEx Staking migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
     "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
-    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "
+    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  ",
+    "migrationEnterTo": "Migrate bond to <strong> {{address}} </strong> <strong> Sir, please </strong> make sure you have access to this address!!",
+    "migrationEnterToUnbondWithdraw": "Withdraw to <strong> {{address}} </strong>. Just be careful!!"
   },
   "gasless": {
     "staking": "Gasless Staking",

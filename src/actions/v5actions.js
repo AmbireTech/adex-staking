@@ -1,14 +1,14 @@
-import { Contract, BigNumber } from "ethers"
+import { Contract, BigNumber, utils } from "ethers"
 import ERC20ABI from "../abi/ERC20"
 import ADXTokenABI from "../abi/ADXToken"
-import StakingABI from "adex-protocol-eth/abi/Staking"
+// import StakingABI from "adex-protocol-eth/abi/Staking"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
 import StakingMigratorABI from "../abi/StakingMigrator.json"
 import StakingPoolABI from "../abi/StakingPool.json"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import {
 	ADDR_ADX,
-	ADDR_STAKING,
+	// ADDR_STAKING,
 	ADDR_CORE,
 	ZERO,
 	MAX_UINT,
@@ -26,7 +26,7 @@ const PRECISION = 1_000_000_000_000
 
 const provider = getDefaultProvider
 
-const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
+// const Staking = new Contract(ADDR_STAKING, StakingABI, provider)
 const ADXToken = new Contract(ADDR_ADX, ADXTokenABI, provider)
 const ADXSupplyController = new Contract(
 	ADDR_ADX_SUPPLY_CONTROLLER,
@@ -88,11 +88,14 @@ export async function onMigrationToV5Finalize(
 	claimPendingRewards,
 	stakeWalletBalance,
 	withdrawOnMigration, // TODO: check it here
-	stats
+	stats,
+	enterTo
 ) {
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
 	const walletAddr = await signer.getAddress()
+
+	const interactionAddress = enterTo ? utils.getAddress(enterTo) : walletAddr
 
 	const { userWalletBalance, tomPoolStats } = stats
 	const {
@@ -124,7 +127,7 @@ export async function onMigrationToV5Finalize(
 		identityTxns.push([
 			ADXToken.address,
 			ADXToken.interface.encodeFunctionData("transfer", [
-				willWithdrawOnMigration ? walletAddr : ADDR_STAKING_MIGRATOR,
+				willWithdrawOnMigration ? interactionAddress : ADDR_STAKING_MIGRATOR,
 				identityAdxRewardsAmount
 			])
 		])
@@ -153,7 +156,7 @@ export async function onMigrationToV5Finalize(
 			StakingMigrator.interface.encodeFunctionData("migrate", [
 				amount,
 				nonce,
-				walletAddr,
+				interactionAddress,
 				extraAmount
 			])
 		]
@@ -193,8 +196,7 @@ export async function onStakingPoolV5Deposit(
 
 	await stakingPoolWithSigner.enter(
 		adxDepositAmount,
-		// { gasLimit: 250000 }
-		setAllowance ? { gasLimit: 250000 } : {}
+		setAllowance ? { gasLimit: 136000 } : {}
 	)
 }
 

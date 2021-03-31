@@ -52,7 +52,7 @@ const Pools = () => {
 	const { loyaltyPoolStats, tomPoolStats, tomStakingV5PoolStats } = stats
 
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
-	const tomAPY = tomPoolStats.totalAPY * 100
+	// const tomAPY = tomPoolStats.totalAPY * 100
 	const tomV5APY = tomStakingV5PoolStats.currentAPY * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
