@@ -41,6 +41,7 @@ export async function loadLoyaltyPoolData() {
 	])
 
 	return {
+		...LOYALTY_POOP_EMPTY_STATS,
 		poolTotalStaked,
 		poolDepositsLimit,
 		currentAPY:
@@ -55,7 +56,6 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	const poolData = await loadLoyaltyPoolData()
 	if (!walletAddr) {
 		return {
-			...LOYALTY_POOP_EMPTY_STATS,
 			...poolData,
 			loaded: true
 		}

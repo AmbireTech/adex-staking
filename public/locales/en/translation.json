@@ -149,7 +149,7 @@
     "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} will be distributed to other stakers ",
     "eventType": "Event Type",
     "txnHash": "Txn Hash",
-    "txnsHistory": "Txns history",
+    "txnsHistory": "Transactions history",
     "from": "From",
     "depositsADXTotal": "Total deposits",
     "withdrawsADXTotal": "Total withdraws",
