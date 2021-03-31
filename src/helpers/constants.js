@@ -54,7 +54,7 @@ export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
 	  // ? "0x555660ccf94b40ee8d7ddca8dd3c4dbf7bd51312" // with Jerry pool id
 	  "0x7dc5737cddd06975dc1e1dd246636ed526c93fc7" // with Jerry pool id - updated abi - log owner
-	: "0x8eF560918fe15E76b0791d5D5220Ee69bf69dce9" // TODO
+	: "0x27851Df171c419A8e05cac7d7B45a9Fa72B0a07c" // TODO
 
 export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
 	? "0x1DD8Fb8aE154B780973Ff21D163ad8710c145B79"
@@ -134,8 +134,7 @@ export const DEPOSIT_POOLS = [
 		legacyPoolId: utils.id(
 			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
 		),
-		// userDepositsLimit: '15000000000000000000000000' // 15 000 000
-		userDepositsLimit: "50000000000000000000000" // 50 000
+		userDepositsLimit: "15000000000000000000000000" // 15 000 000
 	}
 ]
 
