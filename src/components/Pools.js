@@ -187,22 +187,27 @@ const Pools = () => {
 							</SvgIcon>
 						}
 						name={t("common.tom")}
-						totalStakedADX={`${formatADXPretty(
-							// tomPoolStats.totalCurrentTotalActiveStake
-							tomPoolStats.totalStake
-						)} ADX`}
-						totalStakedUSD={`${getADXInUSDFormatted(
-							prices,
-							// tomPoolStats.totalCurrentTotalActiveStake
-							tomPoolStats.totalStake
-						)}`}
-						currentAPY={`${tomAPY.toFixed(2)} %`}
-						weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
-						weeklyYieldInfo={[
-							t("pools.currentDailyYield", {
-								yield: (tomAPY / 365).toFixed(4)
-							})
-						]}
+						totalStakedADX="-"
+						// totalStakedADX={`${formatADXPretty(
+						// 	// tomPoolStats.totalCurrentTotalActiveStake
+						// 	tomPoolStats.totalStake
+						// )} ADX`}
+						totalStakedUSD="-"
+						// totalStakedUSD={`${getADXInUSDFormatted(
+						// 	prices,
+						// 	// tomPoolStats.totalCurrentTotalActiveStake
+						// 	tomPoolStats.totalStake
+						// )}`}
+						currentAPY="-"
+						// currentAPY={`${tomAPY.toFixed(2)} %`}
+						weeklyYield="-"
+						// weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
+						weeklyYieldInfo="-"
+						// weeklyYieldInfo={[
+						// 	t("pools.currentDailyYield", {
+						// 		yield: (tomAPY / 365).toFixed(4)
+						// 	})
+						// ]}
 						onStakeBtnClick={() => {
 							setNewBondPool(TOM_LEGACY_POOL.id)
 							setNewBondOpen(true)
