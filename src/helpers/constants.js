@@ -120,7 +120,7 @@ export const DEPOSIT_POOLS = [
 	},
 	{
 		version: "stakingv5",
-		label: "common.validatorTomV5",
+		label: "common.tomStakingPool",
 		id: utils.id("V5validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
 		selectable: true,
 		minStakingAmount: "0.0",

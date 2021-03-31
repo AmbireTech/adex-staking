@@ -70,7 +70,8 @@
     "NA": "N/A",
     "tomStakingPool": "Tom Staking Pool",
     "from": "From",
-    "tomV5": "Tom"
+    "tomV5": "Tom",
+    "APY": "APY"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -118,7 +119,9 @@
     "gdprLabel": "Yes, I want AdEx Network to send me news and other related content",
     "promotionTerms": "I agree to the promotional <externalLink> Terms and conditions </externalLink> ",
     "submitting": "Submitting...",
-    "submitBtnLabel": "Sure, I'm in"
+    "submitBtnLabel": "Sure, I'm in",
+    "newToStaking": "New to staking?",
+    "learnMore": "learn more"
   },
   "deposits": {
     "withdrawLoPo": "Withdraw from Loyalty pool",

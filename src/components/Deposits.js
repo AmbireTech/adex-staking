@@ -395,7 +395,7 @@ export default function Deposits() {
 						<TableHead>
 							<TableRow>
 								<TableCell>{t("common.pool")}</TableCell>
-								<TableCell>{t("APY")}</TableCell>
+								<TableCell>{t("common.APY")}</TableCell>
 								<TableCell align="right">{t("common.balance")}</TableCell>
 								<TableCell align="right">
 									{t("deposits.allTimeRewards")}

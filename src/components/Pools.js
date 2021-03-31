@@ -253,35 +253,30 @@ const Pools = () => {
 								alignItems="center"
 								spacing={2}
 							>
-								<Grid container xs={2} justify="center" alignItems="center">
+								<Grid item xs={2}>
 									<StarsIcon color="secondary" />
 								</Grid>
 								<Grid item xs={10}>
-									<Typography
-										align="left"
-										variant="h5"
-										classes={{ root: classes.textWhite }}
-									>
-										<strong>New to staking?</strong>
+									<Typography align="left" variant="h5" color="textPrimary">
+										<strong>{t("email.newToStaking")}</strong>
 									</Typography>
-									<Typography align="left" variant="p" color="secondary">
-										<Box display="flex" alignItems="center">
+
+									<Box display="flex" alignItems="center">
+										<Typography align="left" variant="body1" color="secondary">
 											<Anchor
 												target="_blank"
 												href="https://help.adex.network/hc/en-us/articles/360019465979-New-to-staking-A-summary-of-all-you-need-to-know"
 											>
-												Learn more{" "}
-												<Box pl={"3px"} display="flex">
-													<ArrowForwardIosIcon
-														fontSize="small"
-														classes={{
-															fontSizeSmall: classes.fontSizeSmall
-														}}
-													/>
-												</Box>
+												{t("email.learnMore")}{" "}
+												<ArrowForwardIosIcon
+													fontSize="small"
+													classes={{
+														fontSizeSmall: classes.fontSizeSmall
+													}}
+												/>
 											</Anchor>
-										</Box>
-									</Typography>
+										</Typography>
+									</Box>
 								</Grid>
 							</Grid>
 						</Box>
