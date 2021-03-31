@@ -4,7 +4,6 @@ import { fade } from "@material-ui/core/styles/colorManipulator"
 import {
 	SvgIcon,
 	Box,
-	Fab,
 	Modal,
 	Fade,
 	Backdrop,

@@ -104,7 +104,7 @@ export default function StakingPoolTxnsHistory() {
 	const { t } = useTranslation()
 	const { stats } = useContext(AppContext)
 	const { tomStakingV5PoolStats } = stats
-	const { stakings, loaded } = tomStakingV5PoolStats
+	const { stakings } = tomStakingV5PoolStats
 
 	return (
 		<Box>

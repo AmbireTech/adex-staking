@@ -42,7 +42,7 @@ const StakingMigrator = new Contract(
 	defaultProvider
 )
 
-const MAX_SLASH = BigNumber.from("1000000000000000000")
+// const MAX_SLASH = BigNumber.from("1000000000000000000")
 const SECONDS_IN_YEAR = 365 * 24 * 60 * 60
 
 // 0.2 DAI or ADX
@@ -439,7 +439,7 @@ export async function loadBondStats(addr, identityAddr) {
 	const [
 		[userWalletBalance, userIdentityBalance],
 		logs,
-		slashLogs,
+		// slashLogs,
 		migrationLogs = []
 	] = await Promise.all([
 		Promise.all([Token.balanceOf(addr), Token.balanceOf(identityAddr)]),
@@ -448,10 +448,10 @@ export async function loadBondStats(addr, identityAddr) {
 			address: ADDR_STAKING,
 			topics: [null, utils.hexZeroPad(identityAddr, 32)]
 		}),
-		defaultProvider.getLogs({
-			fromBlock: 0,
-			...Staking.filters.LogSlash(null, null)
-		}),
+		// defaultProvider.getLogs({
+		// 	fromBlock: 0,
+		// 	...Staking.filters.LogSlash(null, null)
+		// }),
 		defaultProvider.getLogs({
 			fromBlock: 0,
 			...StakingMigrator.filters.LogBondMigrated(identityAddr, null)
