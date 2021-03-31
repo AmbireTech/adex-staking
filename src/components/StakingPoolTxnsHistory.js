@@ -86,19 +86,35 @@ const StakingEventRow = ({ stakingEvent }) => {
 				{formatDateTime(new Date(stakingEvent.timestamp))}
 			</TableCell>
 			<TableCell align="right">
-				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.leave && "-"}
-				{/* {stakingEvent.type === STAKING_POOL_EVENT_TYPES.enter &&
-					< Box >
-						<Box>{
-							t("deposits.unlockAt",
-								{
-									unlocksAt: formatDateTime(new Date(stakingEvent.unlocksAt))
-
-								})
-						}
-						</Box > *
-				 </Box>
-				} */}
+				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.enter && "-"}
+				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.leave && (
+					<Box>
+						<Box>
+							{t("deposits.unlockAt", {
+								unlocksAt: formatDateTime(new Date(stakingEvent.unlocksAt))
+							})}
+						</Box>{" "}
+						*
+					</Box>
+				)}
+				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.rageLeave && (
+					<Box>
+						<Box>
+							{t("deposits.maxTokens", {
+								maxTokens: `${formatADXPretty(stakingEvent.maxTokens)}`,
+								currency: "ADX"
+							})}
+						</Box>
+						<Box>
+							{t("deposits.receivedTokens", {
+								receivedTokens: `${formatADXPretty(
+									stakingEvent.receivedTokens
+								)}`,
+								currency: "ADX"
+							})}
+						</Box>
+					</Box>
+				)}
 			</TableCell>
 			<TableCell align="right">
 				{
