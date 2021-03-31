@@ -42,7 +42,8 @@ const getStakingPool = ({
 	t,
 	stats,
 	disabledDepositsMsg,
-	disabledWithdrawsMsg
+	disabledWithdrawsMsg,
+	disableActionsMsg
 }) => {
 	const { tomStakingV5PoolStats } = stats
 
@@ -135,9 +136,9 @@ const getStakingPool = ({
 				size="small"
 				variant="contained"
 				fullWidth
-				disabled={!!disabledWithdrawsMsg}
+				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={disableActionsMsg}
 				actionType={DEPOSIT_ACTION_TYPES.unbondCommitment}
 			/>,
 			<DepositsDialog
@@ -163,9 +164,9 @@ const getStakingPool = ({
 				size="small"
 				variant="contained"
 				fullWidth
-				disabled={!!disabledWithdrawsMsg}
+				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={disableActionsMsg}
 				actionType={DEPOSIT_ACTION_TYPES.rageLeave}
 			/>
 		]
@@ -266,14 +267,18 @@ export default function Deposits() {
 	const { stats, chosenWalletType } = useContext(AppContext)
 	const { loyaltyPoolStats } = stats
 
-	// TODO: UPDATE if more deposit pools
-	const disableDepositsMsg = !chosenWalletType.name
+	const disableActionsMsg = !chosenWalletType.name
 		? t("common.connectWallet")
 		: !loyaltyPoolStats.loaded
 		? t("common.loadingData")
-		: loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
-		? t("deposits.depositsLimitReached")
 		: ""
+
+	// TODO: UPDATE if more deposit pools
+	const disableDepositsMsg =
+		disableActionsMsg ||
+		(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
+			? t("deposits.depositsLimitReached")
+			: "")
 
 	useEffect(() => {
 		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
@@ -284,9 +289,7 @@ export default function Deposits() {
 			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
 			// 		'Pool deposits limit reached' : ''
 			// 	)
-			const disabledWithdrawsMsg = !chosenWalletType.name
-				? t("common.connectWallet")
-				: ""
+			const disabledWithdrawsMsg = disableActionsMsg
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
 				t,
@@ -298,18 +301,18 @@ export default function Deposits() {
 		}
 
 		if (tomStakingV5PoolStats.loaded) {
-			// const disabledDepositsMsg = !chosenWalletType.name ?
-			// 	'Connect wallet' :
-			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
-			// 		'Pool deposits limit reached' : ''
-			// 	)
-			const disabledWithdrawsMsg = !chosenWalletType.name
-				? t("common.connectWallet")
-				: ""
+			const disableDepositsMsg = disableActionsMsg
+
+			const disabledWithdrawsMsg =
+				disableActionsMsg ||
+				(!tomStakingV5PoolStats.hasActiveUnbondCommitments
+					? t("deposits.unbondToWithdraw")
+					: "")
 
 			const stakingPoolDeposit = getStakingPool({
 				t,
 				stats,
+				disableActionsMsg,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg
 			})

@@ -69,6 +69,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentAPY: 0,
 	stakings: [],
 	userLeaves: [],
+	hasActiveUnbondCommitments: false,
 	leavesPendingToUnlockTotalMax: ZERO,
 	leavesReadyToWithdrawTotalMax: ZERO,
 	leavesPendingToUnlockTotalADX: ZERO,
@@ -783,6 +784,10 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		// .add(leavesReadyToWithdrawTotalADX)
 		.sub(depositsADXTotal)
 
+	const hasActiveUnbondCommitments = !![...userLeaves].filter(
+		x => !x.withdrawTx
+	).length
+
 	const stats = {
 		...poolData,
 		balanceShares,
@@ -798,6 +803,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		leavesReadyToWithdrawTotalMax,
 		leavesPendingToUnlockTotalADX,
 		leavesReadyToWithdrawTotalADX,
+		hasActiveUnbondCommitments,
 		loaded: true,
 		userDataLoaded: true,
 		userShare

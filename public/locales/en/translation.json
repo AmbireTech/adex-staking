@@ -142,7 +142,7 @@
     "unbondCommitmentFrom": "Make unbond commitment from {{pool}}",
     "rageLeave": "Rage Leave",
     "rageLeaveFrom": "Rage Leave form {{pool}} ",
-    "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} amount will stay for the pool total balance. ",
+    "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} will be distributed to other stakers ",
     "eventType": "Event Type",
     "txnHash": "Txn Hash",
     "txnsHistory": "Txns history",
@@ -151,7 +151,8 @@
     "withdrawsADXTotal": "Total withdraws",
     "extraInfo": "Extra info",
     "lockupPeriodLabel": "Lockup period",
-    "lockupDays": "{{count}} days"
+    "lockupDays": "{{count}} days",
+    "unbondToWithdraw": "Please, unbond firs"
   },
   "bonds": {
     "bondAmount": "Bond amount",
