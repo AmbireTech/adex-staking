@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core"
 import StatsCard from "./StatsCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { useTranslation } from "react-i18next"
+import { BigNumber } from "ethers"
 
 export default function UserData({ stats, prices }) {
 	const { t } = useTranslation()
@@ -18,13 +19,19 @@ export default function UserData({ stats, prices }) {
 						? formatADXPretty(stats.totalBalanceADX) + " ADX"
 						: "",
 
-					extra: getADXInUSDFormatted(prices, stats.totalBalanceADX)
+					extra: getADXInUSDFormatted(prices, stats.totalBalanceADX),
 					/*actions: (<Button
 							size="small"
 							variant="contained"
 							color="secondary"
 							disabled={true}
 						>upgrade</Button>)*/
+					extraInfo: t("userData.adxPrice", {
+						priceUSD: getADXInUSDFormatted(
+							prices,
+							BigNumber.from((1e18).toString())
+						)
+					})
 				})}
 			</Box>
 

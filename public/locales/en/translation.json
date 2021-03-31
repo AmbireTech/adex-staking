@@ -86,7 +86,8 @@
     "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
     "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
     "activeDepositsInfoUnclaimed": "Unclaimed rewards: {{amount}} {{currency}}",
-    "activeUsersStakeLegacy": "To migrate: {{amount}} {{currency}}"
+    "activeUsersStakeLegacy": "To migrate: {{amount}} {{currency}}",
+    "adxPrice": "ADX price: {{priceUSD}}"
   },
   "pools": {
     "currentDailyYield": "Current daily yield {{yield}}",
