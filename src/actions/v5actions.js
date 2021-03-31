@@ -628,11 +628,12 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	)
 
 	const totalSharesOutTransfers = sharesTokensTransfersOut.reduce(
-		(a, b) => a.shares.add(b.shares),
+		(a, b) => a.add(b.shares),
 		ZERO
 	)
+
 	const totalSharesInTransfers = sharesTokensTransfersInFromExternal.reduce(
-		(a, b) => a.shares.add(b.shares),
+		(a, b) => a.add(b.shares),
 		ZERO
 	)
 
