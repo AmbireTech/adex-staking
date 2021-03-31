@@ -150,7 +150,7 @@
   "errors": {
     "invalidAmountInput": "金额输入无效！",
     "lowADXAmount": "ADX金额不足！",
-    "lessDanMinPoolADX": "ADX金额低于所选池的最低要求！",
+    "lessThanMinPoolADX": "ADX金额低于所选池的最低要求！",
     "amountOverPoolLimit": "ADX金额过大-将超过池总质押额限制！",
     "statsNotProvided": "未提供统计信息",
     "noDepositAmount": "未提供存入金额",

@@ -12,10 +12,10 @@
     "termsAndConditions": "Terms and conditions",
     "claim": "Claim",
     "reStake": "Re-stake",
-    "tom": "Tom",
+    "tom": "Tom Legacy",
     "loPo": "Loyalty Pool",
     "liPo": "Liquidity Pool",
-    "validatorTom": "Validator Tom",
+    "validatorTom": "Validator Tom (Legacy)",
     "validatorJerry": "Validator Jerry",
     "totalStaked": "Total Staked",
     "unbondPeriod": "Unbond period",
@@ -66,7 +66,12 @@
     "poolStats": "Pool stats",
     "farm": "Farm",
     "reBond": "Re-bond",
-    "allTimeRewards": "All-time rewards"
+    "migrate": "Migrate",
+    "NA": "N/A",
+    "tomStakingPool": "Tom Staking Pool",
+    "from": "From",
+    "tomV5": "Tom",
+    "APY": "APY"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -75,7 +80,14 @@
     "activeStake": "Active Stake",
     "activeStakeInfo": "Active, earning {{apy}} % APY",
     "unclaimed": "Unclaimed rewards",
-    "total": "Total"
+    "total": "Total",
+    "totalStakings": "Total stakings",
+    "activeDepositsInfoLocked": "Locked: {{amount}} {{currency}}",
+    "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
+    "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
+    "activeDepositsInfoUnclaimed": "Unclaimed rewards: {{amount}} {{currency}}",
+    "activeUsersStakeLegacy": "To migrate: {{amount}} {{currency}}",
+    "adxPrice": "ADX price: {{priceUSD}}"
   },
   "pools": {
     "currentDailyYield": "Current daily yield {{yield}}",
@@ -94,7 +106,11 @@
     "unbondPeriodDay_plural": "{{count}} days",
     "tomLockupPeriodTxt": "30 days (30 days need to pas before unlocking ADX, during that period no rewards are received)",
     "tomApyStability": "Flexible",
-    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator"
+    "tomPurpose": "Staking ADX tokens towards the reputation of our main validator",
+    "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",
+    "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. There is an additional incentive reward of 20 million ADX to be distributed by the end of 2021. All rewards will be paid in ADX and will be automatically added to your stake.",
+    "tomV5SlashPolicy": "No slashing.",
+    "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool."
   },
   "email": {
     "subscribe": "Subscribe for AdEx News <strong> for exclusive content </strong> ",
@@ -104,11 +120,43 @@
     "gdprLabel": "Yes, I want AdEx Network to send me news and other related content",
     "promotionTerms": "I agree to the promotional <externalLink> Terms and conditions </externalLink> ",
     "submitting": "Submitting...",
-    "submitBtnLabel": "Sure, I'm in"
+    "submitBtnLabel": "Sure, I'm in",
+    "newToStaking": "New to staking?",
+    "learnMore": "learn more"
   },
   "deposits": {
     "withdrawLoPo": "Withdraw from Loyalty pool",
-    "depositsLimitReached": "Pool deposits limit reached"
+    "depositsLimitReached": "Pool deposits limit reached",
+    "allTimeRewards": "All-time rewards",
+    "currentRewards": "Current Rewards",
+    "type": "Type",
+    "amount": "Amount",
+    "blockNumber": "Block number",
+    "pendingToUnlockTotal": "Pending to unlock",
+    "readyToWithdrawTotal": "Ready to withdraw",
+    "leave": "Leave",
+    "selectUnbondCommitmentToWithdraw": "Unbond commitments",
+    "selectUnbondCommitmentToWithdrawInfo": "Select unbond commitment to withdraw",
+    "unlocksAt": "Unlocks at",
+    "makeUnbondCommitment": "Make unbond commitment",
+    "alreadyWithdrawn": "Already withdrawn",
+    "notUnlockedYet": "Not unlocked yet",
+    "depositTo": "Deposit to {{pool}}",
+    "withdrawFrom": "Withdraw from {{pool}}",
+    "unbondCommitmentFrom": "Make unbond commitment from {{pool}}",
+    "rageLeave": "Rage Leave",
+    "rageLeaveFrom": "Rage Leave form {{pool}} ",
+    "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} will be distributed to other stakers ",
+    "eventType": "Event Type",
+    "txnHash": "Txn Hash",
+    "txnsHistory": "Transactions history",
+    "from": "From",
+    "depositsADXTotal": "Total deposits",
+    "withdrawsADXTotal": "Total withdraws",
+    "extraInfo": "Extra info",
+    "lockupPeriodLabel": "Lockup period",
+    "lockupDays": "{{count}} days",
+    "unbondToWithdraw": "Please, unbond firs"
   },
   "bonds": {
     "bondAmount": "Bond amount",
@@ -118,22 +166,34 @@
     "requestUnbond": "Request Unbond",
     "bondExplanationMsg": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} day lock-up period.",
     "bondExplanationMsg_plural": "This table will show all your individual ADX deposits in validator pools (bonds), along with information as status, amount and current APY. By using the action buttons, you will be able to request unbonding and withdraw your ADX after the {{count}} days lock-up period.",
-    "confirmationLabel": "I understand I am locking up my ADX for at least {{unbondDays}} days and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
+    "confirmationLabel": "I understand I am locking up <strong> <amount> {{totalBondAmount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
+    "confirmationLabelMigrationWithdraw": "I understand I will receive total amount of <strong> <amount> {{amount}} {{currency}} </amount> </strong> on my wallet address {{walletAddr}}",
     "createBond": "Create a bond",
     "currentYield": "<farmer>🌾</farmer>  Current annual yield of {{apy}} {{sign}} <farmer>🌾</farmer>",
     "stakeADX": "Stake ADX",
     "stakeNewAccIdentityBalance": "You can stake {{amount}} {{currency}} at the moment. This is the balance on your gasless address.",
     "alreadyUnbonded": "Already unbonded",
     "unbondNotReady": "Not ready for unbonding",
+    "migrationNotReady": "Not ready for migration",
     "willUnlockIn": "Can unbond on {{unlockTime}}",
     "reBondInfo": "You can re-bond while there is pending or ready unbond request",
-    "migrationAlertText1": "Important!",
-    "migrationAlertText2": "AdEx Staking Update: Migrating the Validator Tom Contract",
-    "migrationAlertText3": "Upgrade timeline:",
-    "migrationAlertText4": "23 March: unbonding on the old pool disabled.",
-    "migrationAlertText5": "31 March: Migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
+    "migrationInfo": "TODO: Some extra migration info",
+    "requestUnbondOrMigrate": "Migrate / Request Unbond",
+    "requestMigrate": "Migrate",
+    "finalizeMigration": "Finalize migration",
+    "migrationClaimPendingRewards": "Claim pending rewards. (<strong> <amount>{{amount}} {{currency}}</amount> </strong>). [Uses more gas]",
+    "migrationStakePendingRewards": "Stake pending rewards. (<strong> <amount>{{amount}} {{currency}}</amount> </strong>). [Uses more gas]",
+    "stakeWalletBalance": "Stake wallet balance. (<strong> <amount>{{amount}} {{currency}}</amount> </strong>). [Uses more gas]",
+    "migrateNow": "Migrate now",
+    "tosNotConfirmed": "Confirm terms of service",
+    "unbond": "Unbond",
+    "unbondNow": "Unbond now",
+    "bondInfo": "<box>Bond amount: <strong> <amount> {{amount}} {{currency}} </amount> </strong> </box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box> <box> Migration bonus: <strong> <amount> {{migrationBonus}} {{migrationBonusCurrency}} </amount> </strong></box>",
+    "migrationAlertText5": "AdEx Staking migration is live: migration contract and new staking pool are launched, old staking pool becomes inactive and will receive no more rewards.",
     "migrationAlertText6": "More info <externalLink> at our blog </externalLink/>  ",
-    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  "
+    "migrationUnbondDisableMsg": "Unbonds are disabled due to staking migration. More info <externalLink> at our blog </externalLink/>  ",
+    "migrationEnterTo": "Migrate bond to <strong> {{address}} </strong> <strong> Sir, please </strong> make sure you have access to this address!!",
+    "migrationEnterToUnbondWithdraw": "Withdraw to <strong> {{address}} </strong>. Just be careful!!"
   },
   "gasless": {
     "staking": "Gasless Staking",
@@ -153,12 +213,12 @@
     "reStakeRewards": "RE-STAKE REWARDS",
     "info": "Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient. Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load. You can see all transactions of your gasless address <external> HERE </external>",
     "createNewBond": "Create a bond - gasless",
-    "bulletMigration": "Deposits to gasless staking is currently disabled for non-deployed gasless identities due to Staking Migration"
+    "tempDisabled": "Temporarily Unavailable"
   },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
     "lowADXAmount": "Insufficient ADX amount!",
-    "lessDanMinPoolADX": "ADX amount less than minimum required for selected pool!",
+    "lessThanMinPoolADX": "ADX amount less than minimum required for selected pool!",
     "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!",
     "statsNotProvided": "Stats not provided",
     "noDepositAmount": "No deposit amount provided",
@@ -190,7 +250,13 @@
     "lessDanMinPoolAmount": "{{currency}} amount less than minimum required for selected pool!",
     "zeroDepositToken": "Can not deposit 0 {{currency}}",
     "cantCallLPPricesWithoutADXUSDValue": "ADX usd value not provided. Can't calculate LP tokens prices",
-    "canCalcLPTokensPrices": "Error while calculating LP tokens prices."
+    "canCalcLPTokensPrices": "Error while calculating LP tokens prices.",
+    "invalidActionType": "Invalid Action type {{actionType}}",
+    "noActionForPool": "NO {{actionName}} for pool ID: \"{{poolId}}\"",
+    "unbondCommitmentNotSelected": "Unbond commitment not selected",
+    "zeroBalanceADX": "0 ADX balance",
+    "noUnbondCommitmentProvided": "No unbond commitment data provided",
+    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
@@ -210,7 +276,10 @@
     "forTotal": "For total of: {{total}}",
     "exceptWallets": "(except {{wallets}})",
     "harvestAllConfirmation": "You are going to harvest all of your rewards - {{amount}} {{currency}}. ",
-    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>"
+    "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
+    "migrationRequestConfirmation": "<box> You are about to migrate this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you can finalize the migration process (additional action will be required). </li> <li> You will NOT receive staking rewards for this {{unbondDays}} day period. </li> <li> You will receive a migration reward of minimum {{migrationReward}} {{currency}} ( (equal the staking rewards for 2 months) when you finalize the migration. </li> <li> All of your unclaimed rewards when finalizing the process ({{unbondPeriod}} day from now) will be added to your migrated bond. The additional migration reward will be added this amount too. <li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days</li> </ol>",
+    "migrationFinalizationConfirmation": "<box> You are about to complete migration process for this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box>  <ol> <li> All of your unclaimed rewards will be added to your migrated bond. </li> <li> If you wish, you can withdraw your unclaimed rewards without your wallet before finalizing the migration. </li> <li>  You will receive migration reward of {{migrationReward}} {{currency}}. It will be added to your migrated bond.  </li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days. </li> </ol>",
+    "bondToV5MigrationConfirmation": "<box> Are you sure you want to request unbond/migration of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to finalize migration process or unbond your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> <li> If you chose to migrate the bond you will get extra reward to compensate the lack of rewards for the {{unbondDays}} period.  </li> </ol>"
   },
   "help": {
     "help": "help",
@@ -230,7 +299,11 @@
   },
   "popups": {
     "congratulations": "Congratulations!",
-    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards"
+    "proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards",
+    "migrationAlert": " Migration Alert",
+    "migrationAlertInfoMigrate": "You have Tom staking pool bond ready to be migrated!",
+    "migrationAlertInfoMigrate_plural": "You have Tom staking pool bonds ready to be migrated!",
+    "notNow": "Not now"
   },
   "rewards": {
     "noRewards": "No rewards",
@@ -241,7 +314,8 @@
     "totalSelected": "Total selected",
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
-    "poolName": "{{pool}} ({{type}}) {{extra}}"
+    "poolName": "{{pool}} ({{type}}) {{extra}}",
+    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
