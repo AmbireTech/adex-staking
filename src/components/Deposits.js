@@ -62,12 +62,12 @@ const getStakingPool = ({
 					/>
 				</Box>
 				<Box>
-					<AmountText
+					{/* <AmountText
 						text={`(=${formatADXPretty(
 							tomStakingV5PoolStats.balanceShares
 						)} ${"shares"})`}
 						fontSize={17}
-					/>
+					/> */}
 					<Box>
 						{`(${(tomStakingV5PoolStats.userShare * 100).toFixed(4)} %)`}
 					</Box>
