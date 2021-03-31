@@ -20,6 +20,7 @@ import { AmountText } from "./cardCommon"
 import { useTranslation } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
 import { iconByPoolId } from "../helpers/constants"
+import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => {
 })
 
 const StakingEventRow = ({ stakingEvent }) => {
+	const { t } = useTranslation()
 	const classes = useStyles()
 	const PoolIcon = iconByPoolId({ poolId: "adex-staking-pool" })
 
@@ -66,8 +68,17 @@ const StakingEventRow = ({ stakingEvent }) => {
 			<TableCell align="right">
 				<AmountText
 					text={`${formatADXPretty(
-						stakingEvent.adxAmount || stakingEvent.maxTokens
-					)} ${"ADX"}`}
+						stakingEvent.adxAmount ||
+							stakingEvent.maxTokens ||
+							stakingEvent.shares
+					)} ${
+						stakingEvent.type ===
+							STAKING_POOL_EVENT_TYPES.shareTokensTransferIn ||
+						stakingEvent.type ===
+							STAKING_POOL_EVENT_TYPES.shareTokensTransferOut
+							? "ADX-SHARE"
+							: "ADX"
+					}`}
 					fontSize={17}
 				/>
 			</TableCell>
@@ -75,14 +86,19 @@ const StakingEventRow = ({ stakingEvent }) => {
 				{formatDateTime(new Date(stakingEvent.timestamp))}
 			</TableCell>
 			<TableCell align="right">
-				<ExternalAnchor
-					color="inherit"
-					id={`staking-v5-tx-block-on-etherscan-${stakingEvent.blockNumber}`}
-					target="_blank"
-					href={`https://etherscan.io/block/${stakingEvent.blockNumber}`}
-				>
-					{stakingEvent.blockNumbe}
-				</ExternalAnchor>
+				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.leave && "-"}
+				{/* {stakingEvent.type === STAKING_POOL_EVENT_TYPES.enter &&
+					< Box >
+						<Box>{
+							t("deposits.unlockAt",
+								{
+									unlocksAt: formatDateTime(new Date(stakingEvent.unlocksAt))
+
+								})
+						}
+						</Box > *
+				 </Box>
+				} */}
 			</TableCell>
 			<TableCell align="right">
 				{
