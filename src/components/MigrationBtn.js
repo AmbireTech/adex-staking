@@ -65,7 +65,7 @@ export default function MigrationBtn({ onBeforeOpen, fabButton, color, size }) {
 				}
 				color={color || "primary"}
 				size={size || "small"}
-				variant={fabButton ? "extended" : "outlined"}
+				variant={fabButton ? "extended" : "contained"}
 				fabButton={!!fabButton}
 				bond={bondToMigrate}
 				poolLabel={poolLabel}

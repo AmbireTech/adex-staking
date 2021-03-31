@@ -87,7 +87,7 @@ export const MigrateNowAlert = () => {
 								components={{
 									externalLink: (
 										<ExternalAnchor
-											color="secondary"
+											color="primary"
 											id={`migration--alert-blogpost-link`}
 											target="_blank"
 											href={`https://www.adex.network/blog/staking-portal-upgrade/`}
@@ -106,7 +106,7 @@ export const MigrateNowAlert = () => {
 							<Box mt={1}>
 								<MigrationBtn
 									variant="contained"
-									color="secondary"
+									color="primary"
 									size="small"
 								/>
 							</Box>
