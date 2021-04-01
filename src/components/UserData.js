@@ -62,7 +62,7 @@ export default function UserData({ stats, prices }) {
 			<Box mb={1.5}>
 				{StatsCard({
 					loaded: stats.loaded,
-					title: t("userData.totalStakings"),
+					title: t("userData.totalStaked"),
 					titleInfo: [
 						t("userData.activeDepositsInfoLocked", {
 							amount: formatADXPretty(stats.totalLockedOnDeposits),
@@ -85,8 +85,8 @@ export default function UserData({ stats, prices }) {
 							currency: "ADX"
 						})
 					],
-					subtitle: formatADXPretty(stats.totalStakings) + " ADX",
-					extra: getADXInUSDFormatted(prices, stats.totalStakings)
+					subtitle: formatADXPretty(stats.totalStaked) + " ADX",
+					extra: getADXInUSDFormatted(prices, stats.totalStaked)
 				})}
 			</Box>
 		</Box>
