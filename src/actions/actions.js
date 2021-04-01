@@ -92,6 +92,7 @@ export const EMPTY_STATS = {
 	prices: {},
 	legacyTokenBalance: ZERO,
 	identityDeployed: false,
+	userWalletToIdentityADXAllowance: ZERO,
 	tomBondsMigrationData: {
 		hasToMigrate: false,
 		bondToMigrate: null,
@@ -299,7 +300,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loyaltyPoolStats,
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
-		migrationBonusPromilles = BigNumber.from(1048)
+		migrationBonusPromilles = BigNumber.from(1048),
+		userWalletToIdentityADXAllowance
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
@@ -307,7 +309,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
-		StakingMigrator.WITH_BONUS_PROMILLES() // TODO: uncomment when migrator deployed
+		StakingMigrator.WITH_BONUS_PROMILLES(), // TODO: uncomment when migrator deployed
+		Token.allowance(addr, identityAddr)
 	])
 
 	const { tomPoolStats } = poolsStats
@@ -431,7 +434,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		tomPoolStats: tomPoolStatsWithUserData,
 		tomStakingV5PoolStats: tomStakingV5PoolStatsWithUserData,
 		prices,
-		tomBondsMigrationData
+		tomBondsMigrationData,
+		userWalletToIdentityADXAllowance
 	}
 }
 

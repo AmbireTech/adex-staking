@@ -38,7 +38,12 @@ export default function MigrationForm({
 		AppContext
 	)
 
-	const { userWalletBalance, tomPoolStats, tomStakingV5PoolStats } = stats
+	const {
+		userWalletBalance,
+		tomPoolStats,
+		tomStakingV5PoolStats,
+		userWalletToIdentityADXAllowance
+	} = stats
 	const { identityAdxRewardsAmount } = tomPoolStats
 	const { unbondDays } = tomStakingV5PoolStats
 
@@ -249,32 +254,34 @@ export default function MigrationForm({
 					</Grid>
 				)}
 
-				{!withdrawOnMigration && !userWalletBalance.isZero() && (
-					<Grid item xs={12}>
-						<FormControlLabel
-							style={{ userSelect: "none" }}
-							label={
-								<Trans
-									i18nKey={"bonds.stakeWalletBalance"}
-									values={{
-										amount: formatADXPretty(userWalletBalance),
-										currency: "ADX"
-									}}
-									components={{
-										amount: <AmountText fontSize={17}></AmountText>
-									}}
-								/>
-							}
-							control={
-								<Checkbox
-									id={`new-migration-v5-form-stake-wallet-balance-check`}
-									checked={stakeWalletBalance}
-									onChange={ev => setStakeWalletBalance(ev.target.checked)}
-								/>
-							}
-						></FormControlLabel>
-					</Grid>
-				)}
+				{!withdrawOnMigration &&
+					!userWalletBalance.isZero() &&
+					userWalletToIdentityADXAllowance.gt(userWalletBalance) && (
+						<Grid item xs={12}>
+							<FormControlLabel
+								style={{ userSelect: "none" }}
+								label={
+									<Trans
+										i18nKey={"bonds.stakeWalletBalance"}
+										values={{
+											amount: formatADXPretty(userWalletBalance),
+											currency: "ADX"
+										}}
+										components={{
+											amount: <AmountText fontSize={17}></AmountText>
+										}}
+									/>
+								}
+								control={
+									<Checkbox
+										id={`new-migration-v5-form-stake-wallet-balance-check`}
+										checked={stakeWalletBalance}
+										onChange={ev => setStakeWalletBalance(ev.target.checked)}
+									/>
+								}
+							></FormControlLabel>
+						</Grid>
+					)}
 
 				{!!enterTo && (
 					<Grid item xs={12}>
