@@ -149,18 +149,26 @@ export async function onMigrationToV5Finalize(
 		extraAmount = extraAmount.add(userWalletBalance)
 	}
 
-	await executeOnIdentity(chosenWalletType, [
-		...identityTxns,
+	await executeOnIdentity(
+		chosenWalletType,
 		[
-			StakingMigrator.address,
-			StakingMigrator.interface.encodeFunctionData("migrate", [
-				amount,
-				nonce,
-				interactionAddress,
-				extraAmount
-			])
-		]
-	])
+			...identityTxns,
+			[
+				StakingMigrator.address,
+				StakingMigrator.interface.encodeFunctionData("migrate", [
+					amount,
+					nonce,
+					interactionAddress,
+					extraAmount
+				])
+			]
+		],
+		{},
+		false,
+		claimPendingRewards || (!willWithdrawOnMigration && stakeWalletBalance)
+			? 16_000
+			: null
+	)
 }
 
 export async function onStakingPoolV5Deposit(

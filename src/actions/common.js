@@ -1,4 +1,4 @@
-import { Contract } from "ethers"
+import { BigNumber, Contract } from "ethers"
 import { splitSig, Transaction } from "adex-protocol-eth/js"
 import IdentityABI from "adex-protocol-eth/abi/Identity"
 import FactoryABI from "adex-protocol-eth/abi/IdentityFactory"
@@ -31,7 +31,8 @@ export async function executeOnIdentity(
 	chosenWalletType,
 	txns,
 	opts = {},
-	gasless
+	gasless,
+	extraGasLimit
 ) {
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
@@ -73,6 +74,15 @@ export async function executeOnIdentity(
 		return res.json()
 	} else if (!needsToDeploy) {
 		const txnTuples = txns.map(toTuples(0))
+
+		if (extraGasLimit) {
+			const estimatedGasLimit = await identity.estimateGas.executeBySender(
+				txnTuples,
+				opts
+			)
+			opts.gasLimit = estimatedGasLimit.add(BigNumber.from(extraGasLimit))
+		}
+
 		await identity.executeBySender(txnTuples, opts)
 	} else {
 		// Has offset because the execute() takes the first nonce
@@ -87,6 +97,18 @@ export async function executeOnIdentity(
 		const sig = await signMessage(signer, executeTx.hash())
 
 		const factoryWithSigner = new Contract(ADDR_FACTORY, FactoryABI, signer)
+
+		if (extraGasLimit) {
+			const estimatedGasLimit = await factoryWithSigner.deployAndExecute(
+				bytecode,
+				0,
+				[executeTx.toSolidityTuple()],
+				[splitSig(sig)],
+				opts
+			)
+			opts.gasLimit = estimatedGasLimit.add(BigNumber.from(extraGasLimit))
+		}
+
 		await factoryWithSigner.deployAndExecute(
 			bytecode,
 			0,
