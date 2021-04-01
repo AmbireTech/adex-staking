@@ -78,7 +78,7 @@ export const EMPTY_STATS = {
 	totalLockedOnDeposits: ZERO,
 	totalPendingToUnlock: ZERO,
 	totalUnlockedDeposits: ZERO,
-	totalStakings: ZERO,
+	totalStaked: ZERO,
 	apyTomADX: 0,
 	userTotalStake: ZERO,
 	totalBalanceADX: ZERO,
@@ -385,13 +385,13 @@ export async function loadUserStats(chosenWalletType, prices) {
 		.add(leavesReadyToWithdrawTotalADX)
 		.add(tomUnbondRequestedWithdraw) // unlocked with migration
 
-	const totalStakings = userTotalStake
+	const totalStaked = userTotalStake
 		.add(totalLockedOnDeposits)
 		.add(totalPendingToUnlock)
 		.add(totalUnlockedDeposits)
 		.add(tomRewardADX)
 
-	const totalBalanceADX = userBalance.add(totalStakings)
+	const totalBalanceADX = userBalance.add(totalStaked)
 
 	const migratableBonds = [...userBonds].filter(
 		x => x.status !== "Unbonded" && x.status !== "Migrated"
@@ -421,7 +421,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		totalRewardDAI: tomRewardDAI,
 		tomRewardADX,
 		userTotalStake,
-		totalStakings,
+		totalStaked,
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
 		userIdentityBalance,

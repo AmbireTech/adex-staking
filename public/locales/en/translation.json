@@ -81,7 +81,7 @@
     "activeStakeInfo": "Active, earning {{apy}} % APY",
     "unclaimed": "Unclaimed rewards",
     "total": "Total",
-    "totalStakings": "Total stakings",
+    "totalStaked": "Total staked",
     "activeDepositsInfoLocked": "Locked: {{amount}} {{currency}}",
     "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
     "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
