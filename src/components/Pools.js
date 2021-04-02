@@ -179,7 +179,7 @@ const Pools = () => {
 						// comingSoon
 					/>
 
-					<PoolCard
+					{/* <PoolCard
 						id="validator-tom"
 						icon={
 							<SvgIcon fontSize="large" color="inherit">
@@ -187,11 +187,11 @@ const Pools = () => {
 							</SvgIcon>
 						}
 						name={t("common.tom")}
-						totalStakedADX="-"
-						// totalStakedADX={`${formatADXPretty(
-						// 	// tomPoolStats.totalCurrentTotalActiveStake
-						// 	tomPoolStats.totalStake
-						// )} ADX`}
+						// totalStakedADX="-"
+						totalStakedADX={`${formatADXPretty(
+							// tomPoolStats.totalCurrentTotalActiveStake
+							tomPoolStats.totalStake
+						)} ADX`}
 						totalStakedUSD="-"
 						// totalStakedUSD={`${getADXInUSDFormatted(
 						// 	prices,
@@ -221,7 +221,7 @@ const Pools = () => {
 						})}
 						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
 						statsPath={`/stats?validator=${t(TOM_LEGACY_POOL.label)}`}
-					/>
+					/> */}
 					{/* <PoolCard
 						id="liquidity-pool"
 						icon={
