@@ -65,7 +65,8 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentReward: ZERO,
 	withdrawsADXTotal: ZERO,
 	depositsADXTotal: ZERO,
-	totalSharesInTransfers: ZERO,
+	totalSharesOutTransfersAdxValue: ZERO,
+	totalSharesInTransfersAdxValue: ZERO,
 	currentAPY: 0,
 	stakings: [],
 	userLeaves: [],
@@ -591,64 +592,142 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	)
 
-	const {
-		// depositsSharesWeightedSum,
-		// depositsSharesTotal,
-		depositsADXTotal
-	} = userEnters.reduce(
-		(data, log) => {
-			// data.depositsSharesWeightedSum = data.depositsSharesWeightedSum.add(
-			// 	log.shares.mul(log.adxAmount)
-			// )
-			// data.depositsSharesTotal = data.depositsSharesTotal.add(log.shares)
+	if (
+		sharesTokensTransfersOut.length ||
+		sharesTokensTransfersInFromExternal.length
+	) {
+		const fromBlock = Math.min(
+			sharesTokensTransfersOut[0]
+				? sharesTokensTransfersOut[0].blockNumber
+				: Number.MAX_SAFE_INTEGER,
+			sharesTokensTransfersInFromExternal[0]
+				? sharesTokensTransfersInFromExternal[0].blockNumber
+				: Number.MAX_SAFE_INTEGER
+		)
 
-			data.depositsADXTotal = data.depositsADXTotal.add(log.adxAmount)
+		const [
+			allLeaveLogs,
+			allWithdrawLogs,
+			allRageLeaveLogs,
+			allEnterSharesTokensTransfersInLogs
+		] = await Promise.all([
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogLeave(null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogWithdraw(null, null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogRageLeave(null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.Transfer(ZERO_ADDR, null, null)
+			})
+		])
 
-			return data
-		},
-		{
-			depositsSharesWeightedSum: ZERO,
-			depositsSharesTotal: ZERO,
-			depositsADXTotal: ZERO
-		}
-	)
+		const allEnters = allEnterSharesTokensTransfersInLogs
+			.map(sharesMintEvent => {
+				const adexTokenTransfersLog =
+					enterAdexTokensByTxHash[sharesMintEvent.transactionHash]
 
-	const {
-		// withdrawsSharesWeightedSum,
-		// withdrawsSharesTotal,
-		withdrawsADXTotal
-	} = userWithdraws.concat(userRageLeaves).reduce(
-		(data, log) => {
-			// data.withdrawsSharesWeightedSum = data.withdrawsSharesWeightedSum.add(
-			// 	log.shares.mul(log.adxAmount)
-			// )
-			// data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
+				if (adexTokenTransfersLog) {
+					const { amount } = ADXToken.interface.parseLog(
+						adexTokenTransfersLog
+					).args
+					const { amount: shares } = StakingPool.interface.parseLog(
+						sharesMintEvent
+					).args
 
-			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.receivedTokens)
+					return {
+						blockNumber: sharesMintEvent.blockNumber,
+						shareValue: amount.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+					}
+				} else {
+					return null
+				}
+			})
+			.filter(x => !!x)
 
-			return data
-		},
-		{
-			withdrawsSharesWeightedSum: ZERO,
-			withdrawsSharesTotal: ZERO,
-			withdrawsADXTotal: ZERO
-		}
-	)
+		const allWithdraws = allWithdrawLogs.map(log => {
+			const parsedWithdrawLog = StakingPool.interface.parseLog(log)
+			const { shares, maxTokens } = parsedWithdrawLog.args
 
-	const totalSharesOutTransfers = sharesTokensTransfersOut.reduce(
-		(a, b) => a.add(b.shares),
+			return {
+				blockNumber: log.blockNumber,
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+			}
+		})
+
+		const allRageLeaves = allRageLeaveLogs.map(log => {
+			const parsedRageLeaveLog = StakingPool.interface.parseLog(log)
+
+			const { shares, maxTokens } = parsedRageLeaveLog.args
+
+			return {
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares),
+				blockNumber: log.blockNumber
+			}
+		})
+
+		const allLeaves = allLeaveLogs.map(log => {
+			const parsedLog = StakingPool.interface.parseLog(log)
+			const { shares, maxTokens } = parsedLog.args
+			return {
+				blockNumber: log.blockNumber,
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+			}
+		})
+
+		const allLogs = allEnters
+			.concat(allWithdraws)
+			.concat(allLeaves)
+			.concat(allRageLeaves)
+			.sort((a, b) => a.blockNumber - b.blockNumber)
+
+		const withAdxAmount = events =>
+			events.forEach((transferLog, i) => {
+				const nextLog = allLogs.find(
+					log => log.blockNumber >= transferLog.blockNumber
+				)
+				const bestShareValue = nextLog.shareValue || shareValue
+
+				// approximate share value
+				events[i].shareValue = bestShareValue
+				events[i].adxAmount = transferLog.shares
+					.mul(bestShareValue)
+					.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+			})
+
+		withAdxAmount(sharesTokensTransfersOut)
+		withAdxAmount(sharesTokensTransfersInFromExternal)
+	}
+
+	const totalSharesOutTransfersAdxValue = sharesTokensTransfersOut.reduce(
+		(a, b) => a.add(b.adxAmount),
 		ZERO
 	)
 
-	const totalSharesInTransfers = sharesTokensTransfersInFromExternal.reduce(
-		(a, b) => a.add(b.shares),
+	const totalSharesInTransfersAdxValue = sharesTokensTransfersInFromExternal.reduce(
+		(a, b) => a.add(b.adxAmount),
 		ZERO
 	)
 
-	const totalRewards = currentBalanceADX
+	const depositsADXTotal = userEnters.reduce(
+		(a, b) => a.add(b.adxAmount),
+		totalSharesInTransfersAdxValue
+	)
+
+	const withdrawsADXTotal = userWithdraws.reduce(
+		(a, b) => a.add(b.receivedTokens),
+		totalSharesOutTransfersAdxValue
+	)
+
+	const totalRewards = currentBalanceADX // includes leavesPendingToUnlockTotalADX and  leavesReadyToWithdrawTotalADX
 		.add(withdrawsADXTotal)
-		// .add(leavesPendingToUnlockTotalADX)
-		// .add(leavesReadyToWithdrawTotalADX)
 		.sub(depositsADXTotal)
 
 	const hasActiveUnbondCommitments = !![...userLeaves].filter(
@@ -660,8 +739,8 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		balanceShares,
 		currentBalanceADX,
 		totalRewards,
-		totalSharesInTransfers,
-		totalSharesOutTransfers,
+		totalSharesOutTransfersAdxValue,
+		totalSharesInTransfersAdxValue,
 		stakings: withTimestamp,
 		userLeaves,
 		depositsADXTotal,
