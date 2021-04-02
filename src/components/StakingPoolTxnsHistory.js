@@ -67,7 +67,9 @@ const StakingEventRow = ({ stakingEvent }) => {
 					<Box>{stakingEvent.label}</Box>
 				</Box>
 			</TableCell>
-			<TableCell align="right">{stakingEvent.type}</TableCell>
+			<TableCell align="right">
+				{t(`eventTypes.${stakingEvent.type}`)}
+			</TableCell>
 			<TableCell align="right">
 				<AmountText
 					text={`${formatADXPretty(

@@ -112,6 +112,15 @@
     "tomV5SlashPolicy": "No slashing.",
     "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool."
   },
+  "eventTypes": {
+    "enter": "Enter",
+    "leave": "Leave",
+    "burn": "Burn",
+    "withdraw": "Withdraw",
+    "rageLeave": "Rage Leave",
+    "shareTokensTransferIn": "Share Tokens - Transfer IN",
+    "shareTokensTransferOut": "Share Tokens - Transfer OUT"
+  },
   "email": {
     "subscribe": "Subscribe for AdEx News <strong> for exclusive content </strong> ",
     "email": "Email",
