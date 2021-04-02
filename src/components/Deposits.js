@@ -10,6 +10,7 @@ import {
 	TableBody,
 	SvgIcon
 } from "@material-ui/core"
+import { Alert } from "@material-ui/lab"
 import { DEPOSIT_POOLS, iconByPoolId } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
@@ -43,7 +44,8 @@ const getStakingPool = ({
 	stats,
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
-	disableActionsMsg
+	disableActionsMsg,
+	hasExternalStakingTokenTransfers
 }) => {
 	const { tomStakingV5PoolStats } = stats
 
@@ -60,6 +62,7 @@ const getStakingPool = ({
 						)} ${"ADX"}`}
 						fontSize={17}
 					/>
+					{hasExternalStakingTokenTransfers && " *"}
 				</Box>
 				<Box>
 					{/* <AmountText
@@ -75,18 +78,26 @@ const getStakingPool = ({
 			</Fragment>
 		),
 		allTimeReward: (
-			<AmountText
-				text={`${formatADXPretty(tomStakingV5PoolStats.totalRewards)} ${"ADX"}`}
-				fontSize={17}
-			/>
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.totalRewards
+					)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
 		),
 		depositsADXTotal: (
-			<AmountText
-				text={`${formatADXPretty(
-					tomStakingV5PoolStats.depositsADXTotal
-				)} ${"ADX"}`}
-				fontSize={17}
-			/>
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.depositsADXTotal
+					)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
 		),
 		pendingToUnlockTotalADX: (
 			<AmountText
@@ -97,12 +108,15 @@ const getStakingPool = ({
 			/>
 		),
 		withdrawsADXTotal: (
-			<AmountText
-				text={`${formatADXPretty(
-					tomStakingV5PoolStats.withdrawsADXTotal
-				)} ${"ADX"}`}
-				fontSize={17}
-			/>
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.withdrawsADXTotal
+					)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
 		),
 		readyToWithdrawTotalADX: (
 			<AmountText
@@ -265,7 +279,16 @@ export default function Deposits() {
 	const classes = useStyles()
 	const [deposits, setDeposits] = useState([])
 	const { stats, chosenWalletType } = useContext(AppContext)
-	const { loyaltyPoolStats } = stats
+	const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
+
+	const {
+		totalSharesOutTransfersAdxValue,
+		totalSharesInTransfersAdxValue
+	} = tomStakingV5PoolStats
+
+	const hasExternalStakingTokenTransfers =
+		!totalSharesOutTransfersAdxValue.isZero() ||
+		!totalSharesInTransfersAdxValue.isZero()
 
 	const disableActionsMsg = !chosenWalletType.name
 		? t("common.connectWallet")
@@ -314,7 +337,8 @@ export default function Deposits() {
 				stats,
 				disableActionsMsg,
 				disabledDepositsMsg: disableDepositsMsg,
-				disabledWithdrawsMsg
+				disabledWithdrawsMsg,
+				hasExternalStakingTokenTransfers
 			})
 
 			loadedDeposits = updateDeposits(loadedDeposits, stakingPoolDeposit)
@@ -389,7 +413,7 @@ export default function Deposits() {
 					tooltipTitle={disableDepositsMsg}
 				/>
 			</Box> */}
-			<Box>
+			<Box mb={2}>
 				<TableContainer xs={12}>
 					<Table aria-label="Bonds table">
 						<TableHead>
@@ -419,6 +443,11 @@ export default function Deposits() {
 					</Table>
 				</TableContainer>
 			</Box>
+			{hasExternalStakingTokenTransfers && (
+				<Alert variant="filled" severity="info">
+					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert")}`}
+				</Alert>
+			)}
 		</Box>
 	)
 }

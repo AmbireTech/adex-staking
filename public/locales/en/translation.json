@@ -159,7 +159,8 @@
     "unbondToWithdraw": "Please, unbond firs",
     "unlocksAtInfo": "Unlocks at: {{unlocksAt}}",
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
-    "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}"
+    "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
+    "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token (ADX-SHARE), the rewards shown may be less than your actual rewards."
   },
   "bonds": {
     "bondAmount": "Bond amount",
