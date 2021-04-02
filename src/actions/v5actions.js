@@ -574,24 +574,6 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		ZERO
 	)
 
-	const stakings = userEnters
-		.concat(userLeaves)
-		.concat(userWithdraws)
-		.concat(userRageLeaves)
-		.concat(sharesTokensTransfersInFromExternal)
-		.concat(sharesTokensTransfersOut)
-		.sort((a, b) => a.blockNumber - b.blockNumber)
-
-	const withTimestamp = await Promise.all(
-		stakings.map(async stakingEvent => {
-			const { timestamp } = await provider.getBlock(stakingEvent.blockNumber)
-			return {
-				...stakingEvent,
-				timestamp: timestamp * 1000
-			}
-		})
-	)
-
 	if (
 		sharesTokensTransfersOut.length ||
 		sharesTokensTransfersInFromExternal.length
@@ -733,6 +715,24 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const hasActiveUnbondCommitments = !![...userLeaves].filter(
 		x => !x.withdrawTx
 	).length
+
+	const stakings = userEnters
+		.concat(userLeaves)
+		.concat(userWithdraws)
+		.concat(userRageLeaves)
+		.concat(sharesTokensTransfersInFromExternal)
+		.concat(sharesTokensTransfersOut)
+		.sort((a, b) => a.blockNumber - b.blockNumber)
+
+	const withTimestamp = await Promise.all(
+		stakings.map(async stakingEvent => {
+			const { timestamp } = await provider.getBlock(stakingEvent.blockNumber)
+			return {
+				...stakingEvent,
+				timestamp: timestamp * 1000
+			}
+		})
+	)
 
 	const stats = {
 		...poolData,
