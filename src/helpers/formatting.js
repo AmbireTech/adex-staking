@@ -55,10 +55,15 @@ export function formatDate(d) {
 }
 
 export function formatDateTime(d) {
-	return new Intl.DateTimeFormat(navigator.language, {
-		dateStyle: "short",
-		timeStyle: "short"
-	}).format(d)
+	// @TODO temporary
+	try {
+		return new Intl.DateTimeFormat(navigator.language, {
+			dateStyle: "short",
+			timeStyle: "short"
+		}).format(d)
+	} catch (e) {
+		return "Unknown"
+	}
 }
 
 // @TODO refactor to take pool arguments and use pool constants
