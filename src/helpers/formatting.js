@@ -62,6 +62,7 @@ export function formatDateTime(d) {
 			timeStyle: "short"
 		}).format(d)
 	} catch (e) {
+		console.error(e)
 		return "Unknown"
 	}
 }
