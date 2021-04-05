@@ -87,8 +87,10 @@ const StakingEventRow = ({ stakingEvent }) => {
 				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.leave && (
 					<Box>
 						<Box>
-							{t("deposits.unlockAt", {
-								unlocksAt: formatDateTime(new Date(stakingEvent.unlocksAt))
+							{t("deposits.unlocksAtInfo", {
+								unlocksAt: formatDateTime(
+									Math.ceil(stakingEvent.unlocksAt * 1000)
+								)
 							})}
 						</Box>
 					</Box>
