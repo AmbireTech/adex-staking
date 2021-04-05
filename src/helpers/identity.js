@@ -1,7 +1,9 @@
 import { generateAddress2 } from "ethereumjs-util"
-import { utils } from "ethers"
+import { utils, ContractFactory } from "ethers"
 import { Transaction } from "adex-protocol-eth/js"
-import { ADDR_FACTORY, useTestnet } from "./constants"
+import { ADDR_FACTORY, ADDR_GASLESS_SWEEPER, useTestnet } from "./constants"
+import GaslessDepositorABI from "../abi/GaslessDepositor.json"
+import GaslessDepositorBytecode from "../abi/GaslessDepositor_bytecode.json"
 
 function getBytecode(addr) {
 	const addrHex = addr.slice(2).toLowerCase()
@@ -43,4 +45,25 @@ export function zeroFeeTx(idAddr, nonce, to, data) {
 		to,
 		data
 	})
+}
+
+export function getUserGaslessAddress(ADXTokenAddr, poolAddr, walletAddr) {
+	const factory = new ContractFactory(
+		GaslessDepositorABI,
+		GaslessDepositorBytecode.object
+	)
+	const initCode = factory.getDeployTransaction(
+		ADXTokenAddr,
+		poolAddr,
+		walletAddr
+	).data
+	const initCodeHash = utils.keccak256(initCode)
+
+	const gaslessAddr = utils.getCreate2Address(
+		ADDR_GASLESS_SWEEPER,
+		Buffer.alloc(32),
+		initCodeHash
+	)
+
+	return gaslessAddr
 }
