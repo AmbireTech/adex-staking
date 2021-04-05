@@ -19,6 +19,7 @@ import {
 } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity, toChannelTuple } from "./common"
+import { getUserGaslessAddress } from "../helpers/identity"
 
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
@@ -80,7 +81,9 @@ export const STAKING_POOL_EMPTY_STATS = {
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
 	timeToUnbond: 1,
-	userShare: 0
+	userShare: 0,
+	gaslessAddress: null,
+	gaslessAddrBalance: ZERO
 }
 
 export async function onMigrationToV5Finalize(
@@ -335,8 +338,15 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		}
 	}
 
+	const gaslessAddress = getUserGaslessAddress(
+		ADXToken.address,
+		StakingPool.address,
+		owner
+	)
+
 	const [
 		balanceShares,
+		gaslessAddrBalance,
 		allEnterADXTransferLogs,
 		leaveLogs,
 		withdrawLogs,
@@ -345,6 +355,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
 		StakingPool.balanceOf(owner),
+		ADXToken.balanceOf(gaslessAddress),
 		provider.getLogs({
 			fromBlock: 0,
 			...ADXToken.filters.Transfer(null, ADDR_STAKING_POOL, null)
@@ -752,7 +763,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		hasActiveUnbondCommitments,
 		loaded: true,
 		userDataLoaded: true,
-		userShare
+		userShare,
+		gaslessAddress,
+		gaslessAddrBalance
 	}
 
 	return stats
