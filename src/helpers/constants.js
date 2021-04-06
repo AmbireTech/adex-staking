@@ -14,7 +14,7 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
-export const useTestnet = false // true // TODO env cfg
+export const useTestnet = true // TODO env cfg
 
 export const MIGRATION_UNBOND_BEFORE = 1619182800000 // 24.04.2021
 
@@ -46,9 +46,8 @@ export const DAI_TOKEN_ADDR = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 export const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 
 export const ADDR_STAKING_POOL = useTestnet
-	? "0x01C43e275085bc5364f43C3980695e9BbAa4E7Fe"
-	: // ? "0xf43ced622ea1656e4c7070b1c03d868801362183"
-	  "0xB6456b57f03352bE48Bf101B46c1752a0813491a" // TODO
+	? "0x061dcbDD5E09f81e8D7EF2668E0946B277008ec2"
+	: "0xB6456b57f03352bE48Bf101B46c1752a0813491a" // TODO
 
 export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
