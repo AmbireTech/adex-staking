@@ -212,6 +212,20 @@ export async function onStakingPoolV5Deposit(
 	)
 }
 
+export async function onStakingPoolV5GaslessDeposit(
+	stats,
+	chosenWalletType,
+	adxDepositAmount
+) {
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!adxDepositAmount) throw new Error("errors.noDepositAmount")
+	if (adxDepositAmount.isZero()) throw new Error("errors.zeroDeposit")
+	if (adxDepositAmount.gt(stats.userBalance))
+		throw new Error("errors.amountTooLarge")
+
+	// TODO
+}
+
 export async function onStakingPoolV5Withdraw(
 	stats,
 	chosenWalletType,
@@ -303,9 +317,9 @@ export async function getTomStakingV5PoolData() {
 		ADXSupplyController.mintableIncentive(ADDR_STAKING_POOL),
 		StakingPool.totalSupply(),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL),
-		StakingPool.rageReceivedPromilles(), // TODO
-		StakingPool.timeToUnbond(), // TODO
-		StakingPool.shareValue() // TODO
+		StakingPool.rageReceivedPromilles(),
+		StakingPool.timeToUnbond(),
+		StakingPool.shareValue()
 	])
 
 	return {
