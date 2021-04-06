@@ -784,61 +784,6 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	}
 }
 
-export async function restake(
-	chosenWalletType,
-	{ rewardChannels, userBonds },
-	gasless
-) {
-	const channels = rewardChannels.filter(
-		x =>
-			x.channelArgs.tokenAddr === ADDR_ADX &&
-			(gasless ? isTomChannelId(x) : true)
-	)
-	if (!channels.length) throw new Error("errors.noChannelsToEarnFrom")
-
-	// @TODO how does the user determine the pool here? For now there's only one, but after?
-	const collected = channels
-		.map(x => x.outstandingReward)
-		.reduce((a, b) => a.add(b))
-	const userBond =
-		userBonds.find(x => x.status === "Active") ||
-		userBonds.find(x => x.status === "UnbondRequested")
-	if (!userBond) throw new Error("errors.noActiveBonds")
-	const { amount, poolId, nonce } = userBond
-	const bond = [amount, poolId, nonce]
-	const newBond = [amount.add(collected), poolId, nonce]
-
-	const identityTxns = channels
-		.map(rewardChannel => {
-			const channelTuple = toChannelTuple(rewardChannel.channelArgs)
-			return [
-				Core.address,
-				Core.interface.encodeFunctionData("channelWithdraw", [
-					channelTuple,
-					rewardChannel.stateRoot,
-					rewardChannel.signatures,
-					rewardChannel.proof,
-					rewardChannel.amount
-				])
-			]
-		})
-		.concat([
-			[
-				Token.address,
-				Token.interface.encodeFunctionData("approve", [
-					Staking.address,
-					newBond[0]
-				])
-			],
-			[
-				Staking.address,
-				Staking.interface.encodeFunctionData("replaceBond", [bond, newBond])
-			]
-		])
-
-	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
-}
-
 export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
 	const bond = [amount, poolId, nonce || ZERO]
 	const signer = await getSigner(chosenWalletType)

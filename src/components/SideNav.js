@@ -130,7 +130,6 @@ function SideNav({
 	onRequestUnbond,
 	onUnbond,
 	onClaimRewards,
-	onRestake,
 	setConnectWallet
 }) {
 	const { themeType } = useContext(MultiThemeContext)
@@ -177,8 +176,7 @@ function SideNav({
 										stats,
 										onRequestUnbond,
 										onUnbond,
-										onClaimRewards,
-										onRestake
+										onClaimRewards
 									})}
 
 									{path !== "/stakings" && (

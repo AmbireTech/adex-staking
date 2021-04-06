@@ -61,8 +61,6 @@ export default function Root() {
 		setNewBondOpen,
 		toUnbond,
 		setToUnbond,
-		toRestake,
-		setToRestake,
 		openErr,
 		openDoingTx,
 		snackbarErr,
@@ -74,7 +72,6 @@ export default function Root() {
 		onRequestUnbond,
 		onUnbond,
 		onClaimRewards,
-		onRestake,
 		handleErrClose,
 		getSigner,
 		prices,
@@ -97,7 +94,6 @@ export default function Root() {
 		onRequestUnbond: setToUnbond,
 		onUnbond,
 		onClaimRewards,
-		onRestake: setToRestake,
 		setConnectWallet
 	})
 
@@ -189,32 +185,6 @@ export default function Root() {
 									box: <Box mb={2}></Box>,
 									ol: <ol></ol>,
 									li: <li></li>
-								}}
-							/>
-						)
-					})}
-
-					{ConfirmationDialog({
-						isOpen: !!toRestake,
-						onDeny: () => setToRestake(null),
-						onConfirm: () => {
-							if (toRestake) onRestake()
-							setToRestake(null)
-						},
-						confirmActionName: t("common.reStake"),
-						content: (
-							<Trans
-								i18nKey="dialogs.reStakeConfirmation"
-								values={{
-									amount: formatADXPretty(toRestake ? toRestake : ZERO),
-									currency: "ADX",
-									unbondDays: UNBOND_DAYS,
-									extraInfo: !stats.userBonds.find(x => x.status === "Active")
-										? t("dialogs.reActivatingInfo")
-										: ""
-								}}
-								components={{
-									box: <Box mb={2}></Box>
 								}}
 							/>
 						)
