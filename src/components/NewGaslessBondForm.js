@@ -1,7 +1,7 @@
-import React, { useState } from "react"
-import { getPool } from "../helpers/bonds"
+import React, { useState, useContext } from "react"
 import { formatADXPretty } from "../helpers/formatting"
-import { UNBOND_DAYS, STAKING_RULES_URL } from "../helpers/constants"
+import { STAKING_RULES_URL, DEPOSIT_POOLS } from "../helpers/constants"
+import { getDepositPool, onStakingPoolV5GaslessDeposit } from "../actions"
 import {
 	Grid,
 	Typography,
@@ -14,18 +14,29 @@ import {
 import { ExternalAnchor } from "./Anchor"
 import StatsCard from "./StatsCard"
 import { useTranslation, Trans } from "react-i18next"
+import AppContext from "../AppContext"
 
-export default function NewGaslessBondForm({
-	bond = {},
-	onStake,
-	chosenWalletType
-}) {
+export default function NewGaslessBondForm() {
 	const { t } = useTranslation()
-	const activePool = getPool(bond.poolId) || {}
+	const activePool = getDepositPool(DEPOSIT_POOLS[1].id) || {}
+	const {
+		stats,
+		chosenWalletType
+		// wrapDoingTxns
+	} = useContext(AppContext)
+
+	const { tomStakingV5PoolStats } = stats
+	const {
+		// gaslessAddress,
+		gaslessAddrBalance: adxDepositAmount,
+		unbondDays
+	} = tomStakingV5PoolStats
+
 	const [confirmation, setConfirmation] = useState(false)
 
 	const onAction = () => {
-		onStake(onStake)
+		// TODO wrap tx
+		onStakingPoolV5GaslessDeposit(stats, chosenWalletType, adxDepositAmount)
 		setConfirmation(false)
 	}
 
@@ -33,7 +44,7 @@ export default function NewGaslessBondForm({
 		<Trans
 			i18nKey="bonds.confirmationLabel"
 			values={{
-				unbondDays: UNBOND_DAYS
+				unbondDays
 			}}
 			components={{
 				e1: (
@@ -75,8 +86,8 @@ export default function NewGaslessBondForm({
 							size: "large",
 							loaded: true,
 							title: t("gasless.adxBalanceOnAddr"),
-							subtitle: bond.amount
-								? formatADXPretty(bond.amount) + " ADX"
+							subtitle: adxDepositAmount
+								? formatADXPretty(adxDepositAmount) + " ADX"
 								: "",
 							extra: t("common.poolWithName", {
 								name: activePool.label
@@ -123,7 +134,7 @@ export default function NewGaslessBondForm({
 						<Button
 							id={`new-gasless-bond-stake-action-btn`}
 							disableElevation
-							disabled={!(bond.poolId && confirmation)}
+							disabled={confirmation}
 							color="primary"
 							variant="contained"
 							onClick={onAction}
