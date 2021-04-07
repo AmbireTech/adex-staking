@@ -168,7 +168,8 @@
     "unlocksAtInfo": "Unlocks at: {{unlocksAt}}",
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
-    "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token (ADX-SHARE), the rewards shown may be less than your actual rewards."
+    "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token (ADX-SHARE), the rewards shown may be less than your actual rewards.",
+    "confirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions"
   },
   "bonds": {
     "bondAmount": "Bond amount",
@@ -222,7 +223,8 @@
     "readyForStake": "✅ Ready for gasless stake",
     "info": "Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient. Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load. You can see all transactions of your gasless address <external> HERE </external>",
     "createNewBond": "Create a bond - gasless",
-    "tempDisabled": "Temporarily Unavailable"
+    "tempDisabled": "Temporarily Unavailable",
+    "addNewDeposit": "Add new deposit - gasless"
   },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
