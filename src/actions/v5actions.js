@@ -15,7 +15,8 @@ import {
 	ZERO_ADDR,
 	ADDR_STAKING_POOL,
 	ADDR_STAKING_MIGRATOR,
-	ADDR_ADX_SUPPLY_CONTROLLER
+	ADDR_ADX_SUPPLY_CONTROLLER,
+	ADEX_RELAYER_HOST
 } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity, toChannelTuple } from "./common"
@@ -223,7 +224,17 @@ export async function onStakingPoolV5GaslessDeposit(
 	if (adxDepositAmount.gt(stats.userBalance))
 		throw new Error("errors.amountTooLarge")
 
-	// TODO
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	const walletAddr = await signer.getAddress()
+
+	const gaslessStakeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/stake-gasless`
+	const res = await fetch(gaslessStakeUrl, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" }
+	})
+	if (res.status === 500) throw new Error("errors.relayerInternal")
+	return res.json()
 }
 
 export async function onStakingPoolV5Withdraw(
@@ -783,4 +794,33 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	}
 
 	return stats
+}
+
+export async function getGaslessInfo(addr) {
+	try {
+		const res = await fetch(
+			`${ADEX_RELAYER_HOST}/staking/${addr}/can-stake-gasless`
+		)
+		const resData = await res.json()
+		const canExecuteGasless = res.status === 200 && resData.canExecute === true
+		const canExecuteGaslessError = canExecuteGasless
+			? null
+			: {
+					message: `relayerResErrors.${resData.message}`,
+					data: resData.data
+			  }
+
+		return {
+			canExecuteGasless,
+			canExecuteGaslessError
+		}
+	} catch (err) {
+		console.error(err)
+		return {
+			canExecuteGasless: false,
+			canExecuteGaslessError: {
+				message: "errors.gaslessStakingTempOff"
+			}
+		}
+	}
 }
