@@ -27,10 +27,7 @@ import {
 	ZERO
 	// UNBOND_DAYS
 } from "../helpers/constants"
-import {
-	getWithdrawActionBySelectedRewardChannels
-	// restake
-} from "../actions"
+import { getWithdrawActionBySelectedRewardChannels } from "../actions"
 import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
@@ -73,7 +70,6 @@ export default function Rewards() {
 	} = stats
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
-	// const [reStakeOpen, setReStakeOpen] = useState(false)
 	const [claimOpen, setClaimOpen] = useState(false)
 
 	const totalRewardsAmounts = getTotalSelectedRewards(rewards, "all", true)
@@ -101,12 +97,6 @@ export default function Rewards() {
 		: !selectedRewards.length
 		? t("common.noSelection")
 		: ""
-
-	// const disableReStakeMsg = !!disableActionsMsg
-	// 	? disableActionsMsg
-	// 	: selectedRewards.some(x => !x.id.startsWith("tom_incentive"))
-	// 		? t("rewards.reStakeUnsupportedSelected")
-	// 		: ""
 
 	useEffect(() => {
 		const {
@@ -199,19 +189,6 @@ export default function Rewards() {
 			await wrapDoingTxns(actions[i])()
 		}
 	}
-
-	// const onReStake = async () => {
-	// 	setSelected({})
-	// 	setTotalAmountsSelected({})
-	// 	await wrapDoingTxns(
-	// 		restake.bind(null, chosenWalletType, {
-	// 			// NOTE: now only tom channels are valid for re-stake at the moment
-	// 			// TODO: update when more pools
-	// 			rewardChannels: selectedRewards.map(x => x.rewardChannel),
-	// 			userBonds: tomPoolStats.userBonds
-	// 		})
-	// 	)()
-	// }
 
 	const totalSelectedLabel = totalAmountsLabel(totalAmountsSelected)
 	const totalRewardsLabel = totalAmountsLabel(totalRewardsAmounts) || "0.00"
@@ -333,21 +310,6 @@ export default function Rewards() {
 								</Box>
 							</Tooltip>
 						</Box>
-						{/* <Box m={1}>
-							<Tooltip title={disableReStakeMsg}>
-								<Box display="inline-block">
-									<Button
-										id="btn-rewards-page-re-stake"
-										variant="contained"
-										color="secondary"
-										onClick={() => setReStakeOpen(true)}
-										disabled={!!disableReStakeMsg}
-									>
-										{t("common.reStake")}
-									</Button>
-								</Box>
-							</Tooltip>
-						</Box> */}
 					</Box>
 				</Box>
 				<Box p={2}>
@@ -376,32 +338,6 @@ export default function Rewards() {
 						</Box>
 					)}
 				</Box>
-
-				{/* {ConfirmationDialog({
-					isOpen: reStakeOpen,
-					onDeny: () => setReStakeOpen(false),
-					onConfirm: () => {
-						setReStakeOpen(false)
-						onReStake()
-					},
-					confirmActionName: t("common.reStake"),
-					content: (
-						<Trans
-							i18nKey="dialogs.reStakeConfirmation"
-							values={{
-								amount: formatADXPretty(totalAmountsSelected["ADX"] || ZERO),
-								currency: "ADX",
-								unbondDays: UNBOND_DAYS,
-								extraInfo: !stats.userBonds.find(x => x.status === "Active")
-									? t("dialogs.reActivatingInfo")
-									: ""
-							}}
-							components={{
-								box: <Box mb={2}></Box>
-							}}
-						/>
-					)
-				})} */}
 
 				{ConfirmationDialog({
 					isOpen: claimOpen,

@@ -15,10 +15,12 @@ import {
 	ZERO_ADDR,
 	ADDR_STAKING_POOL,
 	ADDR_STAKING_MIGRATOR,
-	ADDR_ADX_SUPPLY_CONTROLLER
+	ADDR_ADX_SUPPLY_CONTROLLER,
+	ADEX_RELAYER_HOST
 } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity, toChannelTuple } from "./common"
+import { getUserGaslessAddress } from "../helpers/identity"
 
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
@@ -65,7 +67,8 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentReward: ZERO,
 	withdrawsADXTotal: ZERO,
 	depositsADXTotal: ZERO,
-	totalSharesInTransfers: ZERO,
+	totalSharesOutTransfersAdxValue: ZERO,
+	totalSharesInTransfersAdxValue: ZERO,
 	currentAPY: 0,
 	stakings: [],
 	userLeaves: [],
@@ -79,7 +82,9 @@ export const STAKING_POOL_EMPTY_STATS = {
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
 	timeToUnbond: 1,
-	userShare: 0
+	userShare: 0,
+	gaslessAddress: null,
+	gaslessAddrBalance: ZERO
 }
 
 export async function onMigrationToV5Finalize(
@@ -208,6 +213,30 @@ export async function onStakingPoolV5Deposit(
 	)
 }
 
+export async function onStakingPoolV5GaslessDeposit(
+	stats,
+	chosenWalletType,
+	adxDepositAmount
+) {
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (!adxDepositAmount) throw new Error("errors.noDepositAmount")
+	if (adxDepositAmount.isZero()) throw new Error("errors.zeroDeposit")
+	if (adxDepositAmount.gt(stats.userBalance))
+		throw new Error("errors.amountTooLarge")
+
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	const walletAddr = await signer.getAddress()
+
+	const gaslessStakeUrl = `${ADEX_RELAYER_HOST}/staking/${walletAddr}/stake-gasless`
+	const res = await fetch(gaslessStakeUrl, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" }
+	})
+	if (res.status === 500) throw new Error("errors.relayerInternal")
+	return res.json()
+}
+
 export async function onStakingPoolV5Withdraw(
 	stats,
 	chosenWalletType,
@@ -299,9 +328,9 @@ export async function getTomStakingV5PoolData() {
 		ADXSupplyController.mintableIncentive(ADDR_STAKING_POOL),
 		StakingPool.totalSupply(),
 		ADXSupplyController.incentivePerSecond(ADDR_STAKING_POOL),
-		StakingPool.rageReceivedPromilles(), // TODO
-		StakingPool.timeToUnbond(), // TODO
-		StakingPool.shareValue() // TODO
+		StakingPool.rageReceivedPromilles(),
+		StakingPool.timeToUnbond(),
+		StakingPool.shareValue()
 	])
 
 	return {
@@ -334,8 +363,15 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		}
 	}
 
+	const gaslessAddress = getUserGaslessAddress(
+		ADXToken.address,
+		StakingPool.address,
+		owner
+	)
+
 	const [
 		balanceShares,
+		gaslessAddrBalance,
 		allEnterADXTransferLogs,
 		leaveLogs,
 		withdrawLogs,
@@ -344,6 +380,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
 		StakingPool.balanceOf(owner),
+		ADXToken.balanceOf(gaslessAddress),
 		provider.getLogs({
 			fromBlock: 0,
 			...ADXToken.filters.Transfer(null, ADDR_STAKING_POOL, null)
@@ -573,6 +610,148 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		ZERO
 	)
 
+	if (
+		sharesTokensTransfersOut.length ||
+		sharesTokensTransfersInFromExternal.length
+	) {
+		const fromBlock = Math.min(
+			sharesTokensTransfersOut[0]
+				? sharesTokensTransfersOut[0].blockNumber
+				: Number.MAX_SAFE_INTEGER,
+			sharesTokensTransfersInFromExternal[0]
+				? sharesTokensTransfersInFromExternal[0].blockNumber
+				: Number.MAX_SAFE_INTEGER
+		)
+
+		const [
+			allLeaveLogs,
+			allWithdrawLogs,
+			allRageLeaveLogs,
+			allEnterSharesTokensTransfersInLogs
+		] = await Promise.all([
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogLeave(null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogWithdraw(null, null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.LogRageLeave(null, null, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...StakingPool.filters.Transfer(ZERO_ADDR, null, null)
+			})
+		])
+
+		const allEnters = allEnterSharesTokensTransfersInLogs
+			.map(sharesMintEvent => {
+				const adexTokenTransfersLog =
+					enterAdexTokensByTxHash[sharesMintEvent.transactionHash]
+
+				if (adexTokenTransfersLog) {
+					const { amount } = ADXToken.interface.parseLog(
+						adexTokenTransfersLog
+					).args
+					const { amount: shares } = StakingPool.interface.parseLog(
+						sharesMintEvent
+					).args
+
+					return {
+						blockNumber: sharesMintEvent.blockNumber,
+						shareValue: amount.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+					}
+				} else {
+					return null
+				}
+			})
+			.filter(x => !!x)
+
+		const allWithdraws = allWithdrawLogs.map(log => {
+			const parsedWithdrawLog = StakingPool.interface.parseLog(log)
+			const { shares, maxTokens } = parsedWithdrawLog.args
+
+			return {
+				blockNumber: log.blockNumber,
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+			}
+		})
+
+		const allRageLeaves = allRageLeaveLogs.map(log => {
+			const parsedRageLeaveLog = StakingPool.interface.parseLog(log)
+
+			const { shares, maxTokens } = parsedRageLeaveLog.args
+
+			return {
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares),
+				blockNumber: log.blockNumber
+			}
+		})
+
+		const allLeaves = allLeaveLogs.map(log => {
+			const parsedLog = StakingPool.interface.parseLog(log)
+			const { shares, maxTokens } = parsedLog.args
+			return {
+				blockNumber: log.blockNumber,
+				shareValue: maxTokens.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+			}
+		})
+
+		const allLogs = allEnters
+			.concat(allWithdraws)
+			.concat(allLeaves)
+			.concat(allRageLeaves)
+			.sort((a, b) => a.blockNumber - b.blockNumber)
+
+		const withAdxAmount = events =>
+			events.forEach((transferLog, i) => {
+				const nextLog = allLogs.find(
+					log => log.blockNumber >= transferLog.blockNumber
+				)
+				const bestShareValue = nextLog.shareValue || shareValue
+
+				// approximate share value
+				events[i].shareValue = bestShareValue
+				events[i].adxAmount = transferLog.shares
+					.mul(bestShareValue)
+					.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+			})
+
+		withAdxAmount(sharesTokensTransfersOut)
+		withAdxAmount(sharesTokensTransfersInFromExternal)
+	}
+
+	const totalSharesOutTransfersAdxValue = sharesTokensTransfersOut.reduce(
+		(a, b) => a.add(b.adxAmount),
+		ZERO
+	)
+
+	const totalSharesInTransfersAdxValue = sharesTokensTransfersInFromExternal.reduce(
+		(a, b) => a.add(b.adxAmount),
+		ZERO
+	)
+
+	const depositsADXTotal = userEnters.reduce(
+		(a, b) => a.add(b.adxAmount),
+		totalSharesInTransfersAdxValue
+	)
+
+	const withdrawsADXTotal = userWithdraws.reduce(
+		(a, b) => a.add(b.receivedTokens),
+		totalSharesOutTransfersAdxValue
+	)
+
+	const totalRewards = currentBalanceADX // includes leavesPendingToUnlockTotalADX and  leavesReadyToWithdrawTotalADX
+		.add(withdrawsADXTotal)
+		.sub(depositsADXTotal)
+
+	const hasActiveUnbondCommitments = !![...userLeaves].filter(
+		x => !x.withdrawTx
+	).length
+
 	const stakings = userEnters
 		.concat(userLeaves)
 		.concat(userWithdraws)
@@ -591,77 +770,13 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		})
 	)
 
-	const {
-		// depositsSharesWeightedSum,
-		// depositsSharesTotal,
-		depositsADXTotal
-	} = userEnters.reduce(
-		(data, log) => {
-			// data.depositsSharesWeightedSum = data.depositsSharesWeightedSum.add(
-			// 	log.shares.mul(log.adxAmount)
-			// )
-			// data.depositsSharesTotal = data.depositsSharesTotal.add(log.shares)
-
-			data.depositsADXTotal = data.depositsADXTotal.add(log.adxAmount)
-
-			return data
-		},
-		{
-			depositsSharesWeightedSum: ZERO,
-			depositsSharesTotal: ZERO,
-			depositsADXTotal: ZERO
-		}
-	)
-
-	const {
-		// withdrawsSharesWeightedSum,
-		// withdrawsSharesTotal,
-		withdrawsADXTotal
-	} = userWithdraws.concat(userRageLeaves).reduce(
-		(data, log) => {
-			// data.withdrawsSharesWeightedSum = data.withdrawsSharesWeightedSum.add(
-			// 	log.shares.mul(log.adxAmount)
-			// )
-			// data.withdrawsSharesTotal = data.withdrawsSharesTotal.add(log.shares)
-
-			data.withdrawsADXTotal = data.withdrawsADXTotal.add(log.receivedTokens)
-
-			return data
-		},
-		{
-			withdrawsSharesWeightedSum: ZERO,
-			withdrawsSharesTotal: ZERO,
-			withdrawsADXTotal: ZERO
-		}
-	)
-
-	const totalSharesOutTransfers = sharesTokensTransfersOut.reduce(
-		(a, b) => a.add(b.shares),
-		ZERO
-	)
-
-	const totalSharesInTransfers = sharesTokensTransfersInFromExternal.reduce(
-		(a, b) => a.add(b.shares),
-		ZERO
-	)
-
-	const totalRewards = currentBalanceADX
-		.add(withdrawsADXTotal)
-		// .add(leavesPendingToUnlockTotalADX)
-		// .add(leavesReadyToWithdrawTotalADX)
-		.sub(depositsADXTotal)
-
-	const hasActiveUnbondCommitments = !![...userLeaves].filter(
-		x => !x.withdrawTx
-	).length
-
 	const stats = {
 		...poolData,
 		balanceShares,
 		currentBalanceADX,
 		totalRewards,
-		totalSharesInTransfers,
-		totalSharesOutTransfers,
+		totalSharesOutTransfersAdxValue,
+		totalSharesInTransfersAdxValue,
 		stakings: withTimestamp,
 		userLeaves,
 		depositsADXTotal,
@@ -673,8 +788,39 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		hasActiveUnbondCommitments,
 		loaded: true,
 		userDataLoaded: true,
-		userShare
+		userShare,
+		gaslessAddress,
+		gaslessAddrBalance
 	}
 
 	return stats
+}
+
+export async function getGaslessInfo(addr) {
+	try {
+		const res = await fetch(
+			`${ADEX_RELAYER_HOST}/staking/${addr}/can-stake-gasless`
+		)
+		const resData = await res.json()
+		const canExecuteGasless = res.status === 200 && resData.canExecute === true
+		const canExecuteGaslessError = canExecuteGasless
+			? null
+			: {
+					message: `relayerResErrors.${resData.message}`,
+					data: resData.data
+			  }
+
+		return {
+			canExecuteGasless,
+			canExecuteGaslessError
+		}
+	} catch (err) {
+		console.error(err)
+		return {
+			canExecuteGasless: false,
+			canExecuteGaslessError: {
+				message: "errors.gaslessStakingTempOff"
+			}
+		}
+	}
 }

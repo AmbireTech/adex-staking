@@ -42,6 +42,9 @@ const StakingEventRow = ({ stakingEvent }) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const PoolIcon = iconByPoolId({ poolId: "adex-staking-pool" })
+	const isExternalShareTokenTransfer =
+		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn ||
+		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferOut
 
 	return (
 		<TableRow>
@@ -64,23 +67,17 @@ const StakingEventRow = ({ stakingEvent }) => {
 					<Box>{stakingEvent.label}</Box>
 				</Box>
 			</TableCell>
-			<TableCell align="right">{stakingEvent.type}</TableCell>
+			<TableCell align="right">
+				{t(`eventTypes.${stakingEvent.type}`)}
+			</TableCell>
 			<TableCell align="right">
 				<AmountText
 					text={`${formatADXPretty(
-						stakingEvent.adxAmount ||
-							stakingEvent.maxTokens ||
-							stakingEvent.shares
-					)} ${
-						stakingEvent.type ===
-							STAKING_POOL_EVENT_TYPES.shareTokensTransferIn ||
-						stakingEvent.type ===
-							STAKING_POOL_EVENT_TYPES.shareTokensTransferOut
-							? "ADX-SHARE"
-							: "ADX"
-					}`}
+						stakingEvent.adxAmount || stakingEvent.maxTokens
+					)} ${"ADX"}`}
 					fontSize={17}
 				/>
+				{isExternalShareTokenTransfer && " *"}
 			</TableCell>
 			<TableCell align="right">
 				{formatDateTime(new Date(stakingEvent.timestamp))}
@@ -114,6 +111,17 @@ const StakingEventRow = ({ stakingEvent }) => {
 								currency: "ADX"
 							})}
 						</Box>
+					</Box>
+				)}
+				{isExternalShareTokenTransfer && (
+					<Box>
+						<Box>
+							<AmountText
+								text={`${formatADXPretty(stakingEvent.shares)} ${"ADX-SHARE"}`}
+								fontSize={17}
+							/>
+						</Box>
+						<Box></Box>
 					</Box>
 				)}
 			</TableCell>

@@ -14,7 +14,7 @@ import {
 	toIdAttributeString,
 	formatDateTime
 } from "../helpers/formatting"
-import { DEPOSIT_POOLS, ZERO } from "../helpers/constants"
+import { DEPOSIT_POOLS, STAKING_RULES_URL, ZERO } from "../helpers/constants"
 import {
 	Grid,
 	TextField,
@@ -35,6 +35,8 @@ import { useTranslation, Trans } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { Alert } from "@material-ui/lab"
 import { BigNumber } from "ethers"
+import { ExternalAnchor } from "./Anchor"
+import { AmountText } from "./cardCommon"
 
 export default function DepositForm({
 	depositPool,
@@ -102,7 +104,36 @@ export default function DepositForm({
 		)()
 	}
 
-	const confirmationLabel = activePool ? activePool.confirmationLabel : ""
+	const confirmationLabel = (
+		<Trans
+			i18nKey="deposits.confirmationLabel"
+			values={{
+				unbondDays: poolStats.unbondDays,
+				amount: actionAmount,
+				currency: "ADX"
+			}}
+			components={{
+				amount: <AmountText fontSize={21}></AmountText>,
+				e1: (
+					<ExternalAnchor
+						id="new-deposit-form-adex-network-tos"
+						target="_blank"
+						href="https://www.adex.network/tos/"
+					/>
+				),
+				e2: STAKING_RULES_URL ? (
+					<ExternalAnchor
+						id="new-bond-form-adex-staking-rules"
+						target="_blank"
+						href={STAKING_RULES_URL}
+					/>
+				) : (
+					<></>
+				)
+			}}
+		/>
+	)
+
 	const rageLeaveConfirmed =
 		rageConfirmed || actionType !== DEPOSIT_ACTION_TYPES.rageLeave
 	const confirmed = (!confirmationLabel || confirmation) && rageLeaveConfirmed
@@ -384,7 +415,7 @@ export default function DepositForm({
 					<Grid item xs={12}>
 						<FormControlLabel
 							style={{ userSelect: "none" }}
-							label={t(confirmationLabel)}
+							label={confirmationLabel}
 							control={
 								<Checkbox
 									id={`new-${actionType}-form-tos-check`}

@@ -1,7 +1,7 @@
-import React, { useState } from "react"
-import { getPool } from "../helpers/bonds"
+import React, { useState, useContext } from "react"
 import { formatADXPretty } from "../helpers/formatting"
-import { UNBOND_DAYS, STAKING_RULES_URL } from "../helpers/constants"
+import { STAKING_RULES_URL, DEPOSIT_POOLS } from "../helpers/constants"
+import { getDepositPool, onStakingPoolV5GaslessDeposit } from "../actions"
 import {
 	Grid,
 	Typography,
@@ -14,38 +14,59 @@ import {
 import { ExternalAnchor } from "./Anchor"
 import StatsCard from "./StatsCard"
 import { useTranslation, Trans } from "react-i18next"
+import AppContext from "../AppContext"
+import { AmountText } from "./cardCommon"
 
-export default function NewGaslessBondForm({
-	bond = {},
-	onStake,
-	chosenWalletType
-}) {
+export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
 	const { t } = useTranslation()
-	const activePool = getPool(bond.poolId) || {}
+	const activePool = getDepositPool(DEPOSIT_POOLS[1].id) || {}
+	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+
+	const { tomStakingV5PoolStats } = stats
+	const {
+		// gaslessAddress,
+		gaslessAddrBalance: adxDepositAmount,
+		unbondDays
+	} = tomStakingV5PoolStats
+
 	const [confirmation, setConfirmation] = useState(false)
 
-	const onAction = () => {
-		onStake(onStake)
+	const onAction = async () => {
 		setConfirmation(false)
+		if (closeDialog) closeDialog()
+
+		const res = await wrapDoingTxns(
+			onStakingPoolV5GaslessDeposit.bind(
+				null,
+				stats,
+				chosenWalletType,
+				adxDepositAmount
+			)
+		)()
+
+		onTxRes && onTxRes(res, "new-gasless-deposit-snack")
 	}
 
 	const confirmationLabel = (
 		<Trans
-			i18nKey="bonds.confirmationLabel"
+			i18nKey="deposits.confirmationLabel"
 			values={{
-				unbondDays: UNBOND_DAYS
+				unbondDays,
+				amount: formatADXPretty(adxDepositAmount),
+				currency: "ADX"
 			}}
 			components={{
+				amount: <AmountText fontSize={21}></AmountText>,
 				e1: (
 					<ExternalAnchor
-						id="new-bond-form-adex-network-tos"
+						id="new-gasless-deposit-form-adex-network-tos"
 						target="_blank"
 						href="https://www.adex.network/tos/"
 					/>
 				),
 				e2: STAKING_RULES_URL ? (
 					<ExternalAnchor
-						id="new-bond-form-adex-staking-rules"
+						id="new-gasless-deposit-form-adex-staking-rules"
 						target="_blank"
 						href={STAKING_RULES_URL}
 					/>
@@ -67,7 +88,7 @@ export default function NewGaslessBondForm({
 			bgcolor="background.paper"
 			overflow="auto"
 		>
-			<Typography variant="h2">{t("gasless.createNewBond")}</Typography>
+			<Typography variant="h4">{t("gasless.addNewDeposit")}</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Box mb={1.5}>
@@ -75,11 +96,11 @@ export default function NewGaslessBondForm({
 							size: "large",
 							loaded: true,
 							title: t("gasless.adxBalanceOnAddr"),
-							subtitle: bond.amount
-								? formatADXPretty(bond.amount) + " ADX"
+							subtitle: adxDepositAmount
+								? formatADXPretty(adxDepositAmount) + " ADX"
 								: "",
 							extra: t("common.poolWithName", {
-								name: activePool.label
+								name: t(activePool.label)
 							})
 						})}
 					</Box>
@@ -123,7 +144,7 @@ export default function NewGaslessBondForm({
 						<Button
 							id={`new-gasless-bond-stake-action-btn`}
 							disableElevation
-							disabled={!(bond.poolId && confirmation)}
+							disabled={!confirmation}
 							color="primary"
 							variant="contained"
 							onClick={onAction}

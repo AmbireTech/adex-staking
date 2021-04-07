@@ -21,7 +21,6 @@ import {
 	loadStats,
 	onUnbondOrRequest,
 	claimRewards,
-	restake,
 	getPrices,
 	reBond,
 	onMigrationToV5Finalize
@@ -82,7 +81,6 @@ export default function useApp() {
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
-	const [toRestake, setToRestake] = useState(null)
 	const [openErr, setOpenErr] = useState(false)
 	const [openDoingTx, setOpenDoingTx] = useState(false)
 	const [snackbarErr, setSnackbarErr] = useState("errors.unexpectedError")
@@ -220,7 +218,7 @@ export default function useApp() {
 	const onClaimRewards = wrapDoingTxns(
 		claimRewards.bind(null, chosenWalletType)
 	)
-	const onRestake = wrapDoingTxns(restake.bind(null, chosenWalletType, stats))
+
 	const handleErrClose = (event, reason) => {
 		if (reason === "clickaway") {
 			return
@@ -257,8 +255,6 @@ export default function useApp() {
 		setToUnbond,
 		onRebond,
 		onMigrationFinalize,
-		toRestake,
-		setToRestake,
 		openErr,
 		setOpenErr,
 		openDoingTx,
@@ -274,7 +270,6 @@ export default function useApp() {
 		onRequestUnbond,
 		onUnbond,
 		onClaimRewards,
-		onRestake,
 		handleErrClose,
 		getSigner,
 		prices,

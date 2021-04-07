@@ -14,7 +14,7 @@ import { ReactComponent as LINKIcon } from "./../resources/chain-link-logo.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 
-export const useTestnet = false // true // TODO env cfg
+export const useTestnet = false // TODO env cfg
 
 export const MIGRATION_UNBOND_BEFORE = 1619182800000 // 24.04.2021
 
@@ -41,14 +41,15 @@ export const ADDR_ADX = useTestnet
 export const ADDR_FACTORY = "0x9fe0d438e3c29c7cff949ad8e8da9403a531cc1a"
 export const ADDR_ADX_LOYALTY_TOKEN =
 	"0xd9A4cB9dc9296e111c66dFACAb8Be034EE2E1c2C"
-export const DAI_TOKEN_ADDR = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+export const DAI_TOKEN_ADDR = useTestnet
+	? "0x7af963cF6D228E564e2A0aA0DdBF06210B38615D"
+	: "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 
 export const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 
 export const ADDR_STAKING_POOL = useTestnet
-	? "0x01C43e275085bc5364f43C3980695e9BbAa4E7Fe"
-	: // ? "0xf43ced622ea1656e4c7070b1c03d868801362183"
-	  "0xB6456b57f03352bE48Bf101B46c1752a0813491a" // TODO
+	? "0x061dcbDD5E09f81e8D7EF2668E0946B277008ec2"
+	: "0xB6456b57f03352bE48Bf101B46c1752a0813491a" // TODO
 
 export const ADDR_STAKING_MIGRATOR = useTestnet
 	? // ? "0x90C3d23ab2D9F7305D63f7Cb8514Fdd4B2f6225E"
@@ -60,13 +61,17 @@ export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
 	? "0x1DD8Fb8aE154B780973Ff21D163ad8710c145B79"
 	: "0x9d47f1c6ba4d66d8aa5e19226191a8968bc9094e"
 
+export const ADDR_GASLESS_SWEEPER = useTestnet
+	? "0x12F741A073bC410dA3941f57BCfa7CD53e176bE2"
+	: "0x0000000000000000000000000000000000000000" // TODO
+
 export const MAX_UINT = BigNumber.from(
 	"115792089237316195423570985008687907853269984665640564039457584007913129639935"
 )
 
 export const MIN_BALANCE_FOR_GASLESS_TXNS = BigNumber.from(
-	"10000000000000000000000"
-) // 10 000 ADX
+	"5000000000000000000000"
+) // 5 000 ADX
 
 export const DEFAULT_BOND = {
 	poolId: "",
@@ -93,7 +98,7 @@ export const POOLS = [
 	{
 		label: "common.validatorJerry",
 		id: utils.id("validator:0xce07CbB7e054514D590a0262C93070D838bFBA2e"),
-		selectable: true,
+		selectable: false,
 		minStakingAmount: "0.0",
 		purpose: "pools.jerryPurpose",
 		lockupPeriod: 30,
@@ -199,7 +204,8 @@ export const REACT_APP_RPC_URL = useTestnet
 	: "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const ADEX_RELAYER_HOST = useTestnet
-	? "https://goerli-relayer.adex.network"
+	? // ? "https://goerli-relayer.adex.network"
+	  "http://localhost:1934"
 	: "https://relayer.adex.network"
 // export const ADEX_RELAYER_HOST = "https://goerli-relayer.adex.network"
 

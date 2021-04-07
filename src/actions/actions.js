@@ -17,7 +17,6 @@ import {
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity } from "../helpers/identity"
-import { ADEX_RELAYER_HOST } from "../helpers/constants"
 import { getSigner, getDefaultProvider } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
@@ -296,7 +295,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 			userIdentityBalance
 		},
 		tomPoolUserRewardChannels,
-		// { canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
@@ -305,7 +303,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
-		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
@@ -582,33 +579,6 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 	return forUser.filter(x => x)
 }
 
-export async function getGaslessInfo(addr) {
-	try {
-		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
-		const resData = await res.json()
-		const canExecuteGasless = res.status === 200 && resData.canExecute === true
-		const canExecuteGaslessError = canExecuteGasless
-			? null
-			: {
-					message: `relayerResErrors.${resData.message}`,
-					data: resData.data
-			  }
-
-		return {
-			canExecuteGasless,
-			canExecuteGaslessError
-		}
-	} catch (err) {
-		console.error(err)
-		return {
-			canExecuteGasless: false,
-			canExecuteGaslessError: {
-				message: "errors.gaslessStakingTempOff"
-			}
-		}
-	}
-}
-
 export async function createNewBond(
 	stats,
 	chosenWalletType,
@@ -782,61 +752,6 @@ export async function claimRewards(chosenWalletType, rewardChannels) {
 	if (identityTxns.length) {
 		await executeOnIdentity(chosenWalletType, identityTxns)
 	}
-}
-
-export async function restake(
-	chosenWalletType,
-	{ rewardChannels, userBonds },
-	gasless
-) {
-	const channels = rewardChannels.filter(
-		x =>
-			x.channelArgs.tokenAddr === ADDR_ADX &&
-			(gasless ? isTomChannelId(x) : true)
-	)
-	if (!channels.length) throw new Error("errors.noChannelsToEarnFrom")
-
-	// @TODO how does the user determine the pool here? For now there's only one, but after?
-	const collected = channels
-		.map(x => x.outstandingReward)
-		.reduce((a, b) => a.add(b))
-	const userBond =
-		userBonds.find(x => x.status === "Active") ||
-		userBonds.find(x => x.status === "UnbondRequested")
-	if (!userBond) throw new Error("errors.noActiveBonds")
-	const { amount, poolId, nonce } = userBond
-	const bond = [amount, poolId, nonce]
-	const newBond = [amount.add(collected), poolId, nonce]
-
-	const identityTxns = channels
-		.map(rewardChannel => {
-			const channelTuple = toChannelTuple(rewardChannel.channelArgs)
-			return [
-				Core.address,
-				Core.interface.encodeFunctionData("channelWithdraw", [
-					channelTuple,
-					rewardChannel.stateRoot,
-					rewardChannel.signatures,
-					rewardChannel.proof,
-					rewardChannel.amount
-				])
-			]
-		})
-		.concat([
-			[
-				Token.address,
-				Token.interface.encodeFunctionData("approve", [
-					Staking.address,
-					newBond[0]
-				])
-			],
-			[
-				Staking.address,
-				Staking.interface.encodeFunctionData("replaceBond", [bond, newBond])
-			]
-		])
-
-	return executeOnIdentity(chosenWalletType, identityTxns, {}, gasless)
 }
 
 export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
