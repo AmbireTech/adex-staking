@@ -145,11 +145,6 @@ const Gasless = () => {
 				}
 			/>
 			<Box>
-				<Typography variant="h4" gutterBottom>
-					{t("gasless.tempDisabled")}
-				</Typography>
-			</Box>
-			<Box>
 				<Box>
 					<Box>
 						<Box
