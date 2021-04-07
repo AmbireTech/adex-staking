@@ -662,7 +662,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 					return {
 						blockNumber: sharesMintEvent.blockNumber,
-						shareValue: amount.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
+						shareValue: shares.isZero()
+							? ZERO
+							: amount.mul(POOL_SHARES_TOKEN_DECIMALS_MUL).div(shares)
 					}
 				} else {
 					return null
