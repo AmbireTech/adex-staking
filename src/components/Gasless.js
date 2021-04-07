@@ -1,15 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import {
-	Box,
-	SvgIcon,
-	Typography,
-	IconButton,
-	Button,
-	Modal,
-	Fade,
-	Backdrop
-} from "@material-ui/core"
+import { Box, SvgIcon, Typography, IconButton } from "@material-ui/core"
 import {
 	FileCopySharp as CopyIcon,
 	HelpSharp as HelpIcon
@@ -18,16 +9,17 @@ import copy from "copy-to-clipboard"
 import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
 import SectionHeader from "./SectionHeader"
 import AppContext from "../AppContext"
-import { createNewBond, getGaslessInfo } from "../actions"
+import { getGaslessInfo } from "../actions"
 import { MIN_BALANCE_FOR_GASLESS_TXNS } from "../helpers/constants"
 import StatsCard from "./StatsCard"
 import { formatADXPretty } from "../helpers/formatting"
 import NewGaslessBondForm from "./NewGaslessBondForm"
+import WithDialog from "./WithDialog"
 import { ExternalAnchor } from "./Anchor"
 import Tooltip from "./Tooltip"
 import { useTranslation, Trans } from "react-i18next"
 
-const MIN_GASLESS_RE_STAKE_REWARDS = MIN_BALANCE_FOR_GASLESS_TXNS.div(4)
+const GaslessDepositDialog = WithDialog(NewGaslessBondForm)
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -63,7 +55,7 @@ const useStyles = makeStyles(theme => {
 })
 
 const defaultGaslessInfo = {
-	canExecuteGasless: true,
+	canExecuteGasless: false,
 	canExecuteGaslessError: {
 		message: "common.connectWallet"
 	}
@@ -73,18 +65,9 @@ const Gasless = () => {
 	const { t } = useTranslation()
 
 	const classes = useStyles()
-	const [bondOpen, setBondOpen] = useState(false)
-	const [bond, setBond] = useState({})
 	const [gaslessInfo, setGaslessInfo] = useState(defaultGaslessInfo)
 
-	const {
-		stats,
-		setConnectWallet,
-		addSnack,
-		chosenWalletType,
-		wrapDoingTxns,
-		account
-	} = useContext(AppContext)
+	const { stats, setConnectWallet, addSnack, account } = useContext(AppContext)
 
 	const { tomStakingV5PoolStats } = stats
 
@@ -99,20 +82,20 @@ const Gasless = () => {
 		canExecuteGaslessError: gaslessError
 	} = gaslessInfo
 
-	// useEffect(() => {
-	// 	async function updateGasless() {
-	// 		console.log("account", account)
+	useEffect(() => {
+		async function updateGasless() {
+			console.log("account", account)
 
-	// 		const info = await getGaslessInfo(account)
-	// 		setGaslessInfo(info)
-	// 	}
+			const info = await getGaslessInfo(account)
+			setGaslessInfo(info)
+		}
 
-	// 	if (account) {
-	// 		updateGasless()
-	// 	} else {
-	// 		setGaslessInfo(defaultGaslessInfo)
-	// 	}
-	// }, [account])
+		if (account) {
+			updateGasless()
+		} else {
+			setGaslessInfo(defaultGaslessInfo)
+		}
+	}, [account])
 
 	const walletConnected = gaslessAddress && userDataLoaded
 
@@ -124,12 +107,6 @@ const Gasless = () => {
 
 	const canExecuteGaslessError =
 		mainErr || (gaslessAddrBalance.isZero() ? t("errors.nothingToStake") : "")
-
-	// NOTE: When there is old account with rewards
-	// and 20 000 on the identity - if the identity is not deployed
-	// If you gasless re-stake the rewards you will stake the amount on
-	// the identity as well without notification
-	// TODO: maybe add notification
 
 	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
@@ -147,15 +124,6 @@ const Gasless = () => {
 				</ExternalAnchor>
 			)
 		}
-	}
-
-	const onStake = async () => {
-		setBondOpen(false)
-		const res = await wrapDoingTxns(
-			createNewBond.bind(null, stats, chosenWalletType, bond, true)
-		)()
-
-		onTxRes(res, "new-gasless-stake-snack")
 	}
 
 	return (
@@ -298,28 +266,20 @@ const Gasless = () => {
 									)}
 
 									<Box mt={2}>
-										<Tooltip
-											title={
-												walletConnected
-													? canExecuteGaslessError || ""
-													: t("common.connectWallet")
-											}
-										>
-											<Box display="inline-block">
-												<Button
-													// fullWidth
-													id={`stake-gasless-form-open`}
-													variant="contained"
-													disableElevation
-													color="secondary"
-													size="large"
-													onClick={() => setBondOpen(true)}
-													disabled={!!canExecuteGaslessError}
-												>
-													{t("common.stake")}
-												</Button>
-											</Box>
-										</Tooltip>
+										<GaslessDepositDialog
+											id="staking-pool-tom-gasless-deposit-form"
+											title={t("deposits.depositTo", {
+												pool: t("common.tomStakingPool")
+											})}
+											btnLabel={t("common.deposit")}
+											color="secondary"
+											size="small"
+											variant="contained"
+											fullWidth
+											disabled={!!canExecuteGaslessError}
+											tooltipTitle={canExecuteGaslessError}
+											onTxRes={onTxRes}
+										/>
 									</Box>
 								</Box>
 							</Box>
@@ -345,19 +305,6 @@ const Gasless = () => {
 						</Box>
 					</Box>
 				</Box>
-
-				<Modal
-					open={bondOpen}
-					onClose={() => setBondOpen(false)}
-					className={classes.modal}
-					closeAfterTransition
-					BackdropComponent={Backdrop}
-					BackdropProps={{
-						timeout: 300
-					}}
-				>
-					<Fade in={bondOpen}>{NewGaslessBondForm()}</Fade>
-				</Modal>
 			</Box>
 		</Box>
 	)
