@@ -295,7 +295,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 			userIdentityBalance
 		},
 		tomPoolUserRewardChannels,
-		// { canExecuteGasless, canExecuteGaslessError },
 		loyaltyPoolStats,
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
@@ -304,7 +303,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
-		// getGaslessInfo(addr),
 		loadUserLoyaltyPoolsStats(addr),
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
