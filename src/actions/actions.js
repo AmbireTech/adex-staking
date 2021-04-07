@@ -17,7 +17,6 @@ import {
 } from "../helpers/constants"
 import { getBondId } from "../helpers/bonds"
 import { getUserIdentity } from "../helpers/identity"
-import { ADEX_RELAYER_HOST } from "../helpers/constants"
 import { getSigner, getDefaultProvider } from "../ethereum"
 import {
 	loadUserLoyaltyPoolsStats,
@@ -580,33 +579,6 @@ export async function getRewards(addr, rewardPool, prices, totalStake) {
 		})
 	)
 	return forUser.filter(x => x)
-}
-
-export async function getGaslessInfo(addr) {
-	try {
-		const res = await fetch(`${ADEX_RELAYER_HOST}/staking/${addr}/can-execute`)
-		const resData = await res.json()
-		const canExecuteGasless = res.status === 200 && resData.canExecute === true
-		const canExecuteGaslessError = canExecuteGasless
-			? null
-			: {
-					message: `relayerResErrors.${resData.message}`,
-					data: resData.data
-			  }
-
-		return {
-			canExecuteGasless,
-			canExecuteGaslessError
-		}
-	} catch (err) {
-		console.error(err)
-		return {
-			canExecuteGasless: false,
-			canExecuteGaslessError: {
-				message: "errors.gaslessStakingTempOff"
-			}
-		}
-	}
 }
 
 export async function createNewBond(
