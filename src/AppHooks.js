@@ -189,6 +189,7 @@ export default function useApp() {
 			setOpenErr(false)
 			const res = await fn.apply(null, args)
 			setOpenDoingTx(false)
+			refreshStats()
 			return res
 		} catch (e) {
 			console.error(e)
