@@ -96,7 +96,8 @@ export const EMPTY_STATS = {
 		hasToMigrate: false,
 		bondToMigrate: null,
 		isWithdrawMigration: false
-	}
+	},
+	hasPendingTransactions: false
 }
 
 const sumRewards = all =>
@@ -299,7 +300,9 @@ export async function loadUserStats(chosenWalletType, prices) {
 		poolsStats,
 		tomStakingV5PoolStatsWithUserData,
 		migrationBonusPromilles = BigNumber.from(1048),
-		userWalletToIdentityADXAllowance
+		userWalletToIdentityADXAllowance,
+		latestTransactionsCount,
+		pendingTransactionsCount
 	] = await Promise.all([
 		loadBondStats(addr, identityAddr), // TODO: TOM only at the moment
 		getRewards(addr, POOLS[0], prices, totalStake),
@@ -307,9 +310,14 @@ export async function loadUserStats(chosenWalletType, prices) {
 		loadActivePoolsStats(prices),
 		loadUserTomStakingV5PoolStats({ walletAddr: addr }),
 		StakingMigrator.WITH_BONUS_PROMILLES(), // TODO: uncomment when migrator deployed
-		Token.allowance(addr, identityAddr)
+		Token.allowance(addr, identityAddr),
+		// NOTE: getTransactionCount does not work correct with signer, because "pending" may not be supported by signers provider
+		defaultProvider.getTransactionCount(addr, "latest"),
+		defaultProvider.getTransactionCount(addr, "pending")
 	])
 
+	const hasPendingTransactions =
+		latestTransactionsCount !== pendingTransactionsCount
 	const { tomPoolStats } = poolsStats
 
 	const tomAdxRewardsChannels = [...tomPoolUserRewardChannels].filter(
@@ -432,7 +440,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 		tomStakingV5PoolStats: tomStakingV5PoolStatsWithUserData,
 		prices,
 		tomBondsMigrationData,
-		userWalletToIdentityADXAllowance
+		userWalletToIdentityADXAllowance,
+		hasPendingTransactions
 	}
 }
 
