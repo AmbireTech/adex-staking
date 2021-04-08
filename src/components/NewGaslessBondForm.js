@@ -20,7 +20,7 @@ import { AmountText } from "./cardCommon"
 export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
 	const { t } = useTranslation()
 	const activePool = getDepositPool(DEPOSIT_POOLS[1].id) || {}
-	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+	const { stats, chosenWalletType } = useContext(AppContext)
 
 	const { tomStakingV5PoolStats } = stats
 	const {
@@ -35,14 +35,11 @@ export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
 
-		const res = await wrapDoingTxns(
-			onStakingPoolV5GaslessDeposit.bind(
-				null,
-				stats,
-				chosenWalletType,
-				adxDepositAmount
-			)
-		)()
+		const res = await onStakingPoolV5GaslessDeposit(
+			stats,
+			chosenWalletType,
+			adxDepositAmount
+		)
 
 		onTxRes && onTxRes(res, "new-gasless-deposit-snack")
 	}
