@@ -33,9 +33,14 @@ import {
 	REACT_APP_RPC_URL,
 	IDLE_TIMEOUT_MINUTES
 } from "../helpers/constants"
-import { formatADXPretty, toIdAttributeString } from "../helpers/formatting"
+import {
+	formatADXPretty,
+	toIdAttributeString,
+	formatAddress
+} from "../helpers/formatting"
 import { styles } from "./rootStyles"
 import AppContext from "../AppContext"
+import { ExternalAnchor } from "./Anchor"
 import { createNewBond } from "../actions"
 import { ShtarvolinkiSnack } from "./../Snack"
 import clsx from "clsx"
@@ -85,7 +90,9 @@ export default function Root() {
 		legacySwapOpen,
 		setLegacySwapInOpen,
 		idlePopupOpen,
-		onIdleDialogAction
+		onIdleDialogAction,
+		// secondsToAutoRefresh,
+		account
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -129,6 +136,39 @@ export default function Root() {
 
 			<main className={classes.content}>
 				<div className={classes.contentInner}>
+					<Box mb={2} className={classes.stickyAlerts}>
+						{
+							// !stats.hasPendingTransactions &&
+							<Box mt={2}>
+								<Alert severity="warning" variant="filled">
+									<AlertTitle id="alert-pending-transactions-warning-title">
+										{t("messages.pendingTransactionsTitle")}
+									</AlertTitle>
+									<Box>
+										<Trans
+											i18nKey="messages.pendingTransactionsInfo1"
+											values={{
+												account: formatAddress(account)
+											}}
+											components={{
+												external: (
+													<ExternalAnchor
+														id="external-link-adex-token"
+														target="_blank"
+														href={`https://etherscan.io/address/${account}`}
+														color="textPrimary"
+													></ExternalAnchor>
+												)
+											}}
+										/>
+									</Box>
+									<Box>
+										<Trans i18nKey="messages.pendingTransactionsInfo2" />
+									</Box>
+								</Alert>
+							</Box>
+						}
+					</Box>
 					<MigrateNowAlert />
 
 					<Switch>
