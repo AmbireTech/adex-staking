@@ -137,8 +137,7 @@ export default function Root() {
 			<main className={classes.content}>
 				<div className={classes.contentInner}>
 					<Box mb={2} className={classes.stickyAlerts}>
-						{
-							// !stats.hasPendingTransactions &&
+						{stats.hasPendingTransactions && (
 							<Box mt={2}>
 								<Alert severity="warning" variant="filled">
 									<AlertTitle id="alert-pending-transactions-warning-title">
@@ -167,7 +166,7 @@ export default function Root() {
 									</Box>
 								</Alert>
 							</Box>
-						}
+						)}
 					</Box>
 					<MigrateNowAlert />
 
