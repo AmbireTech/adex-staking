@@ -275,9 +275,9 @@
     "addrCopied": "Address {{account}} copied to clipboard",
     "useIdleTitle": "You have been idle for more than {{minutes}} minutes. Your session has ben paused.",
     "continueSession": "Continue session",
-    "pendingTransactionsTitle": "Pending transactions warning",
+    "pendingTransactionsTitle": "Warning: Pending Transactions",
     "pendingTransactionsInfo1": "There are <strong> <external> pending transactions for {{account}} </external> </strong>. ",
-    "pendingTransactionsInfo2": "Do <strong> NOT </strong> make any actions until this message disappears."
+    "pendingTransactionsInfo2": "Please do <strong> NOT </strong> attempt any new actions until this message disappears as no new transactions will go through."
   },
   "dialogs": {
     "selectWallet": "Select Wallet",
