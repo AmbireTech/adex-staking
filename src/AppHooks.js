@@ -96,6 +96,9 @@ export default function useApp() {
 	const [refreshCount, setRefreshCount] = useState(0)
 	const [userIdle, setUserIdle] = useState(false)
 	const [idlePopupOpen, setIdlePopupOpen] = useState(false)
+	const [secondsToAutoRefresh, setSecondsToAutoRefresh] = useState(
+		REFRESH_INTVL
+	)
 
 	useInactiveListener(!!connectWallet)
 
@@ -156,11 +159,28 @@ export default function useApp() {
 	}, [chosenWalletType])
 
 	useEffect(() => {
-		const intvl = setInterval(
-			refreshStats,
-			chosenWalletType.name ? REFRESH_INTVL_WALLET : REFRESH_INTVL
-		)
-		return () => clearInterval(intvl)
+		if (chosenWalletType.name) {
+			const intvlSecsToRefresh = setInterval(
+				() => setSecondsToAutoRefresh(secondsToAutoRefresh - 1),
+				1000
+			)
+			return () => {
+				clearInterval(intvlSecsToRefresh)
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [chosenWalletType.name, secondsToAutoRefresh])
+
+	useEffect(() => {
+		const refreshInterval = chosenWalletType.name
+			? REFRESH_INTVL_WALLET
+			: REFRESH_INTVL
+		const intvl = setInterval(refreshStats, refreshInterval)
+
+		setSecondsToAutoRefresh(Math.floor(refreshInterval / 1000))
+		return () => {
+			clearInterval(intvl)
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType.name, refreshStats])
 
@@ -288,6 +308,7 @@ export default function useApp() {
 		setLegacySwapInOpen,
 		idlePopupOpen,
 		onIdleDialogAction,
-		userIdle
+		userIdle,
+		secondsToAutoRefresh
 	}
 }
