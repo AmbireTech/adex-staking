@@ -12,7 +12,7 @@ import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import SectionHeader from "./SectionHeader"
-import { UNBOND_DAYS, POOLS, DEPOSIT_POOLS } from "../helpers/constants"
+import { DEPOSIT_POOLS } from "../helpers/constants"
 import StarsIcon from "@material-ui/icons/Stars"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
@@ -24,7 +24,6 @@ import { DEPOSIT_ACTION_TYPES } from "../actions"
 import { makeStyles } from "@material-ui/core/styles"
 
 const DepositsDialog = WithDialog(DepositForm)
-const TOM_LEGACY_POOL = POOLS[0]
 const TOM_V5_POOL = DEPOSIT_POOLS[1]
 const LOYALTY_POOL = DEPOSIT_POOLS[0]
 
@@ -42,17 +41,10 @@ const useStyles = makeStyles(theme => {
 const Pools = () => {
 	const classes = useStyles()
 	const { t } = useTranslation()
-	const {
-		stats,
-		setNewBondOpen,
-		chosenWalletType,
-		prices,
-		setNewBondPool
-	} = useContext(AppContext)
-	const { loyaltyPoolStats, tomPoolStats, tomStakingV5PoolStats } = stats
+	const { stats, chosenWalletType, prices } = useContext(AppContext)
+	const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
 
 	const canStake = !!chosenWalletType.name && !!stats.connectedWalletAddress
-	// const tomAPY = tomPoolStats.totalAPY * 100
 	const tomV5APY = tomStakingV5PoolStats.currentAPY * 100
 	const justifyCenter = useMediaQuery(theme => theme.breakpoints.down("xs"))
 
@@ -115,7 +107,6 @@ const Pools = () => {
 								variant="contained"
 								fullWidth
 								disabled={!canStake}
-								// tooltipTitle={disabledDepositsMsg}
 								depositPool={DEPOSIT_POOLS[1].id}
 								actionType={DEPOSIT_ACTION_TYPES.deposit}
 							/>
@@ -176,63 +167,8 @@ const Pools = () => {
 								actionType={DEPOSIT_ACTION_TYPES.deposit}
 							/>
 						}
-						// comingSoon
 					/>
 
-					{/* <PoolCard
-						id="validator-tom"
-						icon={
-							<SvgIcon fontSize="large" color="inherit">
-								<TomIcon width="100%" height="100%" />
-							</SvgIcon>
-						}
-						name={t("common.tom")}
-						// totalStakedADX="-"
-						totalStakedADX={`${formatADXPretty(
-							// tomPoolStats.totalCurrentTotalActiveStake
-							tomPoolStats.totalStake
-						)} ADX`}
-						totalStakedUSD="-"
-						// totalStakedUSD={`${getADXInUSDFormatted(
-						// 	prices,
-						// 	// tomPoolStats.totalCurrentTotalActiveStake
-						// 	tomPoolStats.totalStake
-						// )}`}
-						currentAPY="-"
-						// currentAPY={`${tomAPY.toFixed(2)} %`}
-						weeklyYield="-"
-						// weeklyYield={`${(tomAPY / (365 / 7)).toFixed(4)} %`}
-						weeklyYieldInfo="-"
-						// weeklyYieldInfo={[
-						// 	t("pools.currentDailyYield", {
-						// 		yield: (tomAPY / 365).toFixed(4)
-						// 	})
-						// ]}
-						onStakeBtnClick={() => {
-							setNewBondPool(TOM_LEGACY_POOL.id)
-							setNewBondOpen(true)
-						}}
-						loading={!tomPoolStats.loaded}
-						disabled={true}
-						disabledInfo={t("pools.tomLegacyPoolDisabledInfo")}
-						lockupPeriodTitle={t("common.unbondPeriod")}
-						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
-							count: UNBOND_DAYS
-						})}
-						lockupPeriod={t("pools.unbondPeriodDay", { count: UNBOND_DAYS })}
-						statsPath={`/stats?validator=${t(TOM_LEGACY_POOL.label)}`}
-					/> */}
-					{/* <PoolCard
-						id="liquidity-pool"
-						icon={
-							<SvgIcon fontSize="large" color="inherit">
-								<LiquidityIcon />
-							</SvgIcon>
-						}
-						name={t("common.liPo")}
-						loading={!stats.loaded}
-						comingSoon
-					/> */}
 					<Box>
 						<Box
 							bgcolor={"background.card"}

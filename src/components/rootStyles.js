@@ -89,6 +89,11 @@ export const styles = theme => {
 		},
 		alwaysOnTop: {
 			zIndex: `${theme.zIndex.tooltip * 2} !important`
+		},
+		stickyAlerts: {
+			zIndex: `${theme.zIndex.appBar}`,
+			position: "sticky",
+			top: 0
 		}
 	}
 }

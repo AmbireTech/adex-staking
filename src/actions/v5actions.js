@@ -221,8 +221,6 @@ export async function onStakingPoolV5GaslessDeposit(
 	if (!stats) throw new Error("errors.statsNotProvided")
 	if (!adxDepositAmount) throw new Error("errors.noDepositAmount")
 	if (adxDepositAmount.isZero()) throw new Error("errors.zeroDeposit")
-	if (adxDepositAmount.gt(stats.userBalance))
-		throw new Error("errors.amountTooLarge")
 
 	const signer = await getSigner(chosenWalletType)
 	if (!signer) throw new Error("errors.failedToGetSigner")
