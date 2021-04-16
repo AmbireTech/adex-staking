@@ -799,12 +799,7 @@ export async function identityWithdraw(chosenWalletType) {
 	const walletAddr = await signer.getAddress()
 	const { addr } = getUserIdentity(walletAddr)
 
-	console.log("walletAddr", walletAddr)
-	console.log("chosenWalletType", chosenWalletType)
-	console.log("Token.address", Token.address)
-
 	const identityBalance = await Token.balanceOf(addr)
-	console.log("identityBalance", identityBalance.toString())
 
 	const identityTxns = [
 		[
