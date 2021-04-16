@@ -446,9 +446,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 }
 
 export async function loadBondStats(addr, identityAddr) {
-	console.log("addr", addr)
-	console.log("identityAddr", identityAddr)
-	console.log("Token.addr", Token.address)
 	const [
 		[userWalletBalance, userIdentityBalance],
 		logs,
@@ -473,9 +470,6 @@ export async function loadBondStats(addr, identityAddr) {
 
 	//TODO: remove identity code
 	const userBalance = userWalletBalance.add(userIdentityBalance)
-
-	console.log("userWalletBalance", userWalletBalance)
-	console.log("userIdentityBalance", userIdentityBalance)
 
 	// const slashedByPool = slashLogs.reduce((pools, log) => {
 	// 	const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
