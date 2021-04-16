@@ -70,7 +70,8 @@
     "tomStakingPool": "Tom Staking Pool",
     "from": "From",
     "tomV5": "Tom",
-    "APY": "APY"
+    "APY": "APY",
+    "withdrawLegacy": "WIthdraw from legacy identity"
   },
   "userData": {
     "myAdxBalance": "MY ADX BALANCE",
@@ -291,7 +292,8 @@
     "reBondConfirmation": "<box> Are you sure you want to re-bond this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware that this means that this amount will be locked up again for at least {{unbondDays}} days </box> <box> {{extraInfo}} </box>",
     "migrationRequestConfirmation": "<box> You are about to migrate this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you can finalize the migration process (additional action will be required). </li> <li> You will NOT receive staking rewards for this {{unbondDays}} day period. </li> <li> You will receive a migration reward of minimum {{migrationReward}} {{currency}} ( (equal the staking rewards for 2 months) when you finalize the migration. </li> <li> All of your unclaimed rewards when finalizing the process ({{unbondPeriod}} day from now) will be added to your migrated bond. The additional migration reward will be added this amount too. <li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days</li> </ol>",
     "migrationFinalizationConfirmation": "<box> You are about to complete migration process for this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box>  <ol> <li> All of your unclaimed rewards will be added to your migrated bond. </li> <li> If you wish, you can withdraw your unclaimed rewards without your wallet before finalizing the migration. </li> <li>  You will receive migration reward of {{migrationReward}} {{currency}}. It will be added to your migrated bond.  </li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days. </li> </ol>",
-    "bondToV5MigrationConfirmation": "<box> Are you sure you want to request unbond/migration of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to finalize migration process or unbond your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> <li> If you chose to migrate the bond you will get extra reward to compensate the lack of rewards for the {{unbondDays}} period.  </li> </ol>"
+    "bondToV5MigrationConfirmation": "<box> Are you sure you want to request unbond/migration of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to finalize migration process or unbond your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> <li> If you chose to migrate the bond you will get extra reward to compensate the lack of rewards for the {{unbondDays}} period.  </li> </ol>",
+    "withdrawFromOldIdentity": "Withdraw {{amount}} {{currency}} to {{walletAddr}} "
   },
   "help": {
     "help": "help",
