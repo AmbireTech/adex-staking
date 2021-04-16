@@ -1,12 +1,22 @@
-import React from "react"
-import { Box } from "@material-ui/core"
+import React, { useContext, useState } from "react"
+import { Box, Typography, Button } from "@material-ui/core"
 import StatsCard from "./StatsCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { useTranslation } from "react-i18next"
 import { BigNumber } from "ethers"
+import ConfirmationDialog from "./ConfirmationDialog"
+import AppContext from "../AppContext"
+import { ZERO } from "./../helpers/constants"
+import { identityWithdraw } from "../actions"
 
 export default function UserData({ stats, prices }) {
 	const { t } = useTranslation()
+	const [withdrawIdentityOpen, setWithdrawIdentityOpen] = useState(false)
+	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+
+	const onWithdraw = async () => {
+		await wrapDoingTxns(identityWithdraw.bind(null, chosenWalletType))()
+	}
 
 	return (
 		<Box width={1}>
@@ -89,6 +99,44 @@ export default function UserData({ stats, prices }) {
 					extra: getADXInUSDFormatted(prices, stats.totalStaked)
 				})}
 			</Box>
+
+			{stats.identityDeployed && stats.userIdentityBalance.gt(ZERO) && (
+				<Box mb={1.5}>
+					<Box display="inline-block">
+						<Button
+							id="btn-rewards-page-claim"
+							variant="contained"
+							color="secondary"
+							onClick={() => setWithdrawIdentityOpen(true)}
+						>
+							{t("common.withdrawLegacy")}
+						</Button>
+					</Box>
+				</Box>
+			)}
+
+			{ConfirmationDialog({
+				isOpen: withdrawIdentityOpen,
+				onDeny: () => setWithdrawIdentityOpen(false),
+				onConfirm: () => {
+					setWithdrawIdentityOpen(false)
+					onWithdraw()
+				},
+				confirmActionName: t("common.withdraw"),
+				content: (
+					<>
+						<Box mb={1}>
+							<Typography>
+								{t("dialogs.withdrawFromOldIdentity", {
+									amount: formatADXPretty(stats.userIdentityBalance || ZERO),
+									currency: "ADX",
+									walletAddr: stats.connectedWalletAddress
+								})}
+							</Typography>
+						</Box>
+					</>
+				)
+			})}
 		</Box>
 	)
 }
