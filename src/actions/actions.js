@@ -446,6 +446,9 @@ export async function loadUserStats(chosenWalletType, prices) {
 }
 
 export async function loadBondStats(addr, identityAddr) {
+	console.log("addr", addr)
+	console.log("identityAddr", identityAddr)
+	console.log("Token.addr", Token.address)
 	const [
 		[userWalletBalance, userIdentityBalance],
 		logs,
@@ -468,7 +471,11 @@ export async function loadBondStats(addr, identityAddr) {
 		})
 	])
 
+	//TODO: remove identity code
 	const userBalance = userWalletBalance.add(userIdentityBalance)
+
+	console.log("userWalletBalance", userWalletBalance)
+	console.log("userIdentityBalance", userIdentityBalance)
 
 	// const slashedByPool = slashLogs.reduce((pools, log) => {
 	// 	const { poolId, newSlashPts } = Staking.interface.parseLog(log).args
@@ -790,4 +797,30 @@ export async function reBond(chosenWalletType, { amount, poolId, nonce }) {
 			]
 		])
 	)
+}
+
+export async function identityWithdraw(chosenWalletType) {
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	const walletAddr = await signer.getAddress()
+	const { addr } = getUserIdentity(walletAddr)
+
+	console.log("walletAddr", walletAddr)
+	console.log("chosenWalletType", chosenWalletType)
+	console.log("Token.address", Token.address)
+
+	const identityBalance = await Token.balanceOf(addr)
+	console.log("identityBalance", identityBalance.toString())
+
+	const identityTxns = [
+		[
+			Token.address,
+			Token.interface.encodeFunctionData("transfer", [
+				walletAddr,
+				identityBalance
+			])
+		]
+	]
+
+	await executeOnIdentity(chosenWalletType, identityTxns, {}, false, null)
 }
