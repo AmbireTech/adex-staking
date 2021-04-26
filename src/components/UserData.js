@@ -13,6 +13,8 @@ export default function UserData({ stats, prices }) {
 	const { t } = useTranslation()
 	const [withdrawIdentityOpen, setWithdrawIdentityOpen] = useState(false)
 	const { chosenWalletType, wrapDoingTxns } = useContext(AppContext)
+	const hasLegacyIdentityBalance =
+		stats.identityDeployed && stats.userIdentityBalance.gt(ZERO)
 
 	const onWithdraw = async () => {
 		await wrapDoingTxns(identityWithdraw.bind(null, chosenWalletType))()
@@ -49,7 +51,24 @@ export default function UserData({ stats, prices }) {
 				{StatsCard({
 					loaded: stats.loaded,
 					title: t("userData.onWallet"),
-					titleInfo: t("userData.onWalletInfo"),
+					titleInfo: [
+						t("userData.userBalanceWallet", {
+							amount: formatADXPretty(stats.userWalletBalance),
+							currency: "ADX"
+						}),
+						t("userData.userBalanceGasless", {
+							amount: formatADXPretty(stats.gaslessAddrBalance),
+							currency: "ADX"
+						}),
+						...(hasLegacyIdentityBalance
+							? [
+									t("userData.activeDepositsLegacyIdentityBalance", {
+										amount: formatADXPretty(stats.userIdentityBalance),
+										currency: "ADX"
+									})
+							  ]
+							: [])
+					],
 					subtitle: stats.userBalance
 						? formatADXPretty(stats.userBalance) + " ADX"
 						: "",
@@ -100,7 +119,7 @@ export default function UserData({ stats, prices }) {
 				})}
 			</Box>
 
-			{stats.identityDeployed && stats.userIdentityBalance.gt(ZERO) && (
+			{hasLegacyIdentityBalance && (
 				<Box mb={1.5}>
 					<Box display="inline-block">
 						<Button

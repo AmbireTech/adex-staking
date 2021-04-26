@@ -83,6 +83,7 @@ export const EMPTY_STATS = {
 	totalBalanceADX: ZERO,
 	userWalletBalance: ZERO,
 	userIdentityBalance: ZERO,
+	gaslessAddrBalance: ZERO,
 	// canExecuteGasless: false,
 	// canExecuteGaslessError: null,
 	loyaltyPoolStats: LOYALTY_POOP_EMPTY_STATS,
@@ -291,7 +292,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 	const [
 		{
 			userBonds: userBondsData,
-			userBalance,
+			// userBalance,
 			userWalletBalance,
 			userIdentityBalance
 		},
@@ -376,7 +377,8 @@ export async function loadUserStats(chosenWalletType, prices) {
 	const {
 		currentBalanceADX,
 		leavesPendingToUnlockTotalADX,
-		leavesReadyToWithdrawTotalADX
+		leavesReadyToWithdrawTotalADX,
+		gaslessAddrBalance
 	} = tomStakingV5PoolStatsWithUserData
 
 	const { balanceLpADX } = loyaltyPoolStats
@@ -396,7 +398,11 @@ export async function loadUserStats(chosenWalletType, prices) {
 		.add(totalUnlockedDeposits)
 		.add(tomRewardADX)
 
-	const totalBalanceADX = userBalance.add(totalStaked)
+	const nonStakedBalance = userWalletBalance
+		.add(userIdentityBalance)
+		.add(gaslessAddrBalance)
+
+	const totalBalanceADX = nonStakedBalance.add(totalStaked)
 
 	const migratableBonds = [...userBonds].filter(
 		x => x.status !== "Unbonded" && x.status !== "Migrated"
@@ -419,7 +425,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		identityDeployed,
 		connectedWalletAddress: addr,
 		userBonds,
-		userBalance, // ADX on wallet
+		userBalance: nonStakedBalance, // ADX on wallet, legacy identity and gasless addr
 		loaded: true,
 		rewardChannels: tomPoolUserRewardChannels,
 		totalRewardADX: tomRewardADX,
@@ -430,6 +436,7 @@ export async function loadUserStats(chosenWalletType, prices) {
 		totalBalanceADX, // Wallet + Stake + Reward
 		userWalletBalance,
 		userIdentityBalance,
+		gaslessAddrBalance,
 		totalLockedOnDeposits,
 		totalUnlockedDeposits,
 		totalPendingToUnlock,

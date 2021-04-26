@@ -82,11 +82,14 @@
     "unclaimed": "Unclaimed rewards",
     "total": "Total",
     "totalStaked": "Total staked",
+    "userBalanceWallet": "On wallet: {{amount}} {{currency}}",
+    "userBalanceGasless": "On gasless address: {{amount}} {{currency}}",
     "activeDepositsInfoLocked": "Locked: {{amount}} {{currency}}",
     "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
     "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
     "activeDepositsInfoUnclaimed": "Unclaimed rewards: {{amount}} {{currency}}",
     "activeUsersStakeLegacy": "To migrate: {{amount}} {{currency}}",
+    "activeDepositsLegacyIdentityBalance": "On legacy gasless address: {{amount}} {{currency}}",
     "adxPrice": "ADX price: {{priceUSD}}"
   },
   "pools": {
