@@ -110,7 +110,9 @@
     "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",
     "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. There is an additional incentive reward of 20 million ADX to be distributed by the end of 2021. All rewards will be paid in ADX and will be automatically added to your stake.",
     "tomV5SlashPolicy": "No slashing.",
-    "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool."
+    "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool.",
+    "tomV5LockupPeriodTxt": "{{count}} days ({{count}} days need to pas before unlocking ADX, during that period no rewards are received)"
+
   },
   "eventTypes": {
     "enter": "Enter",

@@ -16,7 +16,7 @@ import { useLocation } from "react-router-dom"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import SectionHeader from "./SectionHeader"
 import ValidatorStatsContext from "../ValidatorStatsContext"
-import { POOLS } from "../helpers/constants"
+import { DEPOSIT_POOLS } from "../helpers/constants"
 import { useTranslation } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { StatsChart } from "./StatsChart"
@@ -24,7 +24,7 @@ import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
 
 const ACTIVE_BORDER_WIDTH = 3
 
-const poolsSrc = POOLS.filter(x => x.selectable).map(x => ({
+const poolsSrc = DEPOSIT_POOLS.filter(x => x.hasValidatorStats).map(x => ({
 	value: x.id,
 	label: x.label,
 	pool: x
