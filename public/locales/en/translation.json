@@ -170,7 +170,7 @@
     "extraInfo": "Extra info",
     "lockupPeriodLabel": "Lockup period",
     "lockupDays": "{{count}} days",
-    "unbondToWithdraw": "Please, unbond firs",
+    "unbondToWithdraw": "Please, unbond first",
     "unlocksAtInfo": "Unlocks at: {{unlocksAt}}",
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
