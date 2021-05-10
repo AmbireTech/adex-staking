@@ -134,7 +134,47 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		{}
 	)
 
-	const userDeposits = lpTokenTransfersInLogs.reduce(
+	const sharesTokensTransfersIn = lpTokenTransfersInLogs.map(log => {
+		const parsedLog = LoyaltyToken.interface.parseLog(log)
+
+		const {
+			from, // [0]
+			amount // [2]
+		} = parsedLog.args
+
+		return {
+			transactionHash: log.transactionHash,
+			blockNumber: log.blockNumber,
+			shares: amount,
+			type:
+				from === ZERO_ADDR
+					? STAKING_POOL_EVENT_TYPES.enter
+					: STAKING_POOL_EVENT_TYPES.shareTokensTransferIn,
+			from
+		}
+	})
+
+	// TODO: detect innerBurn transactions to ZERO_ADDR (burned by the user itself)
+	const sharesTokensTransfersOut = lpTokenTransfersOutLogs
+		.map(log => {
+			const parsedLog = LoyaltyToken.interface.parseLog(log)
+
+			const {
+				to, // [1]
+				amount // [2]
+			} = parsedLog.args
+
+			return {
+				transactionHash: log.transactionHash,
+				blockNumber: log.blockNumber,
+				shares: amount,
+				type: STAKING_POOL_EVENT_TYPES.shareTokensTransferOut,
+				to
+			}
+		})
+		.filter(x => x.to !== ZERO_ADDR)
+
+	const userDeposits = sharesTokensTransfersIn.reduce(
 		(deposits, log) => {
 			const axdTransferLog = adxTransfersInByTxHash[log.transactionHash]
 
@@ -169,7 +209,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		{}
 	)
 
-	const userWithdraws = lpTokenTransfersOutLogs.reduce(
+	const userWithdraws = sharesTokensTransfersOut.reduce(
 		(withdraws, log) => {
 			const axdTransferLog = adxTransfersOutByTxHash[log.transactionHash]
 
@@ -197,9 +237,134 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		{ adx: ZERO, adxLPT: ZERO, logs: [] }
 	)
 
-	// TODO: LP token external transfers
+	const sharesTokensTransfersInFromExternal = [
+		...sharesTokensTransfersIn
+	].filter(x => x.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn)
+
+	if (
+		sharesTokensTransfersOut.length ||
+		sharesTokensTransfersInFromExternal.length
+	) {
+		const fromBlock = Math.min(
+			sharesTokensTransfersOut[0]
+				? sharesTokensTransfersOut[0].blockNumber
+				: Number.MAX_SAFE_INTEGER,
+			sharesTokensTransfersInFromExternal[0]
+				? sharesTokensTransfersInFromExternal[0].blockNumber
+				: Number.MAX_SAFE_INTEGER
+		)
+
+		const [
+			allAdxInLogs,
+			allSharesOutLogs,
+			allAdxOutLogs,
+			allSharesInLogs
+		] = await Promise.all([
+			provider.getLogs({
+				fromBlock,
+				...Token.filters.Transfer(null, LoyaltyToken.address, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...LoyaltyToken.filters.Transfer(ZERO_ADDR, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...Token.filters.Transfer(LoyaltyToken.address, null, null)
+			}),
+			provider.getLogs({
+				fromBlock,
+				...LoyaltyToken.filters.Transfer(null, ZERO_ADDR, null)
+			})
+		])
+
+		const enterAdxTokensByTxHash = allAdxInLogs.reduce((byHash, log) => {
+			byHash[log.transactionHash] = log
+			return byHash
+		}, {})
+
+		const outAdxTokensByTxHash = allAdxOutLogs.reduce((byHash, log) => {
+			byHash[log.transactionHash] = log
+			return byHash
+		}, {})
+
+		const allEnters = allSharesOutLogs
+			.map(sharesMintEvent => {
+				const adexTokenTransfersLog =
+					enterAdxTokensByTxHash[sharesMintEvent.transactionHash]
+
+				if (adexTokenTransfersLog) {
+					const { amount } = Token.interface.parseLog(
+						adexTokenTransfersLog
+					).args
+					const { amount: shares } = LoyaltyToken.interface.parseLog(
+						sharesMintEvent
+					).args
+
+					return {
+						blockNumber: sharesMintEvent.blockNumber,
+						shareValue: shares.isZero()
+							? ZERO
+							: amount.mul(ADX_LP_TOKEN_DECIMALS_MUL).div(shares)
+					}
+				} else {
+					return null
+				}
+			})
+			.filter(x => !!x)
+
+		const allWithdraws = allSharesInLogs
+			.map(sharesMintEvent => {
+				const adexTokenTransfersLog =
+					outAdxTokensByTxHash[sharesMintEvent.transactionHash]
+
+				if (adexTokenTransfersLog) {
+					const { amount } = Token.interface.parseLog(
+						adexTokenTransfersLog
+					).args
+					const { amount: shares } = LoyaltyToken.interface.parseLog(
+						sharesMintEvent
+					).args
+
+					return {
+						blockNumber: sharesMintEvent.blockNumber,
+						shareValue: shares.isZero()
+							? ZERO
+							: amount.mul(ADX_LP_TOKEN_DECIMALS_MUL).div(shares)
+					}
+				} else {
+					return null
+				}
+			})
+			.filter(x => !!x)
+
+		const allLogs = allEnters
+			.concat(allWithdraws)
+			.sort((a, b) => a.blockNumber - b.blockNumber)
+
+		const withAdxAmount = events =>
+			events.forEach((transferLog, i) => {
+				const nextLog = allLogs.find(
+					log => log.blockNumber >= transferLog.blockNumber
+				)
+				const bestShareValue = nextLog.shareValue || currentShareValue
+
+				// approximate share value
+				events[i].shareValue = bestShareValue
+				events[i].adxAmount = transferLog.shares
+					.mul(bestShareValue)
+					.div(ADX_LP_TOKEN_DECIMALS_MUL)
+			})
+
+		withAdxAmount(sharesTokensTransfersOut)
+		withAdxAmount(sharesTokensTransfersInFromExternal)
+	}
+
+	// TODO: LP token external transfers - TEST
 	const allStakingEvents = userDeposits.logs
 		.concat(userWithdraws.logs)
+		.concat(sharesTokensTransfersOut)
+		.concat(sharesTokensTransfersInFromExternal)
 		.sort((a, b) => a.blockNumber - b.blockNumber)
 
 	const withTimestamp = await Promise.all(
