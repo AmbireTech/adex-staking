@@ -144,8 +144,11 @@ const StakingEventRow = ({ stakingEvent }) => {
 export default function StakingPoolTxnsHistory() {
 	const { t } = useTranslation()
 	const { stats } = useContext(AppContext)
-	const { tomStakingV5PoolStats } = stats
-	const { stakings } = tomStakingV5PoolStats
+	const { tomStakingV5PoolStats, loyaltyPoolStats } = stats
+	const { stakings: stakingPoolEvents } = tomStakingV5PoolStats
+	const { stakingEvents: loyaltyPoolEvents } = loyaltyPoolStats
+
+	const stakings = stakingPoolEvents.concat(loyaltyPoolEvents)
 
 	return (
 		<Box>
