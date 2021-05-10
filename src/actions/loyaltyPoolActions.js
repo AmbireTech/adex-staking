@@ -7,6 +7,8 @@ import {
 	ZERO,
 	MAX_UINT
 } from "../helpers/constants"
+import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
+
 import { getSigner, getDefaultProvider } from "../ethereum"
 
 const defaultProvider = getDefaultProvider
@@ -146,10 +148,11 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 				deposits.adxLPT = deposits.adxLPT.add(adxLPT)
 				deposits.logs.push({
 					transactionHash: log.transactionHash,
-					type: "deposit",
+					type: STAKING_POOL_EVENT_TYPES.enter,
 					shares: adxLPT,
 					adxAmount: adx,
-					blockNumber: log.blockNumber
+					blockNumber: log.blockNumber,
+					pool: "adex-loyalty-pool"
 				})
 			}
 
@@ -181,10 +184,11 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 
 				withdraws.logs.push({
 					transactionHash: log.transactionHash,
-					type: "withdraw",
+					type: STAKING_POOL_EVENT_TYPES.withdraw,
 					shares: adxLPT,
 					adxAmount: adx,
-					blockNumber: log.blockNumber
+					blockNumber: log.blockNumber,
+					pool: "adex-loyalty-pool"
 				})
 			}
 

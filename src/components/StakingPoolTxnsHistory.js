@@ -41,7 +41,9 @@ const useStyles = makeStyles(theme => {
 const StakingEventRow = ({ stakingEvent }) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const PoolIcon = iconByPoolId({ poolId: "adex-staking-pool" })
+	const PoolIcon = iconByPoolId({
+		poolId: stakingEvent.pool || "adex-staking-pool"
+	})
 	const isExternalShareTokenTransfer =
 		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn ||
 		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferOut
@@ -148,7 +150,9 @@ export default function StakingPoolTxnsHistory() {
 	const { stakings: stakingPoolEvents } = tomStakingV5PoolStats
 	const { stakingEvents: loyaltyPoolEvents } = loyaltyPoolStats
 
-	const stakings = stakingPoolEvents.concat(loyaltyPoolEvents)
+	const stakings = stakingPoolEvents
+		.concat(loyaltyPoolEvents)
+		.sort((a, b) => a.blockNumber - b.blockNumber)
 
 	return (
 		<Box>
