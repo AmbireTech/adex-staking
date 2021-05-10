@@ -202,34 +202,39 @@ const getLoyaltyPoolDeposit = ({
 			<Fragment>
 				<Box>
 					<AmountText
-						text={`${formatADXPretty(
-							loyaltyPoolStats.balanceLpToken
-						)} ${"ADX-LOYALTY"}`}
+						text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
 						fontSize={17}
 					/>
 				</Box>
-				<Box>
-					<AmountText
-						text={`(=${formatADXPretty(
-							loyaltyPoolStats.balanceLpADX
-						)} ${"ADX"})`}
-						fontSize={17}
-					/>
-				</Box>
+				{<Box>{`(${(loyaltyPoolStats.userShare * 100).toFixed(4)} %)`}</Box>}
 			</Fragment>
 		),
-		allTimeReward: loyaltyPoolStats.allTimeRewardADX ? (
+		allTimeReward: loyaltyPoolStats.totalRewards ? (
 			<AmountText
-				text={`${formatADXPretty(loyaltyPoolStats.allTimeRewardADX)} ${"ADX"}`}
+				text={`${formatADXPretty(loyaltyPoolStats.totalRewards)} ${"ADX"}`}
 				fontSize={17}
 			/>
 		) : (
 			t("common.unknown")
 		),
-		depositsADXTotal: t("common.NA"),
+		depositsADXTotal: loyaltyPoolStats.totalDeposits ? (
+			<AmountText
+				text={`${formatADXPretty(loyaltyPoolStats.totalDeposits)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		) : (
+			t("common.unknown")
+		),
 		pendingToUnlockTotalADX: t("common.NA"),
 		readyToWithdrawTotalADX: t("common.NA"),
-		withdrawsADXTotal: t("common.NA"),
+		withdrawsADXTotal: loyaltyPoolStats.totalWithdraws ? (
+			<AmountText
+				text={`${formatADXPretty(loyaltyPoolStats.totalWithdraws)} ${"ADX"}`}
+				fontSize={17}
+			/>
+		) : (
+			t("common.unknown")
+		),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"

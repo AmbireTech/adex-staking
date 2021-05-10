@@ -20,6 +20,7 @@ const LoyaltyToken = new Contract(
 )
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ADX_LP_TOKEN_DECIMALS_MUL = "1000000000000000000"
+const PRECISION = 1_000_000_000_000
 
 export const LOYALTY_POOP_EMPTY_STATS = {
 	balanceLpToken: ZERO,
@@ -34,14 +35,21 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	stakingEvents: [],
 	totalRewards: ZERO,
 	totalDeposits: ZERO,
-	totalWithdraws: ZERO
+	totalWithdraws: ZERO,
+	userShare: 0
 }
 
 export async function loadLoyaltyPoolData() {
-	const [poolTotalStaked, currentAPY, poolDepositsLimit] = await Promise.all([
+	const [
+		poolTotalStaked,
+		currentAPY,
+		poolDepositsLimit,
+		sharesTotalSupply
+	] = await Promise.all([
 		Token.balanceOf(ADDR_ADX_LOYALTY_TOKEN),
 		LoyaltyToken.incentivePerTokenPerAnnum(),
-		LoyaltyToken.maxTotalADX()
+		LoyaltyToken.maxTotalADX(),
+		LoyaltyToken.totalSupply()
 	])
 
 	return {
@@ -52,7 +60,8 @@ export async function loadLoyaltyPoolData() {
 			currentAPY
 				.mul(1000)
 				.div(ADX_LP_TOKEN_DECIMALS_MUL)
-				.toNumber() / 1000
+				.toNumber() / 1000,
+		sharesTotalSupply
 	}
 }
 
@@ -200,12 +209,20 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	)
 	const totalRewards = balanceLpADX.add(userWithdraws.adx).sub(userDeposits.adx)
 
+	const userShare = poolData.sharesTotalSupply.isZero()
+		? ZERO
+		: balanceLpADX
+				.mul(PRECISION)
+				.div(poolData.sharesTotalSupply)
+				.toNumber() / PRECISION
+
 	const stats = {
 		...currentBalance,
 		stakingEvents: withTimestamp,
 		totalRewards,
 		totalDeposits: userDeposits.adx,
-		totalWithdraws: userWithdraws.adx
+		totalWithdraws: userWithdraws.adx,
+		userShare
 	}
 
 	return stats
