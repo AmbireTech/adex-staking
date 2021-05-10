@@ -30,7 +30,11 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	poolDepositsLimit: ZERO,
 	loaded: false,
 	userDataLoaded: false,
-	unbondDays: 0
+	unbondDays: 0,
+	stakingEvents: [],
+	totalRewards: ZERO,
+	totalDeposits: ZERO,
+	totalWithdraws: ZERO
 }
 
 export async function loadLoyaltyPoolData() {
@@ -64,8 +68,10 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 	const [
 		balanceLpToken,
 		currentShareValue,
-		loyaltyTokenTransfersLogs,
-		adexTokenTransfersLogs
+		lpTokenTransfersInLogs,
+		lpTokenTransfersOutLogs,
+		adexTokenTransfersInLogs,
+		adexTokenTransfersOutLogs
 	] = await Promise.all([
 		LoyaltyToken.balanceOf(walletAddr),
 		LoyaltyToken.shareValue(),
@@ -75,7 +81,15 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		}),
 		provider.getLogs({
 			fromBlock: 0,
+			...LoyaltyToken.filters.Transfer(walletAddr, null, null)
+		}),
+		provider.getLogs({
+			fromBlock: 0,
 			...Token.filters.Transfer(walletAddr, ADDR_ADX_LOYALTY_TOKEN, null)
+		}),
+		provider.getLogs({
+			fromBlock: 0,
+			...Token.filters.Transfer(ADDR_ADX_LOYALTY_TOKEN, walletAddr, null)
 		})
 	])
 
@@ -91,7 +105,7 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		userDataLoaded: true
 	}
 
-	const hasExternalLoyaltyTokenTransfers = loyaltyTokenTransfersLogs.some(
+	const hasExternalLoyaltyTokenTransfers = lpTokenTransfersInLogs.some(
 		log => LoyaltyToken.interface.parseLog(log).args[0] !== ZERO_ADDR
 	)
 
@@ -101,44 +115,100 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		return currentBalance
 	}
 
-	const adxTransfersByTxHash = adexTokenTransfersLogs.reduce((txns, log) => {
-		txns[log.transactionHash] = log
-		return txns
-	}, {})
+	const adxTransfersInByTxHash = adexTokenTransfersInLogs.reduce(
+		(txns, log) => {
+			txns[log.transactionHash] = log
+			return txns
+		},
+		{}
+	)
 
-	const userDeposits = loyaltyTokenTransfersLogs.reduce(
+	const userDeposits = lpTokenTransfersInLogs.reduce(
 		(deposits, log) => {
-			const axdTransferLog = adxTransfersByTxHash[log.transactionHash]
+			const axdTransferLog = adxTransfersInByTxHash[log.transactionHash]
 
 			if (axdTransferLog) {
 				const lpTokenLog = LoyaltyToken.interface.parseLog(log)
 				const adxTransferLog = Token.interface.parseLog(axdTransferLog)
+				const adxLPT = lpTokenLog.args[2]
+				const adx = adxTransferLog.args[2]
 
-				deposits.adx = deposits.adx.add(lpTokenLog.args[2])
-				deposits.adxLPT = deposits.adxLPT.add(adxTransferLog.args[2])
+				deposits.adx = deposits.adx.add(adx)
+				deposits.adxLPT = deposits.adxLPT.add(adxLPT)
+				deposits.logs.push({
+					transactionHash: log.transactionHash,
+					type: "deposit",
+					shares: adxLPT,
+					adxAmount: adx,
+					blockNumber: log.blockNumber
+				})
 			}
 
 			return deposits
 		},
-		{ adx: ZERO, adxLPT: ZERO }
+		{ adx: ZERO, adxLPT: ZERO, logs: [] }
 	)
 
-	// multiply by decimals to keep the precision
-	const avgDepositShareValue = userDeposits.adx.isZero()
-		? ZERO
-		: userDeposits.adxLPT.mul(ADX_LP_TOKEN_DECIMALS_MUL).div(userDeposits.adx)
+	const adxTransfersOutByTxHash = adexTokenTransfersOutLogs.reduce(
+		(txns, log) => {
+			txns[log.transactionHash] = log
+			return txns
+		},
+		{}
+	)
 
-	const reward = balanceLpToken
-		.mul(currentShareValue.sub(avgDepositShareValue))
-		.div(ADX_LP_TOKEN_DECIMALS_MUL)
+	const userWithdraws = lpTokenTransfersOutLogs.reduce(
+		(withdraws, log) => {
+			const axdTransferLog = adxTransfersOutByTxHash[log.transactionHash]
 
-	// console.log('reward', reward.toString())
-	// console.log('balanceLpToken', balanceLpToken.toString())
-	// console.log('balanceLpADX', balanceLpADX.toString())
+			if (axdTransferLog) {
+				const lpTokenLog = LoyaltyToken.interface.parseLog(log)
+				const adxTransferLog = Token.interface.parseLog(axdTransferLog)
+				const adxLPT = lpTokenLog.args[2]
+				const adx = adxTransferLog.args[2]
 
-	currentBalance.allTimeRewardADX = reward
+				withdraws.adx = withdraws.adx.add(adx)
+				withdraws.adxLPT = withdraws.adxLPT.add(adxLPT)
 
-	return currentBalance
+				withdraws.logs.push({
+					transactionHash: log.transactionHash,
+					type: "withdraw",
+					shares: adxLPT,
+					adxAmount: adx,
+					blockNumber: log.blockNumber
+				})
+			}
+
+			return withdraws
+		},
+		{ adx: ZERO, adxLPT: ZERO, logs: [] }
+	)
+
+	// TODO: LP token external transfers
+	const allStakingEvents = userDeposits.logs
+		.concat(userWithdraws.logs)
+		.sort((a, b) => a.blockNumber - b.blockNumber)
+
+	const withTimestamp = await Promise.all(
+		allStakingEvents.map(async stakingEvent => {
+			const { timestamp } = await provider.getBlock(stakingEvent.blockNumber)
+			return {
+				...stakingEvent,
+				timestamp: timestamp * 1000
+			}
+		})
+	)
+	const totalRewards = balanceLpADX.add(userWithdraws.adx).sub(userDeposits.adx)
+
+	const stats = {
+		...currentBalance,
+		stakingEvents: withTimestamp,
+		totalRewards,
+		totalDeposits: userDeposits.adx,
+		totalWithdraws: userWithdraws.adx
+	}
+
+	return stats
 }
 
 export async function onLoyaltyPoolDeposit(
