@@ -104,35 +104,41 @@ export default function DepositForm({
 		)()
 	}
 
-	const confirmationLabel = (
-		<Trans
-			i18nKey="deposits.confirmationLabel"
-			values={{
-				unbondDays: poolStats.unbondDays,
-				amount: actionAmount,
-				currency: "ADX"
-			}}
-			components={{
-				amount: <AmountText fontSize={21}></AmountText>,
-				e1: (
-					<ExternalAnchor
-						id="new-deposit-form-adex-network-tos"
-						target="_blank"
-						href="https://www.adex.network/tos/"
-					/>
-				),
-				e2: STAKING_RULES_URL ? (
-					<ExternalAnchor
-						id="new-bond-form-adex-staking-rules"
-						target="_blank"
-						href={STAKING_RULES_URL}
-					/>
-				) : (
-					<></>
-				)
-			}}
-		/>
-	)
+	const confirmationLabel =
+		actionType === DEPOSIT_ACTION_TYPES.deposit ||
+		actionType === DEPOSIT_ACTION_TYPES.unbondCommitment ? (
+			<Trans
+				i18nKey={`deposits.${
+					actionType === DEPOSIT_ACTION_TYPES.deposit
+						? "depositConfirmationLabel"
+						: "unbondConfirmationLabel"
+				}`}
+				values={{
+					unbondDays: poolStats.unbondDays,
+					amount: actionAmount,
+					currency: "ADX"
+				}}
+				components={{
+					amount: <AmountText fontSize={21}></AmountText>,
+					e1: (
+						<ExternalAnchor
+							id="new-deposit-form-adex-network-tos"
+							target="_blank"
+							href="https://www.adex.network/tos/"
+						/>
+					),
+					e2: STAKING_RULES_URL ? (
+						<ExternalAnchor
+							id="new-bond-form-adex-staking-rules"
+							target="_blank"
+							href={STAKING_RULES_URL}
+						/>
+					) : (
+						<></>
+					)
+				}}
+			/>
+		) : null
 
 	const rageLeaveConfirmed =
 		rageConfirmed || actionType !== DEPOSIT_ACTION_TYPES.rageLeave
@@ -361,54 +367,59 @@ export default function DepositForm({
 						</Alert>
 					</Grid>
 				)}
-				{activePool ? (
+				{activePool && (
 					<Grid item xs={12} container spacing={2}>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolRewardPolicy")}:
-							</Typography>
-							<Typography variant="body1">
-								{t(activePool.rewardPolicy)}
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("common.poolSlashingPolicy")}:
-							</Typography>
-							<Typography variant="body1">
-								{t(activePool.slashPolicy)}
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">
-								{t("deposits.lockupPeriodLabel")}:
-							</Typography>
-							<Typography variant="body1">
-								{t("deposits.lockupDays", { count: poolStats.unbondDays })}
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h6">{t("common.poolAPY")}:</Typography>
-							<Typography variant="body1">
-								<Trans
-									i18nKey="bonds.currentYield"
-									values={{
-										apy: (poolStats.currentAPY * 100).toFixed(2),
-										sign: "%"
-									}}
-									components={{
-										farmer: (
-											<span role="img" aria-label="farmer">
-												🌾
-											</span>
-										)
-									}}
-								/>
-							</Typography>
-						</Grid>
+						{actionType === DEPOSIT_ACTION_TYPES.deposit && (
+							<>
+								<Grid item xs={12}>
+									<Typography variant="h6">
+										{t("common.poolRewardPolicy")}:
+									</Typography>
+									<Typography variant="body1">
+										{t(activePool.rewardPolicy)}
+									</Typography>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography variant="h6">
+										{t("common.poolSlashingPolicy")}:
+									</Typography>
+									<Typography variant="body1">
+										{t(activePool.slashPolicy)}
+									</Typography>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography variant="h6">{t("common.poolAPY")}:</Typography>
+									<Typography variant="body1">
+										<Trans
+											i18nKey="bonds.currentYield"
+											values={{
+												apy: (poolStats.currentAPY * 100).toFixed(2),
+												sign: "%"
+											}}
+											components={{
+												farmer: (
+													<span role="img" aria-label="farmer">
+														🌾
+													</span>
+												)
+											}}
+										/>
+									</Typography>
+								</Grid>
+							</>
+						)}
+						{(actionType === DEPOSIT_ACTION_TYPES.deposit ||
+							actionType === DEPOSIT_ACTION_TYPES.unbondCommitment) && (
+							<Grid item xs={12}>
+								<Typography variant="h6">
+									{t("deposits.lockupPeriodLabel")}:
+								</Typography>
+								<Typography variant="body1">
+									{t("deposits.lockupDays", { count: poolStats.unbondDays })}
+								</Typography>
+							</Grid>
+						)}
 					</Grid>
-				) : (
-					""
 				)}
 
 				{confirmationLabel && (

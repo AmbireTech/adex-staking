@@ -175,7 +175,8 @@
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
     "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token (ADX-SHARE), the rewards shown may be less than your actual rewards.",
-    "confirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions"
+    "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
+    "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days."
   },
   "bonds": {
     "bondAmount": "Bond amount",
