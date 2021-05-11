@@ -22,6 +22,11 @@ import { ExternalAnchor } from "./Anchor"
 import { iconByPoolId } from "../helpers/constants"
 import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
 
+const stakingPoolLabel = {
+	"adex-loyalty-pool": "common.loPo",
+	"adex-staking-pool": "common.tomStakingPool"
+}
+
 const useStyles = makeStyles(theme => {
 	return {
 		iconBox: {
@@ -66,7 +71,9 @@ const StakingEventRow = ({ stakingEvent }) => {
 							</Box>
 						</Box>
 					)}
-					<Box>{stakingEvent.label}</Box>
+					<Box>
+						{t(stakingPoolLabel[stakingEvent.pool || "adex-staking-pool"])}
+					</Box>
 				</Box>
 			</TableCell>
 			<TableCell align="right">
