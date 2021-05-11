@@ -72,7 +72,9 @@ const getStakingPool = ({
 						fontSize={17}
 					/> */}
 					<Box>
-						{`(${(tomStakingV5PoolStats.userShare * 100).toFixed(4)} %)`}
+						{`(${t("deposits.poolShare")}: ${(
+							tomStakingV5PoolStats.userShare * 100
+						).toFixed(4)}%)`}
 					</Box>
 				</Box>
 			</Fragment>
@@ -208,7 +210,11 @@ const getLoyaltyPoolDeposit = ({
 					/>
 					{hasExternalStakingTokenTransfers && " *"}
 				</Box>
-				{<Box>{`(${(loyaltyPoolStats.userShare * 100).toFixed(4)} %)`}</Box>}
+				{
+					<Box>{`(${t("deposits.poolShare")}: ${(
+						loyaltyPoolStats.userShare * 100
+					).toFixed(4)}%)`}</Box>
+				}
 			</Fragment>
 		),
 		allTimeReward: loyaltyPoolStats.totalRewards ? (
