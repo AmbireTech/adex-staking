@@ -38,6 +38,8 @@ export const LOYALTY_POOP_EMPTY_STATS = {
 	totalRewards: ZERO,
 	totalDeposits: ZERO,
 	totalWithdraws: ZERO,
+	totalSharesOutTransfersAdxValue: ZERO,
+	totalSharesInTransfersAdxValue: ZERO,
 	userShare: 0
 }
 
@@ -378,6 +380,20 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 			}
 		})
 	)
+
+	const totalSharesOutTransfersAdxValue = shareTokensTransferOutToExternal.reduce(
+		(a, b) => a.add(b.adxAmount),
+		ZERO
+	)
+
+	const totalSharesInTransfersAdxValue = sharesTokensTransfersInFromExternal.reduce(
+		(a, b) => a.add(b.adxAmount),
+		ZERO
+	)
+
+	const totalDeposits = userDeposits.adx.add(totalSharesInTransfersAdxValue)
+	const totalWithdraws = userWithdraws.adx.add(totalSharesOutTransfersAdxValue)
+
 	const totalRewards = balanceLpADX.add(userWithdraws.adx).sub(userDeposits.adx)
 
 	const userShare = poolData.sharesTotalSupply.isZero()
@@ -391,8 +407,10 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 		...currentBalance,
 		stakingEvents: withTimestamp,
 		totalRewards,
-		totalDeposits: userDeposits.adx,
-		totalWithdraws: userWithdraws.adx,
+		totalDeposits,
+		totalWithdraws,
+		totalSharesOutTransfersAdxValue,
+		totalSharesInTransfersAdxValue,
 		userShare
 	}
 
