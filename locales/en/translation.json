@@ -82,11 +82,14 @@
     "unclaimed": "Unclaimed rewards",
     "total": "Total",
     "totalStaked": "Total staked",
+    "userBalanceWallet": "On wallet: {{amount}} {{currency}}",
+    "userBalanceGasless": "On gasless address: {{amount}} {{currency}}",
     "activeDepositsInfoLocked": "Locked: {{amount}} {{currency}}",
     "activeDepositsInfoPendingToUnlock": "Pending to unlock: {{amount}} {{currency}}",
     "activeDepositsInfoUnlocked": "Unlocked: {{amount}} {{currency}}",
     "activeDepositsInfoUnclaimed": "Unclaimed rewards: {{amount}} {{currency}}",
     "activeUsersStakeLegacy": "To migrate: {{amount}} {{currency}}",
+    "activeDepositsLegacyIdentityBalance": "On legacy gasless address: {{amount}} {{currency}}",
     "adxPrice": "ADX price: {{priceUSD}}"
   },
   "pools": {
@@ -110,7 +113,9 @@
     "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",
     "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. There is an additional incentive reward of 20 million ADX to be distributed by the end of 2021. All rewards will be paid in ADX and will be automatically added to your stake.",
     "tomV5SlashPolicy": "No slashing.",
-    "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool."
+    "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool.",
+    "tomV5LockupPeriodTxt": "{{count}} days ({{count}} days need to pas before unlocking ADX, during that period no rewards are received)"
+
   },
   "eventTypes": {
     "enter": "Enter",
@@ -165,12 +170,14 @@
     "extraInfo": "Extra info",
     "lockupPeriodLabel": "Lockup period",
     "lockupDays": "{{count}} days",
-    "unbondToWithdraw": "Please, unbond firs",
+    "unbondToWithdraw": "Please, unbond first",
     "unlocksAtInfo": "Unlocks at: {{unlocksAt}}",
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
-    "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token (ADX-SHARE), the rewards shown may be less than your actual rewards.",
-    "confirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions"
+    "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), the rewards shown may be less than your actual rewards.",
+    "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
+    "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days.",
+    "poolShare": "Pool share"
   },
   "bonds": {
     "bondAmount": "Bond amount",
