@@ -369,6 +369,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 	const [
 		balanceShares,
+		lockedShares,
 		gaslessAddrBalance,
 		allEnterADXTransferLogs,
 		leaveLogs,
@@ -378,6 +379,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		sharesTokensTransfersOutLogs
 	] = await Promise.all([
 		StakingPool.balanceOf(owner),
+		StakingPool.lockedShares(owner),
 		ADXToken.balanceOf(gaslessAddress),
 		provider.getLogs({
 			fromBlock: 0,
@@ -406,10 +408,6 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	])
 
 	const { shareValue, sharesTotalSupply } = poolData
-
-	const currentBalanceADX = balanceShares
-		.mul(shareValue)
-		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
 	const userShare = sharesTotalSupply.isZero()
 		? ZERO
@@ -743,6 +741,30 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		(a, b) => a.add(b.receivedTokens),
 		totalSharesOutTransfersAdxValue
 	)
+
+	const lockedSharesAdxValue = [...userLeaves]
+		.filter(x => !x.withdrawTx)
+		.reduce((a, b) => a.add(b.adxValue), ZERO)
+
+	const totalLockedSharesCheck = [...userLeaves]
+		.filter(x => !x.withdrawTx)
+		.reduce((a, b) => a.add(b.shares), ZERO)
+
+	if (!totalLockedSharesCheck.eq(lockedShares)) {
+		console.error(
+			"locked shares different than check sum, user balance can be incorrect",
+			"lockedShares:",
+			lockedShares.toString(),
+			"totalLockedSharesCheck:",
+			totalLockedSharesCheck.toString()
+		)
+	}
+
+	const currentBalanceADX = balanceShares
+		.sub(lockedShares)
+		.mul(shareValue)
+		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+		.add(lockedSharesAdxValue)
 
 	const totalRewards = currentBalanceADX // includes leavesPendingToUnlockTotalADX and  leavesReadyToWithdrawTotalADX
 		.add(withdrawsADXTotal)
