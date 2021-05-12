@@ -25,7 +25,7 @@ import { formatADXPretty, formatNumberPretty } from "../helpers/formatting"
 const ACTIVE_BORDER_WIDTH = 3
 
 const poolsSrc = DEPOSIT_POOLS.filter(x => x.hasValidatorStats).map(x => ({
-	value: x.id,
+	value: x.validatorId,
 	label: x.label,
 	pool: x
 }))

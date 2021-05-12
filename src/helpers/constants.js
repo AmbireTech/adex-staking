@@ -126,8 +126,11 @@ export const DEPOSIT_POOLS = [
 	{
 		version: "stakingv5",
 		label: "common.tomStakingPool",
-		id: utils.id("validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
+		id: utils.id("V5validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"), // TODO:
 		selectable: true,
+		validatorId: utils.id(
+			"validator:0x2892f6C41E0718eeeDd49D98D648C789668cA67d"
+		), // Used for validator stats page
 		hasValidatorStats: true,
 		minStakingAmount: "0.0",
 		purpose: "pools.tomV5Purpose",

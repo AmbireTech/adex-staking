@@ -72,7 +72,9 @@ const getStakingPool = ({
 						fontSize={17}
 					/> */}
 					<Box>
-						{`(${(tomStakingV5PoolStats.userShare * 100).toFixed(4)} %)`}
+						{`(${t("deposits.poolShare")}: ${(
+							tomStakingV5PoolStats.userShare * 100
+						).toFixed(4)}%)`}
 					</Box>
 				</Box>
 			</Fragment>
@@ -191,7 +193,8 @@ const getLoyaltyPoolDeposit = ({
 	t,
 	stats,
 	disabledDepositsMsg,
-	disabledWithdrawsMsg
+	disabledWithdrawsMsg,
+	hasExternalStakingTokenTransfers
 }) => {
 	const { loyaltyPoolStats } = stats
 	return {
@@ -202,34 +205,53 @@ const getLoyaltyPoolDeposit = ({
 			<Fragment>
 				<Box>
 					<AmountText
-						text={`${formatADXPretty(
-							loyaltyPoolStats.balanceLpToken
-						)} ${"ADX-LOYALTY"}`}
+						text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
 						fontSize={17}
 					/>
+					{hasExternalStakingTokenTransfers && " *"}
 				</Box>
-				<Box>
-					<AmountText
-						text={`(=${formatADXPretty(
-							loyaltyPoolStats.balanceLpADX
-						)} ${"ADX"})`}
-						fontSize={17}
-					/>
-				</Box>
+				{
+					<Box>{`(${t("deposits.poolShare")}: ${(
+						loyaltyPoolStats.userShare * 100
+					).toFixed(4)}%)`}</Box>
+				}
 			</Fragment>
 		),
-		allTimeReward: loyaltyPoolStats.allTimeRewardADX ? (
-			<AmountText
-				text={`${formatADXPretty(loyaltyPoolStats.allTimeRewardADX)} ${"ADX"}`}
-				fontSize={17}
-			/>
+		allTimeReward: loyaltyPoolStats.totalRewards ? (
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(loyaltyPoolStats.totalRewards)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
 		) : (
 			t("common.unknown")
 		),
-		depositsADXTotal: t("common.NA"),
+		depositsADXTotal: loyaltyPoolStats.totalDeposits ? (
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(loyaltyPoolStats.totalDeposits)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
+		) : (
+			t("common.unknown")
+		),
 		pendingToUnlockTotalADX: t("common.NA"),
 		readyToWithdrawTotalADX: t("common.NA"),
-		withdrawsADXTotal: t("common.NA"),
+		withdrawsADXTotal: loyaltyPoolStats.totalWithdraws ? (
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(loyaltyPoolStats.totalWithdraws)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasExternalStakingTokenTransfers && " *"}
+			</Box>
+		) : (
+			t("common.unknown")
+		),
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
@@ -286,9 +308,18 @@ export default function Deposits() {
 		totalSharesInTransfersAdxValue
 	} = tomStakingV5PoolStats
 
+	const {
+		totalSharesOutTransfersAdxValue: totalSharesOutTransfersAdxValueLP,
+		totalSharesInTransfersAdxValue: totalSharesInTransfersAdxValueLP
+	} = loyaltyPoolStats
+
 	const hasExternalStakingTokenTransfers =
 		!totalSharesOutTransfersAdxValue.isZero() ||
 		!totalSharesInTransfersAdxValue.isZero()
+
+	const hasExternalStakingTokenTransfersLP =
+		!totalSharesOutTransfersAdxValueLP.isZero() ||
+		!totalSharesInTransfersAdxValueLP.isZero()
 
 	const disableActionsMsg = !chosenWalletType.name
 		? t("common.connectWallet")
@@ -318,7 +349,8 @@ export default function Deposits() {
 				t,
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
-				disabledWithdrawsMsg
+				disabledWithdrawsMsg,
+				hasExternalStakingTokenTransfers: hasExternalStakingTokenTransfersLP
 			})
 			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
 		}
@@ -445,7 +477,18 @@ export default function Deposits() {
 			</Box>
 			{hasExternalStakingTokenTransfers && (
 				<Alert variant="filled" severity="info">
-					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert")}`}
+					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
+						pool: t("common.tomStakingPool"),
+						token: "ADX-STAKING"
+					})}}`}
+				</Alert>
+			)}
+			{hasExternalStakingTokenTransfersLP && (
+				<Alert variant="filled" severity="info">
+					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
+						pool: t("common.loPo"),
+						token: "ADX-LOYALTY"
+					})}}`}
 				</Alert>
 			)}
 		</Box>

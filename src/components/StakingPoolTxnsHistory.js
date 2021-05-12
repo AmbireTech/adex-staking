@@ -22,6 +22,11 @@ import { ExternalAnchor } from "./Anchor"
 import { iconByPoolId } from "../helpers/constants"
 import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
 
+const stakingPoolLabel = {
+	"adex-loyalty-pool": "common.loPo",
+	"adex-staking-pool": "common.tomStakingPool"
+}
+
 const useStyles = makeStyles(theme => {
 	return {
 		iconBox: {
@@ -41,7 +46,9 @@ const useStyles = makeStyles(theme => {
 const StakingEventRow = ({ stakingEvent }) => {
 	const { t } = useTranslation()
 	const classes = useStyles()
-	const PoolIcon = iconByPoolId({ poolId: "adex-staking-pool" })
+	const PoolIcon = iconByPoolId({
+		poolId: stakingEvent.pool || "adex-staking-pool"
+	})
 	const isExternalShareTokenTransfer =
 		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferIn ||
 		stakingEvent.type === STAKING_POOL_EVENT_TYPES.shareTokensTransferOut
@@ -64,7 +71,9 @@ const StakingEventRow = ({ stakingEvent }) => {
 							</Box>
 						</Box>
 					)}
-					<Box>{stakingEvent.label}</Box>
+					<Box>
+						{t(stakingPoolLabel[stakingEvent.pool || "adex-staking-pool"])}
+					</Box>
 				</Box>
 			</TableCell>
 			<TableCell align="right">
@@ -144,8 +153,13 @@ const StakingEventRow = ({ stakingEvent }) => {
 export default function StakingPoolTxnsHistory() {
 	const { t } = useTranslation()
 	const { stats } = useContext(AppContext)
-	const { tomStakingV5PoolStats } = stats
-	const { stakings } = tomStakingV5PoolStats
+	const { tomStakingV5PoolStats, loyaltyPoolStats } = stats
+	const { stakings: stakingPoolEvents } = tomStakingV5PoolStats
+	const { stakingEvents: loyaltyPoolEvents } = loyaltyPoolStats
+
+	const stakings = stakingPoolEvents
+		.concat(loyaltyPoolEvents)
+		.sort((a, b) => a.blockNumber - b.blockNumber)
 
 	return (
 		<Box>
