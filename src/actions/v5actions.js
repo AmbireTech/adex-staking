@@ -706,9 +706,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 
 		const withAdxAmount = events =>
 			events.forEach((transferLog, i) => {
-				const nextLog = allLogs.find(
-					log => log.blockNumber >= transferLog.blockNumber
-				)
+				const nextLog =
+					allLogs.find(log => log.blockNumber >= transferLog.blockNumber) || {}
+
 				const bestShareValue = nextLog.shareValue || shareValue
 
 				// approximate share value

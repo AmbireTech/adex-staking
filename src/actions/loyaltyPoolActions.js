@@ -348,9 +348,9 @@ export async function loadUserLoyaltyPoolsStats(walletAddr) {
 
 		const withAdxAmount = events =>
 			events.forEach((transferLog, i) => {
-				const nextLog = allLogs.find(
-					log => log.blockNumber >= transferLog.blockNumber
-				)
+				const nextLog =
+					allLogs.find(log => log.blockNumber >= transferLog.blockNumber) || {}
+
 				const bestShareValue = nextLog.shareValue || currentShareValue
 
 				// approximate share value
