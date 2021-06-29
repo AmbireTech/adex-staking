@@ -335,7 +335,8 @@
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
     "poolName": "{{pool}} ({{type}}) {{extra}}",
-    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate"
+    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate",
+    "seeDetailsBtn": "See details"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
