@@ -5,6 +5,7 @@ import ADXTokenABI from "../abi/ADXToken"
 import ADXSupplyControllerABI from "../abi/ADXSupplyController"
 import StakingMigratorABI from "../abi/StakingMigrator.json"
 import StakingPoolABI from "../abi/StakingPool.json"
+import GaslessSweeperABI from "../abi/GaslessSweeper.json"
 import CoreABI from "adex-protocol-eth/abi/AdExCore"
 import {
 	ADDR_ADX,
@@ -16,7 +17,8 @@ import {
 	ADDR_STAKING_POOL,
 	ADDR_STAKING_MIGRATOR,
 	ADDR_ADX_SUPPLY_CONTROLLER,
-	ADEX_RELAYER_HOST
+	ADEX_RELAYER_HOST,
+	ADDR_GASLESS_SWEEPER
 } from "../helpers/constants"
 import { getDefaultProvider, getSigner } from "../ethereum"
 import { executeOnIdentity, toChannelTuple } from "./common"
@@ -233,6 +235,27 @@ export async function onStakingPoolV5GaslessDeposit(
 	})
 	if (res.status === 500) throw new Error("errors.relayerInternal")
 	return res.json()
+}
+
+export async function onStakingPoolV5WhenNoSufficientForGaslessDeposit(
+	stats,
+	chosenWalletType,
+	gaslessAddrAmount
+) {
+	if (!stats) throw new Error("errors.statsNotProvided")
+	if (gaslessAddrAmount.isZero()) throw new Error("errors.zeroDeposit")
+
+	const signer = await getSigner(chosenWalletType)
+	if (!signer) throw new Error("errors.failedToGetSigner")
+	const walletAddr = await signer.getAddress()
+
+	const gaslessSweeperWithSigner = new Contract(
+		ADDR_GASLESS_SWEEPER,
+		GaslessSweeperABI,
+		signer
+	)
+
+	await gaslessSweeperWithSigner.sweep(ADDR_STAKING_POOL, [walletAddr])
 }
 
 export async function onStakingPoolV5Withdraw(
