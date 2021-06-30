@@ -100,7 +100,7 @@ const Gasless = () => {
 	const walletConnected = gaslessAddress && userDataLoaded
 
 	const mainErr = !walletConnected
-		? "common.connectWallet"
+		? t("common.connectWallet")
 		: !canExecuteGasless
 		? t(gaslessError.message || "", gaslessError.data || {})
 		: ""
