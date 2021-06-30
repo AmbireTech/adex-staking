@@ -24,7 +24,8 @@ import {
 import AppContext from "../AppContext"
 import {
 	// DEPOSIT_POOLS,
-	ZERO
+	ZERO,
+	iconByPoolId
 	// UNBOND_DAYS
 } from "../helpers/constants"
 import { getWithdrawActionBySelectedRewardChannels } from "../actions"
@@ -32,10 +33,13 @@ import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import ConfirmationDialog from "./ConfirmationDialog"
 import StatsCard from "./StatsCard"
 import { AmountText } from "./cardCommon"
+import WithRouterLink from "./WithRouterLink"
 import {
 	useTranslation
 	// Trans
 } from "react-i18next"
+
+const RRButton = WithRouterLink(Button)
 
 const getTotalSelectedRewards = (rewards, selected, getTotal) => {
 	return rewards
@@ -64,10 +68,7 @@ export default function Rewards() {
 		AppContext
 	)
 	const [rewards, setRewards] = useState([])
-	const {
-		// loyaltyPoolStats,
-		tomPoolStats
-	} = stats
+	const { tomStakingV5PoolStats, loyaltyPoolStats, tomPoolStats } = stats
 	const [selected, setSelected] = useState({})
 	const [totalAmountsSelected, setTotalAmountsSelected] = useState({})
 	const [claimOpen, setClaimOpen] = useState(false)
@@ -233,6 +234,45 @@ export default function Rewards() {
 		)
 	}
 
+	const renderDepositRewardsRow = ({ deposit }) => {
+		const PoolIcon = iconByPoolId(deposit)
+
+		return (
+			<TableRow key={deposit.poolId}>
+				<TableCell>
+					{PoolIcon && (
+						<Box mr={1}>
+							<Box
+							// classes={{ root: classes.iconBox }}
+							>
+								<SvgIcon fontSize="large" color="inherit">
+									<PoolIcon width="100%" height="100%" />
+								</SvgIcon>
+							</Box>
+						</Box>
+					)}
+				</TableCell>
+				<TableCell>
+					<Box>{t(deposit.label)}</Box>
+				</TableCell>
+				<TableCell align="right">
+					<AmountText
+						text={`${formatAmountPretty(deposit.totalRewards, "ADX")} ADX`}
+						fontSize={17}
+					/>
+				</TableCell>
+				<TableCell align="right">
+					<RRButton to={{ pathname: "/stakings" }}>
+						{t("rewards.seeDetailsBtn")}
+					</RRButton>
+				</TableCell>
+				<TableCell align="right">{`${(deposit.currentAPY * 100).toFixed(
+					2
+				)} %`}</TableCell>
+			</TableRow>
+		)
+	}
+
 	return (
 		<Box mt={2}>
 			<Box m={1} color="text.main">
@@ -325,6 +365,26 @@ export default function Rewards() {
 								</TableRow>
 							</TableHead>
 							<TableBody>
+								{tomStakingV5PoolStats.totalRewards &&
+									!tomStakingV5PoolStats.totalRewards.isZero() &&
+									renderDepositRewardsRow({
+										deposit: {
+											totalRewards: tomStakingV5PoolStats.totalRewards,
+											currentAPY: tomStakingV5PoolStats.currentAPY,
+											poolId: "adex-staking-pool",
+											label: "common.tomStakingPool"
+										}
+									})}
+								{loyaltyPoolStats.totalRewards &&
+									!loyaltyPoolStats.totalRewards.isZero() &&
+									renderDepositRewardsRow({
+										deposit: {
+											totalRewards: loyaltyPoolStats.totalRewards,
+											currentAPY: loyaltyPoolStats.currentAPY,
+											poolId: "adex-loyalty-pool",
+											label: "common.loPo"
+										}
+									})}
 								{[...(rewards || [])].map(r => renderRewardRow(r, selected))}
 							</TableBody>
 						</Table>

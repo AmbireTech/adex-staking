@@ -21,7 +21,10 @@ export const trezor = new TrezorConnector({
 	url: REACT_APP_RPC_URL,
 	pollingInterval: POLLING_INTERVAL,
 	manifestEmail: "contactus@adex.network",
-	manifestAppUrl: "https://adex.network"
+	manifestAppUrl: "https://staking.adex.network",
+	config: {
+		networkId: 1
+	}
 })
 
 export const walletconnect = new WalletConnectConnector({

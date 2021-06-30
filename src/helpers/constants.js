@@ -1,7 +1,7 @@
 import { BigNumber, utils } from "ethers"
 import walletconnectLogo from "../walletconnect-logo.svg"
 import metamaskLogo from "../metamask-fox.svg"
-// import trezorLogo from "../trezor.svg"
+import trezorLogo from "../trezor.svg"
 // import ledgerLogo from "../ledger.png"
 
 import { ReactComponent as BalancerIcon } from "./../resources/balancer-bal-logo.svg"
@@ -181,11 +181,14 @@ export const Wallets = [
 				wallets: "Trust Wallet"
 			}
 		}
+	},
+	{
+		name: TREZOR,
+		icon: trezorLogo,
+		extraLabel: {
+			message: "dialogs.trezorDefaultAddressOnly"
+		}
 	}
-	// {
-	// 	name: TREZOR,
-	// 	icon: trezorLogo
-	// },
 	// {
 	// 	name: LEDGER,
 	// 	icon: ledgerLogo
