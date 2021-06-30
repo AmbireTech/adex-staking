@@ -108,6 +108,10 @@ const Gasless = () => {
 	const canExecuteGaslessError =
 		mainErr || (gaslessAddrBalance.isZero() ? t("errors.nothingToStake") : "")
 
+	const insufficientForGasless =
+		!gaslessAddrBalance.isZero() &&
+		gaslessAddrBalance.lt(MIN_BALANCE_FOR_GASLESS_TXNS)
+
 	const onTxRes = (res, btnId) => {
 		if (res && res.txId) {
 			addSnack(
@@ -268,7 +272,7 @@ const Gasless = () => {
 											})}
 											btnLabel={t("common.deposit")}
 											color="secondary"
-											size="small"
+											size="large"
 											variant="contained"
 											fullWidth
 											disabled={!!canExecuteGaslessError}
@@ -276,6 +280,31 @@ const Gasless = () => {
 											onTxRes={onTxRes}
 										/>
 									</Box>
+
+									{insufficientForGasless && canExecuteGaslessError && (
+										<Box mt={4}>
+											<Box mb={2}>
+												<Typography variant="caption" gutterBottom>
+													{t("deposits.depositGaslessNoGaslessBtnInfo")}
+												</Typography>
+											</Box>
+											<GaslessDepositDialog
+												id="staking-pool-tom-gasless-deposit-form-no-gasless"
+												title={t("deposits.depositTo", {
+													pool: t("common.tomStakingPool")
+												})}
+												btnLabel={t("deposits.depositGaslessNoGaslessBtn")}
+												color="secondary"
+												size="small"
+												variant="contained"
+												fullWidth
+												noGasless={true}
+												// disabled={!!canExecuteGaslessError}
+												// tooltipTitle={canExecuteGaslessError}
+												onTxRes={onTxRes}
+											/>
+										</Box>
+									)}
 								</Box>
 							</Box>
 							<Box mt={2}>

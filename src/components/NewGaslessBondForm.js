@@ -1,7 +1,11 @@
 import React, { useState, useContext } from "react"
 import { formatADXPretty } from "../helpers/formatting"
 import { STAKING_RULES_URL, DEPOSIT_POOLS } from "../helpers/constants"
-import { getDepositPool, onStakingPoolV5GaslessDeposit } from "../actions"
+import {
+	getDepositPool,
+	onStakingPoolV5GaslessDeposit,
+	onStakingPoolV5WhenNoSufficientForGaslessDeposit
+} from "../actions"
 import {
 	Grid,
 	Typography,
@@ -17,10 +21,14 @@ import { useTranslation, Trans } from "react-i18next"
 import AppContext from "../AppContext"
 import { AmountText } from "./cardCommon"
 
-export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
+export default function NewGaslessBondForm({
+	closeDialog,
+	onTxRes,
+	noGasless
+} = {}) {
 	const { t } = useTranslation()
 	const activePool = getDepositPool(DEPOSIT_POOLS[1].id) || {}
-	const { stats, chosenWalletType } = useContext(AppContext)
+	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
 	const { tomStakingV5PoolStats } = stats
 	const {
@@ -35,18 +43,29 @@ export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
 		setConfirmation(false)
 		if (closeDialog) closeDialog()
 
-		const res = await onStakingPoolV5GaslessDeposit(
-			stats,
-			chosenWalletType,
-			adxDepositAmount
-		)
+		if (noGasless) {
+			await wrapDoingTxns(
+				onStakingPoolV5WhenNoSufficientForGaslessDeposit.bind(
+					null,
+					stats,
+					chosenWalletType,
+					tomStakingV5PoolStats.gaslessAddrBalance
+				)
+			)()
+		} else {
+			const res = await onStakingPoolV5GaslessDeposit(
+				stats,
+				chosenWalletType,
+				adxDepositAmount
+			)
 
-		onTxRes && onTxRes(res, "new-gasless-deposit-snack")
+			onTxRes && onTxRes(res, "new-gasless-deposit-snack")
+		}
 	}
 
 	const confirmationLabel = (
 		<Trans
-			i18nKey="deposits.confirmationLabel"
+			i18nKey="deposits.depositConfirmationLabel"
 			values={{
 				unbondDays,
 				amount: formatADXPretty(adxDepositAmount),
@@ -85,7 +104,11 @@ export default function NewGaslessBondForm({ closeDialog, onTxRes } = {}) {
 			bgcolor="background.paper"
 			overflow="auto"
 		>
-			<Typography variant="h4">{t("gasless.addNewDeposit")}</Typography>
+			<Typography variant="h4">
+				{t(
+					noGasless ? "gasless.addNewDepositNoGasless" : "gasless.addNewDeposit"
+				)}
+			</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<Box mb={1.5}>
