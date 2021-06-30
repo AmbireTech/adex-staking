@@ -177,7 +177,9 @@
     "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), the rewards shown may be less than your actual rewards.",
     "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days.",
-    "poolShare": "Pool share"
+    "poolShare": "Pool share",
+    "depositGaslessNoGaslessBtn": "Deposit with fees",
+    "depositGaslessNoGaslessBtnInfo": "Your gasless address balance is not sufficient for a gasless deposit. Top up your gasless address to 5,000 ADX or more, or click on the button below to add your balance to your staking account by paying the Ethereum network fees. You need to have ETH on your connected wallet to make the transaction!"
   },
   "bonds": {
     "bondAmount": "Bond amount",
@@ -232,7 +234,8 @@
     "info": "Once you send your gasless transactions, it will take some time for it to be executed on the chain. Please be patient. Your stats will be updated when the transaction is confirmed. Confirmation time depends on network load. You can see all transactions of your gasless address <external> HERE </external>",
     "createNewBond": "Create a bond - gasless",
     "tempDisabled": "Temporarily Unavailable",
-    "addNewDeposit": "Add new deposit - gasless"
+    "addNewDeposit": "Add new deposit - gasless",
+    "addNewDepositNoGasless": "Add new deposit (pay gas fees)"
   },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
