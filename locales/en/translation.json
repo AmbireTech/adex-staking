@@ -223,8 +223,8 @@
     "connectWalletToSeeAddr": "connect wallet to see gasless staking address",
     "copiedToClipboard": "Gasless Staking address {{identityAddr}} copied to clipboard",
     "addrTooltip": "This is the address of your gasless account: it's an automatically calculated (CREATE2) smart contract address that will be created once the first transaction is issued.",
-    "bullet1": "Deposit ADX to this address.When there's a minimum of <strong> {{minBalance}} {{currency}} </strong> deposited, you can click \"Stake\" and that amount will be staked without gas fees.",
-    "bullet2": "You can send ADX from wallets and exchanges as many times as you want before clicking \"Stake\".",
+    "bullet1": "Deposit ADX to this address.When there's a minimum of <strong> {{minBalance}} {{currency}} </strong> deposited, you can click \"Deposit\" and the amount will be staked to Pool Tom without gas fees.",
+    "bullet2": "You can send ADX from wallets and exchanges as many times as you want before clicking \"Deposit\".",
     "bullet3": "Gasless staking is limited to one stake in {{count}} hour",
     "bullet3_plural": "Gasless staking is limited to one stake in {{count}} hours",
     "adxBalanceOnAddr": "ADX BALANCE ON GASLESS ADDRESS",
@@ -300,7 +300,8 @@
     "migrationRequestConfirmation": "<box> You are about to migrate this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you can finalize the migration process (additional action will be required). </li> <li> You will NOT receive staking rewards for this {{unbondDays}} day period. </li> <li> You will receive a migration reward of minimum {{migrationReward}} {{currency}} ( (equal the staking rewards for 2 months) when you finalize the migration. </li> <li> All of your unclaimed rewards when finalizing the process ({{unbondPeriod}} day from now) will be added to your migrated bond. The additional migration reward will be added this amount too. <li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days</li> </ol>",
     "migrationFinalizationConfirmation": "<box> You are about to complete migration process for this \"{{poolName}}\" bond of {{amount}} {{currency}} </box> <box> Please be aware: </box>  <ol> <li> All of your unclaimed rewards will be added to your migrated bond. </li> <li> If you wish, you can withdraw your unclaimed rewards without your wallet before finalizing the migration. </li> <li>  You will receive migration reward of {{migrationReward}} {{currency}}. It will be added to your migrated bond.  </li> <li> Your migrated bond will have a lockup period {{unbondDaysV5}} days. </li> </ol>",
     "bondToV5MigrationConfirmation": "<box> Are you sure you want to request unbond/migration of {{amount}} {{currency}} </box> <box> Please be aware: </box> <ol> <li> It will take {{unbondDays}} days before you will be able to finalize migration process or unbond your {{currency}} ! </li> <li> You will not receive staking rewards for this amount in this {{unbondDays}} day period. </li> <li> If you chose to migrate the bond you will get extra reward to compensate the lack of rewards for the {{unbondDays}} period.  </li> </ol>",
-    "withdrawFromOldIdentity": "Withdraw {{amount}} {{currency}} to {{walletAddr}} "
+    "withdrawFromOldIdentity": "Withdraw {{amount}} {{currency}} to {{walletAddr}} ",
+    "trezorDefaultAddressOnly": "(Default address only)"
   },
   "help": {
     "help": "help",
@@ -335,7 +336,8 @@
     "name": "Reward name",
     "tableInfo": "This table will show all your rewards",
     "poolName": "{{pool}} ({{type}}) {{extra}}",
-    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate"
+    "migrateYourBondsIfYouWandMigrate": "Go to staked to migrate",
+    "seeDetailsBtn": "See details"
   },
   "company": {
     "copy": "© {{year}} AdEx Network OÜ",
