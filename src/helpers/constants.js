@@ -28,7 +28,7 @@ export const ZERO = BigNumber.from(0)
 // 	"https://min-api.cryptocompare.com/data/price?fsym=ADX&tsyms=BTC,USD,EUR"
 
 export const PRICES_API_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ADEX&vs_currencies=usd`
-export const UNBOND_DAYS = 30
+export const UNBOND_DAYS = 20
 export const STAKING_RULES_URL = null
 
 export const IDLE_TIMEOUT_MINUTES = 10
