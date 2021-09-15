@@ -91,7 +91,7 @@
     "tomSlashPolicy": "禁止削减.",
     "unbondPeriodDay": "{{count}} 天",
     "unbondPeriodDay_plural": "{{count}} 天",
-    "tomLockupPeriodTxt": "30 天（解锁 ADX 前需要经过 30 天，在此期间不会收到收益）",
+    "tomLockupPeriodTxt": "20 天（解锁 ADX 前需要经过 20 天，在此期间不会收到收益）",
     "tomApyStability": "灵活",
     "tomPurpose": "质押 ADX 通证换取主验证者的信誉"
   },

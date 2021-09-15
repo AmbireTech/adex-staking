@@ -107,7 +107,7 @@
     "tomSlashPolicy": "No slashing.",
     "unbondPeriodDay": "{{count}} day",
     "unbondPeriodDay_plural": "{{count}} days",
-    "tomLockupPeriodTxt": "30 days (30 days need to pass before unlocking ADX, during that period no rewards are received)",
+    "tomLockupPeriodTxt": "20 days (20 days need to pass before unlocking ADX, during that period no rewards are received)",
     "tomApyStability": "Flexible",
     "tomPurpose": "Staking ADX tokens towards the reputation of our main validator",
     "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",

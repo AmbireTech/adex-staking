@@ -91,7 +91,7 @@
     "tomSlashPolicy": "지분 삭감 없음.",
     "unbondPeriodDay": "{{count}} 일",
     "unbondPeriodDay_plural": "{{count}} 일",
-    "tomLockupPeriodTxt": "30일(ADX를 잠금 해제하기 전에 30일이 경과해야 하며, 그 기간 동안에는 보상을 받을 수 없습니다)",
+    "tomLockupPeriodTxt": "20일(ADX를 잠금 해제하기 전에 20일이 경과해야 하며, 그 기간 동안에는 보상을 받을 수 없습니다)",
     "tomApyStability": "탄력적인",
     "tomPurpose": " ADX 토큰을 주 검증자의 평판에 대해 스테이킹합니다."
   },
