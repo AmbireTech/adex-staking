@@ -55,11 +55,19 @@ export default function DepositForm({
 	const [dirtyInputs, setDirtyInputs] = useState(false)
 	const [confirmation, setConfirmation] = useState(false)
 	const [rageConfirmed, setRageConfirmed] = useState(false)
+	const [rageOverAvailableConfirmed, setRageOverAvailableConfirmed] = useState(
+		false
+	)
 	const [activePool, setActivePool] = useState({})
 	const [unbondCommitment, setUnbondCommitment] = useState(null)
 	const [activeUnbondCommitments, setActiveUnbondCommitments] = useState(null)
 	const [maxAmount, setMaxAmount] = useState(ZERO)
+	const [maxAmountAvailableForRage, setMaxAmountAvailableForRage] = useState(
+		ZERO
+	)
 	const [poolStats, setPoolStats] = useState({})
+
+	const actionAmountBN = parseADX(actionAmount)
 
 	useEffect(() => {
 		const newActivePool = getDepositPool(depositPool || {})
@@ -73,6 +81,13 @@ export default function DepositForm({
 			stats.userWalletBalance
 		)
 
+		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
+			DEPOSIT_ACTION_TYPES.unbondCommitment,
+			newActivePool.id,
+			newPoolStats,
+			stats.userWalletBalance
+		)
+
 		const newActiveUnbondCommitments = newPoolStats.userLeaves
 			? [...newPoolStats.userLeaves].filter(x => !x.withdrawTx)
 			: null
@@ -81,6 +96,7 @@ export default function DepositForm({
 		setActiveUnbondCommitments(newActiveUnbondCommitments)
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
+		setMaxAmountAvailableForRage(newMaxAmountAvailable)
 	}, [actionType, depositPool, stats])
 
 	const onAction = async () => {
@@ -141,7 +157,12 @@ export default function DepositForm({
 		) : null
 
 	const rageLeaveConfirmed =
-		rageConfirmed || actionType !== DEPOSIT_ACTION_TYPES.rageLeave
+		actionType !== DEPOSIT_ACTION_TYPES.rageLeave ||
+		(actionAmountBN.gt(maxAmountAvailableForRage)
+			? rageConfirmed && rageOverAvailableConfirmed
+			: rageConfirmed)
+	// rageConfirmed || actionType !== DEPOSIT_ACTION_TYPES.rageLeave
+
 	const confirmed = (!confirmationLabel || confirmation) && rageLeaveConfirmed
 
 	useEffect(() => {
@@ -330,6 +351,22 @@ export default function DepositForm({
 							)}
 						/>
 						<Box mt={1}>
+							{actionType === DEPOSIT_ACTION_TYPES.rageLeave &&
+								maxAmountAvailableForRage.lt(maxAmount) && (
+									<Button
+										fullWidth
+										size="small"
+										id={`new-${actionType}-form-available-only-amount-btn`}
+										onClick={() => {
+											onAmountChange(formatADX(maxAmountAvailableForRage))
+										}}
+									>
+										{t("common.maxAmountBtnRageOver", {
+											amount: formatADXPretty(maxAmountAvailableForRage),
+											currency: "ADX"
+										})}
+									</Button>
+								)}
 							<Button
 								fullWidth
 								size="small"
@@ -344,8 +381,11 @@ export default function DepositForm({
 								})}
 							</Button>
 						</Box>
+						{/* 
+						maxAmountAvailableForRage */}
 					</Grid>
 				)}
+
 				{actionType === DEPOSIT_ACTION_TYPES.rageLeave && (
 					<Grid item xs={12}>
 						<Alert severity="warning">
@@ -367,6 +407,32 @@ export default function DepositForm({
 						</Alert>
 					</Grid>
 				)}
+				{actionType === DEPOSIT_ACTION_TYPES.rageLeave &&
+					actionAmountBN.gt(maxAmountAvailableForRage) && (
+						<Grid item xs={12}>
+							<Alert severity="warning">
+								<FormControlLabel
+									style={{ userSelect: "none" }}
+									label={t("deposits.rageLeaveWarningOverAvailable", {
+										available: formatADXPretty(maxAmountAvailableForRage),
+										percent: (poolStats.rageReceivedPromilles / 10).toFixed(2),
+										// total: (poolStats.rageReceivedPromilles / 10).toFixed(2),
+										token: "ADX"
+									})}
+									control={
+										<Checkbox
+											id={`new-${actionType}-tos-check`}
+											checked={rageOverAvailableConfirmed}
+											onChange={ev =>
+												setRageOverAvailableConfirmed(ev.target.checked)
+											}
+										/>
+									}
+								></FormControlLabel>
+							</Alert>
+						</Grid>
+					)}
+
 				{activePool && (
 					<Grid item xs={12} container spacing={2}>
 						{actionType === DEPOSIT_ACTION_TYPES.deposit && (

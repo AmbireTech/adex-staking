@@ -63,6 +63,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	balanceSharesAvailable: ZERO,
 	currentBalanceADX: ZERO,
 	currentBalanceADXAvailable: ZERO,
+	currentBalanceADXAtCurrentShareValue: ZERO,
 	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
 	poolTotalBalanceADX: ZERO,
@@ -299,11 +300,14 @@ export async function onStakingPoolV5RageLeave(
 		signer
 	)
 
-	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
+	const {
+		balanceShares,
+		currentBalanceADXAtCurrentShareValue
+	} = stats.tomStakingV5PoolStats
 
 	const sharesToWithdraw = rageLeaveADXAmount
 		.mul(balanceShares)
-		.div(currentBalanceADX)
+		.div(currentBalanceADXAtCurrentShareValue)
 
 	await stakingPoolWithSigner.rageLeave(sharesToWithdraw, false)
 }
@@ -797,7 +801,17 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		.mul(shareValue)
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
+	// NOTE: used to calc actual blance in ADX + rewards
 	const currentBalanceADX = currentBalanceADXAvailable.add(lockedSharesAdxValue)
+
+	// NOTE: Used for rage leave because shareValue is can be different than in unbondCommitments
+	const lockedSharesADXAtCurrentShareValue = lockedShares
+		.mul(shareValue)
+		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+
+	const currentBalanceADXAtCurrentShareValue = currentBalanceADXAvailable.add(
+		lockedSharesADXAtCurrentShareValue
+	)
 
 	const totalRewards = currentBalanceADX // includes leavesPendingToUnlockTotalADX and  leavesReadyToWithdrawTotalADX
 		.add(withdrawsADXTotal)
@@ -831,6 +845,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		balanceSharesAvailable,
 		currentBalanceADX,
 		currentBalanceADXAvailable,
+		currentBalanceADXAtCurrentShareValue,
 		totalRewards,
 		totalSharesOutTransfersAdxValue,
 		totalSharesInTransfersAdxValue,
