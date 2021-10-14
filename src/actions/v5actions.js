@@ -60,7 +60,9 @@ export const STAKING_POOL_EVENT_TYPES = {
 export const STAKING_POOL_EMPTY_STATS = {
 	shareValue: ZERO,
 	balanceShares: ZERO,
+	balanceSharesAvailable: ZERO,
 	currentBalanceADX: ZERO,
+	currentBalanceADXAvailable: ZERO,
 	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
 	poolTotalBalanceADX: ZERO,
@@ -313,7 +315,11 @@ export async function onStakingPoolV5UnbondCommitment(
 ) {
 	if (!stats) throw new Error("errors.statsNotProvided")
 
-	const { balanceShares, currentBalanceADX } = stats.tomStakingV5PoolStats
+	const {
+		balanceSharesAvailable,
+		currentBalanceADX,
+		currentBalanceADXAvailable
+	} = stats.tomStakingV5PoolStats
 
 	if (!unbondCommitmentAmountADX) throw new Error("errors.noWithdrawAmount")
 	if (currentBalanceADX.isZero()) throw new Error("errors.zeroBalanceADX")
@@ -322,15 +328,17 @@ export async function onStakingPoolV5UnbondCommitment(
 
 	const signer = await getSigner(chosenWalletType)
 
+	const sharesToWithdraw = unbondCommitmentAmountADX
+		.mul(balanceSharesAvailable)
+		.div(currentBalanceADXAvailable)
+
+	// console.log('sharesToWithdraw', sharesToWithdraw.toString())
+
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
 		StakingPoolABI,
 		signer
 	)
-
-	const sharesToWithdraw = unbondCommitmentAmountADX
-		.mul(balanceShares)
-		.div(currentBalanceADX)
 
 	await stakingPoolWithSigner.leave(sharesToWithdraw, false)
 }
@@ -783,11 +791,13 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		)
 	}
 
-	const currentBalanceADX = balanceShares
-		.sub(lockedShares)
+	const balanceSharesAvailable = balanceShares.sub(lockedShares)
+
+	const currentBalanceADXAvailable = balanceSharesAvailable
 		.mul(shareValue)
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
-		.add(lockedSharesAdxValue)
+
+	const currentBalanceADX = currentBalanceADXAvailable.add(lockedSharesAdxValue)
 
 	const totalRewards = currentBalanceADX // includes leavesPendingToUnlockTotalADX and  leavesReadyToWithdrawTotalADX
 		.add(withdrawsADXTotal)
@@ -818,7 +828,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	const stats = {
 		...poolData,
 		balanceShares,
+		balanceSharesAvailable,
 		currentBalanceADX,
+		currentBalanceADXAvailable,
 		totalRewards,
 		totalSharesOutTransfersAdxValue,
 		totalSharesInTransfersAdxValue,

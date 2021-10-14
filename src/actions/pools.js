@@ -99,7 +99,7 @@ export const getMaxWithdrawAmountByPoolId = (poolId, stats) => {
 	}
 
 	if (poolId === DEPOSIT_POOLS[1].id) {
-		return stats.currentBalanceADX || ZERO
+		return stats.currentBalanceADXAvailable || ZERO
 	}
 
 	return ZERO
@@ -115,7 +115,7 @@ export const getMaxRageLeaveAmountByPoolId = (poolId, stats) => {
 
 export const getMaxUnbondCommitmentAmountByPoolId = (poolId, stats) => {
 	if (poolId === DEPOSIT_POOLS[1].id) {
-		return stats.currentBalanceADX || ZERO
+		return stats.currentBalanceADXAvailable || ZERO
 	}
 
 	return ZERO

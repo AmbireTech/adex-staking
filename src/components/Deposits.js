@@ -58,7 +58,7 @@ const getStakingPool = ({
 				<Box>
 					<AmountText
 						text={`${formatADXPretty(
-							tomStakingV5PoolStats.currentBalanceADX
+							tomStakingV5PoolStats.currentBalanceADXAvailable
 						)} ${"ADX"}`}
 						fontSize={17}
 					/>
