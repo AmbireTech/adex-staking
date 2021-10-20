@@ -43,7 +43,7 @@ export const Help = () => {
 				<Link
 					id="help-menu-external-link-adex-network-staking-user-guide"
 					color="inherit"
-					href="https://help.adex.network/hc/en-us/categories/360002707720-Staking"
+					href="https://help.adex.network/hc/en-us/categories/4404980117778-AdEx-Staking"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>{t("help.userGuide")}</MenuItem>
