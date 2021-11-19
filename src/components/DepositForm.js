@@ -47,6 +47,7 @@ export default function DepositForm({
 	const { stats, chosenWalletType, wrapDoingTxns } = useContext(AppContext)
 
 	const [actionAmount, setActionAmount] = useState("0.0")
+	const [actionAmountBN, setActionAmountBN] = useState(BigNumber.from("0"))
 	const [amountErr, setAmountErr] = useState(false)
 	const [amountErrText, setAmountErrText] = useState("")
 	const [amountErrVals, setAmountErrVals] = useState({})
@@ -66,8 +67,6 @@ export default function DepositForm({
 		ZERO
 	)
 	const [poolStats, setPoolStats] = useState({})
-
-	const actionAmountBN = parseADX(actionAmount)
 
 	useEffect(() => {
 		const newActivePool = getDepositPool(depositPool || {})
@@ -190,6 +189,8 @@ export default function DepositForm({
 			activePool.id === DEPOSIT_POOLS[1].id &&
 			unbondCommitment
 		) {
+			setSelectErr(false)
+			setSelectErrText("")
 			return
 		}
 
@@ -199,7 +200,22 @@ export default function DepositForm({
 			return
 		}
 
-		const amountBN = parseADX(actionAmount)
+		const amountInputSplit = actionAmount.split(".")
+
+		if (amountInputSplit[1].length > 18) {
+			setAmountErr(true)
+			setAmountErrText("errors.invalidDecimals")
+			return
+		}
+
+		const amountWithMaxDecimalsVal = `${amountInputSplit[0]}.${(
+			amountInputSplit[1] || ""
+		).substr(0, 18)}`
+
+		const amountBN = parseADX(amountWithMaxDecimalsVal)
+
+		setActionAmountBN(amountBN)
+		setActionAmount(amountWithMaxDecimalsVal)
 
 		const minStakingAmountBN = activePool
 			? parseADX(activePool.minStakingAmount || "0")
