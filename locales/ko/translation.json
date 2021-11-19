@@ -144,6 +144,7 @@
   },
   "errors": {
     "invalidAmountInput": "잘못된 금액이 입력되었습니다!",
+    "invalidDecimals": "Too many decimals!",
     "lowADXAmount": "ADX 양이 충분하지 않습니다!",
     "lessThanMinPoolADX": "ADX 양이 선택된 풀의 최소 요구량 보다 낮습니다!",
     "amountOverPoolLimit": "ADX 양이 너무 많습니다 – 이는 풀 총 예금 한도를 초과합니다!",

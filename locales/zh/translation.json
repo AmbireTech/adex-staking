@@ -145,6 +145,7 @@
   },
   "errors": {
     "invalidAmountInput": "金额输入无效！",
+    "invalidDecimals": "Too many decimals!",
     "lowADXAmount": "ADX金额不足！",
     "lessThanMinPoolADX": "ADX金额低于所选池的最低要求！",
     "amountOverPoolLimit": "ADX金额过大-将超过池总质押额限制！",

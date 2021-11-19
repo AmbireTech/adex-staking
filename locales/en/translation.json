@@ -241,6 +241,7 @@
   },
   "errors": {
     "invalidAmountInput": "Invalid amount input!",
+    "invalidDecimals": "Too many decimals!",
     "lowADXAmount": "Insufficient ADX amount!",
     "lessThanMinPoolADX": "ADX amount less than minimum required for selected pool!",
     "amountOverPoolLimit": "ADX amount too large - will go over the pool total deposits limit!",
