@@ -202,15 +202,18 @@ export default function DepositForm({
 
 		const amountInputSplit = actionAmount.split(".")
 
-		if (amountInputSplit[1].length > 18) {
+		if (amountInputSplit[1] && amountInputSplit[1].length > 18) {
 			setAmountErr(true)
 			setAmountErrText("errors.invalidDecimals")
 			return
 		}
 
-		const amountWithMaxDecimalsVal = `${amountInputSplit[0]}.${(
-			amountInputSplit[1] || ""
-		).substr(0, 18)}`
+		const amountWithMaxDecimalsVal = `${
+			amountInputSplit[0]
+		}${(amountInputSplit[1] !== undefined
+			? `.${amountInputSplit[1]}`
+			: ""
+		).substr(0, 19)}`
 
 		const amountBN = parseADX(amountWithMaxDecimalsVal)
 
