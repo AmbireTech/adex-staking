@@ -96,7 +96,10 @@ export default function DepositForm({
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
 		setMaxAmountAvailableForRage(newMaxAmountAvailable)
-	}, [actionType, depositPool, stats])
+		if (!unbondCommitment && newActiveUnbondCommitments.length === 1) {
+			setUnbondCommitment(newActiveUnbondCommitments[0])
+		}
+	}, [actionType, depositPool, stats, unbondCommitment])
 
 	const onAction = async () => {
 		if (!activePool) {
@@ -314,9 +317,9 @@ export default function DepositForm({
 								value={unbondCommitment || ""}
 								onChange={onUnbondCommitmentChange}
 							>
-								<MenuItem value={""}>
+								{/* <MenuItem value={""}>
 									<em>{t("common.none")}</em>
-								</MenuItem>
+								</MenuItem> */}
 								{activeUnbondCommitments.map(uc => {
 									const disabled = !uc.canWithdraw
 									const unlocksAt = uc.unlocksAt.toNumber()
