@@ -209,7 +209,7 @@ export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 export const REACT_APP_RPC_URL = useTestnet
 	? "https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 	: //: "https://morning-wild-water.quiknode.pro/66011d2c6bdebc583cade5365086c8304c13366c/"
-	  "https://mainnet.infura.io/v3/d4319c39c4df452286d8bf6d10de28ae"
+	  "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 
 export const ADEX_RELAYER_HOST = useTestnet
 	? // ? "https://goerli-relayer.adex.network"
