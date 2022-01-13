@@ -81,7 +81,7 @@ export default function DepositForm({
 		)
 
 		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
-			DEPOSIT_ACTION_TYPES.unbondCommitment,
+			actionType,
 			newActivePool.id,
 			newPoolStats,
 			stats.userWalletBalance
@@ -96,7 +96,11 @@ export default function DepositForm({
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
 		setMaxAmountAvailableForRage(newMaxAmountAvailable)
-		if (!unbondCommitment && newActiveUnbondCommitments.length === 1) {
+		if (
+			!unbondCommitment &&
+			newActiveUnbondCommitments &&
+			newActiveUnbondCommitments.length === 1
+		) {
 			setUnbondCommitment(newActiveUnbondCommitments[0])
 		}
 	}, [actionType, depositPool, stats, unbondCommitment])
