@@ -11,13 +11,14 @@ import {
 	SvgIcon
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { DEPOSIT_POOLS, iconByPoolId } from "../helpers/constants"
+import { DEPOSIT_POOLS, iconByPoolId, ZERO } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
 import { DEPOSIT_ACTION_TYPES } from "../actions"
+import Tooltip from "./Tooltip"
 
 import { useTranslation } from "react-i18next"
 
@@ -63,21 +64,36 @@ const getStakingPool = ({
 		currentAPY: tomStakingV5PoolStats.currentAPY,
 		balance: (
 			<Fragment>
-				<Box>
-					<AmountText
-						text={`${formatADXPretty(
-							tomStakingV5PoolStats.currentBalanceADXAvailable
-							// tomStakingV5PoolStats.currentBalanceSharesADXValue
-						)} ${"ADX"}`}
-						fontSize={17}
-					/>
-					{hasExternalStakingTokenTransfers && (
-						<span className={classes.info}>{" *"}</span>
-					)}
-					{hasInsufficentBalanceForUnbondCommitments && (
-						<span className={classes.warning}>{" **"}</span>
-					)}
-				</Box>
+				<Tooltip
+					title={
+						tomStakingV5PoolStats.leavesPendingToUnlockTotalADX.gt(ZERO) ||
+						tomStakingV5PoolStats.leavesReadyToWithdrawTotalADX.gt(ZERO)
+							? `${t("deposits.currentBalanceShareADXAvailableValueInfo", {
+									// pool: t("common.tomStakingPool"),
+									token: "ADX",
+									amount: formatADXPretty(
+										tomStakingV5PoolStats.currentBalanceADXAvailable
+									)
+							  })}`
+							: ""
+					}
+				>
+					<Box>
+						<AmountText
+							text={`${formatADXPretty(
+								// tomStakingV5PoolStats.currentBalanceADXAvailable
+								tomStakingV5PoolStats.currentBalanceSharesADXValue
+							)} ${"ADX"}`}
+							fontSize={17}
+						/>
+						{hasExternalStakingTokenTransfers && (
+							<span className={classes.info}>{" *"}</span>
+						)}
+						{hasInsufficentBalanceForUnbondCommitments && (
+							<span className={classes.warning}>{" ** ***"}</span>
+						)}
+					</Box>
+				</Tooltip>
 				<Box>
 					{/* <AmountText
 						text={`(=${formatADXPretty(
@@ -335,7 +351,8 @@ export default function Deposits() {
 		totalSharesOutTransfersAdxValue,
 		totalSharesInTransfersAdxValue,
 		hasInsufficentBalanceForUnbondCommitments,
-		insufficientSharesAmoutForCurrentUnbonds
+		insufficientSharesAmoutForCurrentUnbonds,
+		currentBalanceADXAvailable
 	} = tomStakingV5PoolStats
 
 	const {
@@ -546,12 +563,26 @@ export default function Deposits() {
 			{hasInsufficentBalanceForUnbondCommitments && (
 				<Box mb={1}>
 					<Alert variant="filled" severity="warning">
-						{`* ${t("deposits.hasInsufficentBalanceForUnbondCommitmentsAlert", {
-							pool: t("common.tomStakingPool"),
-							token: "ADX-STAKING",
-							amount: formatADXPretty(
-								insufficientSharesAmoutForCurrentUnbonds.mul(-1)
-							)
+						{`** ${t(
+							"deposits.hasInsufficentBalanceForUnbondCommitmentsAlert",
+							{
+								pool: t("common.tomStakingPool"),
+								token: "ADX-STAKING",
+								amount: formatADXPretty(
+									insufficientSharesAmoutForCurrentUnbonds.mul(-1)
+								)
+							}
+						)}`}
+					</Alert>
+				</Box>
+			)}
+			{hasInsufficentBalanceForUnbondCommitments && (
+				<Box mb={1}>
+					<Alert variant="filled" severity="warning">
+						{`*** ${t("deposits.currentBalanceShareADXAvailableValueInfo", {
+							// pool: t("common.tomStakingPool"),
+							token: "ADX",
+							amount: formatADXPretty(currentBalanceADXAvailable)
 						})}`}
 					</Alert>
 				</Box>

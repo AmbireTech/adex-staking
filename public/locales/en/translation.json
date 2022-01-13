@@ -178,6 +178,7 @@
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
     "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), the rewards shown may be less than your actual rewards.",
     "hasInsufficentBalanceForUnbondCommitmentsAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), you don't have enough {{token}} to withdraw your pending/ready unbond commitments. Transfer {{amount}} {{token}} to use your current unbonds or make new for the available amount.",
+    "currentBalanceShareADXAvailableValueInfo": "Balance excluding pending/ready unbond commitments: {{amount}} {{token}}",
     "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days.",
     "poolShare": "Pool share",
