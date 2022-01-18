@@ -35,6 +35,7 @@
     "actions": "Actions",
     "unknown": "Unknown",
     "maxAmountBtn": "Max amount: {{amount}} {{currency}}",
+    "maxAmountCurrentSharesValueBtn": "Max amount (will override current unbonds): {{amount}} {{currency}}",
     "maxAmountBtnRageOver": "Max amount available: {{amount}} {{currency}}",
     "none": "None",
     "poolRewardPolicy": "Pool reward policy",
@@ -112,7 +113,7 @@
     "tomApyStability": "Flexible",
     "tomPurpose": "Staking ADX tokens towards the reputation of our main validator",
     "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",
-    "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. There is an additional incentive reward of 20 million ADX to be distributed by the end of 2021. All rewards will be paid in ADX and will be automatically added to your stake.",
+    "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. All rewards will be paid in ADX and will be automatically added to your stake.",
     "tomV5SlashPolicy": "No slashing.",
     "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool.",
     "tomV5LockupPeriodTxt": "{{count}} days ({{count}} days need to pass before unlocking ADX, during that period no rewards are received)"
