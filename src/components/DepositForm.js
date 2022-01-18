@@ -5,6 +5,7 @@ import {
 	getPoolStatsByPoolId,
 	isValidNumberString,
 	getDepositActionMaxAmountByTypeAndPoolId,
+	getDepositActionMaxAmountCurrentShareValueByTypeAndPoolId,
 	DEPOSIT_ACTION_TYPES
 } from "../actions"
 import {
@@ -66,6 +67,10 @@ export default function DepositForm({
 	const [maxAmountAvailableForRage, setMaxAmountAvailableForRage] = useState(
 		ZERO
 	)
+	const [
+		maxAmountCurrentSharesValue,
+		setMaxAmountCurrentSharesValue
+	] = useState(ZERO)
 	const [poolStats, setPoolStats] = useState({})
 
 	useEffect(() => {
@@ -78,6 +83,12 @@ export default function DepositForm({
 			newActivePool.id,
 			newPoolStats,
 			stats.userWalletBalance
+		)
+
+		const newMaxAmountCurrentShareValue = getDepositActionMaxAmountCurrentShareValueByTypeAndPoolId(
+			actionType,
+			newActivePool.id,
+			newPoolStats
 		)
 
 		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
@@ -96,6 +107,7 @@ export default function DepositForm({
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
 		setMaxAmountAvailableForRage(newMaxAmountAvailable)
+		setMaxAmountCurrentSharesValue(newMaxAmountCurrentShareValue)
 		if (
 			!unbondCommitment &&
 			newActiveUnbondCommitments &&
@@ -406,6 +418,22 @@ export default function DepositForm({
 									currency: "ADX"
 								})}
 							</Button>
+							<Tooltip title="currentBalanceShareADXAvailableValueInfo">
+								<Button
+									color="secondary"
+									fullWidth
+									size="small"
+									id={`new-${actionType}-form-max-amount-current-share-value-btn`}
+									onClick={() => {
+										onAmountChange(formatADX(maxAmountCurrentSharesValue))
+									}}
+								>
+									{t("common.maxAmountCurrentSharesValueBtn", {
+										amount: formatADXPretty(maxAmountCurrentSharesValue),
+										currency: "ADX"
+									})}
+								</Button>
+							</Tooltip>
 						</Box>
 						{/* 
 						maxAmountAvailableForRage */}
