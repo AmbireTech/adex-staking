@@ -72,7 +72,7 @@ const getStakingPool = ({
 									// pool: t("common.tomStakingPool"),
 									token: "ADX",
 									amount: formatADXPretty(
-										tomStakingV5PoolStats.currentBalanceADXAvailable
+										tomStakingV5PoolStats.currentBalanceSharesADXValue
 									)
 							  })}`
 							: ""
@@ -81,8 +81,8 @@ const getStakingPool = ({
 					<Box>
 						<AmountText
 							text={`${formatADXPretty(
-								// tomStakingV5PoolStats.currentBalanceADXAvailable
-								tomStakingV5PoolStats.currentBalanceSharesADXValue
+								tomStakingV5PoolStats.currentBalanceADXAvailable
+								// tomStakingV5PoolStats.currentBalanceSharesADXValue
 							)} ${"ADX"}`}
 							fontSize={17}
 						/>
@@ -352,7 +352,8 @@ export default function Deposits() {
 		totalSharesInTransfersAdxValue,
 		hasInsufficentBalanceForUnbondCommitments,
 		insufficientSharesAmoutForCurrentUnbonds,
-		currentBalanceADXAvailable
+		currentBalanceSharesADXValue,
+		balanceShares
 	} = tomStakingV5PoolStats
 
 	const {
@@ -570,7 +571,8 @@ export default function Deposits() {
 								token: "ADX-STAKING",
 								amount: formatADXPretty(
 									insufficientSharesAmoutForCurrentUnbonds.mul(-1)
-								)
+								),
+								adxValue: formatADXPretty(currentBalanceSharesADXValue)
 							}
 						)}`}
 					</Alert>
@@ -581,8 +583,8 @@ export default function Deposits() {
 					<Alert variant="filled" severity="warning">
 						{`*** ${t("deposits.currentBalanceShareADXAvailableValueInfo", {
 							// pool: t("common.tomStakingPool"),
-							token: "ADX",
-							amount: formatADXPretty(currentBalanceADXAvailable)
+							token: "ADX-STAKING",
+							amount: formatADXPretty(balanceShares)
 						})}`}
 					</Alert>
 				</Box>

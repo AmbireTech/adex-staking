@@ -38,7 +38,6 @@ import { Alert } from "@material-ui/lab"
 import { BigNumber } from "ethers"
 import { ExternalAnchor } from "./Anchor"
 import { AmountText } from "./cardCommon"
-import { WarningSharp } from "@material-ui/icons"
 
 export default function DepositForm({
 	depositPool,
