@@ -35,7 +35,7 @@
     "actions": "Actions",
     "unknown": "Unknown",
     "maxAmountBtn": "Max amount: {{amount}} {{currency}}",
-    "maxAmountCurrentSharesValueBtn": "Max amount (will override current unbonds): {{amount}} {{currency}}",
+    "maxAmountCurrentSharesValueBtn": "Max amount current: {{amount}} {{currency}}",
     "maxAmountBtnRageOver": "Max amount available: {{amount}} {{currency}}",
     "none": "None",
     "poolRewardPolicy": "Pool reward policy",
@@ -164,6 +164,7 @@
     "rageLeaveFrom": "Rage Leave form {{pool}} ",
     "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} will be distributed to other stakers ",
     "rageLeaveWarningOverAvailable": "You have selected а \"rage leave\" amount that includes tokens from unbond commitments or/and ready to withdraww {{token}}. If you choose to \"rage leave\" an amount over the available {{available}} {{token}}, you will only receive {{percent}} % of the {{token}} that is in pending/ready state for withdraw. Please consider withdrawal of the ready amount first (or wait for unbond if time not passed) or rage leave \"MAX AMOUNT AVAILABLE\"",
+    "unbondWarningOverAvailable": "Look like you have pending/ready unbond commitments and you have transferred ADX-STAKING tokens out of this wallet. You can transfer ADX-STAKING tokens to this wallet and withdraw current unbond commitments or you can transfer your current balance of {{amount}} ADX-STAKING tokens through your wallet.   ",
     "eventType": "Event Type",
     "txnHash": "Txn Hash",
     "txnsHistory": "Transactions history",
@@ -178,8 +179,8 @@
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
     "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), the rewards shown may be less than your actual rewards.",
-    "hasInsufficentBalanceForUnbondCommitmentsAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), you don't have enough {{token}} to withdraw your pending/ready unbond commitments. Transfer {{amount}} {{token}} to use your current unbonds or make new for the available amount.",
-    "currentBalanceShareADXAvailableValueInfo": "Balance excluding pending/ready unbond commitments: {{amount}} {{token}}",
+    "hasInsufficentBalanceForUnbondCommitmentsAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), you don't have enough {{token}} to withdraw your pending/ready unbond commitments. Transfer {{amount}} {{token}} to use your current unbond commitments or make rage leave for the current available balance of {{adxValue}} ADX",
+    "currentBalanceShareADXAvailableValueInfo": "Available {{amount}} {{token}} for transfer out!",
     "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days.",
     "poolShare": "Pool share",
@@ -283,7 +284,8 @@
     "unbondCommitmentNotSelected": "Unbond commitment not selected",
     "zeroBalanceADX": "0 ADX balance",
     "noUnbondCommitmentProvided": "No unbond commitment data provided",
-    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}"
+    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}",
+    "maxAmountCurrentSharesValueConfirmed": "Amount over available not confirmed"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

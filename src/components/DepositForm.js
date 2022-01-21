@@ -38,6 +38,7 @@ import { Alert } from "@material-ui/lab"
 import { BigNumber } from "ethers"
 import { ExternalAnchor } from "./Anchor"
 import { AmountText } from "./cardCommon"
+import { WarningSharp } from "@material-ui/icons"
 
 export default function DepositForm({
 	depositPool,
@@ -71,6 +72,7 @@ export default function DepositForm({
 		maxAmountCurrentSharesValue,
 		setMaxAmountCurrentSharesValue
 	] = useState(ZERO)
+
 	const [poolStats, setPoolStats] = useState({})
 
 	useEffect(() => {
@@ -90,6 +92,8 @@ export default function DepositForm({
 			newActivePool.id,
 			newPoolStats
 		)
+
+		console.log({ newMaxAmountCurrentShareValue })
 
 		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
 			actionType,
@@ -318,6 +322,8 @@ export default function DepositForm({
 		}
 	}
 
+	// console.log({maxAmountCurrentSharesValue})
+
 	return (
 		<Box width={1}>
 			<Grid container spacing={2}>
@@ -418,22 +424,6 @@ export default function DepositForm({
 									currency: "ADX"
 								})}
 							</Button>
-							<Tooltip title="currentBalanceShareADXAvailableValueInfo">
-								<Button
-									color="secondary"
-									fullWidth
-									size="small"
-									id={`new-${actionType}-form-max-amount-current-share-value-btn`}
-									onClick={() => {
-										onAmountChange(formatADX(maxAmountCurrentSharesValue))
-									}}
-								>
-									{t("common.maxAmountCurrentSharesValueBtn", {
-										amount: formatADXPretty(maxAmountCurrentSharesValue),
-										currency: "ADX"
-									})}
-								</Button>
-							</Tooltip>
 						</Box>
 						{/* 
 						maxAmountAvailableForRage */}
@@ -483,6 +473,17 @@ export default function DepositForm({
 										/>
 									}
 								></FormControlLabel>
+							</Alert>
+						</Grid>
+					)}
+
+				{actionType === DEPOSIT_ACTION_TYPES.unbondCommitment &&
+					maxAmountCurrentSharesValue.gt(maxAmount) && (
+						<Grid item xs={12}>
+							<Alert severity="warning">
+								{t("deposits.unbondWarningOverAvailable", {
+									amount: formatADXPretty(maxAmountCurrentSharesValue)
+								})}
 							</Alert>
 						</Grid>
 					)}
