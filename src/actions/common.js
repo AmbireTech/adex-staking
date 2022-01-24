@@ -129,3 +129,7 @@ export function toChannelTuple(args) {
 		args.spec
 	]
 }
+
+export async function timeout(ms = 420) {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}

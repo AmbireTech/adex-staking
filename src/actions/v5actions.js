@@ -20,8 +20,8 @@ import {
 	ADEX_RELAYER_HOST,
 	ADDR_GASLESS_SWEEPER
 } from "../helpers/constants"
-import { getDefaultProvider, getSigner } from "../ethereum"
-import { executeOnIdentity, toChannelTuple } from "./common"
+import { getDefaultProvider, getSigner, isAmbireWallet } from "../ethereum"
+import { executeOnIdentity, toChannelTuple, timeout } from "./common"
 import { getUserGaslessAddress } from "../helpers/identity"
 
 const supplyControllerABI = ADXSupplyControllerABI
@@ -85,7 +85,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	leavesReadyToWithdrawTotalMax: ZERO,
 	leavesPendingToUnlockTotalADX: ZERO,
 	leavesReadyToWithdrawTotalADX: ZERO,
-	unbondDays: 33,
+	unbondDays: 20,
 	loaded: false,
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
@@ -206,7 +206,15 @@ export async function onStakingPoolV5Deposit(
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		await tokenWithSigner.approve(StakingPool.address, MAX_UINT)
+		const approve = async () =>
+			tokenWithSigner.approve(StakingPool.address, MAX_UINT)
+
+		if (isAmbireWallet(signer)) {
+			approve()
+			await timeout(420)
+		} else {
+			await approve()
+		}
 	}
 
 	const stakingPoolWithSigner = new Contract(
