@@ -285,7 +285,8 @@
     "zeroBalanceADX": "0 ADX balance",
     "noUnbondCommitmentProvided": "No unbond commitment data provided",
     "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}",
-    "maxAmountCurrentSharesValueConfirmed": "Amount over available not confirmed"
+    "maxAmountCurrentSharesValueConfirmed": "Amount over available not confirmed",
+    "invalidWalletTypeName": "Invalid wallet type name: {{walletTypeName}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",

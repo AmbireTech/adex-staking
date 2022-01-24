@@ -250,12 +250,26 @@ export default function useApp() {
 
 	const onWalletTypeSelect = useCallback(
 		async walletTypeName => {
-			setChosenWalletTypeName(walletTypeName)
 			setConnectWallet(null)
-			console.log("activating")
-			await activate(connectorsByName[walletTypeName])
+			const connector = connectorsByName[walletTypeName]
+
+			if (!connector) {
+				console.error(
+					"onWalletTypeSelect",
+					"invalid connector",
+					`walletTypeName: ${walletTypeName}`
+				)
+				setSnackbarErr({
+					msg: "errors.invalidWalletTypeName",
+					opts: { walletTypeName }
+				})
+				setOpenErr(true)
+			}
+
+			await activate(connector)
+			setChosenWalletTypeName(walletTypeName)
 		},
-		[setConnectWallet, activate]
+		[activate]
 	)
 
 	useEffect(() => {
@@ -266,6 +280,8 @@ export default function useApp() {
 
 				if (signer) {
 					setChosenWalletType(newWalletType)
+				} else {
+					setChosenWalletType({})
 				}
 			}
 		}
