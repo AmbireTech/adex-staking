@@ -481,7 +481,8 @@ export default function DepositForm({
 						<Grid item xs={12}>
 							<Alert severity="warning">
 								{t("deposits.unbondWarningOverAvailable", {
-									amount: formatADXPretty(maxAmountCurrentSharesValue)
+									amountADX: formatADXPretty(maxAmountCurrentSharesValue),
+									amountStaking: formatADXPretty(poolStats.balanceShares)
 								})}
 							</Alert>
 						</Grid>
