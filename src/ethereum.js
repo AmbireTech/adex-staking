@@ -24,11 +24,27 @@ export const getDefaultProvider = (function() {
 	return defaultProvider
 })()
 
+export function isAmbireWallet(signer) {
+	const isWC =
+		!!signer &&
+		!!signer.provider &&
+		!!signer.provider.connection &&
+		signer.provider.connection.url === "eip-1193:" &&
+		!!signer.provider.provider.wc
+	const isAmbire =
+		isWC &&
+		!!signer.provider.provider.wc.peerMeta &&
+		signer.provider.provider.wc.peerMeta.name === "Ambire Wallet"
+	return isAmbire
+}
+
 export async function getSigner(chosenWalletType) {
-	// console.log("chosenWalletType", chosenWalletType)
 	if (!chosenWalletType || !chosenWalletType.library)
 		throw new Error("Wallet not connected")
-	return chosenWalletType.library.getSigner()
+
+	const signer = chosenWalletType.library.getSigner()
+
+	return signer
 }
 
 export async function signMessage(signer, message) {
