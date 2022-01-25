@@ -203,6 +203,7 @@ export async function onStakingPoolV5Deposit(
 	])
 
 	const setAllowance = allowanceStakingPool.lt(adxDepositAmount)
+	const actions = []
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
@@ -210,8 +211,9 @@ export async function onStakingPoolV5Deposit(
 			tokenWithSigner.approve(StakingPool.address, MAX_UINT)
 
 		if (isAmbireWallet(signer)) {
-			approve()
-			await timeout(420)
+			// Note: if not in the promise throws Uncaught err
+			actions.push(approve())
+			await timeout(69_0)
 		} else {
 			await approve()
 		}
@@ -223,10 +225,14 @@ export async function onStakingPoolV5Deposit(
 		signer
 	)
 
-	await stakingPoolWithSigner.enter(
-		adxDepositAmount,
-		setAllowance ? { gasLimit: 136000 } : {}
+	actions.push(
+		stakingPoolWithSigner.enter(
+			adxDepositAmount,
+			setAllowance ? { gasLimit: 136000 } : {}
+		)
 	)
+
+	return Promise.all(actions)
 }
 
 export async function onStakingPoolV5GaslessDeposit(

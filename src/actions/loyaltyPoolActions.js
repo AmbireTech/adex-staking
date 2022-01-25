@@ -436,6 +436,7 @@ export async function onLoyaltyPoolDeposit(
 	])
 
 	const setAllowance = allowanceADXLOYALTY.lt(adxDepositAmount)
+	const actions = []
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
@@ -443,8 +444,8 @@ export async function onLoyaltyPoolDeposit(
 			tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
 
 		if (isAmbireWallet(signer)) {
-			approve()
-			await timeout(420)
+			actions.push(approve())
+			await timeout(690)
 		} else {
 			await approve()
 		}
@@ -456,10 +457,14 @@ export async function onLoyaltyPoolDeposit(
 		signer
 	)
 
-	await loyaltyTokenWithSigner.enter(
-		adxDepositAmount,
-		setAllowance ? { gasLimit: 150000 } : {}
+	actions.push(
+		loyaltyTokenWithSigner.enter(
+			adxDepositAmount,
+			setAllowance ? { gasLimit: 150000 } : {}
+		)
 	)
+
+	return Promise.all(actions)
 }
 
 export async function onLoyaltyPoolWithdraw(
