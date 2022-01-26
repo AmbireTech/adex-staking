@@ -42,6 +42,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "react-scripts build && echo staking.adex.network > build/CNAME && gh-pages -d build",
+    "staging-deploy": "react-scripts build && echo staging-staking.adex.network > build/CNAME && gh-pages -d build -r git@github.com:AmbireTech/staking-staging-deploy.git",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
