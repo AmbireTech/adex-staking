@@ -73,6 +73,9 @@ const getStakingPool = ({
 									token: "ADX",
 									amount: formatADXPretty(
 										tomStakingV5PoolStats.currentBalanceSharesADXValue
+									),
+									amountStaking: formatADXPretty(
+										tomStakingV5PoolStats.balanceShares
 									)
 							  })}`
 							: ""
