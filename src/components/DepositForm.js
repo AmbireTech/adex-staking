@@ -92,8 +92,6 @@ export default function DepositForm({
 			newPoolStats
 		)
 
-		console.log({ newMaxAmountCurrentShareValue })
-
 		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
 			actionType,
 			newActivePool.id,
@@ -320,8 +318,6 @@ export default function DepositForm({
 				return "Do it now"
 		}
 	}
-
-	// console.log({maxAmountCurrentSharesValue})
 
 	return (
 		<Box width={1}>

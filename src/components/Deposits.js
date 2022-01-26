@@ -386,22 +386,6 @@ export default function Deposits() {
 			: "")
 
 	useEffect(() => {
-		console.log({ stats })
-	}, [stats])
-
-	useEffect(() => {
-		console.log({ chosenWalletType })
-	}, [chosenWalletType])
-
-	useEffect(() => {
-		console.log({ deposits })
-	}, [deposits])
-
-	useEffect(() => {
-		console.log("Депоситс")
-	}, [])
-
-	useEffect(() => {
 		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
 		let loadedDeposits = [...deposits]
 		if (loyaltyPoolStats.loaded) {

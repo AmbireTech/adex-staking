@@ -353,8 +353,6 @@ export async function onStakingPoolV5UnbondCommitment(
 		.mul(balanceSharesAvailable)
 		.div(currentBalanceADXAvailable)
 
-	// console.log('sharesToWithdraw', sharesToWithdraw.toString())
-
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
 		StakingPoolABI,
