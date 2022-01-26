@@ -1,12 +1,26 @@
-import React, { Fragment, useContext } from "react"
+import React, { Fragment, useContext, useState } from "react"
 import AppContext from "../AppContext"
 import { makeStyles } from "@material-ui/core/styles"
-import { Chip, Fab, Icon } from "@material-ui/core"
-import { AccountBalanceWalletSharp as AccountBalanceWalletIcon } from "@material-ui/icons"
+import {
+	Chip,
+	Fab,
+	Icon,
+	Avatar,
+	Box,
+	Menu,
+	MenuItem,
+	Button
+} from "@material-ui/core"
+import {
+	AccountBalanceWalletSharp as AccountBalanceWalletIcon,
+	KeyboardArrowDown
+} from "@material-ui/icons"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
+import { Wallets } from "../helpers/constants"
 import copy from "copy-to-clipboard"
 import { useTranslation } from "react-i18next"
+import Tooltip from "./Tooltip"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -33,9 +47,23 @@ export const Wallet = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
 
-	const { setConnectWallet, chosenWalletType, addSnack, account } = useContext(
-		AppContext
-	)
+	const {
+		setConnectWallet,
+		chosenWalletType,
+		addSnack,
+		account,
+		onWalletTypeSelect
+	} = useContext(AppContext)
+	const [anchorEl, setAnchorEl] = useState(null)
+	const open = Boolean(anchorEl)
+	const handleClick = event => {
+		setAnchorEl(event.currentTarget)
+	}
+	const handleClose = () => {
+		setAnchorEl(null)
+	}
+
+	const { icon } = Wallets.find(x => x.name === chosenWalletType.name) || {}
 
 	return (
 		<Fragment>
@@ -52,23 +80,54 @@ export const Wallet = () => {
 					{t("common.connectWallet")}
 				</Fab>
 			) : (
-				<Chip
-					id="wallet-address-top-bar-copy"
-					onClick={() => {
-						copy(account)
-						addSnack(t("messages.addrCopied", { account }), "success")
-					}}
-					clickable
-					classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
-					icon={
-						account ? (
-							<Icon>
-								<Jazzicon diameter={26} seed={jsNumberForAddress(account)} />
-							</Icon>
-						) : null
-					}
-					label={formatAddress(account)}
-				/>
+				<Box>
+					<Chip
+						id="wallet-address-top-bar-copy"
+						onClick={() => {
+							copy(account)
+							addSnack(t("messages.addrCopied", { account }), "success")
+						}}
+						clickable
+						classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
+						icon={
+							account ? (
+								<Icon>
+									<Jazzicon diameter={26} seed={jsNumberForAddress(account)} />
+								</Icon>
+							) : null
+						}
+						label={formatAddress(account)}
+					/>
+					<Tooltip title="Account settings">
+						<Chip
+							classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
+							clickable
+							onClick={handleClick}
+							size="medium"
+							aria-controls={open ? "account-menu" : undefined}
+							aria-haspopup="true"
+							aria-expanded={open ? "true" : undefined}
+							icon={icon ? <Avatar src={icon} /> : null}
+							label={
+								<Box fontSize="2rem" display="flex">
+									<KeyboardArrowDown fontSize="default" />
+								</Box>
+							}
+						/>
+					</Tooltip>
+					<Menu
+						anchorEl={anchorEl}
+						id="account-menu"
+						open={open}
+						onClose={handleClose}
+						onClick={handleClose}
+						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
+					>
+						<MenuItem>
+							<Button onClick={() => onWalletTypeSelect(null)}>Log Out</Button>
+						</MenuItem>
+					</Menu>
+				</Box>
 			)}
 		</Fragment>
 	)

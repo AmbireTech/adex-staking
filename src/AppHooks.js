@@ -251,6 +251,13 @@ export default function useApp() {
 	const onWalletTypeSelect = useCallback(
 		async walletTypeName => {
 			setConnectWallet(null)
+
+			if (walletTypeName === null) {
+				setChosenWalletTypeName(walletTypeName)
+				deactivate()
+				return
+			}
+
 			const connector = connectorsByName[walletTypeName]
 
 			if (!connector) {
@@ -269,7 +276,7 @@ export default function useApp() {
 			await activate(connector)
 			setChosenWalletTypeName(walletTypeName)
 		},
-		[activate]
+		[activate, deactivate]
 	)
 
 	useEffect(() => {
@@ -283,6 +290,8 @@ export default function useApp() {
 				} else {
 					setChosenWalletType({})
 				}
+			} else {
+				setChosenWalletType({})
 			}
 		}
 
