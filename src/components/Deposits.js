@@ -253,7 +253,9 @@ const getLoyaltyPoolDeposit = ({
 						text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
 						fontSize={17}
 					/>
-					{hasExternalStakingTokenTransfers && " *"}
+					{hasExternalStakingTokenTransfers && (
+						<span className={classes.info}> *</span>
+					)}
 				</Box>
 				{
 					<Box>{`(${t("deposits.poolShare")}: ${(
@@ -268,7 +270,9 @@ const getLoyaltyPoolDeposit = ({
 					text={`${formatADXPretty(loyaltyPoolStats.totalRewards)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}> *</span>
+				)}
 			</Box>
 		) : (
 			t("common.unknown")
@@ -280,7 +284,7 @@ const getLoyaltyPoolDeposit = ({
 					fontSize={17}
 				/>
 				{hasExternalStakingTokenTransfers && (
-					<span className={classes.info}>" *"</span>
+					<span className={classes.info}> *</span>
 				)}
 			</Box>
 		) : (
@@ -294,7 +298,9 @@ const getLoyaltyPoolDeposit = ({
 					text={`${formatADXPretty(loyaltyPoolStats.totalWithdraws)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}> *</span>
+				)}
 			</Box>
 		) : (
 			t("common.unknown")
@@ -397,6 +403,7 @@ export default function Deposits() {
 			const disabledWithdrawsMsg = disableActionsMsg
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				classes,
 				t,
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
