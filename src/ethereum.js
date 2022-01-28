@@ -30,11 +30,12 @@ export function isAmbireWallet(signer) {
 		!!signer.provider &&
 		!!signer.provider.connection &&
 		signer.provider.connection.url === "eip-1193:" &&
-		!!signer.provider.provider.wc
+		!!signer.provider.provider.isWalletConnect
 	const isAmbire =
 		isWC &&
-		!!signer.provider.provider.wc.peerMeta &&
-		signer.provider.provider.wc.peerMeta.name === "Ambire Wallet"
+		!!signer.provider.provider.signer.connection.wc.peerMeta &&
+		signer.provider.provider.signer.connection.wc.peerMeta.name ===
+			"Ambire Wallet"
 	return isAmbire
 }
 
