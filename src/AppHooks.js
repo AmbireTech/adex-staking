@@ -182,7 +182,7 @@ export default function useApp() {
 		if (!!error) {
 			setSnackbarErr(getErrorMessage(error))
 			setOpenErr(true)
-			deactivate()
+			// deactivate()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error])
@@ -248,19 +248,26 @@ export default function useApp() {
 		[setOpenErr]
 	)
 
+	const onWalletConnectionsDeactivate = useCallback(
+		async walletTypeName => {
+			console.log(`Deactivating - ${chosenWalletTypeName} `)
+			deactivate()
+		},
+		[chosenWalletTypeName, deactivate]
+	)
+
 	const onWalletTypeSelect = useCallback(
 		async walletTypeName => {
 			setConnectWallet(null)
 
 			if (walletTypeName === null) {
 				setChosenWalletTypeName(walletTypeName)
-				deactivate()
 				return
 			}
 
-			const connector = connectorsByName[walletTypeName]
+			const newConnector = connectorsByName[walletTypeName]
 
-			if (!connector) {
+			if (!newConnector) {
 				console.error(
 					"onWalletTypeSelect",
 					"invalid connector",
@@ -273,10 +280,10 @@ export default function useApp() {
 				setOpenErr(true)
 			}
 
-			await activate(connector)
+			await activate(newConnector)
 			setChosenWalletTypeName(walletTypeName)
 		},
-		[activate, deactivate]
+		[activate]
 	)
 
 	useEffect(() => {
@@ -324,6 +331,7 @@ export default function useApp() {
 		getSigner,
 		prices,
 		onWalletTypeSelect,
+		onWalletConnectionsDeactivate,
 		addSnack,
 		snackHooks,
 		chainId,
