@@ -29,7 +29,7 @@ import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
 import { useTranslation } from "react-i18next"
-// import { fade } from "@material-ui/core/styles/colorManipulator"
+// import { alpha } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => {
 		listItem: {
 			color: theme.palette.text.primary,
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.primary // fade(theme.palette.text.main, 0.69)
+				color: theme.palette.text.primary // alpha(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
