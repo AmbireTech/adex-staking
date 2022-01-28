@@ -17,7 +17,7 @@ import {
 } from "@material-ui/icons"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
-import { Wallets } from "../helpers/constants"
+import { Wallets, WALLET_CONNECT } from "../helpers/constants"
 import copy from "copy-to-clipboard"
 import { useTranslation } from "react-i18next"
 import Tooltip from "./Tooltip"
@@ -52,7 +52,8 @@ export const Wallet = () => {
 		chosenWalletType,
 		addSnack,
 		account,
-		onWalletTypeSelect
+		onWalletTypeSelect,
+		onWalletConnectionsDeactivate
 	} = useContext(AppContext)
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
@@ -110,7 +111,7 @@ export const Wallet = () => {
 							icon={icon ? <Avatar src={icon} /> : null}
 							label={
 								<Box fontSize="2rem" display="flex">
-									<KeyboardArrowDown fontSize="default" />
+									<KeyboardArrowDown fontSize="large" />
 								</Box>
 							}
 						/>
@@ -124,8 +125,22 @@ export const Wallet = () => {
 						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
 					>
 						<MenuItem>
-							<Button onClick={() => onWalletTypeSelect(null)}>Log Out</Button>
+							<Button
+								onClick={async () => {
+									await onWalletTypeSelect(null)
+									setConnectWallet(true)
+								}}
+							>
+								Change wallet
+							</Button>
 						</MenuItem>
+						{chosenWalletType.name === WALLET_CONNECT && (
+							<MenuItem>
+								<Button onClick={onWalletConnectionsDeactivate}>
+									Disconnect
+								</Button>
+							</MenuItem>
+						)}
 					</Menu>
 				</Box>
 			)}
