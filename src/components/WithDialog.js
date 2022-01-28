@@ -185,7 +185,7 @@ export default function WithDialogHoc(Decorated) {
 					</Box>
 				</Tooltip>
 				<Dialog
-					disableBackdropClick={disableBackdropClick}
+					// disableBackdropClick={disableBackdropClick}
 					// disableEscapeKeyDown
 					// maxWidth="xs"
 					// fullScreen

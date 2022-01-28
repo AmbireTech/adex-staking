@@ -71,7 +71,7 @@ export function ShtarvolinkiSnack({
 			}}
 			open={snackOpen}
 			autoHideDuration={snackMessageInfo.hideTimeout}
-			onExited={snackExited}
+			// onExited={snackExited}
 			onClose={closeSnack}
 		>
 			<Alert
