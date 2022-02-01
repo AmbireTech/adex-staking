@@ -1,5 +1,9 @@
 import { useEffect, useState, useCallback } from "react"
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core"
+import {
+	useWeb3React,
+	UnsupportedChainIdError,
+	PRIMARY_KEY
+} from "@web3-react/core"
 import {
 	NoEthereumProviderError,
 	UserRejectedRequestError as UserRejectedRequestErrorInjected
@@ -71,14 +75,18 @@ function getErrorMessage(error) {
 
 export default function useApp() {
 	const { addSnack, ...snackHooks } = useSnack()
+
+	const [web3ReactRoot, setWeb3ReactRoot] = useState(PRIMARY_KEY)
+
 	const {
 		library,
 		activate,
 		error,
 		deactivate,
 		chainId,
-		account
-	} = useWeb3React()
+		account,
+		connector
+	} = useWeb3React(web3ReactRoot)
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
@@ -97,6 +105,7 @@ export default function useApp() {
 	const [refreshCount, setRefreshCount] = useState(0)
 	const [userIdle, setUserIdle] = useState(false)
 	const [idlePopupOpen, setIdlePopupOpen] = useState(false)
+	const [updatingStats, setUpdatingStats] = useState(false)
 
 	useInactiveListener(!!connectWallet)
 
@@ -117,6 +126,11 @@ export default function useApp() {
 	})
 
 	const refreshStats = useCallback(async () => {
+		setUpdatingStats(!!chosenWalletType.name && !!account)
+		if (!chosenWalletType.name) {
+			setStats(EMPTY_STATS)
+		}
+
 		if (userIdle) return
 
 		const newPrices =
@@ -148,25 +162,27 @@ export default function useApp() {
 
 			setOpenErr(true)
 		}
+
+		setUpdatingStats(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userIdle, chosenWalletType, refreshCount, prices])
+	}, [userIdle, chosenWalletType.name, account, refreshCount, prices])
 
 	useEffect(() => {
 		refreshStats()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType])
+	}, [chosenWalletType.name, account])
 
 	useEffect(() => {
-		const refreshInterval = chosenWalletType.name
-			? REFRESH_INTVL_WALLET
-			: REFRESH_INTVL
-		const intvl = setInterval(refreshStats, refreshInterval)
+		// const refreshInterval = chosenWalletType.name
+		// 	? REFRESH_INTVL_WALLET
+		// 	: REFRESH_INTVL
+		let intvl = setInterval(refreshStats, REFRESH_INTVL_WALLET)
 
 		return () => {
 			clearInterval(intvl)
+			intvl = null
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType.name, refreshStats])
+	}, [refreshStats])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
@@ -182,7 +198,8 @@ export default function useApp() {
 		if (!!error) {
 			setSnackbarErr(getErrorMessage(error))
 			setOpenErr(true)
-			// deactivate()
+			console.log("deactivate on error")
+			deactivate()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error])
@@ -256,38 +273,68 @@ export default function useApp() {
 		[chosenWalletTypeName, deactivate]
 	)
 
-	const onWalletTypeSelect = useCallback(
-		async walletTypeName => {
-			setConnectWallet(null)
+	const onWalletTypeSelect = useCallback(async walletTypeName => {
+		setConnectWallet(null)
 
-			if (walletTypeName === null) {
-				setChosenWalletTypeName(walletTypeName)
+		if (walletTypeName === WALLET_CONNECT) {
+			setWeb3ReactRoot(WALLET_CONNECT)
+		} else {
+			setWeb3ReactRoot(PRIMARY_KEY)
+		}
+
+		// if (walletTypeName === null) {
+		// 	setChosenWalletTypeName(walletTypeName)
+		// 	return
+		// }
+
+		// const newConnector = connectorsByName[walletTypeName]
+
+		// if (!newConnector) {
+		// 	console.error(
+		// 		"onWalletTypeSelect",
+		// 		"invalid connector",
+		// 		`walletTypeName: ${walletTypeName}`
+		// 	)
+		// 	setSnackbarErr({
+		// 		msg: "errors.invalidWalletTypeName",
+		// 		opts: { walletTypeName }
+		// 	})
+		// 	setOpenErr(true)
+		// }
+
+		// // console.log('connector', connector)
+
+		// console.log('account', account)
+		// console.log('connector', connector)
+
+		// await activate(newConnector, (err) => console.log('ERRRRROR', err), true)
+		setChosenWalletTypeName(walletTypeName)
+	}, [])
+
+	useEffect(() => {
+		async function updateWalletType() {
+			if (!chosenWalletTypeName) {
+				setChosenWalletType({})
 				return
 			}
-
-			const newConnector = connectorsByName[walletTypeName]
+			const newConnector = connectorsByName[chosenWalletTypeName]
 
 			if (!newConnector) {
 				console.error(
 					"onWalletTypeSelect",
 					"invalid connector",
-					`walletTypeName: ${walletTypeName}`
+					`walletTypeName: ${chosenWalletTypeName}`
 				)
 				setSnackbarErr({
 					msg: "errors.invalidWalletTypeName",
-					opts: { walletTypeName }
+					opts: { walletTypeName: chosenWalletTypeName }
 				})
 				setOpenErr(true)
 			}
 
-			await activate(newConnector)
-			setChosenWalletTypeName(walletTypeName)
-		},
-		[activate]
-	)
+			await activate(newConnector, err => console.log("ERRRRROR", err), true)
+			// setChosenWalletTypeName(chosenWalletTypeName)
 
-	useEffect(() => {
-		async function updateWalletType() {
 			if (library && chosenWalletTypeName) {
 				const newWalletType = { name: chosenWalletTypeName, library }
 				const signer = await getSigner(newWalletType)
@@ -303,7 +350,7 @@ export default function useApp() {
 		}
 
 		updateWalletType()
-	}, [library, chosenWalletTypeName])
+	}, [library, chosenWalletTypeName, connector, activate])
 
 	return {
 		isNewBondOpen,
@@ -345,6 +392,7 @@ export default function useApp() {
 		setLegacySwapInOpen,
 		idlePopupOpen,
 		onIdleDialogAction,
-		userIdle
+		userIdle,
+		updatingStats
 	}
 }
