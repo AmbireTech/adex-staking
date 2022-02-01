@@ -93,7 +93,8 @@ export default function Root() {
 		idlePopupOpen,
 		onIdleDialogAction,
 		// secondsToAutoRefresh,
-		account
+		account,
+		updatingStats
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -102,7 +103,9 @@ export default function Root() {
 		onRequestUnbond: setToUnbond,
 		onUnbond,
 		onClaimRewards,
-		setConnectWallet
+		setConnectWallet,
+		updatingStats,
+		chosenWalletType
 	})
 
 	const container = window !== undefined ? document.body : undefined
