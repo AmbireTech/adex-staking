@@ -6,7 +6,9 @@ import {
 	ListItemText,
 	Divider,
 	Box,
-	SvgIcon
+	SvgIcon,
+	CircularProgress,
+	alpha
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
@@ -118,6 +120,9 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: "transparent",
 			textTransform: "uppercase"
 		},
+		loading: {
+			backgroundColor: alpha(theme.palette.background.darkerPaper, 0.2)
+		},
 		noUserData: {
 			opacity: 0.23
 		}
@@ -130,7 +135,9 @@ function SideNav({
 	onRequestUnbond,
 	onUnbond,
 	onClaimRewards,
-	setConnectWallet
+	setConnectWallet,
+	updatingStats,
+	chosenWalletType
 }) {
 	const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
@@ -188,7 +195,23 @@ function SideNav({
 							</ListItem>
 							<Divider />
 
-							{!stats.connectedWalletAddress && (
+							{updatingStats && (
+								<Box
+									id="side-nav-connect-wallet-overlay-loading"
+									className={clsx(classes.overlay, classes.loading)}
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+									color="secondary.main"
+									fontSize="h1.fontSize"
+									textAlign="center"
+								>
+									<CircularProgress size="100px" />
+								</Box>
+							)}
+
+							{!chosenWalletType.name && !updatingStats && (
 								<Box
 									id="side-nav-connect-wallet-overlay"
 									className={classes.overlay}

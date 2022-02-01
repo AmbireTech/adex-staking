@@ -141,6 +141,13 @@ export const Wallet = () => {
 								</Button>
 							</MenuItem>
 						)}
+						{chosenWalletType.name === WALLET_CONNECT && (
+							<MenuItem>
+								<Button>
+									TODO: GO TO WALLET
+								</Button>
+							</MenuItem>
+						)}
 					</Menu>
 				</Box>
 			)}
