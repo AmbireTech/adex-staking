@@ -9,11 +9,16 @@ import {
 	Box,
 	Menu,
 	MenuItem,
+	ListItemIcon,
+	ListItemText,
+	Link,
 	Button
 } from "@material-ui/core"
 import {
 	AccountBalanceWalletSharp as AccountBalanceWalletIcon,
-	KeyboardArrowDown
+	KeyboardArrowDown,
+	OpenInNew,
+	LinkOff
 } from "@material-ui/icons"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
@@ -78,7 +83,7 @@ export const Wallet = () => {
 			setPeerMeta(meta)
 		}
 
-		getMeta()
+		!!chosenWalletType?.library && getMeta()
 	}, [chosenWalletType])
 
 	return (
@@ -140,13 +145,27 @@ export const Wallet = () => {
 						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
 					>
 						<MenuItem button onClick={onWalletConnectionsDeactivate}>
-							Disconnect
+							<ListItemIcon>
+								<LinkOff fontSize="small" />
+							</ListItemIcon>
+							<ListItemText>Disconnect</ListItemText>
 						</MenuItem>
 
 						{peerMeta && (
-							<MenuItem>
-								<Button>{peerMeta.url}</Button>
-							</MenuItem>
+							<Link
+								id="wc-peer-meta-link"
+								color="inherit"
+								href={peerMeta.url}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<MenuItem ic={OpenInNew} onClick={handleClose}>
+									<ListItemIcon>
+										<OpenInNew fontSize="small" />
+									</ListItemIcon>
+									<ListItemText>{peerMeta.name}</ListItemText>
+								</MenuItem>
+							</Link>
 						)}
 					</Menu>
 				</Box>
