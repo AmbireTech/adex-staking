@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from "react"
+import React, { Fragment, useContext, useEffect, useState } from "react"
 import AppContext from "../AppContext"
 import { makeStyles } from "@material-ui/core/styles"
 import {
@@ -17,10 +17,14 @@ import {
 } from "@material-ui/icons"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
-import { Wallets, WALLET_CONNECT } from "../helpers/constants"
+import {
+	Wallets
+	// WALLET_CONNECT
+} from "../helpers/constants"
 import copy from "copy-to-clipboard"
 import { useTranslation } from "react-i18next"
 import Tooltip from "./Tooltip"
+import { getPeerMeta } from "../ethereum"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -46,13 +50,15 @@ const useStyles = makeStyles(theme => ({
 export const Wallet = () => {
 	const { t } = useTranslation()
 	const classes = useStyles()
+	const [peerMeta, setPeerMeta] = useState(null)
 
 	const {
 		setConnectWallet,
 		chosenWalletType,
 		addSnack,
 		account,
-		onWalletTypeSelect,
+		// onWalletTypeSelect,
+		// connector,
 		onWalletConnectionsDeactivate
 	} = useContext(AppContext)
 	const [anchorEl, setAnchorEl] = useState(null)
@@ -65,6 +71,15 @@ export const Wallet = () => {
 	}
 
 	const { icon } = Wallets.find(x => x.name === chosenWalletType.name) || {}
+
+	useEffect(() => {
+		async function getMeta() {
+			const meta = await getPeerMeta(chosenWalletType)
+			setPeerMeta(meta)
+		}
+
+		getMeta()
+	}, [chosenWalletType])
 
 	return (
 		<Fragment>
@@ -124,28 +139,13 @@ export const Wallet = () => {
 						onClick={handleClose}
 						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
 					>
-						<MenuItem>
-							<Button
-								onClick={async () => {
-									await onWalletTypeSelect(null)
-									setConnectWallet(true)
-								}}
-							>
-								Change wallet
-							</Button>
+						<MenuItem button onClick={onWalletConnectionsDeactivate}>
+							Disconnect
 						</MenuItem>
-						{chosenWalletType.name === WALLET_CONNECT && (
+
+						{peerMeta && (
 							<MenuItem>
-								<Button onClick={onWalletConnectionsDeactivate}>
-									Disconnect
-								</Button>
-							</MenuItem>
-						)}
-						{chosenWalletType.name === WALLET_CONNECT && (
-							<MenuItem>
-								<Button>
-									TODO: GO TO WALLET
-								</Button>
+								<Button>{peerMeta.url}</Button>
 							</MenuItem>
 						)}
 					</Menu>
