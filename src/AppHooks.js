@@ -32,6 +32,10 @@ import {
 import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 import ChooseWallet from "components/ChooseWallet"
+import {
+	loadFromLocalStorage,
+	saveToLocalStorage
+} from "./helpers/localStorage"
 
 const REFRESH_INTVL = 300_000 // 300sec
 const REFRESH_INTVL_WALLET = 60_000 // 60sec
@@ -85,7 +89,8 @@ export default function useApp() {
 		deactivate,
 		chainId,
 		account,
-		connector
+		connector,
+		active
 	} = useWeb3React(web3ReactRoot)
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
@@ -107,7 +112,7 @@ export default function useApp() {
 	const [idlePopupOpen, setIdlePopupOpen] = useState(false)
 	const [updatingStats, setUpdatingStats] = useState(false)
 
-	useInactiveListener(!!connectWallet)
+	// useInactiveListener({connectWallet})
 
 	const handleOnIdle = () => {
 		setUserIdle(true)
@@ -125,9 +130,19 @@ export default function useApp() {
 		debounce: 500
 	})
 
+	useEffect(() => {
+		const name = loadFromLocalStorage("chosenWalletTypeName")
+
+		setChosenWalletTypeName(name || null)
+	}, [])
+
+	useEffect(() => {
+		saveToLocalStorage(chosenWalletTypeName, "chosenWalletTypeName")
+	}, [chosenWalletTypeName])
+
 	const refreshStats = useCallback(async () => {
-		setUpdatingStats(!!chosenWalletType.name && !!account)
-		if (!chosenWalletType.name) {
+		setUpdatingStats(!!account)
+		if (!account) {
 			setStats(EMPTY_STATS)
 		}
 
@@ -165,24 +180,35 @@ export default function useApp() {
 
 		setUpdatingStats(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userIdle, chosenWalletType.name, account, refreshCount, prices])
+	}, [userIdle, account, refreshCount, prices])
 
 	useEffect(() => {
-		refreshStats()
+		async function updateStats() {
+			if (chosenWalletType.name && account) {
+				const signer = await getSigner(chosenWalletType)
+				const address = await signer.getAddress()
+
+				if (address !== account) {
+					return
+				}
+			}
+			refreshStats()
+		}
+		updateStats()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletType.name, account])
 
 	useEffect(() => {
-		// const refreshInterval = chosenWalletType.name
-		// 	? REFRESH_INTVL_WALLET
-		// 	: REFRESH_INTVL
-		let intvl = setInterval(refreshStats, REFRESH_INTVL_WALLET)
+		const refreshInterval = chosenWalletType.name
+			? REFRESH_INTVL_WALLET
+			: REFRESH_INTVL
+		let intvl = setInterval(refreshStats, refreshInterval)
 
 		return () => {
 			clearInterval(intvl)
 			intvl = null
 		}
-	}, [refreshStats])
+	}, [chosenWalletType.name, refreshStats])
 
 	useEffect(() => {
 		if (!!chainId && !SUPPORTED_CHAINS.some(chain => chainId === chain.id)) {
@@ -198,8 +224,10 @@ export default function useApp() {
 		if (!!error) {
 			setSnackbarErr(getErrorMessage(error))
 			setOpenErr(true)
-			console.log("deactivate on error")
-			deactivate()
+			if (error instanceof UnsupportedChainIdError) {
+				setChainWarning(true)
+			}
+			// deactivate()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [error])
@@ -265,49 +293,18 @@ export default function useApp() {
 		[setOpenErr]
 	)
 
-	const onWalletConnectionsDeactivate = useCallback(
+	const onConnectionDisconnect = useCallback(
 		async walletTypeName => {
 			console.log(`Deactivating - ${chosenWalletTypeName} `)
-			deactivate()
+			setConnectWallet(null)
+			await deactivate()
+			setChosenWalletTypeName(null)
 		},
 		[chosenWalletTypeName, deactivate]
 	)
 
 	const onWalletTypeSelect = useCallback(async walletTypeName => {
 		setConnectWallet(null)
-
-		if (walletTypeName === WALLET_CONNECT) {
-			setWeb3ReactRoot(WALLET_CONNECT)
-		} else {
-			setWeb3ReactRoot(PRIMARY_KEY)
-		}
-
-		// if (walletTypeName === null) {
-		// 	setChosenWalletTypeName(walletTypeName)
-		// 	return
-		// }
-
-		// const newConnector = connectorsByName[walletTypeName]
-
-		// if (!newConnector) {
-		// 	console.error(
-		// 		"onWalletTypeSelect",
-		// 		"invalid connector",
-		// 		`walletTypeName: ${walletTypeName}`
-		// 	)
-		// 	setSnackbarErr({
-		// 		msg: "errors.invalidWalletTypeName",
-		// 		opts: { walletTypeName }
-		// 	})
-		// 	setOpenErr(true)
-		// }
-
-		// // console.log('connector', connector)
-
-		// console.log('account', account)
-		// console.log('connector', connector)
-
-		// await activate(newConnector, (err) => console.log('ERRRRROR', err), true)
 		setChosenWalletTypeName(walletTypeName)
 	}, [])
 
@@ -332,14 +329,31 @@ export default function useApp() {
 				setOpenErr(true)
 			}
 
-			await activate(newConnector, err => console.log("ERRRRROR", err), true)
-			// setChosenWalletTypeName(chosenWalletTypeName)
+			try {
+				if (!active) {
+					console.log({ newConnector })
+					await activate(newConnector, () => {}, true)
+				}
+			} catch (err) {
+				console.log("ERR", err)
+				setSnackbarErr({
+					msg: getErrorMessage(err),
+					opts: { walletTypeName: chosenWalletTypeName }
+				})
+				setOpenErr(true)
+				if (err instanceof UnsupportedChainIdError) {
+					console.log("wrong chain")
+					setChainWarning(true)
+				}
+				setChosenWalletTypeName(null)
+			}
 
 			if (library && chosenWalletTypeName) {
 				const newWalletType = { name: chosenWalletTypeName, library }
 				const signer = await getSigner(newWalletType)
 
 				if (signer) {
+					newWalletType.account = await signer.getAddress()
 					setChosenWalletType(newWalletType)
 				} else {
 					setChosenWalletType({})
@@ -350,7 +364,7 @@ export default function useApp() {
 		}
 
 		updateWalletType()
-	}, [library, chosenWalletTypeName, connector, activate])
+	}, [library, chosenWalletTypeName, active, activate])
 
 	return {
 		isNewBondOpen,
@@ -378,7 +392,7 @@ export default function useApp() {
 		getSigner,
 		prices,
 		onWalletTypeSelect,
-		onWalletConnectionsDeactivate,
+		onConnectionDisconnect,
 		addSnack,
 		snackHooks,
 		chainId,
