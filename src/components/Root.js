@@ -81,7 +81,7 @@ export default function Root() {
 		getSigner,
 		prices,
 		onWalletTypeSelect,
-		onWalletConnectionsDeactivate,
+		onConnectionDisconnect,
 		snackHooks,
 		chainWarning,
 		newBondPool,
@@ -115,7 +115,7 @@ export default function Root() {
 			<AppToolbar
 				chosenWalletType={chosenWalletType}
 				setConnectWallet={setConnectWallet}
-				onWalletConnectionsDeactivate={onWalletConnectionsDeactivate}
+				onConnectionDisconnect={onConnectionDisconnect}
 				setNewBondOpen={setNewBondOpen}
 				handleDrawerToggle={handleDrawerToggle}
 				stats={stats}

@@ -64,7 +64,7 @@ export const Wallet = () => {
 		account,
 		// onWalletTypeSelect,
 		// connector,
-		onWalletConnectionsDeactivate
+		onConnectionDisconnect
 	} = useContext(AppContext)
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
@@ -144,7 +144,7 @@ export const Wallet = () => {
 						onClick={handleClose}
 						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
 					>
-						<MenuItem button onClick={onWalletConnectionsDeactivate}>
+						<MenuItem button onClick={onConnectionDisconnect}>
 							<ListItemIcon>
 								<LinkOff fontSize="small" />
 							</ListItemIcon>
