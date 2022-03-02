@@ -6,8 +6,13 @@ import { REACT_APP_RPC_URL } from "../helpers/constants"
 
 const POLLING_INTERVAL = 13000
 
+// NOTE: no 'supportedChainIds' - quick hack in order to activate the connectors with
+// all networks and then if it's not supported will will show our network err
+// Otherwise WalletConnectConnector will close the connection
+// if the wallet is not on the right chain
+
 export const injected = new InjectedConnector({
-	supportedChainIds: [1]
+	// supportedChainIds: []
 })
 
 export const ledger = new LedgerConnector({
@@ -28,7 +33,8 @@ export const trezor = new TrezorConnector({
 })
 
 export const walletconnect = new WalletConnectConnector({
-	rpc: { 1: REACT_APP_RPC_URL },
+	// rpc: { 1: REACT_APP_RPC_URL },
+	// supportedChainIds: [],
 	bridge: "https://bridge.walletconnect.org",
 	qrcode: true,
 	pollingInterval: POLLING_INTERVAL
