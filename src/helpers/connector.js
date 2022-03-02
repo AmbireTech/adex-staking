@@ -7,7 +7,7 @@ import { REACT_APP_RPC_URL } from "../helpers/constants"
 const POLLING_INTERVAL = 13000
 
 export const injected = new InjectedConnector({
-	supportedChainIds: [1, 3, 4, 5, 42]
+	supportedChainIds: [1]
 })
 
 export const ledger = new LedgerConnector({
