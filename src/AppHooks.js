@@ -378,7 +378,7 @@ export default function useApp() {
 			try {
 				console.log({ newConnector })
 				await activate(newConnector, () => {}, true)
-				setChosenWalletType({ name: chosenWalletTypeName })
+				setChosenWalletType({ name: chosenWalletTypeName, library })
 			} catch (err) {
 				console.log("ERR", err)
 				setSnackbarErr({
