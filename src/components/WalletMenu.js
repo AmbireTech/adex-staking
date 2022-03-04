@@ -12,7 +12,7 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Link,
-	Button
+	Grid
 } from "@material-ui/core"
 import {
 	AccountBalanceWalletSharp as AccountBalanceWalletIcon,
@@ -23,6 +23,7 @@ import {
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { formatAddress } from "../helpers/formatting"
 import {
+	METAMASK,
 	Wallets
 	// WALLET_CONNECT
 } from "../helpers/constants"
@@ -30,6 +31,7 @@ import copy from "copy-to-clipboard"
 import { useTranslation } from "react-i18next"
 import Tooltip from "./Tooltip"
 import { getPeerMeta } from "../ethereum"
+import * as blockies from "blockies-ts"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -101,74 +103,96 @@ export const Wallet = () => {
 					{t("common.connectWallet")}
 				</Fab>
 			) : (
-				<Box>
-					<Chip
-						id="wallet-address-top-bar-copy"
-						onClick={() => {
-							copy(account)
-							addSnack(t("messages.addrCopied", { account }), "success")
-						}}
-						clickable
-						classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
-						icon={
-							account ? (
-								<Icon>
-									<Jazzicon diameter={26} seed={jsNumberForAddress(account)} />
-								</Icon>
-							) : null
-						}
-						label={formatAddress(account)}
-					/>
-					<Tooltip title="Account settings">
-						<Chip
-							classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
-							clickable
-							onClick={handleClick}
-							size="medium"
-							aria-controls={open ? "account-menu" : undefined}
-							aria-haspopup="true"
-							aria-expanded={open ? "true" : undefined}
-							icon={icon ? <Avatar src={icon} /> : null}
-							label={
-								<Box fontSize="2rem" display="flex">
-									<KeyboardArrowDown fontSize="large" />
-								</Box>
-							}
-						/>
-					</Tooltip>
-					<Menu
-						anchorEl={anchorEl}
-						id="account-menu"
-						open={open}
-						onClose={handleClose}
-						onClick={handleClose}
-						transformOrigin={{ horizontal: "right", vertical: "bottom" }}
-					>
-						<MenuItem button onClick={onConnectionDisconnect}>
-							<ListItemIcon>
-								<LinkOff fontSize="small" />
-							</ListItemIcon>
-							<ListItemText>Disconnect</ListItemText>
-						</MenuItem>
+				<Grid container spacing={1} justifyContent="flex-end">
+					<Grid item>
+						<Box>
+							<Chip
+								id="wallet-address-top-bar-copy"
+								onClick={() => {
+									copy(account)
+									addSnack(t("messages.addrCopied", { account }), "success")
+								}}
+								clickable
+								classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
+								icon={
+									account ? (
+										chosenWalletType.name === METAMASK ? (
+											<Icon>
+												<Jazzicon
+													diameter={26}
+													seed={jsNumberForAddress(account)}
+												/>
+											</Icon>
+										) : (
+											<Avatar
+												src={blockies.create({ seed: account }).toDataURL()}
+											/>
+										)
+									) : null
+								}
+								label={formatAddress(account)}
+							/>
+						</Box>
+					</Grid>
+					<Grid item>
+						<Tooltip title="Account settings">
+							<Chip
+								classes={{ root: classes.chipRoot, icon: classes.chipIcon }}
+								clickable
+								onClick={handleClick}
+								size="medium"
+								aria-controls={open ? "account-menu" : undefined}
+								aria-haspopup="true"
+								aria-expanded={open ? "true" : undefined}
+								icon={
+									icon || peerMeta?.icons ? (
+										<Avatar src={peerMeta?.icons ? peerMeta.icons[0] : icon} />
+									) : null
+								}
+								label={
+									<Box display="flex" flexDirection="row" alignItems="center">
+										{peerMeta?.name || chosenWalletType.name}
+										<KeyboardArrowDown fontSize="large" />
+									</Box>
+								}
+							/>
+						</Tooltip>
+					</Grid>
+					<Grid item>
+						<Menu
+							anchorEl={anchorEl}
+							id="account-menu"
+							open={open}
+							onClose={handleClose}
+							onClick={handleClose}
+							transformOrigin={{ horizontal: "right", vertical: "bottom" }}
+						>
+							<MenuItem button onClick={onConnectionDisconnect}>
+								<ListItemIcon>
+									<LinkOff fontSize="small" />
+								</ListItemIcon>
+								<ListItemText>Disconnect</ListItemText>
+							</MenuItem>
 
-						{peerMeta && (
-							<Link
-								id="wc-peer-meta-link"
-								color="inherit"
-								href={peerMeta.url}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<MenuItem ic={OpenInNew} onClick={handleClose}>
-									<ListItemIcon>
-										<OpenInNew fontSize="small" />
-									</ListItemIcon>
-									<ListItemText>{peerMeta.name}</ListItemText>
-								</MenuItem>
-							</Link>
-						)}
-					</Menu>
-				</Box>
+							{peerMeta && (
+								<Link
+									id="wc-peer-meta-link"
+									color="inherit"
+									href={peerMeta.url}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<MenuItem ic={OpenInNew} onClick={handleClose}>
+										<ListItemIcon>
+											<OpenInNew fontSize="small" />
+										</ListItemIcon>
+										<ListItemText>{peerMeta.name}</ListItemText>
+									</MenuItem>
+								</Link>
+							)}
+						</Menu>
+					</Grid>
+				</Grid>
 			)}
 		</Fragment>
 	)
