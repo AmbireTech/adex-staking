@@ -34,6 +34,7 @@ import { useSnack } from "./Snack"
 import ChooseWallet from "components/ChooseWallet"
 import {
 	loadFromLocalStorage,
+	removeFromLocalStorage,
 	saveToLocalStorage
 } from "./helpers/localStorage"
 
@@ -80,8 +81,6 @@ function getErrorMessage(error) {
 export default function useApp() {
 	const { addSnack, ...snackHooks } = useSnack()
 
-	const [web3ReactRoot, setWeb3ReactRoot] = useState(PRIMARY_KEY)
-
 	const {
 		library,
 		activate,
@@ -91,7 +90,7 @@ export default function useApp() {
 		account,
 		connector,
 		active
-	} = useWeb3React(web3ReactRoot)
+	} = useWeb3React()
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
 	const [toUnbond, setToUnbond] = useState(null)
@@ -139,6 +138,27 @@ export default function useApp() {
 	useEffect(() => {
 		saveToLocalStorage(chosenWalletTypeName, "chosenWalletTypeName")
 	}, [chosenWalletTypeName])
+
+	useEffect(() => {
+		if (connector) {
+			// console.log({ connector })
+
+			connector.on("transport_error", (error, payload) => {
+				console.error("WalletConnect transport error", payload)
+				setSnackbarErr({
+					msg: "WalletConnect transport error"
+				})
+				setOpenErr(true)
+				// TODO: connections broken check
+			})
+		}
+
+		return () => {
+			if (connector) {
+				connector.removeAllListeners()
+			}
+		}
+	}, [connector])
 
 	const refreshStats = useCallback(async () => {
 		setUpdatingStats(!!account)
@@ -296,8 +316,19 @@ export default function useApp() {
 	const onConnectionDisconnect = useCallback(
 		async walletTypeName => {
 			console.log(`Deactivating - ${chosenWalletTypeName} `)
+			try {
+				await deactivate()
+				// NOTE: just in case because sometimes deactivate() with walletconnect does not
+				// disconnects because of some uncaught promise err on  .walletConnectProvider.disconnect()
+				if (chosenWalletTypeName === WALLET_CONNECT) {
+					removeFromLocalStorage("walletconnect")
+					removeFromLocalStorage("WALLETCONNECT_DEEPLINK_CHOICE")
+					removeFromLocalStorage("wc1_state")
+				}
+			} catch (err) {
+				console.log({ err })
+			}
 			setConnectWallet(null)
-			await deactivate()
 			setChosenWalletTypeName(null)
 		},
 		[chosenWalletTypeName, deactivate]
