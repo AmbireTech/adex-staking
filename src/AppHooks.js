@@ -86,8 +86,8 @@ export default function useApp() {
 		activate,
 		error,
 		deactivate,
-		chainId,
-		account,
+		chainId: web3ReactChainId,
+		account: web3ReactAccount,
 		connector,
 		active
 	} = useWeb3React()
@@ -110,6 +110,9 @@ export default function useApp() {
 	const [userIdle, setUserIdle] = useState(false)
 	const [idlePopupOpen, setIdlePopupOpen] = useState(false)
 	const [updatingStats, setUpdatingStats] = useState(false)
+	const [accountData, setAccountData] = useState({})
+
+	const { account, chainId } = accountData
 
 	// useInactiveListener({connectWallet})
 
@@ -130,8 +133,18 @@ export default function useApp() {
 	})
 
 	useEffect(() => {
-		const name = loadFromLocalStorage("chosenWalletTypeName")
+		if (chosenWalletType.name) {
+			setAccountData({
+				account: web3ReactAccount,
+				chainId: web3ReactChainId
+			})
+		} else {
+			setAccountData({})
+		}
+	}, [chosenWalletType, web3ReactAccount, web3ReactChainId])
 
+	useEffect(() => {
+		const name = loadFromLocalStorage("chosenWalletTypeName")
 		setChosenWalletTypeName(name || null)
 	}, [])
 
@@ -326,10 +339,10 @@ export default function useApp() {
 					removeFromLocalStorage("wc1_state")
 				}
 			} catch (err) {
-				console.log({ err })
+				console.error({ err })
 			}
-			setConnectWallet(null)
 			setChosenWalletTypeName(null)
+			setConnectWallet(null)
 		},
 		[chosenWalletTypeName, deactivate]
 	)
@@ -340,8 +353,9 @@ export default function useApp() {
 	}, [])
 
 	useEffect(() => {
-		async function updateWalletType() {
+		async function updateWallet() {
 			if (!chosenWalletTypeName) {
+				await deactivate()
 				setChosenWalletType({})
 				return
 			}
@@ -358,13 +372,13 @@ export default function useApp() {
 					opts: { walletTypeName: chosenWalletTypeName }
 				})
 				setOpenErr(true)
+				setChosenWalletTypeName(null)
 			}
 
 			try {
-				if (!active) {
-					console.log({ newConnector })
-					await activate(newConnector, () => {}, true)
-				}
+				console.log({ newConnector })
+				await activate(newConnector, () => {}, true)
+				setChosenWalletType({ name: chosenWalletTypeName })
 			} catch (err) {
 				console.log("ERR", err)
 				setSnackbarErr({
@@ -376,26 +390,12 @@ export default function useApp() {
 					console.log("wrong chain")
 					setChainWarning(true)
 				}
+				await deactivate()
 				setChosenWalletTypeName(null)
 			}
-
-			if (library && chosenWalletTypeName) {
-				const newWalletType = { name: chosenWalletTypeName, library }
-				const signer = await getSigner(newWalletType)
-
-				if (signer) {
-					newWalletType.account = await signer.getAddress()
-					setChosenWalletType(newWalletType)
-				} else {
-					setChosenWalletType({})
-				}
-			} else {
-				setChosenWalletType({})
-			}
 		}
-
-		updateWalletType()
-	}, [library, chosenWalletTypeName, active, activate])
+		updateWallet()
+	}, [chosenWalletTypeName, active, activate, deactivate])
 
 	return {
 		isNewBondOpen,
