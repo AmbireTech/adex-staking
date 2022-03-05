@@ -181,6 +181,10 @@ export default function useApp() {
 
 		if (userIdle) return
 
+		if (chosenWalletType.name && !chosenWalletType.library) {
+			return
+		}
+
 		const newPrices =
 			!Object.keys(prices) || refreshCount % 3 === 0
 				? await getPrices()
@@ -213,23 +217,12 @@ export default function useApp() {
 
 		setUpdatingStats(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userIdle, account, refreshCount, prices])
+	}, [userIdle, account, refreshCount, prices, chosenWalletType])
 
 	useEffect(() => {
-		async function updateStats() {
-			if (chosenWalletType.name && account) {
-				const signer = await getSigner(chosenWalletType)
-				const address = await signer.getAddress()
-
-				if (address !== account) {
-					return
-				}
-			}
-			refreshStats()
-		}
-		updateStats()
+		refreshStats()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chosenWalletType.name, account])
+	}, [chosenWalletType, account])
 
 	useEffect(() => {
 		const refreshInterval = chosenWalletType.name
@@ -376,7 +369,6 @@ export default function useApp() {
 			}
 
 			try {
-				console.log({ newConnector })
 				await activate(newConnector, () => {}, true)
 				setChosenWalletType({ name: chosenWalletTypeName, library })
 			} catch (err) {
@@ -395,7 +387,7 @@ export default function useApp() {
 			}
 		}
 		updateWallet()
-	}, [chosenWalletTypeName, active, activate, deactivate])
+	}, [chosenWalletTypeName, active, activate, deactivate, library])
 
 	return {
 		isNewBondOpen,
