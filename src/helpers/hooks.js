@@ -16,7 +16,7 @@ export function useInactiveListener(suppress) {
 	}
 
 	const handleAccountsChanged = accounts => {
-		console.log("Handling 'accountsChanged' event with payload KOR", accounts)
+		console.log("Handling 'accountsChanged' event with payload", accounts)
 		if (active && accounts.length > 0) {
 			// NOTE: will reload stats
 			// window.location.reload()

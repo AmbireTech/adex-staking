@@ -217,7 +217,14 @@ export default function useApp() {
 
 		setUpdatingStats(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userIdle, account, refreshCount, prices, chosenWalletType])
+	}, [
+		stats.connectedWalletAddress,
+		userIdle,
+		account,
+		refreshCount,
+		prices,
+		chosenWalletType
+	])
 
 	useEffect(() => {
 		refreshStats()
