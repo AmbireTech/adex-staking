@@ -114,8 +114,6 @@ export default function useApp() {
 
 	const { account, chainId } = accountData
 
-	// useInactiveListener({connectWallet})
-
 	const handleOnIdle = () => {
 		setUserIdle(true)
 		setIdlePopupOpen(true)
@@ -145,7 +143,9 @@ export default function useApp() {
 
 	useEffect(() => {
 		const name = loadFromLocalStorage("chosenWalletTypeName")
-		setChosenWalletTypeName(name || null)
+		if (name) {
+			onWalletTypeSelect(name)
+		}
 	}, [])
 
 	useEffect(() => {
@@ -154,8 +154,6 @@ export default function useApp() {
 
 	useEffect(() => {
 		if (connector) {
-			// console.log({ connector })
-
 			connector.on("transport_error", (error, payload) => {
 				console.error("WalletConnect transport error", payload)
 				setSnackbarErr({
@@ -322,6 +320,8 @@ export default function useApp() {
 	const onConnectionDisconnect = useCallback(
 		async walletTypeName => {
 			console.log(`Deactivating - ${chosenWalletTypeName} `)
+			setChosenWalletTypeName(null)
+			setConnectWallet(null)
 			try {
 				await deactivate()
 				// NOTE: just in case because sometimes deactivate() with walletconnect does not
@@ -334,25 +334,14 @@ export default function useApp() {
 			} catch (err) {
 				console.error({ err })
 			}
-			setChosenWalletTypeName(null)
-			setConnectWallet(null)
 		},
 		[chosenWalletTypeName, deactivate]
 	)
 
 	const onWalletTypeSelect = useCallback(async walletTypeName => {
-		setConnectWallet(null)
-		setChosenWalletTypeName(walletTypeName)
-	}, [])
-
-	useEffect(() => {
-		async function updateWallet() {
-			if (!chosenWalletTypeName) {
-				await deactivate()
-				setChosenWalletType({})
-				return
-			}
-			const newConnector = connectorsByName[chosenWalletTypeName]
+		async function onChange() {
+			setConnectWallet(null)
+			const newConnector = connectorsByName[walletTypeName]
 
 			if (!newConnector) {
 				console.error(
@@ -366,28 +355,45 @@ export default function useApp() {
 				})
 				setOpenErr(true)
 				setChosenWalletTypeName(null)
-			}
-
-			try {
-				await activate(newConnector, () => {}, true)
-				setChosenWalletType({ name: chosenWalletTypeName, library })
-			} catch (err) {
-				console.log("ERR", err)
-				setSnackbarErr({
-					msg: getErrorMessage(err),
-					opts: { walletTypeName: chosenWalletTypeName }
-				})
-				setOpenErr(true)
-				if (err instanceof UnsupportedChainIdError) {
-					console.log("wrong chain")
-					setChainWarning(true)
+			} else {
+				try {
+					await activate(newConnector, () => {}, true)
+					setChosenWalletTypeName(walletTypeName)
+				} catch (err) {
+					console.log("ERR", err)
+					setSnackbarErr({
+						msg: getErrorMessage(err),
+						opts: { walletTypeName: chosenWalletTypeName }
+					})
+					setOpenErr(true)
+					if (err instanceof UnsupportedChainIdError) {
+						console.log("wrong chain")
+						setChainWarning(true)
+					}
+					await deactivate()
+					setChosenWalletTypeName(null)
 				}
-				await deactivate()
-				setChosenWalletTypeName(null)
 			}
 		}
+
+		onChange()
+	}, [])
+
+	useEffect(() => {
+		async function updateWallet() {
+			if (!chosenWalletTypeName) {
+				setChosenWalletType({})
+			} else {
+				const signerAddr = await (await library?.getSigner())?.getAddress()
+				const newWalletType = signerAddr
+					? { name: chosenWalletTypeName, library, account: signerAddr }
+					: {}
+				setChosenWalletType(newWalletType)
+			}
+		}
+
 		updateWallet()
-	}, [chosenWalletTypeName, active, activate, deactivate, library])
+	}, [chosenWalletTypeName])
 
 	return {
 		isNewBondOpen,
