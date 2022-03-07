@@ -353,7 +353,7 @@ export default function Deposits() {
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const [deposits, setDeposits] = useState([])
-	const { stats, chosenWalletType } = useContext(AppContext)
+	const { stats, chosenWalletType, account } = useContext(AppContext)
 	const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
 
 	const {
@@ -392,7 +392,16 @@ export default function Deposits() {
 			: "")
 
 	useEffect(() => {
-		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
+		const {
+			loyaltyPoolStats,
+			tomStakingV5PoolStats,
+			connectedWalletAddress
+		} = stats
+		if (connectedWalletAddress !== account) {
+			setDeposits([])
+			return
+		}
+
 		let loadedDeposits = [...deposits]
 		if (loyaltyPoolStats.loaded) {
 			// const disabledDepositsMsg = !chosenWalletType.name ?
@@ -439,7 +448,7 @@ export default function Deposits() {
 		setDeposits(loadedDeposits)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [stats])
+	}, [stats, account])
 
 	const renderDepositRow = deposit => {
 		const PoolIcon = iconByPoolId(deposit)
