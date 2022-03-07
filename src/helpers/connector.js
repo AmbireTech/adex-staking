@@ -33,8 +33,8 @@ export const trezor = new TrezorConnector({
 })
 
 export const walletconnect = new WalletConnectConnector({
-	// rpc: { 1: REACT_APP_RPC_URL },
-	// supportedChainIds: [],
+	rpc: { 1: REACT_APP_RPC_URL },
+	supportedChainIds: [1, 56, 137, 43114, 250, 1284],
 	bridge: "https://bridge.walletconnect.org",
 	qrcode: true,
 	pollingInterval: POLLING_INTERVAL
