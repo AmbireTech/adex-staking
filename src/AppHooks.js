@@ -29,7 +29,6 @@ import {
 	reBond,
 	onMigrationToV5Finalize
 } from "./actions"
-import { useInactiveListener } from "./helpers/hooks"
 import { useSnack } from "./Snack"
 import ChooseWallet from "components/ChooseWallet"
 import {
@@ -88,8 +87,8 @@ export default function useApp() {
 		deactivate,
 		chainId: web3ReactChainId,
 		account: web3ReactAccount,
-		connector,
-		active
+		connector
+		// active
 	} = useWeb3React()
 
 	const [isNewBondOpen, setNewBondOpen] = useState(false)
@@ -142,6 +141,10 @@ export default function useApp() {
 	}, [chosenWalletType, web3ReactAccount, web3ReactChainId])
 
 	useEffect(() => {
+		setChosenWalletType({ ...chosenWalletType, library })
+	}, [library])
+
+	useEffect(() => {
 		const name = loadFromLocalStorage("chosenWalletTypeName")
 		if (name) {
 			onWalletTypeSelect(name)
@@ -172,10 +175,9 @@ export default function useApp() {
 	}, [connector])
 
 	const refreshStats = useCallback(async () => {
-		setUpdatingStats(!!account)
-		if (!account) {
-			setStats(EMPTY_STATS)
-		}
+		const isAccountChanged = stats.connectedWalletAddress !== account
+		await setUpdatingStats(isAccountChanged)
+		await setStats({ ...(isAccountChanged ? EMPTY_STATS : stats) })
 
 		if (userIdle) return
 
