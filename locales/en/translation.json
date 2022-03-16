@@ -35,6 +35,7 @@
     "actions": "Actions",
     "unknown": "Unknown",
     "maxAmountBtn": "Max amount: {{amount}} {{currency}}",
+    "maxAmountCurrentSharesValueBtn": "Max amount current: {{amount}} {{currency}}",
     "maxAmountBtnRageOver": "Max amount available: {{amount}} {{currency}}",
     "none": "None",
     "poolRewardPolicy": "Pool reward policy",
@@ -112,7 +113,7 @@
     "tomApyStability": "Flexible",
     "tomPurpose": "Staking ADX tokens towards the reputation of our main validator",
     "tomV5Purpose": "Staking ADX tokens towards the reputation of our main validator",
-    "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. There is an additional incentive reward of 20 million ADX to be distributed by the end of 2021. All rewards will be paid in ADX and will be automatically added to your stake.",
+    "tomV5RewardPolicy": "The \"Validator Tom\" pool will distribute its fee earnings proportionally to each staker. The fee earnings will be 7% of the total volume, which you can track on the statistics page. All rewards will be paid in ADX and will be automatically added to your stake.",
     "tomV5SlashPolicy": "No slashing.",
     "tomLegacyPoolDisabledInfo": "Staking to Tom Legacy pool is disabled. Use updated pool.",
     "tomV5LockupPeriodTxt": "{{count}} days ({{count}} days need to pass before unlocking ADX, during that period no rewards are received)"
@@ -163,6 +164,7 @@
     "rageLeaveFrom": "Rage Leave form {{pool}} ",
     "rageLeaveWarning": "By committing \"rage leave \" you will skip the lockup period of {{lockupPeriod}} days but will receive {{percent}} % of the {{token}} withdraw amount. The rest of the {{token}} will be distributed to other stakers ",
     "rageLeaveWarningOverAvailable": "You have selected а \"rage leave\" amount that includes tokens from unbond commitments or/and ready to withdraww {{token}}. If you choose to \"rage leave\" an amount over the available {{available}} {{token}}, you will only receive {{percent}} % of the {{token}} that is in pending/ready state for withdraw. Please consider withdrawal of the ready amount first (or wait for unbond if time not passed) or rage leave \"MAX AMOUNT AVAILABLE\"",
+    "unbondWarningOverAvailable": "Looks like you have pending/ready unbond commitments and you have transferred ADX-STAKING tokens out of this wallet. You can transfer in ADX-STAKING tokens to this wallet and withdraw current unbond commitments or you can transfer out your current balance of {{amountStaking}} ADX-STAKING tokens through your wallet, or make rage leave for the current available amount of {{amountADX}} ADX.",
     "eventType": "Event Type",
     "txnHash": "Txn Hash",
     "txnsHistory": "Transactions history",
@@ -177,6 +179,8 @@
     "maxTokens": "Withdrawn tokens: {{maxTokens}} {{currency}}",
     "receivedTokens": "Received tokens: {{receivedTokens}} {{currency}}",
     "hasExternalStakingTokenTransfersAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), the rewards shown may be less than your actual rewards.",
+    "hasInsufficentBalanceForUnbondCommitmentsAlert": "Warning: because you have sent/received staking share token ({{pool}}: {{token}}), you don't have enough {{token}} to withdraw your pending/ready unbond commitments. Transfer {{amount}} {{token}} to use your current unbond commitments or make rage leave for the current available balance of {{adxValue}} ADX",
+    "currentBalanceShareADXAvailableValueInfo": "Available {{amount}} {{token}} ({{amountStaking}} ADX-STAKING) for transfer out or rage leave!",
     "depositConfirmationLabel": "I understand I am locking up <strong> <amount> {{amount}} {{currency}} </amount> </strong> for at least <strong> {{unbondDays}} days </strong> and I am familiar with the <e1> Terms and conditions </e1> and <e2> </e2>  staking conditions",
     "unbondConfirmationLabel": "I understand that unbonding  <strong> <amount> {{amount}} {{currency}} </amount> </strong> will take <strong> {{unbondDays}} days </strong> and I will not be earning staking rewards on that amount in these {{unbondDays}} days.",
     "poolShare": "Pool share",
@@ -280,7 +284,9 @@
     "unbondCommitmentNotSelected": "Unbond commitment not selected",
     "zeroBalanceADX": "0 ADX balance",
     "noUnbondCommitmentProvided": "No unbond commitment data provided",
-    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}"
+    "poolMaxDepositReached": "Pool total deposit limit: {{userDepositsLimit}} {{currency}}, your current deposit balance - {{currentDeposited}} {{currency}}, new deposit - {{depositAmount}} {{currency}}",
+    "maxAmountCurrentSharesValueConfirmed": "Amount over available not confirmed",
+    "invalidWalletTypeName": "Invalid wallet type name: {{walletTypeName}}"
   },
   "messages": {
     "unsupportedEthNetwork": "Unsupported ethereum chain detected!",
