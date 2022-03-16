@@ -339,9 +339,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 
 	const tomRewardDAI = sumRewards(tomPoolDaiRewardsChannels)
 
-	// console.log("migrationBonusPromille", migrationBonusPromille)
-	// console.log("identityAdxRewardsAmount", identityAdxRewardsAmount)
-
 	const userBonds = userBondsData.map(bond => ({
 		...bond,
 		migrationReward: bond.amount
@@ -349,8 +346,6 @@ export async function loadUserStats(chosenWalletType, prices) {
 			.div(1000)
 			.sub(bond.amount)
 	}))
-
-	// console.log("userBonds", userBonds)
 
 	const userTotalStake = userBonds
 		.filter(x => x.status === "Active")

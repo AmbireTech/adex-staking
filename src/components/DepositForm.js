@@ -5,6 +5,7 @@ import {
 	getPoolStatsByPoolId,
 	isValidNumberString,
 	getDepositActionMaxAmountByTypeAndPoolId,
+	getDepositActionMaxAmountCurrentShareValueByTypeAndPoolId,
 	DEPOSIT_ACTION_TYPES
 } from "../actions"
 import {
@@ -66,6 +67,11 @@ export default function DepositForm({
 	const [maxAmountAvailableForRage, setMaxAmountAvailableForRage] = useState(
 		ZERO
 	)
+	const [
+		maxAmountCurrentSharesValue,
+		setMaxAmountCurrentSharesValue
+	] = useState(ZERO)
+
 	const [poolStats, setPoolStats] = useState({})
 
 	useEffect(() => {
@@ -80,8 +86,14 @@ export default function DepositForm({
 			stats.userWalletBalance
 		)
 
+		const newMaxAmountCurrentShareValue = getDepositActionMaxAmountCurrentShareValueByTypeAndPoolId(
+			actionType,
+			newActivePool.id,
+			newPoolStats
+		)
+
 		const newMaxAmountAvailable = getDepositActionMaxAmountByTypeAndPoolId(
-			DEPOSIT_ACTION_TYPES.unbondCommitment,
+			actionType,
 			newActivePool.id,
 			newPoolStats,
 			stats.userWalletBalance
@@ -96,7 +108,15 @@ export default function DepositForm({
 		setActivePool(newActivePool)
 		setMaxAmount(newMaxAmount)
 		setMaxAmountAvailableForRage(newMaxAmountAvailable)
-	}, [actionType, depositPool, stats])
+		setMaxAmountCurrentSharesValue(newMaxAmountCurrentShareValue)
+		if (
+			!unbondCommitment &&
+			newActiveUnbondCommitments &&
+			newActiveUnbondCommitments.length === 1
+		) {
+			setUnbondCommitment(newActiveUnbondCommitments[0])
+		}
+	}, [actionType, depositPool, stats, unbondCommitment])
 
 	const onAction = async () => {
 		if (!activePool) {
@@ -314,9 +334,9 @@ export default function DepositForm({
 								value={unbondCommitment || ""}
 								onChange={onUnbondCommitmentChange}
 							>
-								<MenuItem value={""}>
+								{/* <MenuItem value={""}>
 									<em>{t("common.none")}</em>
-								</MenuItem>
+								</MenuItem> */}
 								{activeUnbondCommitments.map(uc => {
 									const disabled = !uc.canWithdraw
 									const unlocksAt = uc.unlocksAt.toNumber()
@@ -448,6 +468,18 @@ export default function DepositForm({
 										/>
 									}
 								></FormControlLabel>
+							</Alert>
+						</Grid>
+					)}
+
+				{actionType === DEPOSIT_ACTION_TYPES.unbondCommitment &&
+					maxAmountCurrentSharesValue.gt(maxAmount) && (
+						<Grid item xs={12}>
+							<Alert severity="warning">
+								{t("deposits.unbondWarningOverAvailable", {
+									amountADX: formatADXPretty(maxAmountCurrentSharesValue),
+									amountStaking: formatADXPretty(poolStats.balanceShares)
+								})}
 							</Alert>
 						</Grid>
 					)}

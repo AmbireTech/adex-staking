@@ -11,13 +11,14 @@ import {
 	SvgIcon
 } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
-import { DEPOSIT_POOLS, iconByPoolId } from "../helpers/constants"
+import { DEPOSIT_POOLS, iconByPoolId, ZERO } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
 import AppContext from "../AppContext"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import { AmountText } from "./cardCommon"
 import { DEPOSIT_ACTION_TYPES } from "../actions"
+import Tooltip from "./Tooltip"
 
 import { useTranslation } from "react-i18next"
 
@@ -35,17 +36,25 @@ const useStyles = makeStyles(theme => {
 			flexDirection: "column",
 			alignItems: "center",
 			justifyContent: "center"
+		},
+		info: {
+			color: theme.palette.info.main
+		},
+		warning: {
+			color: theme.palette.warning.main
 		}
 	}
 })
 
 const getStakingPool = ({
+	classes,
 	t,
 	stats,
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
 	disableActionsMsg,
-	hasExternalStakingTokenTransfers
+	hasExternalStakingTokenTransfers,
+	hasInsufficentBalanceForUnbondCommitments
 }) => {
 	const { tomStakingV5PoolStats } = stats
 
@@ -55,15 +64,39 @@ const getStakingPool = ({
 		currentAPY: tomStakingV5PoolStats.currentAPY,
 		balance: (
 			<Fragment>
-				<Box>
-					<AmountText
-						text={`${formatADXPretty(
-							tomStakingV5PoolStats.currentBalanceADXAvailable
-						)} ${"ADX"}`}
-						fontSize={17}
-					/>
-					{hasExternalStakingTokenTransfers && " *"}
-				</Box>
+				<Tooltip
+					title={
+						tomStakingV5PoolStats.leavesPendingToUnlockTotalADX.gt(ZERO) ||
+						tomStakingV5PoolStats.leavesReadyToWithdrawTotalADX.gt(ZERO)
+							? `${t("deposits.currentBalanceShareADXAvailableValueInfo", {
+									// pool: t("common.tomStakingPool"),
+									token: "ADX",
+									amount: formatADXPretty(
+										tomStakingV5PoolStats.currentBalanceSharesADXValue
+									),
+									amountStaking: formatADXPretty(
+										tomStakingV5PoolStats.balanceShares
+									)
+							  })}`
+							: ""
+					}
+				>
+					<Box>
+						<AmountText
+							text={`${formatADXPretty(
+								tomStakingV5PoolStats.currentBalanceADXAvailable
+								// tomStakingV5PoolStats.currentBalanceSharesADXValue
+							)} ${"ADX"}`}
+							fontSize={17}
+						/>
+						{hasExternalStakingTokenTransfers && (
+							<span className={classes.info}>{" *"}</span>
+						)}
+						{hasInsufficentBalanceForUnbondCommitments && (
+							<span className={classes.warning}>{" ** ***"}</span>
+						)}
+					</Box>
+				</Tooltip>
 				<Box>
 					{/* <AmountText
 						text={`(=${formatADXPretty(
@@ -87,7 +120,9 @@ const getStakingPool = ({
 					)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}>{" *"}</span>
+				)}
 			</Box>
 		),
 		depositsADXTotal: (
@@ -98,7 +133,9 @@ const getStakingPool = ({
 					)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}>{" *"}</span>
+				)}
 			</Box>
 		),
 		pendingToUnlockTotalADX: (
@@ -117,16 +154,23 @@ const getStakingPool = ({
 					)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}>{" *"}</span>
+				)}
 			</Box>
 		),
 		readyToWithdrawTotalADX: (
-			<AmountText
-				text={`${formatADXPretty(
-					tomStakingV5PoolStats.leavesReadyToWithdrawTotalADX
-				)} ${"ADX"}`}
-				fontSize={17}
-			/>
+			<Box>
+				<AmountText
+					text={`${formatADXPretty(
+						tomStakingV5PoolStats.leavesReadyToWithdrawTotalADX
+					)} ${"ADX"}`}
+					fontSize={17}
+				/>
+				{hasInsufficentBalanceForUnbondCommitments && (
+					<span className={classes.warning}>{" **"}</span>
+				)}
+			</Box>
 		),
 		actions: [
 			<DepositsDialog
@@ -190,6 +234,7 @@ const getStakingPool = ({
 }
 
 const getLoyaltyPoolDeposit = ({
+	classes,
 	t,
 	stats,
 	disabledDepositsMsg,
@@ -208,7 +253,9 @@ const getLoyaltyPoolDeposit = ({
 						text={`${formatADXPretty(loyaltyPoolStats.balanceLpADX)} ${"ADX"}`}
 						fontSize={17}
 					/>
-					{hasExternalStakingTokenTransfers && " *"}
+					{hasExternalStakingTokenTransfers && (
+						<span className={classes.info}> *</span>
+					)}
 				</Box>
 				{
 					<Box>{`(${t("deposits.poolShare")}: ${(
@@ -223,7 +270,9 @@ const getLoyaltyPoolDeposit = ({
 					text={`${formatADXPretty(loyaltyPoolStats.totalRewards)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}> *</span>
+				)}
 			</Box>
 		) : (
 			t("common.unknown")
@@ -234,7 +283,9 @@ const getLoyaltyPoolDeposit = ({
 					text={`${formatADXPretty(loyaltyPoolStats.totalDeposits)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}> *</span>
+				)}
 			</Box>
 		) : (
 			t("common.unknown")
@@ -247,7 +298,9 @@ const getLoyaltyPoolDeposit = ({
 					text={`${formatADXPretty(loyaltyPoolStats.totalWithdraws)} ${"ADX"}`}
 					fontSize={17}
 				/>
-				{hasExternalStakingTokenTransfers && " *"}
+				{hasExternalStakingTokenTransfers && (
+					<span className={classes.info}> *</span>
+				)}
 			</Box>
 		) : (
 			t("common.unknown")
@@ -300,12 +353,16 @@ export default function Deposits() {
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const [deposits, setDeposits] = useState([])
-	const { stats, chosenWalletType } = useContext(AppContext)
+	const { stats, chosenWalletType, account } = useContext(AppContext)
 	const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
 
 	const {
 		totalSharesOutTransfersAdxValue,
-		totalSharesInTransfersAdxValue
+		totalSharesInTransfersAdxValue,
+		hasInsufficentBalanceForUnbondCommitments,
+		insufficientSharesAmoutForCurrentUnbonds,
+		currentBalanceSharesADXValue,
+		balanceShares
 	} = tomStakingV5PoolStats
 
 	const {
@@ -335,7 +392,16 @@ export default function Deposits() {
 			: "")
 
 	useEffect(() => {
-		const { loyaltyPoolStats, tomStakingV5PoolStats } = stats
+		const {
+			loyaltyPoolStats,
+			tomStakingV5PoolStats,
+			connectedWalletAddress
+		} = stats
+		if (connectedWalletAddress !== account) {
+			setDeposits([])
+			return
+		}
+
 		let loadedDeposits = [...deposits]
 		if (loyaltyPoolStats.loaded) {
 			// const disabledDepositsMsg = !chosenWalletType.name ?
@@ -346,6 +412,7 @@ export default function Deposits() {
 			const disabledWithdrawsMsg = disableActionsMsg
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				classes,
 				t,
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
@@ -365,12 +432,14 @@ export default function Deposits() {
 					: "")
 
 			const stakingPoolDeposit = getStakingPool({
+				classes,
 				t,
 				stats,
 				disableActionsMsg,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg,
-				hasExternalStakingTokenTransfers
+				hasExternalStakingTokenTransfers,
+				hasInsufficentBalanceForUnbondCommitments
 			})
 
 			loadedDeposits = updateDeposits(loadedDeposits, stakingPoolDeposit)
@@ -379,7 +448,7 @@ export default function Deposits() {
 		setDeposits(loadedDeposits)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [stats])
+	}, [stats, account])
 
 	const renderDepositRow = deposit => {
 		const PoolIcon = iconByPoolId(deposit)
@@ -476,20 +545,52 @@ export default function Deposits() {
 				</TableContainer>
 			</Box>
 			{hasExternalStakingTokenTransfers && (
-				<Alert variant="filled" severity="info">
-					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
-						pool: t("common.tomStakingPool"),
-						token: "ADX-STAKING"
-					})}}`}
-				</Alert>
+				<Box mb={1}>
+					<Alert variant="filled" severity="info">
+						{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
+							pool: t("common.tomStakingPool"),
+							token: "ADX-STAKING"
+						})}`}
+					</Alert>
+				</Box>
 			)}
 			{hasExternalStakingTokenTransfersLP && (
-				<Alert variant="filled" severity="info">
-					{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
-						pool: t("common.loPo"),
-						token: "ADX-LOYALTY"
-					})}}`}
-				</Alert>
+				<Box mb={1}>
+					<Alert variant="filled" severity="info">
+						{`* ${t("deposits.hasExternalStakingTokenTransfersAlert", {
+							pool: t("common.loPo"),
+							token: "ADX-LOYALTY"
+						})}`}
+					</Alert>
+				</Box>
+			)}
+			{hasInsufficentBalanceForUnbondCommitments && (
+				<Box mb={1}>
+					<Alert variant="filled" severity="warning">
+						{`** ${t(
+							"deposits.hasInsufficentBalanceForUnbondCommitmentsAlert",
+							{
+								pool: t("common.tomStakingPool"),
+								token: "ADX-STAKING",
+								amount: formatADXPretty(
+									insufficientSharesAmoutForCurrentUnbonds.mul(-1)
+								),
+								adxValue: formatADXPretty(currentBalanceSharesADXValue)
+							}
+						)}`}
+					</Alert>
+				</Box>
+			)}
+			{hasInsufficentBalanceForUnbondCommitments && (
+				<Box mb={1}>
+					<Alert variant="filled" severity="warning">
+						{`*** ${t("deposits.currentBalanceShareADXAvailableValueInfo", {
+							// pool: t("common.tomStakingPool"),
+							token: "ADX-STAKING",
+							amount: formatADXPretty(balanceShares)
+						})}`}
+					</Alert>
+				</Box>
 			)}
 		</Box>
 	)

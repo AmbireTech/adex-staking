@@ -1,9 +1,9 @@
 import { useEffect } from "react"
-import { useWeb3React } from "@web3-react/core"
+import { useWeb3React, PRIMARY_KEY } from "@web3-react/core"
 import { injected } from "./connector"
 
 export function useInactiveListener(suppress) {
-	const { active, error, activate } = useWeb3React()
+	const { active, error, activate } = useWeb3React(PRIMARY_KEY)
 
 	const handleConnect = () => {
 		console.log("Handling 'connect' event")
@@ -16,9 +16,10 @@ export function useInactiveListener(suppress) {
 	}
 
 	const handleAccountsChanged = accounts => {
-		console.log("Handling 'accountsChanged' event with payload KOR", accounts)
+		console.log("Handling 'accountsChanged' event with payload", accounts)
 		if (active && accounts.length > 0) {
-			window.location.reload()
+			// NOTE: will reload stats
+			// window.location.reload()
 		}
 	}
 

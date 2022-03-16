@@ -6,7 +6,9 @@ import {
 	ListItemText,
 	Divider,
 	Box,
-	SvgIcon
+	SvgIcon,
+	CircularProgress,
+	alpha
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
@@ -29,7 +31,7 @@ import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
 import { useTranslation } from "react-i18next"
-// import { fade } from "@material-ui/core/styles/colorManipulator"
+// import { alpha } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
@@ -72,7 +74,7 @@ const useStyles = makeStyles(theme => {
 		listItem: {
 			color: theme.palette.text.primary,
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.primary // fade(theme.palette.text.main, 0.69)
+				color: theme.palette.text.primary // alpha(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
@@ -118,6 +120,9 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: "transparent",
 			textTransform: "uppercase"
 		},
+		loading: {
+			backgroundColor: alpha(theme.palette.background.darkerPaper, 0.2)
+		},
 		noUserData: {
 			opacity: 0.23
 		}
@@ -130,7 +135,9 @@ function SideNav({
 	onRequestUnbond,
 	onUnbond,
 	onClaimRewards,
-	setConnectWallet
+	setConnectWallet,
+	updatingStats,
+	chosenWalletType
 }) {
 	const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
@@ -188,7 +195,23 @@ function SideNav({
 							</ListItem>
 							<Divider />
 
-							{!stats.connectedWalletAddress && (
+							{updatingStats && (
+								<Box
+									id="side-nav-connect-wallet-overlay-loading"
+									className={clsx(classes.overlay, classes.loading)}
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+									color="secondary.main"
+									fontSize="h1.fontSize"
+									textAlign="center"
+								>
+									<CircularProgress size="100px" />
+								</Box>
+							)}
+
+							{!chosenWalletType.name && !updatingStats && (
 								<Box
 									id="side-nav-connect-wallet-overlay"
 									className={classes.overlay}

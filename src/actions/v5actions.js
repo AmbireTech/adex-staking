@@ -20,8 +20,8 @@ import {
 	ADEX_RELAYER_HOST,
 	ADDR_GASLESS_SWEEPER
 } from "../helpers/constants"
-import { getDefaultProvider, getSigner } from "../ethereum"
-import { executeOnIdentity, toChannelTuple } from "./common"
+import { getDefaultProvider, getSigner, isAmbireWallet } from "../ethereum"
+import { executeOnIdentity, toChannelTuple, timeout } from "./common"
 import { getUserGaslessAddress } from "../helpers/identity"
 
 const supplyControllerABI = ADXSupplyControllerABI
@@ -64,6 +64,9 @@ export const STAKING_POOL_EMPTY_STATS = {
 	currentBalanceADX: ZERO,
 	currentBalanceADXAvailable: ZERO,
 	currentBalanceADXAtCurrentShareValue: ZERO,
+	currentBalanceSharesADXValue: ZERO,
+	hasInsufficentBalanceForUnbondCommitments: false,
+	insufficientSharesAmoutForCurrentUnbonds: ZERO,
 	withdrawnReward: ZERO,
 	poolTotalStaked: ZERO,
 	poolTotalBalanceADX: ZERO,
@@ -82,7 +85,7 @@ export const STAKING_POOL_EMPTY_STATS = {
 	leavesReadyToWithdrawTotalMax: ZERO,
 	leavesPendingToUnlockTotalADX: ZERO,
 	leavesReadyToWithdrawTotalADX: ZERO,
-	unbondDays: 33,
+	unbondDays: 20,
 	loaded: false,
 	userDataLoaded: false,
 	rageReceivedPromilles: 700,
@@ -200,10 +203,20 @@ export async function onStakingPoolV5Deposit(
 	])
 
 	const setAllowance = allowanceStakingPool.lt(adxDepositAmount)
+	const actions = []
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		await tokenWithSigner.approve(StakingPool.address, MAX_UINT)
+		const approve = async () =>
+			tokenWithSigner.approve(StakingPool.address, MAX_UINT)
+
+		if (isAmbireWallet(signer)) {
+			// Note: if not in the promise throws Uncaught err
+			actions.push(approve())
+			await timeout(69_0)
+		} else {
+			await approve()
+		}
 	}
 
 	const stakingPoolWithSigner = new Contract(
@@ -212,10 +225,14 @@ export async function onStakingPoolV5Deposit(
 		signer
 	)
 
-	await stakingPoolWithSigner.enter(
-		adxDepositAmount,
-		setAllowance ? { gasLimit: 136000 } : {}
+	actions.push(
+		stakingPoolWithSigner.enter(
+			adxDepositAmount,
+			setAllowance ? { gasLimit: 136000 } : {}
+		)
 	)
+
+	return Promise.all(actions)
 }
 
 export async function onStakingPoolV5GaslessDeposit(
@@ -335,8 +352,6 @@ export async function onStakingPoolV5UnbondCommitment(
 	const sharesToWithdraw = unbondCommitmentAmountADX
 		.mul(balanceSharesAvailable)
 		.div(currentBalanceADXAvailable)
-
-	// console.log('sharesToWithdraw', sharesToWithdraw.toString())
 
 	const stakingPoolWithSigner = new Contract(
 		ADDR_STAKING_POOL,
@@ -804,6 +819,17 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 	// NOTE: used to calc actual blance in ADX + rewards
 	const currentBalanceADX = currentBalanceADXAvailable.add(lockedSharesAdxValue)
 
+	const currentBalanceSharesADXValue = balanceShares
+		.mul(shareValue)
+		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
+
+	const hasInsufficentBalanceForUnbondCommitments = currentBalanceADXAvailable.lt(
+		currentBalanceSharesADXValue
+	)
+	const insufficientSharesAmoutForCurrentUnbonds = hasInsufficentBalanceForUnbondCommitments
+		? balanceSharesAvailable
+		: ZERO
+
 	// NOTE: Used for rage leave because shareValue is can be different than in unbondCommitments
 	const lockedSharesADXAtCurrentShareValue = lockedShares
 		.mul(shareValue)
@@ -846,6 +872,9 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		currentBalanceADX,
 		currentBalanceADXAvailable,
 		currentBalanceADXAtCurrentShareValue,
+		currentBalanceSharesADXValue,
+		hasInsufficentBalanceForUnbondCommitments,
+		insufficientSharesAmoutForCurrentUnbonds,
 		totalRewards,
 		totalSharesOutTransfersAdxValue,
 		totalSharesInTransfersAdxValue,

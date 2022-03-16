@@ -8,8 +8,8 @@ import {
 	MAX_UINT
 } from "../helpers/constants"
 import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
-
-import { getSigner, getDefaultProvider } from "../ethereum"
+import { timeout } from "./common"
+import { getSigner, getDefaultProvider, isAmbireWallet } from "../ethereum"
 
 const defaultProvider = getDefaultProvider
 
@@ -436,10 +436,19 @@ export async function onLoyaltyPoolDeposit(
 	])
 
 	const setAllowance = allowanceADXLOYALTY.lt(adxDepositAmount)
+	const actions = []
 
 	if (setAllowance) {
 		const tokenWithSigner = new Contract(ADDR_ADX, ERC20ABI, signer)
-		await tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+		const approve = async () =>
+			tokenWithSigner.approve(LoyaltyToken.address, MAX_UINT)
+
+		if (isAmbireWallet(signer)) {
+			actions.push(approve())
+			await timeout(690)
+		} else {
+			await approve()
+		}
 	}
 
 	const loyaltyTokenWithSigner = new Contract(
@@ -448,10 +457,14 @@ export async function onLoyaltyPoolDeposit(
 		signer
 	)
 
-	await loyaltyTokenWithSigner.enter(
-		adxDepositAmount,
-		setAllowance ? { gasLimit: 150000 } : {}
+	actions.push(
+		loyaltyTokenWithSigner.enter(
+			adxDepositAmount,
+			setAllowance ? { gasLimit: 150000 } : {}
+		)
 	)
+
+	return Promise.all(actions)
 }
 
 export async function onLoyaltyPoolWithdraw(

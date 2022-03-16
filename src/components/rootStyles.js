@@ -1,4 +1,4 @@
-import { fade } from "@material-ui/core/styles/colorManipulator"
+import { alpha } from "@material-ui/core/styles/colorManipulator"
 
 const drawerWidth = 269
 const maxContentWidth = 1420
@@ -18,8 +18,8 @@ export const styles = theme => {
 				theme.type === "dark"
 					? `radial-gradient(
 				circle,
-				${fade(theme.palette.background.special, 0.333)} 0%,
-				${fade(theme.palette.background.specialSecondary, 0.69)} 146%
+				${alpha(theme.palette.background.special, 0.333)} 0%,
+				${alpha(theme.palette.background.specialSecondary, 0.69)} 146%
 			)`
 					: 0,
 			backgroundRepeat: "no-repeat",
@@ -29,8 +29,8 @@ export const styles = theme => {
 					theme.type === "dark"
 						? `radial-gradient(
 					circle,
-					${fade(theme.palette.background.special, 0.333)} 0%,
-					${fade(theme.palette.background.specialSecondary, 0.69)} 93%
+					${alpha(theme.palette.background.special, 0.333)} 0%,
+					${alpha(theme.palette.background.specialSecondary, 0.69)} 93%
 				)`
 						: 0
 			}

@@ -51,6 +51,7 @@ function Alert(props) {
 }
 
 const useStyles = makeStyles(styles)
+const STOP_LEGACY_SWAP_AFTER = new Date("2022-03-16T00:00:00Z").getTime()
 
 export default function Root() {
 	const { t } = useTranslation()
@@ -81,6 +82,7 @@ export default function Root() {
 		getSigner,
 		prices,
 		onWalletTypeSelect,
+		onConnectionDisconnect,
 		snackHooks,
 		chainWarning,
 		newBondPool,
@@ -92,7 +94,8 @@ export default function Root() {
 		idlePopupOpen,
 		onIdleDialogAction,
 		// secondsToAutoRefresh,
-		account
+		account,
+		updatingStats
 	} = useContext(AppContext)
 
 	const drawer = SideNav({
@@ -101,7 +104,9 @@ export default function Root() {
 		onRequestUnbond: setToUnbond,
 		onUnbond,
 		onClaimRewards,
-		setConnectWallet
+		setConnectWallet,
+		updatingStats,
+		chosenWalletType
 	})
 
 	const container = window !== undefined ? document.body : undefined
@@ -111,6 +116,7 @@ export default function Root() {
 			<AppToolbar
 				chosenWalletType={chosenWalletType}
 				setConnectWallet={setConnectWallet}
+				onConnectionDisconnect={onConnectionDisconnect}
 				setNewBondOpen={setNewBondOpen}
 				handleDrawerToggle={handleDrawerToggle}
 				stats={stats}
@@ -192,15 +198,16 @@ export default function Root() {
 					</Switch>
 
 					{// Load stats first to prevent simultanious calls to getSigner
-					LegacyADXSwapDialog(
-						stats.loaded ? getSigner : null,
-						wrapDoingTxns,
-						chosenWalletType,
-						legacySwapInPrg,
-						setLegacySwapInPrg,
-						legacySwapOpen,
-						setLegacySwapInOpen
-					)}
+					Date.now() < STOP_LEGACY_SWAP_AFTER &&
+						LegacyADXSwapDialog(
+							stats.loaded ? getSigner : null,
+							wrapDoingTxns,
+							chosenWalletType,
+							legacySwapInPrg,
+							setLegacySwapInPrg,
+							legacySwapOpen,
+							setLegacySwapInOpen
+						)}
 
 					{ConfirmationDialog({
 						isOpen: !!toUnbond,
@@ -306,6 +313,22 @@ export default function Root() {
 									</AlertTitle>
 									<Box id="alert-chain-description">
 										{t("messages.connectToMainnet")}
+									</Box>
+									<Box
+										id="alert-chain-disconnect"
+										mt={1}
+										alignItems="center"
+										display="flex"
+										flexDirection="column"
+									>
+										<Box mb={1}>or</Box>
+										<Button
+											size="small"
+											variant="contained"
+											onClick={onConnectionDisconnect}
+										>
+											Disconnect current wallet
+										</Button>
 									</Box>
 								</Alert>
 							</Box>

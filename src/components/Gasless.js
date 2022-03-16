@@ -69,7 +69,7 @@ const Gasless = () => {
 
 	const { stats, setConnectWallet, addSnack, account } = useContext(AppContext)
 
-	const { tomStakingV5PoolStats } = stats
+	const { tomStakingV5PoolStats, connectedWalletAddress } = stats
 
 	const {
 		userDataLoaded,
@@ -97,7 +97,11 @@ const Gasless = () => {
 		}
 	}, [account])
 
-	const walletConnected = gaslessAddress && userDataLoaded
+	const walletConnected =
+		gaslessAddress &&
+		userDataLoaded &&
+		connectedWalletAddress &&
+		connectedWalletAddress === account
 
 	const mainErr = !walletConnected
 		? t("common.connectWallet")
@@ -191,9 +195,11 @@ const Gasless = () => {
 											? { style: { cursor: "pointer" } }
 											: {})}
 									>
-										{gaslessAddress || t("gasless.connectWalletToSeeAddr")}
+										{walletConnected
+											? gaslessAddress
+											: t("gasless.connectWalletToSeeAddr")}
 									</Box>
-									{gaslessAddress && (
+									{walletConnected && (
 										<Box m={1}>
 											<IconButton
 												id="mobile-burger-btn"

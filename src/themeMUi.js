@@ -1,6 +1,6 @@
-import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles"
+import { createTheme, responsiveFontSizes } from "@material-ui/core/styles"
 import lime from "@material-ui/core/colors/lime"
-import { fade } from "@material-ui/core/styles/colorManipulator"
+import { alpha } from "@material-ui/core/styles/colorManipulator"
 
 const WHITE = "#fafafa"
 const BLACK = "#0f0f0f"
@@ -63,10 +63,10 @@ const paletteLight = {
 	special: { main: SPECIAL_CONTRAST_LIGHT, contrastText: WHITE },
 	text: {
 		main: TEXT_MAIN_LIGHT,
-		primary: fade(BLACK, 0.9),
-		secondary: fade(BLACK, 0.69),
-		disabled: fade(BLACK, 0.42),
-		hint: fade(BLACK, 0.13)
+		primary: alpha(BLACK, 0.9),
+		secondary: alpha(BLACK, 0.69),
+		disabled: alpha(BLACK, 0.42),
+		hint: alpha(BLACK, 0.13)
 	},
 	background: {
 		default: BACKGROUND_DEFAULT_LIGHT,
@@ -74,7 +74,7 @@ const paletteLight = {
 		darkerPaper: DARKER_PAPER_LIGHT,
 		special: SPECIAL_CONTRAST_LIGHT,
 		specialSecondary: BLACK,
-		active: fade(TEXT_MAIN, 0.42),
+		active: alpha(TEXT_MAIN, 0.42),
 		contrast: TEXT_MAIN,
 		contrastText: WHITE,
 		card: DARKER_PAPER_LIGHT
@@ -87,12 +87,12 @@ const paletteDark = {
 	special: { main: WARNING, contrastText: BLACK },
 	text: {
 		main: TEXT_MAIN,
-		primary: fade(WHITE, 0.69),
-		secondary: fade(WHITE, 0.42),
-		disabled: fade(WHITE, 0.1948),
-		hint: fade(WHITE, 0.13)
+		primary: alpha(WHITE, 0.69),
+		secondary: alpha(WHITE, 0.42),
+		disabled: alpha(WHITE, 0.1948),
+		hint: alpha(WHITE, 0.13)
 	},
-	divider: fade(WHITE, 0.13),
+	divider: alpha(WHITE, 0.13),
 	background: {
 		darkerPaper: DARKER_PAPER,
 		paper: PAPER,
@@ -104,16 +104,16 @@ const paletteDark = {
 		contrastText: BLACK,
 		card: PAPER
 	},
-	overlay: fade(DARKER_PAPER, 0.69),
+	overlay: alpha(DARKER_PAPER, 0.69),
 	action: {
-		action: fade(WHITE, 0.46),
-		hover: fade(WHITE, 0.069),
+		action: alpha(WHITE, 0.46),
+		hover: alpha(WHITE, 0.069),
 		hoverOpacity: 0.069,
-		selected: fade(WHITE, 0.1914),
+		selected: alpha(WHITE, 0.1914),
 		selectedOpacity: 0.1914,
-		disabled: fade(WHITE, 0.1948),
+		disabled: alpha(WHITE, 0.1948),
 		disabledOpacity: 0.48,
-		focus: fade(WHITE, 0.18),
+		focus: alpha(WHITE, 0.18),
 		focusOpacity: 0.18,
 		activatedOpacity: 0.18
 	}
@@ -124,7 +124,7 @@ const typography = {
 	fontSize: 14.2
 }
 
-const defaultTheme = createMuiTheme({
+const defaultTheme = createTheme({
 	palette: { ...paletteCommon }
 })
 
@@ -135,7 +135,7 @@ const lightShadows = [
 	"1px 1px 5px 0px rgba(69,69,69,0.30)"
 ]
 
-const commonTheme = createMuiTheme({
+const commonTheme = createTheme({
 	...defaultTheme,
 	typography,
 	overrides: {
@@ -161,8 +161,8 @@ const commonTheme = createMuiTheme({
 					backgroundColor: ALEX_GREY_LIGHT
 				}
 				// "&:disabled": {
-				// 	backgroundColor: fade(WHITE, 0.12),
-				// 	color: fade(WHITE, 0.26)
+				// 	backgroundColor: alpha(WHITE, 0.12),
+				// 	color: alpha(WHITE, 0.26)
 				// }
 			}
 		},
@@ -170,8 +170,8 @@ const commonTheme = createMuiTheme({
 			root: {
 				boxShadow: 0,
 				// "&:disabled": {
-				// 	backgroundColor: fade(WHITE, 0.12),
-				// 	color: fade(WHITE, 0.26)
+				// 	backgroundColor: alpha(WHITE, 0.12),
+				// 	color: alpha(WHITE, 0.26)
 				// },
 				"&:active": {
 					boxShadow: 0
@@ -203,10 +203,10 @@ const commonTheme = createMuiTheme({
 			tooltip: {
 				borderRadius: 0,
 				fontSize: "0.9em",
-				backgroundColor: fade(DARKER_PAPER, 0.9),
+				backgroundColor: alpha(DARKER_PAPER, 0.9),
 				padding: defaultTheme.spacing(2)
 			},
-			arrow: { color: fade(DARKER_PAPER, 0.9) }
+			arrow: { color: alpha(DARKER_PAPER, 0.9) }
 		},
 		MuiDrawer: {
 			paperAnchorLeft: {
@@ -252,7 +252,7 @@ const commonTheme = createMuiTheme({
 		},
 		MuiBackdrop: {
 			root: {
-				backgroundColor: fade(BLACK, 0.69)
+				backgroundColor: alpha(BLACK, 0.69)
 			}
 		},
 		MuiFilledInput: {
@@ -292,14 +292,14 @@ const defaultThemeWithOverrides = responsiveFontSizes(commonTheme, {
 	factor: 3
 })
 
-export const darkTheme = createMuiTheme({
+export const darkTheme = createTheme({
 	...defaultThemeWithOverrides,
 	palette: paletteDark,
 	shadows: darkShadows,
 	type: "dark"
 })
 
-export const lightTheme = createMuiTheme({
+export const lightTheme = createTheme({
 	...defaultThemeWithOverrides,
 	palette: paletteLight,
 	shadows: lightShadows,

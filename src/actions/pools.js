@@ -121,6 +121,17 @@ export const getMaxUnbondCommitmentAmountByPoolId = (poolId, stats) => {
 	return ZERO
 }
 
+export const getMaxUnbondCommitmentCurrentShareBalanceAmountByPoolId = (
+	poolId,
+	stats
+) => {
+	if (poolId === DEPOSIT_POOLS[1].id) {
+		return stats.currentBalanceADXAtCurrentShareValue || ZERO
+	}
+
+	return ZERO
+}
+
 export const getPoolStatsByPoolId = (stats, poolId) => {
 	if (poolId === DEPOSIT_POOLS[0].id) {
 		return stats.loyaltyPoolStats
@@ -163,6 +174,23 @@ export const getDepositActionMaxAmountByTypeAndPoolId = (
 			return getMaxUnbondCommitmentAmountByPoolId(poolId, poolStats)
 		case DEPOSIT_ACTION_TYPES.deposit:
 			return userWalletBalance
+		default:
+			return ZERO
+	}
+}
+
+export const getDepositActionMaxAmountCurrentShareValueByTypeAndPoolId = (
+	actionType,
+	poolId,
+	poolStats
+) => {
+	switch (actionType) {
+		case DEPOSIT_ACTION_TYPES.unbondCommitment:
+			return getMaxUnbondCommitmentCurrentShareBalanceAmountByPoolId(
+				poolId,
+				poolStats
+			)
+
 		default:
 			return ZERO
 	}

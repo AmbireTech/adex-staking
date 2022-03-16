@@ -24,11 +24,35 @@ export const getDefaultProvider = (function() {
 	return defaultProvider
 })()
 
+// NOTE: it cam be completely different on some change of web3 provider or WC connector etc...
+export function getWalletConnectPeerMeta(signer) {
+	const peerMeta = signer?.provider?.provider?.signer?.connection?.wc?._peerMeta
+
+	return peerMeta
+}
+
+export function isAmbireWallet(signer) {
+	const peerMeta = getWalletConnectPeerMeta(signer)
+	const isAmbire = peerMeta?.name === "Ambire Wallet"
+
+	return isAmbire
+}
+
+export async function getPeerMeta(chosenWalletType) {
+	if (!chosenWalletType && chosenWalletType.library) return null
+	const signer = await getSigner(chosenWalletType)
+	const peerMeta = getWalletConnectPeerMeta(signer)
+
+	return peerMeta
+}
+
 export async function getSigner(chosenWalletType) {
-	// console.log("chosenWalletType", chosenWalletType)
 	if (!chosenWalletType || !chosenWalletType.library)
 		throw new Error("Wallet not connected")
-	return chosenWalletType.library.getSigner()
+
+	const signer = chosenWalletType.library.getSigner()
+
+	return signer
 }
 
 export async function signMessage(signer, message) {

@@ -37,7 +37,7 @@ export default function LegacyADXSwapDialog(
 			const signer = await getSigner(chosenWalletType)
 			if (!signer) return
 			const walletAddr = await signer.getAddress()
-			const balance = await LegacyToken.balanceOf(walletAddr)
+			const balance = (await LegacyToken.balanceOf(walletAddr)) || ZERO
 			setAmount(balance)
 			if (balance.gt(ZERO)) {
 				setLegacySwapInOpen(true)
