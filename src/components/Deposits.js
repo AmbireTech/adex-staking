@@ -93,7 +93,7 @@ const getStakingPool = ({
 							<span className={classes.info}>{" *"}</span>
 						)}
 						{hasInsufficentBalanceForUnbondCommitments && (
-							<span className={classes.warning}>{" ** ***"}</span>
+							<span className={classes.info}>{" ** ***"}</span>
 						)}
 					</Box>
 				</Tooltip>
@@ -168,7 +168,7 @@ const getStakingPool = ({
 					fontSize={17}
 				/>
 				{hasInsufficentBalanceForUnbondCommitments && (
-					<span className={classes.warning}>{" **"}</span>
+					<span className={classes.info}>{" **"}</span>
 				)}
 			</Box>
 		),
@@ -566,7 +566,7 @@ export default function Deposits() {
 			)}
 			{hasInsufficentBalanceForUnbondCommitments && (
 				<Box mb={1}>
-					<Alert variant="filled" severity="warning">
+					<Alert variant="filled" severity="info">
 						{`** ${t(
 							"deposits.hasInsufficentBalanceForUnbondCommitmentsAlert",
 							{
@@ -583,7 +583,7 @@ export default function Deposits() {
 			)}
 			{hasInsufficentBalanceForUnbondCommitments && (
 				<Box mb={1}>
-					<Alert variant="filled" severity="warning">
+					<Alert variant="filled" severity="info">
 						{`*** ${t("deposits.currentBalanceShareADXAvailableValueInfo", {
 							// pool: t("common.tomStakingPool"),
 							token: "ADX-STAKING",

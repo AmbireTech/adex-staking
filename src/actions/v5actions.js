@@ -824,7 +824,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		.div(POOL_SHARES_TOKEN_DECIMALS_MUL)
 
 	const hasInsufficentBalanceForUnbondCommitments = currentBalanceADXAvailable.lt(
-		currentBalanceSharesADXValue
+		ZERO
 	)
 	const insufficientSharesAmoutForCurrentUnbonds = hasInsufficentBalanceForUnbondCommitments
 		? balanceSharesAvailable
