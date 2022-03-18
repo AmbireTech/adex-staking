@@ -628,6 +628,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 				maxTokens, // [3]
 				adxValue,
 				canWithdraw: unlocksAt < now && !withdrawTx,
+				insufficientBalance: balanceShares.lt(shares),
 				blockNumber: log.blockNumber,
 				withdrawTx
 			}
