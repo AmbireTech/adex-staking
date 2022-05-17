@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.855c5011.css",
-    "main.js": "/static/js/main.fd5fbdee.js",
+    "main.js": "/static/js/main.6425f17b.js",
     "static/js/563.2dac3181.chunk.js": "/static/js/563.2dac3181.chunk.js",
     "static/js/992.b72628aa.chunk.js": "/static/js/992.b72628aa.chunk.js",
     "static/js/268.7dad332f.chunk.js": "/static/js/268.7dad332f.chunk.js",
@@ -37,12 +37,12 @@
     "static/media/chain-link-logo.svg": "/static/media/chain-link-logo.a01a341983d4230da8a84a1dc7b8f571.svg",
     "static/media/getFetch.cjs": "/static/media/getFetch.c780682470504fffbd04.cjs",
     "main.855c5011.css.map": "/static/css/main.855c5011.css.map",
-    "main.fd5fbdee.js.map": "/static/js/main.fd5fbdee.js.map",
+    "main.6425f17b.js.map": "/static/js/main.6425f17b.js.map",
     "992.b72628aa.chunk.js.map": "/static/js/992.b72628aa.chunk.js.map",
     "268.7dad332f.chunk.js.map": "/static/js/268.7dad332f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.855c5011.css",
-    "static/js/main.fd5fbdee.js"
+    "static/js/main.6425f17b.js"
   ]
 }
