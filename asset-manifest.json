@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.855c5011.css",
-    "main.js": "/static/js/main.f2776c0d.js",
+    "main.css": "/static/css/main.7ba07c5a.css",
+    "main.js": "/static/js/main.d4329e86.js",
     "static/js/563.2dac3181.chunk.js": "/static/js/563.2dac3181.chunk.js",
-    "static/js/992.b72628aa.chunk.js": "/static/js/992.b72628aa.chunk.js",
-    "static/js/268.7dad332f.chunk.js": "/static/js/268.7dad332f.chunk.js",
+    "static/js/992.96d00824.chunk.js": "/static/js/992.96d00824.chunk.js",
+    "static/js/163.38b9404c.chunk.js": "/static/js/163.38b9404c.chunk.js",
     "static/media/Roboto-Medium.ttf": "/static/media/Roboto-Medium.13a29228654d5c5ec9c4.ttf",
     "static/media/Roboto-Regular.ttf": "/static/media/Roboto-Regular.03523cf578d69fa92322.ttf",
     "static/media/Roboto-Bold.ttf": "/static/media/Roboto-Bold.4f39c5796e60c9d8e732.ttf",
@@ -36,13 +36,13 @@
     "static/media/crown-ic.svg": "/static/media/crown-ic.c81337a62f4c7f94e1ac469905273f59.svg",
     "static/media/chain-link-logo.svg": "/static/media/chain-link-logo.a01a341983d4230da8a84a1dc7b8f571.svg",
     "static/media/getFetch.cjs": "/static/media/getFetch.c780682470504fffbd04.cjs",
-    "main.855c5011.css.map": "/static/css/main.855c5011.css.map",
-    "main.f2776c0d.js.map": "/static/js/main.f2776c0d.js.map",
-    "992.b72628aa.chunk.js.map": "/static/js/992.b72628aa.chunk.js.map",
-    "268.7dad332f.chunk.js.map": "/static/js/268.7dad332f.chunk.js.map"
+    "main.7ba07c5a.css.map": "/static/css/main.7ba07c5a.css.map",
+    "main.d4329e86.js.map": "/static/js/main.d4329e86.js.map",
+    "992.96d00824.chunk.js.map": "/static/js/992.96d00824.chunk.js.map",
+    "163.38b9404c.chunk.js.map": "/static/js/163.38b9404c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.855c5011.css",
-    "static/js/main.f2776c0d.js"
+    "static/css/main.7ba07c5a.css",
+    "static/js/main.d4329e86.js"
   ]
 }
