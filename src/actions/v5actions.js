@@ -23,6 +23,7 @@ import {
 import { getDefaultProvider, getSigner, isAmbireWallet } from "../ethereum"
 import { executeOnIdentity, toChannelTuple, timeout } from "./common"
 import { getUserGaslessAddress } from "../helpers/identity"
+import adexToStakingTransfersLogs from "../rpcResponses/adexToStakingTransfers.json"
 
 const supplyControllerABI = ADXSupplyControllerABI
 const secondsInYear = 60 * 60 * 24 * 365
@@ -427,7 +428,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		balanceShares,
 		lockedShares,
 		gaslessAddrBalance,
-		allEnterADXTransferLogs,
+		allEnterADXTransferLogs, //0xe64fe2 last block from prefetched data
 		leaveLogs,
 		withdrawLogs,
 		rageLeaveLogs,
@@ -438,7 +439,7 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 		StakingPool.lockedShares(owner),
 		ADXToken.balanceOf(gaslessAddress),
 		provider.getLogs({
-			fromBlock: 0,
+			fromBlock: 0xe64fe2,
 			...ADXToken.filters.Transfer(null, ADDR_STAKING_POOL, null)
 		}),
 		provider.getLogs({
@@ -472,13 +473,12 @@ export async function loadUserTomStakingV5PoolStats({ walletAddr } = {}) {
 				.div(sharesTotalSupply)
 				.toNumber() / PRECISION
 
-	const enterAdexTokensByTxHash = allEnterADXTransferLogs.reduce(
-		(byHash, log) => {
+	const enterAdexTokensByTxHash = adexToStakingTransfersLogs.result
+		.concat(allEnterADXTransferLogs)
+		.reduce((byHash, log) => {
 			byHash[log.transactionHash] = log
 			return byHash
-		},
-		{}
-	)
+		}, {})
 
 	const sharesTokensTransfersIn = sharesTokensTransfersInLogs.map(log => {
 		const parsedLog = StakingPool.interface.parseLog(log)
