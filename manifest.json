@@ -17,5 +17,7 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "networks": [1]
+  "networks": [1],
+  "description": "Stake your ADX and earn rewards",
+  "web3Connectivity": ["walletconnect", "injected", "trezor"]
 }
