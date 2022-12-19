@@ -16,10 +16,17 @@ import {
 	METAMASK,
 	TREZOR,
 	LEDGER,
+	GNOSIS_SAFE,
 	SUPPORTED_CHAINS,
 	IDLE_TIMEOUT_MINUTES
 } from "./helpers/constants"
-import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
+import {
+	injected,
+	trezor,
+	ledger,
+	walletconnect,
+	gnosisSafe
+} from "./helpers/connector"
 import {
 	EMPTY_STATS,
 	loadStats,
@@ -42,6 +49,7 @@ const REFRESH_INTVL_WALLET = 60_000 // 60sec
 const IDLE_TIMEOUT = IDLE_TIMEOUT_MINUTES * 60 * 1000
 
 const connectorsByName = {
+	[GNOSIS_SAFE]: gnosisSafe,
 	[METAMASK]: injected,
 	[WALLET_CONNECT]: walletconnect,
 	[TREZOR]: trezor,
@@ -366,8 +374,17 @@ export default function useApp() {
 				setChosenWalletTypeName(null)
 			} else {
 				try {
-					await activate(newConnector, () => {}, true)
-					setChosenWalletTypeName(walletTypeName)
+					if (walletTypeName === GNOSIS_SAFE) {
+						const gnosis = newConnector({
+							startActivation: () => activate(GNOSIS_SAFE),
+							update: () => activate(GNOSIS_SAFE)
+						})
+						await gnosis.connectEagerly()
+						setChosenWalletTypeName(walletTypeName)
+					} else {
+						await activate(newConnector, () => {}, true)
+						setChosenWalletTypeName(walletTypeName)
+					}
 				} catch (err) {
 					console.log("ERR", err)
 					setSnackbarErr({

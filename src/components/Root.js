@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { Switch, Route } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 import {
@@ -31,7 +31,8 @@ import {
 	UNBOND_DAYS,
 	POOLS,
 	REACT_APP_RPC_URL,
-	IDLE_TIMEOUT_MINUTES
+	IDLE_TIMEOUT_MINUTES,
+	GNOSIS_SAFE
 } from "../helpers/constants"
 import {
 	formatADXPretty,
@@ -110,6 +111,10 @@ export default function Root() {
 	})
 
 	const container = window !== undefined ? document.body : undefined
+
+	useEffect(() => {
+		onWalletTypeSelect(GNOSIS_SAFE)
+	}, [])
 
 	return (
 		<div className={classes.root}>
@@ -236,6 +241,15 @@ export default function Root() {
 						)
 					})}
 
+					<ChooseWallet
+						open={!!connectWallet}
+						handleClose={() => {
+							setConnectWallet(null)
+						}}
+						handleListItemClick={onWalletTypeSelect}
+						disableNonBrowserWallets={!REACT_APP_RPC_URL}
+					/>
+					{/* 
 					{ChooseWallet({
 						open: !!connectWallet,
 						handleClose: () => {
@@ -243,7 +257,7 @@ export default function Root() {
 						},
 						handleListItemClick: onWalletTypeSelect,
 						disableNonBrowserWallets: !REACT_APP_RPC_URL
-					})}
+					})} */}
 
 					<Snackbar
 						open={openErr}

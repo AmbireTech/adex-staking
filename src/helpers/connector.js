@@ -2,6 +2,7 @@ import { LedgerConnector } from "@web3-react/ledger-connector"
 import { TrezorConnector } from "@web3-react/trezor-connector"
 import { InjectedConnector } from "@web3-react/injected-connector"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
+import { GnosisSafe } from "@web3-react/gnosis-safe"
 import { REACT_APP_RPC_URL } from "../helpers/constants"
 
 const POLLING_INTERVAL = 13000
@@ -54,3 +55,12 @@ export const walletconnect = new WalletConnectConnector({
 	qrcode: true,
 	pollingInterval: POLLING_INTERVAL
 })
+
+export const gnosisSafe = actions =>
+	new GnosisSafe({
+		actions: actions,
+		options: {
+			allowedDomains: [/./],
+			debug: true
+		}
+	})

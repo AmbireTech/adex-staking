@@ -166,6 +166,7 @@ export const METAMASK = "Metamask"
 export const WALLET_CONNECT = "WalletConnect"
 export const TREZOR = "Trezor"
 export const LEDGER = "Ledger"
+export const GNOSIS_SAFE = "GnosisSafe"
 
 export const Wallets = [
 	{
