@@ -59,7 +59,7 @@ export const ADDR_STAKING_MIGRATOR = useTestnet
 
 export const ADDR_ADX_SUPPLY_CONTROLLER = useTestnet
 	? "0x1DD8Fb8aE154B780973Ff21D163ad8710c145B79"
-	: "0x9d47f1c6ba4d66d8aa5e19226191a8968bc9094e"
+	: "0x515629338229dd5f8cea3f4f3cc8185bA21Fa30B"
 
 export const ADDR_GASLESS_SWEEPER = useTestnet
 	? "0x12F741A073bC410dA3941f57BCfa7CD53e176bE2"
@@ -209,7 +209,8 @@ export const REACT_APP_INFURA_ID = "3d22938fd7dd41b7af4197752f83e8a1"
 export const REACT_APP_RPC_URL = useTestnet
 	? "https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 	: //: "https://morning-wild-water.quiknode.pro/66011d2c6bdebc583cade5365086c8304c13366c/"
-	  "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	  //   "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
+	  "https://eth-mainnet.alchemyapi.io/v2/ZxuaPQ9OfTqfnwJM4VTNGxgP4gMQDH07"
 
 export const ADEX_RELAYER_HOST = useTestnet
 	? // ? "https://goerli-relayer.adex.network"

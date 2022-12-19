@@ -338,7 +338,7 @@ export default function DepositForm({
 									<em>{t("common.none")}</em>
 								</MenuItem> */}
 								{activeUnbondCommitments.map(uc => {
-									const disabled = !uc.canWithdraw
+									const disabled = !uc.canWithdraw || uc.insufficientBalance
 									const unlocksAt = uc.unlocksAt.toNumber()
 
 									return (
@@ -355,11 +355,13 @@ export default function DepositForm({
 														Math.ceil(unlocksAt * 1000)
 													)}`,
 													subtitle: `value ${formatADXPretty(uc.adxValue)} ADX`,
-													extra: uc.canWithdraw
-														? ""
-														: !!uc.withdrawTx
+													extra: !!uc.withdrawTx
 														? t("deposits.alreadyWithdrawn")
-														: t("deposits.notUnlockedYet")
+														: uc.insufficientBalance
+														? t("** Insufficient balance")
+														: !uc.canWithdraw
+														? t("deposits.notUnlockedYet")
+														: ""
 												})}
 											</Box>
 										</MenuItem>
