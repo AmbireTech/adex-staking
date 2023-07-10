@@ -18,6 +18,8 @@ export const useTestnet = false // TODO env cfg
 
 export const MIGRATION_UNBOND_BEFORE = 1619182800000 // 24.04.2021
 
+export const WC_PROJECT_ID = process.env.WC_PROJECT_ID
+
 // Legacy staking
 export const ADDR_STAKING = useTestnet
 	? "0xA83675086d99ef52ac78EDd534059C0Ae7f504f4"

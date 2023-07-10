@@ -1,4 +1,4 @@
-import { stringify } from "query-string"
+import qs from "query-string"
 
 const MAUTIC_BASE_URL = `https://mautic.adex.net`
 
@@ -9,7 +9,7 @@ export const submitFormToMautic = async ({
 	formName,
 	messenger
 }) => {
-	const data = stringify({
+	const data = qs.stringify({
 		"mauticform[email]": email,
 		"mauticform[formId]": formId || "",
 		"mauticform[return]": returnValue || "",

@@ -2,24 +2,25 @@ import { useEffect, useState, useCallback } from "react"
 import {
 	useWeb3React,
 	UnsupportedChainIdError,
-	PRIMARY_KEY
+	Web3ReactHooks
+	// PRIMARY_KEY
 } from "@web3-react/core"
 import {
 	NoEthereumProviderError,
 	UserRejectedRequestError as UserRejectedRequestErrorInjected
-} from "@web3-react/injected-connector"
+} from "@web3-react/metamask"
 import { useIdleTimer } from "react-idle-timer"
-import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-connector"
+import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from "@web3-react/walletconnect-v2"
 import { getSigner } from "./ethereum"
 import {
 	WALLET_CONNECT,
 	METAMASK,
-	TREZOR,
-	LEDGER,
+	// TREZOR,
+	// LEDGER,
 	SUPPORTED_CHAINS,
 	IDLE_TIMEOUT_MINUTES
 } from "./helpers/constants"
-import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
+import { metamask, walletconnect } from "./helpers/connectors-v2"
 import {
 	EMPTY_STATS,
 	loadStats,
@@ -42,11 +43,13 @@ const REFRESH_INTVL_WALLET = 60_000 // 60sec
 const IDLE_TIMEOUT = IDLE_TIMEOUT_MINUTES * 60 * 1000
 
 const connectorsByName = {
-	[METAMASK]: injected,
-	[WALLET_CONNECT]: walletconnect,
-	[TREZOR]: trezor,
-	[LEDGER]: ledger
+	[METAMASK]: metamask,
+	[WALLET_CONNECT]: walletconnect
+	// [TREZOR]: trezor,
+	// [LEDGER]: ledger
 }
+
+// const connectors = [metamask, walletconnect]
 
 function tryGetErrMessage(error) {
 	if (error && error.message) {
@@ -156,16 +159,17 @@ export default function useApp() {
 	}, [chosenWalletTypeName])
 
 	useEffect(() => {
-		if (connector) {
-			connector.on("transport_error", (error, payload) => {
-				console.error("WalletConnect transport error", payload)
-				setSnackbarErr({
-					msg: "WalletConnect transport error"
-				})
-				setOpenErr(true)
-				// TODO: connections broken check
-			})
-		}
+		console.log(connector)
+		// if (connector) {
+		// 	connector.on("transport_error", (error, payload) => {
+		// 		console.error("WalletConnect transport error", payload)
+		// 		setSnackbarErr({
+		// 			msg: "WalletConnect transport error"
+		// 		})
+		// 		setOpenErr(true)
+		// 		// TODO: connections broken check
+		// 	})
+		// }
 
 		return () => {
 			if (connector) {
