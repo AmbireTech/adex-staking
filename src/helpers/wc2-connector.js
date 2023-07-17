@@ -1,45 +1,42 @@
 import { AbstractConnector } from "@web3-react/abstract-connector"
+import { EthereumProvider } from "@walletconnect/ethereum-provider"
 
 export class WC2Connector extends AbstractConnector {
-	constructor({ supportedChainIds, defaultChainId }) {
+	constructor({
+		supportedChainIds,
+		defaultChainId,
+		showQrModal,
+		projectId,
+		rpcMap
+	}) {
 		super({
-			supportedChainIds: (() => {
-				return [...supportedChainIds]
-			})()
+			supportedChainIds: [...supportedChainIds]
 		})
 		this.defaultChainId = defaultChainId
+		this.showQrModal = showQrModal
+		this.projectId = projectId
+		this.rpcMap = rpcMap
 	}
 
 	activate = async () => {
-		const provider = await import("@walletconnect/ethereum-provider").then(
-			module => {
-				const { chains, optionalChains } = WC2Connector.configuration.chains[
-					this.defaultChainId
-				]
-
-				return module.default.init({
-					projectId: process.env.WC_PROJECT_ID,
-					rpcMap: { 1: "rpcurl" }, //TODO
-					chains,
-					optionalChains,
-					showQrModal: true,
-
-					disableProviderPing: true,
-					// https://github.com/WalletConnect/walletconnect-monorepo/blob/v2.0/providers/ethereum-provider/src/constants/rpc.ts
-					methods: ["eth_sendTransaction", "personal_sign"],
-					optionalMethods: [
-						"eth_accounts",
-						"eth_requestAccounts",
-						"eth_sign",
-						"eth_signTypedData_v4",
-						"wallet_switchEthereumChain",
-						"wallet_addEthereumChain"
-					],
-					events: ["chainChanged", "accountsChanged"],
-					optionalEvents: ["disconnect"]
-				})
-			}
+		const chains = [this.defaultChainId]
+		const optionalChains = [...(this.supportedChainIds || [])].filter(
+			c => !this.defaultChainId
 		)
+
+		const provider = await EthereumProvider.init({
+			projectId: this.projectId,
+			rpcMap: this.rpcMap,
+			chains,
+			optionalChains,
+			showQrModal: this.showQrModal,
+			disableProviderPing: true,
+			// https://github.com/WalletConnect/walletconnect-monorepo/blob/v2.0/providers/ethereum-provider/src/constants/rpc.ts
+			methods: ["eth_sendTransaction", "personal_sign", "eth_sign"],
+			optionalMethods: ["eth_accounts", "eth_requestAccounts"],
+			events: ["chainChanged", "accountsChanged"],
+			optionalEvents: ["disconnect"]
+		})
 
 		const accounts = await provider.enable()
 

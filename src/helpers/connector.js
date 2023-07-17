@@ -3,6 +3,7 @@ import { TrezorConnector } from "@web3-react/trezor-connector"
 import { InjectedConnector } from "@web3-react/injected-connector"
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector"
 import { REACT_APP_RPC_URL } from "../helpers/constants"
+import { WC2Connector } from "./wc2-connector"
 
 const POLLING_INTERVAL = 13000
 
@@ -53,4 +54,15 @@ export const walletconnect = new WalletConnectConnector({
 	bridge: "https://bridge.walletconnect.org",
 	qrcode: true,
 	pollingInterval: POLLING_INTERVAL
+})
+
+// console.log({ pid: process.env.WC_PROJECT_ID })
+
+export const walletconnect2 = new WC2Connector({
+	rpcMap: { 1: REACT_APP_RPC_URL },
+	supportedChainIds: [1],
+	defaultChainId: 1,
+	projectId: process.env.WC_PROJECT_ID,
+	pollingInterval: POLLING_INTERVAL,
+	showQrModal: true
 })
