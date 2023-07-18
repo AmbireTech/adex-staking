@@ -33,7 +33,7 @@ export class WC2Connector extends AbstractConnector {
 			disableProviderPing: true,
 			// https://github.com/WalletConnect/walletconnect-monorepo/blob/v2.0/providers/ethereum-provider/src/constants/rpc.ts
 			methods: ["eth_sendTransaction", "personal_sign", "eth_sign"],
-			optionalMethods: ["eth_accounts", "eth_requestAccounts"],
+			optionalMethods: ["wallet_switchEthereumChain"],
 			events: ["chainChanged", "accountsChanged"],
 			optionalEvents: ["disconnect"]
 		})
