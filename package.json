@@ -1,6 +1,6 @@
 {
   "name": "adex-staking-ui",
-  "version": "0.10.5",
+  "version": "0.10.8",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.4",
@@ -12,6 +12,9 @@
     "@testing-library/user-event": "^7.1.2",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
+    "@walletconnect/ethereum-provider": "^2.9.0",
+    "@walletconnect/modal": "^2.6.0",
+    "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/ledger-connector": "^6.1.1",

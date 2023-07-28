@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react"
 import {
 	useWeb3React,
-	UnsupportedChainIdError,
-	PRIMARY_KEY
+	UnsupportedChainIdError
+	// PRIMARY_KEY
 } from "@web3-react/core"
 import {
 	NoEthereumProviderError,
@@ -19,7 +19,7 @@ import {
 	SUPPORTED_CHAINS,
 	IDLE_TIMEOUT_MINUTES
 } from "./helpers/constants"
-import { injected, trezor, ledger, walletconnect } from "./helpers/connector"
+import { injected, trezor, ledger, walletconnect2 } from "./helpers/connector"
 import {
 	EMPTY_STATS,
 	loadStats,
@@ -43,7 +43,7 @@ const IDLE_TIMEOUT = IDLE_TIMEOUT_MINUTES * 60 * 1000
 
 const connectorsByName = {
 	[METAMASK]: injected,
-	[WALLET_CONNECT]: walletconnect,
+	[WALLET_CONNECT]: walletconnect2,
 	[TREZOR]: trezor,
 	[LEDGER]: ledger
 }
