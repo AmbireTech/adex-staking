@@ -180,15 +180,15 @@ export default function Root() {
 						<Route path="/stakings">
 							<Stakings />
 						</Route>
-						<Route path="/gasless">
+						{/* <Route path="/gasless">
 							<Gasless />
-						</Route>
+						</Route> */}
 						<Route path="/rewards">
 							<Rewards />
 						</Route>
-						<Route path="/farm">
+						{/* <Route path="/farm">
 							<Farm />
-						</Route>
+						</Route> */}
 						<Route path="/stats">
 							<Stats />
 						</Route>

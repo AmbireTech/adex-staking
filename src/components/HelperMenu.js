@@ -67,7 +67,7 @@ export const Help = () => {
 				<Link
 					id="help-menu-external-link-adex-wher-to-buy-markets"
 					color="inherit"
-					href="https://coinmarketcap.com/currencies/adx-net/markets/"
+					href="https://help.ambire.com/hc/en-us/articles/360015933099-How-can-I-get-ADX-tokens-List-of-exchanges-"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>{t("help.whereToBuy")}</MenuItem>
