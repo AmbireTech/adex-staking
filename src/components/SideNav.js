@@ -164,7 +164,7 @@ function SideNav({
 								alignItems="flex-start"
 							>
 								<img
-									width="200px"
+									height="69px"
 									src={themeType === "dark" ? logo : logoLight}
 									alt="adex-staking-logo"
 								></img>
