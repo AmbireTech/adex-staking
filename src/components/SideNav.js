@@ -164,7 +164,7 @@ function SideNav({
 								alignItems="flex-start"
 							>
 								<img
-									width="200px"
+									height="69px"
 									src={themeType === "dark" ? logo : logoLight}
 									alt="adex-staking-logo"
 								></img>
@@ -285,7 +285,7 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={t("common.rewards")} />
 						</RRListItem>
-						<RRListItem
+						{/* <RRListItem
 							id="side-nav-link-farm"
 							button
 							to={{ pathname: "/farm" }}
@@ -299,7 +299,7 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.farm")} />
-						</RRListItem>
+						</RRListItem> */}
 						<RRListItem
 							id="side-nav-link-stats"
 							button
@@ -315,7 +315,7 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={t("common.validatorStats")} />
 						</RRListItem>
-						<RRListItem
+						{/* <RRListItem
 							id="side-nav-link-gasless"
 							button
 							to={{ pathname: "/gasless" }}
@@ -329,7 +329,7 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.gaslessStaking")} />
-						</RRListItem>
+						</RRListItem> */}
 					</List>
 				</Box>
 				<Box>
@@ -350,7 +350,7 @@ function SideNav({
 								<HomeIcon color="inherit" />
 							</SvgIcon>
 						</ListItemIcon>
-						<ListItemText primary={t("common.homePageAndCalculator")} />
+						<ListItemText primary={t("Home page")} />
 					</RRListItem>
 					<Divider />
 					<ListItem>

@@ -43,7 +43,7 @@ export const Help = () => {
 				<Link
 					id="help-menu-external-link-adex-network-staking-user-guide"
 					color="inherit"
-					href="https://help.adex.network/hc/en-us/categories/4404980117778-AdEx-Staking"
+					href="https://help.adex.network/hc/en-us/articles/9638410468508-How-to-stake-your-ADX-tokens-"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>{t("help.userGuide")}</MenuItem>
@@ -67,7 +67,7 @@ export const Help = () => {
 				<Link
 					id="help-menu-external-link-adex-wher-to-buy-markets"
 					color="inherit"
-					href="https://coinmarketcap.com/currencies/adx-net/markets/"
+					href="https://help.adex.network/hc/en-us/articles/9639404618268-How-can-I-get-ADX-tokens-List-of-exchanges-"
 					target="_blank"
 				>
 					<MenuItem onClick={closeHelpMenu}>{t("help.whereToBuy")}</MenuItem>
