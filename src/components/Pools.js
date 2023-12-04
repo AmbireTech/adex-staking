@@ -201,7 +201,7 @@ const Pools = () => {
 										<Typography align="left" variant="body1" color="secondary">
 											<Anchor
 												target="_blank"
-												href="https://help.adex.network/hc/en-us/articles/360019465979-New-to-staking-A-summary-of-all-you-need-to-know"
+												href="https://help.adex.network/hc/en-us/articles/9638410468508-How-to-stake-your-ADX-tokens-"
 											>
 												{t("email.learnMore")}{" "}
 												<ArrowForwardIosIcon
