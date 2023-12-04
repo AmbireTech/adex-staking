@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react"
+import React from // , { useState, useEffect }
+"react"
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	Button,
-	Checkbox,
-	FormGroup,
-	FormControl,
-	FormControlLabel,
+	// Checkbox,
+	// FormGroup,
+	// FormControl,
+	// FormControlLabel,
 	TextField
 } from "@material-ui/core"
 import { CardRow } from "./cardCommon"
 // import { ExternalAnchor } from "./Anchor"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
-import { validateEmail } from "./../helpers/validation"
-import {
-	extractJSONResponseFromHTML,
-	submitFormToMautic
-} from "../mauticActions"
+import useEmailSubscription from "../hooks/useEmailSubscription"
 import { useTranslation, Trans } from "react-i18next"
 
 const useStyles = makeStyles(theme => {
@@ -54,51 +51,16 @@ const useStyles = makeStyles(theme => {
 
 export default function EmailSignUp(props) {
 	const { t } = useTranslation()
+	const {
+		email,
+		setEmail,
+		errorMessage,
+		successMessage,
+		submitForm,
+		waiting
+	} = useEmailSubscription()
 
-	const [email, setEmail] = useState("")
-	const [mauticState, setMauticState] = useState({})
-	const [waiting, setWaiting] = useState(false)
-	const [gdpr, setGDPR] = useState(false)
-	// const [tos, setTos] = useState(false)
-	const [errors, setErrors] = useState({
-		email: false,
-		gdpr: false
-		// tos: false
-	})
-	const classes = useStyles({ errors })
-
-	useEffect(() => {
-		// console.log(email, gdpr, errors)
-	}, [email, gdpr, errors])
-
-	const handleValidationErrors = () => {
-		setErrors({
-			email: !validateEmail(email),
-			gdpr: !gdpr
-			// tos: !tos
-		})
-	}
-
-	const handleSubmit = async () => {
-		handleValidationErrors()
-		if (
-			validateEmail(email) &&
-			gdpr
-			// && tos
-		) {
-			setWaiting(true)
-			try {
-				const HTMLResponse = await submitFormToMautic({ ...props, email })
-				const jsonResponse = await extractJSONResponseFromHTML(HTMLResponse)
-				setMauticState({
-					...jsonResponse
-				})
-			} catch (error) {
-				// If cors is not enabled for address
-				console.error(error)
-			}
-		}
-	}
+	const classes = useStyles({ errors: successMessage })
 
 	return (
 		<Box
@@ -121,13 +83,13 @@ export default function EmailSignUp(props) {
 			<Box classes={{ root: classes.iconBox }}>
 				<EmailAwardsIcon />
 			</Box>
-			{mauticState.success ? (
+			{successMessage ? (
 				<CardRow
 					mt={3}
 					color="text.primary"
 					fontWeight={"fontWeightBold"}
 					fontSize={16}
-					text={mauticState.successMessage}
+					text={successMessage}
 					justify="center"
 					height={1}
 					display="flex"
@@ -162,18 +124,17 @@ export default function EmailSignUp(props) {
 							label={t("email.email")}
 							variant="filled"
 							color="secondary"
-							onBlur={e =>
-								setErrors({ ...errors, email: !validateEmail(e.target.value) })
-							}
+							value={email}
+							// onBlur={e =>
+							// 	setErrors({ ...errors, email: !validateEmail(e.target.value) })
+							// }
 							onChange={e => setEmail(e.target.value)}
-							helperText={
-								errors.email ? t("email.validEmail") : t("email.bestEmail")
-							}
-							error={errors.email}
+							helperText={errorMessage}
+							error={errorMessage}
 							fullWidth
 						/>
 					</Box>
-					<Box mt={1} width={1}>
+					{/* <Box mt={1} width={1}>
 						<FormControl error={errors.gdpr}>
 							<FormGroup>
 								<FormControlLabel
@@ -186,7 +147,7 @@ export default function EmailSignUp(props) {
 								/>
 							</FormGroup>
 						</FormControl>
-					</Box>
+					</Box> */}
 					{/* <Box mt={1} width={1}>
 							<FormControl error={errors.tos}>
 								<FormGroup>
@@ -221,9 +182,9 @@ export default function EmailSignUp(props) {
 						<Button
 							type="submit"
 							id={`sign-up-email`}
-							disabled={waiting}
+							// disabled={waiting}
 							className={classes.singUp}
-							onClick={() => handleSubmit()}
+							onClick={submitForm}
 							variant="contained"
 							color="secondary"
 						>
