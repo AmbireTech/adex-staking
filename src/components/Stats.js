@@ -44,8 +44,8 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: theme.palette.background.paper
 		},
 		active: {
-			backgroundColor: theme.palette.background.darkerPaper,
-			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.background.special}`
+			backgroundColor: theme.palette.background.paper,
+			border: `${ACTIVE_BORDER_WIDTH}px solid ${theme.palette.secondary.main}AA`
 		},
 		interactive: {
 			cursor: "pointer"
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => {
 			height: theme.spacing(3),
 			top: theme.spacing(1),
 			right: theme.spacing(1),
-			color: theme.palette.background.special
+			color: theme.palette.secondary.main
 		}
 	}
 })
@@ -219,7 +219,7 @@ export default function Stats() {
 								dataSynced={loaded}
 								xLabel={t(`stats.${chartDataKey}`)}
 								yLabel={t(chartData.valueLabel)}
-								yColor={theme.palette.background.special}
+								yColor={theme.palette.text.secondary}
 								currency={chartData.currency}
 								xSelect={XSelect({
 									chartDataKey,

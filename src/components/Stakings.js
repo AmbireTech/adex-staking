@@ -4,7 +4,8 @@ import {
 	Typography,
 	Accordion,
 	AccordionSummary,
-	AccordionDetails
+	AccordionDetails,
+	styled
 } from "@material-ui/core"
 import { ExpandMore } from "@material-ui/icons"
 import AppContext from "../AppContext"
@@ -25,43 +26,44 @@ const Stakings = () => {
 		onRebond
 	} = useContext(AppContext)
 
+	const StyledAccordion = styled(Accordion)(({ theme }) => ({
+		backgroundColor: "transparent",
+		border: `1px solid ${theme.palette.text.secondaryLight}`,
+		borderRadius: "10px",
+		boxShadow: "none"
+	}))
+
 	return (
 		<Box>
-			<SectionHeader title={t("common.staked")} />
-			<Box mt={2}>
+			<Box mt={2} mb={10}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
-						{t("common.bonds")}
+						{t("common.staked")}
 					</Typography>
 				</Box>
-				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box p={3}>
-						{Bonds({
-							stats,
-							onRequestUnbond: setToUnbond,
-							onUnbond,
-							onMigrationFinalize,
-							onClaimRewards,
-							onRebond
-						})}
-					</Box>
+				<Box mt={5}>
+					{Bonds({
+						stats,
+						onRequestUnbond: setToUnbond,
+						onUnbond,
+						onMigrationFinalize,
+						onClaimRewards,
+						onRebond
+					})}
 				</Box>
 			</Box>
-			<Box mt={2}>
+			<Box mt={2} mb={10}>
 				<Box color="text.main">
 					<Typography variant="h5" gutterBottom>
 						{t("common.deposits")}
 					</Typography>
 				</Box>
-
-				<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box p={3}>
-						<Deposits />
-					</Box>
+				<Box mt={5}>
+					<Deposits />
 				</Box>
 			</Box>
 			<Box mt={2}>
-				<Accordion square>
+				<StyledAccordion square>
 					<AccordionSummary
 						expandIcon={<ExpandMore />}
 						aria-controls="panel1a-content"
@@ -70,13 +72,13 @@ const Stakings = () => {
 						<Typography>{t("deposits.txnsHistory")}</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
-						<Box mt={2} bgcolor="background.darkerPaper" width={1}>
+						<Box mt={0} width={1}>
 							{StakingPoolTxnsHistory({
 								stats
 							})}
 						</Box>
 					</AccordionDetails>
-				</Accordion>
+				</StyledAccordion>
 			</Box>
 		</Box>
 	)

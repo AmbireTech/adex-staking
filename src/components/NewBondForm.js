@@ -290,7 +290,7 @@ export default function NewBondForm({
 									!amountErr
 								)
 							}
-							color="primary"
+							color="secondary"
 							variant="contained"
 							onClick={onAction}
 						>

@@ -1,16 +1,11 @@
 import React, { Fragment, useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import {
-	TableRow,
-	TableCell,
-	Box,
-	Table,
-	TableContainer,
-	TableHead,
-	TableBody,
-	SvgIcon
-} from "@material-ui/core"
+import { Box, TableBody, SvgIcon, TableRow } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
+import { ReactComponent as DepositIcon } from "./../resources/deposit-ic.svg"
+import { ReactComponent as WithdrawIcon } from "./../resources/withdraw-ic.svg"
+import { ReactComponent as UrlIcon } from "./../resources/url.svg"
+import { ReactComponent as LeaveIcon } from "./../resources/leave-ic.svg"
 import { InfoOutlined } from "@material-ui/icons"
 import { DEPOSIT_POOLS, iconByPoolId, ZERO } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
@@ -22,6 +17,7 @@ import { DEPOSIT_ACTION_TYPES } from "../actions"
 import Tooltip from "./Tooltip"
 
 import { useTranslation } from "react-i18next"
+import CustomTable, { StyledTableCell, StyledTableHead } from "./CustomTable"
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -49,8 +45,7 @@ const useStyles = makeStyles(theme => {
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
-			gap: theme.spacing(1),
-			justifyContent: "flex-end"
+			gap: theme.spacing(1)
 		}
 	}
 })
@@ -322,11 +317,9 @@ const getStakingPool = ({
 			<DepositsDialog
 				id="staking-pool-tom-deposit-form"
 				title={t("deposits.depositTo", { pool: t("common.tomStakingPool") })}
-				btnLabel={t("common.deposit")}
-				color="secondary"
 				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
@@ -334,14 +327,8 @@ const getStakingPool = ({
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-leave-form"
-				title={t("deposits.unbondCommitmentFrom", {
-					pool: t("common.tomStakingPool")
-				})}
-				btnLabel={t("common.unbond")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<UrlIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disableActionsMsg}
@@ -349,12 +336,8 @@ const getStakingPool = ({
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-withdraw-form"
-				title={t("deposits.withdrawFrom", { pool: t("common.tomStakingPool") })}
-				btnLabel={t("common.withdraw")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disabledWithdrawsMsg}
@@ -362,14 +345,8 @@ const getStakingPool = ({
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-rage-leave-form"
-				title={t("deposits.rageLeaveFrom", {
-					pool: t("common.tomStakingPool")
-				})}
-				btnLabel={t("deposits.rageLeave")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<LeaveIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				tooltipTitle={disableActionsMsg}
@@ -454,12 +431,8 @@ const getLoyaltyPoolDeposit = ({
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
-				title={t("deposits.depositTo", { pool: t("common.loPo") })}
-				btnLabel={t("common.deposit")}
-				color="secondary"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
 				tooltipTitle={disabledDepositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
@@ -467,12 +440,8 @@ const getLoyaltyPoolDeposit = ({
 			/>,
 			<DepositsDialog
 				id="loyalty-pool-withdraw-form"
-				title={t("deposits.withdrawFrom", { pool: t("common.loPo") })}
-				btnLabel={t("common.withdraw")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 				tooltipTitle={disabledWithdrawsMsg}
@@ -602,7 +571,7 @@ export default function Deposits() {
 		const PoolIcon = iconByPoolId(deposit)
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>
+				<StyledTableCell>
 					<Box
 						display="flex"
 						flexDirection="row"
@@ -620,22 +589,22 @@ export default function Deposits() {
 						)}
 						<Box>{deposit.label}</Box>
 					</Box>
-				</TableCell>
-				<TableCell align="right">{`${(deposit.currentAPY * 100).toFixed(
+				</StyledTableCell>
+				<StyledTableCell>{`${(deposit.currentAPY * 100).toFixed(
 					2
-				)} % `}</TableCell>
-				<TableCell align="right">{deposit.balance}</TableCell>
-				<TableCell align="right">{deposit.allTimeReward}</TableCell>
-				<TableCell align="right">{deposit.depositsADXTotal}</TableCell>
-				<TableCell align="right">{deposit.withdrawsADXTotal}</TableCell>
-				<TableCell align="right">{deposit.pendingToUnlockTotalADX}</TableCell>
-				<TableCell align="right">{deposit.readyToWithdrawTotalADX}</TableCell>
-				<TableCell align="center">
+				)} % `}</StyledTableCell>
+				<StyledTableCell>{deposit.balance}</StyledTableCell>
+				<StyledTableCell>{deposit.allTimeReward}</StyledTableCell>
+				<StyledTableCell>{deposit.depositsADXTotal}</StyledTableCell>
+				<StyledTableCell>{deposit.withdrawsADXTotal}</StyledTableCell>
+				<StyledTableCell>{deposit.pendingToUnlockTotalADX}</StyledTableCell>
+				<StyledTableCell>{deposit.readyToWithdrawTotalADX}</StyledTableCell>
+				<StyledTableCell>
 					<Box
 						display="flex"
-						flexDirection="column"
+						flexDirection="row"
 						alignItems="stretch"
-						justifyContent="center"
+						justifyContent="flex-start"
 					>
 						{deposit.actions.map((action, index) => (
 							<Box key={index} my={0.25}>
@@ -643,7 +612,7 @@ export default function Deposits() {
 							</Box>
 						))}
 					</Box>
-				</TableCell>
+				</StyledTableCell>
 			</TableRow>
 		)
 	}
@@ -662,36 +631,26 @@ export default function Deposits() {
 					tooltipTitle={disableDepositsMsg}
 				/>
 			</Box> */}
-			<Box mb={2}>
-				<TableContainer xs={12}>
-					<Table aria-label="Bonds table">
-						<TableHead>
-							<TableRow>
-								<TableCell>{t("common.pool")}</TableCell>
-								<TableCell>{t("common.APY")}</TableCell>
-								<TableCell align="right">{t("common.balance")}</TableCell>
-								<TableCell align="right">
-									{t("deposits.allTimeRewards")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.depositsADXTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.withdrawsADXTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.pendingToUnlockTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.readyToWithdrawTotal")}
-								</TableCell>
-								<TableCell align="right">{t("common.actions")}</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
-					</Table>
-				</TableContainer>
-			</Box>
+			<CustomTable>
+				<StyledTableHead>
+					<TableRow>
+						<StyledTableCell>{t("common.pool")}</StyledTableCell>
+						<StyledTableCell>{t("common.APY")}</StyledTableCell>
+						<StyledTableCell>{t("common.balance")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.allTimeRewards")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.depositsADXTotal")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.withdrawsADXTotal")}</StyledTableCell>
+						<StyledTableCell>
+							{t("deposits.pendingToUnlockTotal")}
+						</StyledTableCell>
+						<StyledTableCell>
+							{t("deposits.readyToWithdrawTotal")}
+						</StyledTableCell>
+						<StyledTableCell>{t("common.actions")}</StyledTableCell>
+					</TableRow>
+				</StyledTableHead>
+				<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
+			</CustomTable>
 			{hasExternalStakingTokenTransfers && (
 				<Box mb={1}>
 					<Alert variant="filled" severity="info">

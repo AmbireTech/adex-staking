@@ -1,13 +1,5 @@
 import React from "react"
-import {
-	TableRow,
-	TableCell,
-	Box,
-	Table,
-	TableContainer,
-	TableHead,
-	TableBody
-} from "@material-ui/core"
+import { Box, TableBody, TableRow } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import {
 	UNBOND_DAYS,
@@ -21,6 +13,8 @@ import { getPool, getBondId } from "../helpers/bonds"
 
 import WithDialog from "./WithDialog"
 import MigrationForm from "./MigrationForm"
+import CustomTable, { StyledTableCell, StyledTableHead } from "./CustomTable"
+import CustomLabelChip from "./CustomLabelChip"
 
 const MigrationDialog = WithDialog(MigrationForm)
 
@@ -82,33 +76,32 @@ export default function Bonds({ stats }) {
 
 		return (
 			<TableRow key={bondId}>
-				<TableCell>
+				<StyledTableCell>
 					<AmountText
 						text={`${formatADXPretty(bond.currentAmount)} ${"ADX"}`}
 						fontSize={17}
 					/>
-				</TableCell>
-				<TableCell align="right">{t(poolLabel)}</TableCell>
-				<TableCell align="right">{formatDate(created)}</TableCell>
-				<TableCell align="right">{bondStatus(bond)}</TableCell>
-				<TableCell align="right">
+				</StyledTableCell>
+				<StyledTableCell>{t(poolLabel)}</StyledTableCell>
+				<StyledTableCell>{formatDate(created)}</StyledTableCell>
+				<StyledTableCell>
+					<CustomLabelChip
+						status={bond.status === "Active" ? 1 : 2}
+						label={bondStatus(bond)}
+					/>
+				</StyledTableCell>
+				<StyledTableCell>
 					{(bond.status === "Active" || bond.status === "UnbondRequested") && (
 						<Box display="inline-block" m={0.5}>
 							<MigrationDialog
 								id="staking-pool-tom-deposit-form"
-								title={
-									isWithdrawMigration
-										? t("bonds.unbond")
-										: t("bonds.requestMigrate")
-								}
+								// iconButton
+								// icon={}
 								btnLabel={
 									isWithdrawMigration
 										? t("bonds.unbond")
 										: t("bonds.requestMigrate")
 								}
-								color="secondary"
-								size="small"
-								variant="contained"
 								bond={bond}
 								poolLabel={poolLabel}
 								created={created}
@@ -121,32 +114,30 @@ export default function Bonds({ stats }) {
 							/>
 						</Box>
 					)}
-				</TableCell>
+				</StyledTableCell>
 			</TableRow>
 		)
 	}
 
 	return (
 		<Box>
-			<TableContainer xs={12}>
-				<Table aria-label="Bonds table">
-					<TableHead>
-						<TableRow>
-							<TableCell>{t("bonds.bondAmount")}</TableCell>
-							<TableCell align="right">{t("common.pool")}</TableCell>
-							<TableCell align="right">{t("common.created")}</TableCell>
-							<TableCell align="right">{t("common.status")}</TableCell>
-							<TableCell align="right">{t("common.actions")}</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{[...(stats.userBonds || [])]
-							.filter(x => x.status !== "Unbonded" && x.status !== "Migrated")
-							.reverse()
-							.map(renderBondRow)}
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<CustomTable xs={12}>
+				<StyledTableHead>
+					<TableRow>
+						<StyledTableCell>{t("bonds.bondAmount")}</StyledTableCell>
+						<StyledTableCell>{t("common.pool")}</StyledTableCell>
+						<StyledTableCell>{t("common.created")}</StyledTableCell>
+						<StyledTableCell>{t("common.status")}</StyledTableCell>
+						<StyledTableCell>{t("common.actions")}</StyledTableCell>
+					</TableRow>
+				</StyledTableHead>
+				<TableBody>
+					{[...(stats.userBonds || [])]
+						.filter(x => x.status !== "Unbonded" && x.status !== "Migrated")
+						.reverse()
+						.map(renderBondRow)}
+				</TableBody>
+			</CustomTable>
 
 			{!stats.loaded || stats.userBonds.length ? null : (
 				<Box mt={2}>

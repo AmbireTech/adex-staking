@@ -45,6 +45,7 @@ import { createNewBond } from "../actions"
 import { ShtarvolinkiSnack } from "./../Snack"
 import clsx from "clsx"
 import { useTranslation, Trans } from "react-i18next"
+import CustomButton from "./CustomButton"
 
 function Alert(props) {
 	return <MuiAlert variant="filled" {...props} />
@@ -346,13 +347,13 @@ export default function Root() {
 								<Alert
 									severity="info"
 									action={
-										<Button
+										<CustomButton
 											variant="contained"
-											color="secondary"
+											radius={false}
 											onClick={onIdleDialogAction}
 										>
 											{t("messages.continueSession")}
-										</Button>
+										</CustomButton>
 									}
 								>
 									{t("messages.useIdleTitle", {

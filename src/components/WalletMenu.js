@@ -32,6 +32,7 @@ import { useTranslation } from "react-i18next"
 import Tooltip from "./Tooltip"
 import { getPeerMeta } from "../ethereum"
 import * as blockies from "blockies-ts"
+import CustomButton from "./CustomButton"
 
 const useStyles = makeStyles(theme => ({
 	fabIcon: {
@@ -91,17 +92,14 @@ export const Wallet = () => {
 	return (
 		<Fragment>
 			{!chosenWalletType.name || !account ? (
-				<Fab
+				<CustomButton
 					id="connect-wallet-btn-topbar"
 					onClick={() => setConnectWallet(true)}
-					variant="extended"
-					color="secondary"
-					size="medium"
 					disabled={chosenWalletType.name && !account}
 				>
 					<AccountBalanceWalletIcon className={classes.fabIcon} />
 					{t("common.connectWallet")}
-				</Fab>
+				</CustomButton>
 			) : (
 				<Grid container spacing={1} justifyContent="flex-end">
 					<Grid item>

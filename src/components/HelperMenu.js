@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Button, Menu, Link, MenuItem } from "@material-ui/core"
-import HelpIcon from "@material-ui/icons/HelpOutline"
 import { useTranslation } from "react-i18next"
+import { ReactComponent as HelpIcon } from "./../resources/info.svg"
 
 export const Help = () => {
 	const { t } = useTranslation()
@@ -17,6 +17,7 @@ export const Help = () => {
 			<Button
 				id="help-menu-btn"
 				size="large"
+				style={{ textTransform: "capitalize" }}
 				startIcon={<HelpIcon size="large" />}
 				onClick={openHelpMenu}
 			>

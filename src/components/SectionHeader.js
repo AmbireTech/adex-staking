@@ -33,8 +33,8 @@ const SectionHeader = ({ title, actions }) => {
 			alignItems="center"
 			flexWrap="wrap"
 		>
-			<Box color="text.main" mb={1}>
-				<Typography variant="h3" style={{ wordBreak: "break-word" }}>
+			<Box color="text.main" mb={3}>
+				<Typography variant="h4" style={{ wordBreak: "break-word" }}>
 					{title}
 				</Typography>
 			</Box>
@@ -50,7 +50,6 @@ const SectionHeader = ({ title, actions }) => {
 									pool: t("common.tomStakingPool")
 								})}
 								btnLabel={t("bonds.stakeADX")}
-								color="secondary"
 								size="medium"
 								variant="extended"
 								fabButton

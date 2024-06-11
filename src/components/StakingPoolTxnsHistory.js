@@ -1,15 +1,6 @@
 import React, { useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import {
-	TableRow,
-	TableCell,
-	Box,
-	Table,
-	TableContainer,
-	TableHead,
-	TableBody,
-	SvgIcon
-} from "@material-ui/core"
+import { TableRow, Box, TableBody, SvgIcon } from "@material-ui/core"
 import {
 	formatADXPretty,
 	formatDateTime,
@@ -21,6 +12,7 @@ import { useTranslation } from "react-i18next"
 import { ExternalAnchor } from "./Anchor"
 import { iconByPoolId } from "../helpers/constants"
 import { STAKING_POOL_EVENT_TYPES } from "../actions/v5actions"
+import CustomTable, { StyledTableCell, StyledTableHead } from "./CustomTable"
 
 const stakingPoolLabel = {
 	"adex-loyalty-pool": "common.loPo",
@@ -55,7 +47,7 @@ const StakingEventRow = ({ stakingEvent }) => {
 
 	return (
 		<TableRow>
-			<TableCell>
+			<StyledTableCell>
 				<Box
 					display="flex"
 					flexDirection="row"
@@ -75,11 +67,11 @@ const StakingEventRow = ({ stakingEvent }) => {
 						{t(stakingPoolLabel[stakingEvent.pool || "adex-staking-pool"])}
 					</Box>
 				</Box>
-			</TableCell>
-			<TableCell align="right">
+			</StyledTableCell>
+			<StyledTableCell align="right">
 				{t(`eventTypes.${stakingEvent.type}`)}
-			</TableCell>
-			<TableCell align="right">
+			</StyledTableCell>
+			<StyledTableCell align="right">
 				<AmountText
 					text={`${formatADXPretty(
 						stakingEvent.adxAmount || stakingEvent.maxTokens
@@ -87,11 +79,11 @@ const StakingEventRow = ({ stakingEvent }) => {
 					fontSize={17}
 				/>
 				{isExternalShareTokenTransfer && " *"}
-			</TableCell>
-			<TableCell align="right">
+			</StyledTableCell>
+			<StyledTableCell align="right">
 				{formatDateTime(new Date(stakingEvent.timestamp))}
-			</TableCell>
-			<TableCell align="right">
+			</StyledTableCell>
+			<StyledTableCell align="right">
 				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.enter && "-"}
 				{stakingEvent.type === STAKING_POOL_EVENT_TYPES.leave && (
 					<Box>
@@ -133,8 +125,8 @@ const StakingEventRow = ({ stakingEvent }) => {
 						<Box></Box>
 					</Box>
 				)}
-			</TableCell>
-			<TableCell align="right">
+			</StyledTableCell>
+			<StyledTableCell align="right">
 				{
 					<ExternalAnchor
 						color="inherit"
@@ -145,7 +137,7 @@ const StakingEventRow = ({ stakingEvent }) => {
 						{formatTxnHash(stakingEvent.transactionHash)}
 					</ExternalAnchor>
 				}
-			</TableCell>
+			</StyledTableCell>
 		</TableRow>
 	)
 }
@@ -164,28 +156,36 @@ export default function StakingPoolTxnsHistory() {
 	return (
 		<Box>
 			<Box>
-				<TableContainer xs={12}>
-					<Table aria-label="Bonds table">
-						<TableHead>
-							<TableRow>
-								<TableCell>{t("common.pool")}</TableCell>
-								<TableCell align="right">{t("deposits.eventType")}</TableCell>
-								<TableCell align="right">{t("deposits.amount")}</TableCell>
-								<TableCell align="right">{t("deposits.from")}</TableCell>
-								<TableCell align="right">{t("deposits.extraInfo")}</TableCell>
-								<TableCell align="right">{t("deposits.txnHash")}</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{[...(stakings || [])].reverse().map((stakingEvent, i) => (
-								<StakingEventRow
-									key={stakingEvent.blockNumber + stakingEvent.type + i}
-									stakingEvent={stakingEvent}
-								/>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
+				<CustomTable xs={12}>
+					<StyledTableHead>
+						<TableRow>
+							<StyledTableCell>{t("common.pool")}</StyledTableCell>
+							<StyledTableCell align="right">
+								{t("deposits.eventType")}
+							</StyledTableCell>
+							<StyledTableCell align="right">
+								{t("deposits.amount")}
+							</StyledTableCell>
+							<StyledTableCell align="right">
+								{t("deposits.from")}
+							</StyledTableCell>
+							<StyledTableCell align="right">
+								{t("deposits.extraInfo")}
+							</StyledTableCell>
+							<StyledTableCell align="right">
+								{t("deposits.txnHash")}
+							</StyledTableCell>
+						</TableRow>
+					</StyledTableHead>
+					<TableBody>
+						{[...(stakings || [])].reverse().map((stakingEvent, i) => (
+							<StakingEventRow
+								key={stakingEvent.blockNumber + stakingEvent.type + i}
+								stakingEvent={stakingEvent}
+							/>
+						))}
+					</TableBody>
+				</CustomTable>
 			</Box>
 		</Box>
 	)

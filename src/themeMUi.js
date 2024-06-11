@@ -2,19 +2,20 @@ import { createTheme, responsiveFontSizes } from "@material-ui/core/styles"
 import lime from "@material-ui/core/colors/lime"
 import { alpha } from "@material-ui/core/styles/colorManipulator"
 
-const WHITE = "#fafafa"
+const WHITE = "#F5F6FA"
 const BLACK = "#0f0f0f"
 export const PRIMARY = "#494560"
-export const SECONDARY = "#ff4269"
+export const SECONDARY = "#2C5CDE"
+export const ACCENT = "#FF6A42"
 export const ALEX_GREY = "#3f3e3e"
 export const ALEX_GREY_LIGHT = "#666"
 export const WARNING = "#FEB006"
-export const SUCCESS = "#14dc9c"
+export const SUCCESS = "#0CB07B"
 export const INFO = "#1b75bc"
 export const ERROR = "#ff6969"
 
 // DARK THEME
-export const TEXT_MAIN = "#7B7597"
+export const TEXT_MAIN = "#959EB8"
 export const TEXT_DEFAULT = "#e2dff5"
 export const PAPER = "#29253B"
 export const DARKER_PAPER = "#1A1825"
@@ -22,16 +23,19 @@ export const BACKGROUND_DEFAULT = "#131313"
 export const SPECIAL_CONTRAST = "#6942ff"
 
 //LIGHT THEME
-export const TEXT_SECONDARY_LIGHT = "#7f74b5"
-export const TEXT_MAIN_LIGHT = "#534c78"
-export const PAPER_LIGHT = "#fefefe"
-export const DARKER_PAPER_LIGHT = "#eee"
+export const TEXT_SECONDARY_LIGHT = "#525C75"
+export const TEXT_MAIN_LIGHT = "#212021"
+export const PAPER_LIGHT = "#EBEEFA"
+export const DARKER_PAPER_LIGHT = "#fcfcfc"
+export const CARD_PAPER_LIGHT = "#fefefe"
+export const CARD_PAPER = "#141C33"
 export const BACKGROUND_DEFAULT_LIGHT = WHITE
-export const SPECIAL_CONTRAST_LIGHT = "#1BC69F" //  SECONDARY// "#3c1fcc"
+export const SPECIAL_CONTRAST_LIGHT = "#EBEEFA" //  SECONDARY// "#3c1fcc"
 
 const paletteCommon = {
 	primary: { main: PRIMARY, contrastText: WHITE },
 	secondary: { main: SECONDARY, contrastText: WHITE },
+	accent: ACCENT,
 	grey: { main: ALEX_GREY, contrastText: WHITE },
 	lightGrey: { main: ALEX_GREY_LIGHT, contrastText: WHITE },
 	warning: {
@@ -50,28 +54,48 @@ const paletteCommon = {
 		main: ERROR,
 		contrastText: WHITE
 	},
+	button: {
+		primary: ACCENT,
+		secondary: SECONDARY
+	},
 	first: lime,
 	common: {
 		white: WHITE,
-		black: BLACK
+		black: BLACK,
+		hint: alpha(WHITE, 0.13)
+	},
+	sideNav: {
+		text: {
+			main: TEXT_MAIN,
+			primary: alpha(WHITE, 0.69),
+			secondary: alpha(WHITE, 0.42)
+		},
+		special: { main: SPECIAL_CONTRAST_LIGHT, contrastText: "#618AF9" },
+		background: {
+			darkerPaper: "#141C33",
+			active: PRIMARY
+		},
+		divider: alpha(WHITE, 0.13)
 	}
 }
 
 const paletteLight = {
 	type: "light",
 	...paletteCommon,
-	special: { main: SPECIAL_CONTRAST_LIGHT, contrastText: WHITE },
+	special: { main: SPECIAL_CONTRAST_LIGHT, contrastText: "#618AF9" },
 	text: {
 		main: TEXT_MAIN_LIGHT,
 		primary: alpha(BLACK, 0.9),
-		secondary: alpha(BLACK, 0.69),
+		secondary: TEXT_SECONDARY_LIGHT,
+		secondaryLight: alpha(TEXT_SECONDARY_LIGHT, 0.698),
 		disabled: alpha(BLACK, 0.42),
 		hint: alpha(BLACK, 0.13)
 	},
 	background: {
 		default: BACKGROUND_DEFAULT_LIGHT,
-		paper: PAPER_LIGHT,
-		darkerPaper: DARKER_PAPER_LIGHT,
+		darkerPaper: PAPER_LIGHT,
+		accentPaper: ACCENT,
+		paper: DARKER_PAPER_LIGHT,
 		special: SPECIAL_CONTRAST_LIGHT,
 		specialSecondary: BLACK,
 		active: alpha(TEXT_MAIN, 0.42),
@@ -84,39 +108,40 @@ const paletteLight = {
 const paletteDark = {
 	type: "dark",
 	...paletteCommon,
-	special: { main: WARNING, contrastText: BLACK },
-	text: {
-		main: TEXT_MAIN,
-		primary: alpha(WHITE, 0.69),
-		secondary: alpha(WHITE, 0.42),
-		disabled: alpha(WHITE, 0.1948),
-		hint: alpha(WHITE, 0.13)
-	},
-	divider: alpha(WHITE, 0.13),
-	background: {
-		darkerPaper: DARKER_PAPER,
-		paper: PAPER,
-		default: BLACK,
-		special: SPECIAL_CONTRAST,
-		specialSecondary: BLACK,
-		active: PRIMARY,
-		contrast: WHITE,
-		contrastText: BLACK,
-		card: PAPER
-	},
-	overlay: alpha(DARKER_PAPER, 0.69),
-	action: {
-		action: alpha(WHITE, 0.46),
-		hover: alpha(WHITE, 0.069),
-		hoverOpacity: 0.069,
-		selected: alpha(WHITE, 0.1914),
-		selectedOpacity: 0.1914,
-		disabled: alpha(WHITE, 0.1948),
-		disabledOpacity: 0.48,
-		focus: alpha(WHITE, 0.18),
-		focusOpacity: 0.18,
-		activatedOpacity: 0.18
-	}
+	...paletteLight
+	// special: { main: WARNING, contrastText: BLACK },
+	// text: {
+	// 	main: TEXT_MAIN,
+	// 	primary: alpha(WHITE, 0.69),
+	// 	secondary: alpha(WHITE, 0.42),
+	// 	disabled: alpha(WHITE, 0.1948),
+	// 	hint: alpha(WHITE, 0.13)
+	// },
+	// divider: alpha(WHITE, 0.13),
+	// background: {
+	// 	darkerPaper: DARKER_PAPER,
+	// 	paper: PAPER,
+	// 	default: BLACK,
+	// 	special: SPECIAL_CONTRAST,
+	// 	specialSecondary: BLACK,
+	// 	active: PRIMARY,
+	// 	contrast: WHITE,
+	// 	contrastText: BLACK,
+	// 	card: PAPER
+	// },
+	// overlay: alpha(DARKER_PAPER, 0.69),
+	// action: {
+	// 	action: alpha(WHITE, 0.46),
+	// 	hover: alpha(WHITE, 0.069),
+	// 	hoverOpacity: 0.069,
+	// 	selected: alpha(WHITE, 0.1914),
+	// 	selectedOpacity: 0.1914,
+	// 	disabled: alpha(WHITE, 0.1948),
+	// 	disabledOpacity: 0.48,
+	// 	focus: alpha(WHITE, 0.18),
+	// 	focusOpacity: 0.18,
+	// 	activatedOpacity: 0.18
+	// }
 }
 
 const typography = {
@@ -215,6 +240,9 @@ const commonTheme = createTheme({
 			paperAnchorDockedLeft: {
 				borderRight: 0
 			}
+		},
+		MuiDivider: {
+			backgroundColor: "red"
 		},
 		MuiAlert: {
 			root: {

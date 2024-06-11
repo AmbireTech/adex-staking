@@ -29,7 +29,7 @@ export function Info({ title }) {
 	)
 }
 
-function AmountTextSingle({ text = "", fontSize, multiline }) {
+function AmountTextSingle({ text = "", fontSize, multiline, decimalOpacity }) {
 	const decimalSeparatorSplit = text.split(".")
 
 	if (decimalSeparatorSplit.length > 1) {
@@ -49,13 +49,18 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 				<Box
 					component="div"
 					display="inline"
-					style={{ opacity: "0.56" }}
+					style={{ opacity: decimalOpacity || "0.87" }}
 					fontSize={fontSize * 0.8}
 				>
 					{decimalsSplit[0]}
 				</Box>
 				{decimalsSplit[1] && (
-					<Box component="div" display="inline" fontSize={fontSize * 0.8}>
+					<Box
+						component="div"
+						display="inline"
+						style={{ opacity: decimalOpacity || "0.87" }}
+						fontSize={fontSize * 0.8}
+					>
 						{" "}
 						{decimalsSplit[1]}
 					</Box>
@@ -73,7 +78,13 @@ function AmountTextSingle({ text = "", fontSize, multiline }) {
 	}
 }
 
-export function AmountText({ text = "", fontSize, multiline, children }) {
+export function AmountText({
+	text = "",
+	fontSize,
+	multiline,
+	children,
+	decimalOpacity
+}) {
 	const transValue = children ? children.join(";") : ""
 
 	const multipleAmountsSplit = (text || transValue)
@@ -91,6 +102,7 @@ export function AmountText({ text = "", fontSize, multiline, children }) {
 								text={x}
 								fontSize={fontSize}
 								multiline={multiline}
+								decimalOpacity={decimalOpacity}
 							/>
 						))
 						.reduce((prev, curr) => [prev, multiline ? null : "; ", curr])
@@ -108,6 +120,7 @@ export function CardRow({
 	justify,
 	isAmountText,
 	multilineLinesAmounts,
+	decimalOpacity,
 	...restBox
 }) {
 	return (
@@ -129,6 +142,7 @@ export function CardRow({
 							text={text}
 							fontSize={fontSize}
 							multiline={multilineLinesAmounts}
+							decimalOpacity={decimalOpacity}
 						/>
 					) : (
 						text

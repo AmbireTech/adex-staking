@@ -1,9 +1,9 @@
-import React from // , { useState, useEffect }
-"react"
+import React from "react" // , { useState, useEffect }
 import { makeStyles } from "@material-ui/core/styles"
 import {
 	Box,
 	Button,
+	ButtonBase,
 	// Checkbox,
 	// FormGroup,
 	// FormControl,
@@ -15,15 +15,15 @@ import { CardRow } from "./cardCommon"
 import { ReactComponent as EmailAwardsIcon } from "./../resources/mail-awards.svg"
 import useEmailSubscription from "../hooks/useEmailSubscription"
 import { useTranslation, Trans } from "react-i18next"
+import CustomButton from "./CustomButton"
+import CustomTextField from "./CustomTextField"
 
 const useStyles = makeStyles(theme => {
 	return {
 		iconBox: {
 			borderRadius: "100%",
-			position: "absolute",
 			width: 160,
 			height: 160,
-			top: -theme.spacing(4),
 			backgroundColor: "transparent",
 			color: theme.palette.background.default,
 			display: "flex",
@@ -33,10 +33,6 @@ const useStyles = makeStyles(theme => {
 		},
 		bold: {
 			fontWeight: 800
-		},
-		singUp: {
-			backgroundColor: theme.palette.text.main,
-			borderRadius: 20
 		},
 		gdprCheckbox: ({ errors }) => ({
 			fontSize: 10,
@@ -68,10 +64,9 @@ export default function EmailSignUp(props) {
 			p={3}
 			my={3}
 			mx={1.5}
-			pt={15}
 			width={270}
 			maxWidth="100%"
-			minHeight={420}
+			minHeight={400}
 			display="flex"
 			flexDirection="column"
 			alignItems="center"
@@ -97,31 +92,17 @@ export default function EmailSignUp(props) {
 			) : (
 				<>
 					<CardRow
-						mt={3}
+						mt={0}
 						color="text.primary"
-						fontWeight={"fontWeightBold"}
 						fontSize={16}
-						text={
-							<Trans
-								i18nKey="email.subscribe"
-								components={{
-									strong: (
-										<Box
-											display="inline"
-											color="special.main"
-											fontWeight={"fontWeightBold"}
-											fontSize="h5.fontSize"
-										></Box>
-									)
-								}}
-							/>
-						}
+						textAlign="center"
+						text={<Trans i18nKey="email.subscribe" />}
 						justify="center"
 					/>
 					<Box width={1} mt={2}>
-						<TextField
+						<CustomTextField
 							id={"email-signup-email-input"}
-							label={t("email.email")}
+							label={t("email.enterYourEmail")}
 							variant="filled"
 							color="secondary"
 							value={email}
@@ -178,18 +159,15 @@ export default function EmailSignUp(props) {
 								</FormGroup>
 							</FormControl>
 						</Box> */}
-					<Box width={1} mt={2} display="flex" justifyContent="center">
-						<Button
+					<Box width={1} mt={3} display="flex" justifyContent="center">
+						<CustomButton
+							btnType="outline"
 							type="submit"
-							id={`sign-up-email`}
-							// disabled={waiting}
-							className={classes.singUp}
 							onClick={submitForm}
-							variant="contained"
-							color="secondary"
+							id={`sign-up-email`}
 						>
 							{waiting ? t("email.submitting") : t("email.submitBtnLabel")}
-						</Button>
+						</CustomButton>
 					</Box>
 				</>
 			)}

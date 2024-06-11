@@ -2,9 +2,7 @@ import React, { Fragment, useState, forwardRef } from "react"
 import PropTypes from "prop-types"
 import { makeStyles } from "@material-ui/core/styles"
 import {
-	Button,
 	Box,
-	Fab,
 	IconButton,
 	Dialog,
 	DialogTitle,
@@ -17,6 +15,7 @@ import clsx from "clsx"
 import { withStyles } from "@material-ui/core/styles"
 import CancelIcon from "@material-ui/icons/Cancel"
 import Tooltip from "./Tooltip"
+import CustomButton from "./CustomButton"
 
 export const styles = theme => {
 	const spacing = theme.spacing(2)
@@ -97,7 +96,6 @@ export default function WithDialogHoc(Decorated) {
 			textButton,
 			fabButton,
 			variant,
-			color,
 			size,
 			mini,
 			btnLabel,
@@ -111,11 +109,11 @@ export default function WithDialogHoc(Decorated) {
 			onBeforeOpen,
 			onCloseDialog,
 			tooltipTitle,
+			btnType,
 			...rest
 		} = props
 
 		const btnProps = {
-			color,
 			size,
 			variant
 		}
@@ -145,43 +143,23 @@ export default function WithDialogHoc(Decorated) {
 
 			setOpen(false)
 		}
-
-		let ButtonComponent = null
-
-		if (iconButton) {
-			ButtonComponent = IconButton
-		} else if (textButton) {
-			ButtonComponent = TextBtn
-		} else if (fabButton) {
-			ButtonComponent = Fab
-		} else {
-			ButtonComponent = Button
-			btnProps.fullWidth = fullWidth
-		}
 		return (
 			<Fragment>
 				<Tooltip title={tooltipTitle || ""}>
-					<Box
-						display="inline-block"
-						{...(btnProps.fullWidth ? { width: 1 } : {})}
-					>
-						<ButtonComponent
+					<Box display="inline-block" {...(fullWidth ? { width: 1 } : {})}>
+						<CustomButton
 							id={id}
+							btnType={btnType}
+							w={fullWidth ? "100%" : ""}
 							disabled={disabled}
 							aria-label={btnLabel || ""}
 							label={btnLabel || ""}
 							onClick={ev => handleClick(ev)}
 							{...btnProps}
-							className={clsx(
-								className,
-								{ [classes.floating]: !!fabButton },
-								{ [classes.first]: color === "first" },
-								{ [classes.second]: color === "second" }
-							)}
 						>
 							{icon}
 							{(!iconButton && btnLabel) || ""}
-						</ButtonComponent>
+						</CustomButton>
 					</Box>
 				</Tooltip>
 				<Dialog

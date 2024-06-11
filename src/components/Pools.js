@@ -10,10 +10,12 @@ import {
 import PoolCard from "./PoolCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
+import { ReactComponent as JerryIcon } from "./../resources/jerry-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
+import { ReactComponent as StarsIcon } from "./../resources/stars-ic.svg"
+// import { ReactComponent as StarsIcon } from "./../resources/stars-ic.svg"
 import SectionHeader from "./SectionHeader"
 import { DEPOSIT_POOLS } from "../helpers/constants"
-import StarsIcon from "@material-ui/icons/Stars"
 import WithDialog from "./WithDialog"
 import DepositForm from "./DepositForm"
 import EmailSignUp from "./EmailSignUpCard"
@@ -29,11 +31,17 @@ const LOYALTY_POOL = DEPOSIT_POOLS[0]
 
 const useStyles = makeStyles(theme => {
 	return {
-		fontSizeSmall: {
-			fontSize: 12
-		},
 		textWhite: {
 			color: "white"
+		},
+		learnMore: {
+			color: theme.palette.contrast,
+			fontWeight: "bold",
+			textTransform: "capitalize"
+		},
+		learnMoreArrow: {
+			fontSize: 12,
+			marginLeft: theme.spacing(1)
 		}
 	}
 })
@@ -101,6 +109,7 @@ const Pools = () => {
 								title={t("deposits.depositTo", {
 									pool: t("common.tomStakingPool")
 								})}
+								btnType="secondary"
 								btnLabel={t("common.deposit")}
 								color="secondary"
 								size="large"
@@ -156,6 +165,7 @@ const Pools = () => {
 						actionBtn={
 							<DepositsDialog
 								fullWidth
+								btnType="secondary"
 								id="loyalty-pool-deposit-form-card"
 								title={t("common.addNewDeposit")}
 								btnLabel={t("common.deposit")}
@@ -168,7 +178,6 @@ const Pools = () => {
 							/>
 						}
 					/>
-
 					<Box>
 						<Box
 							bgcolor={"background.card"}
@@ -190,7 +199,7 @@ const Pools = () => {
 								spacing={2}
 							>
 								<Grid item xs={2}>
-									<StarsIcon color="secondary" />
+									<StarsIcon />
 								</Grid>
 								<Grid item xs={10}>
 									<Typography align="left" variant="h5" color="textPrimary">
@@ -198,7 +207,12 @@ const Pools = () => {
 									</Typography>
 
 									<Box display="flex" alignItems="center">
-										<Typography align="left" variant="body1" color="secondary">
+										<Typography
+											className={classes.learnMore}
+											align="left"
+											variant="body1"
+											color="textInfo"
+										>
 											<Anchor
 												target="_blank"
 												href="https://help.adex.network/hc/en-us/articles/9638410468508-How-to-stake-your-ADX-tokens-"
@@ -207,7 +221,7 @@ const Pools = () => {
 												<ArrowForwardIosIcon
 													fontSize="small"
 													classes={{
-														fontSizeSmall: classes.fontSizeSmall
+														fontSizeSmall: classes.learnMoreArrow
 													}}
 												/>
 											</Anchor>
@@ -220,6 +234,62 @@ const Pools = () => {
 					</Box>
 				</Box>
 			</Box>
+
+			{/* 
+			<Box mt={4}>
+			<SectionHeader title={t("common.legacyPools")} />
+			<PoolCard
+						id="validator-tom-v5"
+						icon={
+							<SvgIcon fontSize="large" color="inherit">
+								<JerryIcon width="100%" height="100%" />
+							</SvgIcon>
+						}
+						name={t("common.jerryV5")}
+						totalStakedADX={`${formatADXPretty(
+							tomStakingV5PoolStats.poolTotalStaked
+						)} ADX`}
+						totalStakedUSD={`${getADXInUSDFormatted(
+							prices,
+							tomStakingV5PoolStats.poolTotalStaked
+						)}`}
+						currentAPY={`${tomV5APY.toFixed(2)} %`}
+						weeklyYield={`${(tomV5APY / (365 / 7)).toFixed(4)} %`}
+						weeklyYieldInfo={[
+							t("pools.currentDailyYield", {
+								yield: (tomV5APY / 365).toFixed(4)
+							})
+						]}
+						loading={!tomStakingV5PoolStats.loaded}
+						disabled={!canStake}
+						disabledInfo={t("pools.connectWalletToStake")}
+						lockupPeriodTitle={t("common.unbondPeriod")}
+						lockupPeriodInfo={t("pools.lockupPeriodInfo", {
+							count: TOM_V5_POOL.lockupPeriod
+						})}
+						lockupPeriod={t("pools.unbondPeriodDay", {
+							count: TOM_V5_POOL.lockupPeriod
+						})}
+						statsPath={`/stats?validator=${t(TOM_V5_POOL.label)}`}
+						actionBtn={
+							<DepositsDialog
+								id="staking-pool-tom-deposit-form-card"
+								title={t("deposits.depositTo", {
+									pool: t("common.tomStakingPool")
+								})}
+								btnLabel={t("common.deposit")}
+								color="secondary"
+								size="large"
+								variant="contained"
+								fullWidth
+								disabled={!canStake}
+								depositPool={DEPOSIT_POOLS[1].id}
+								actionType={DEPOSIT_ACTION_TYPES.deposit}
+							/>
+						}
+					/> 
+			</Box>
+			*/}
 		</Box>
 	)
 }

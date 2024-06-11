@@ -41,9 +41,9 @@ export const AppToolbar = ({ handleDrawerToggle }) => {
 					<Box mr={2}>
 						<LangSelect />
 					</Box>
-					<Box mr={2}>
+					{/* <Box mr={2}>
 						<ThemeSwitch />
-					</Box>
+					</Box> */}
 					<Box mr={2}>
 						<Help />
 					</Box>

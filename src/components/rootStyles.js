@@ -50,13 +50,14 @@ export const styles = theme => {
 			}
 		},
 		toolbarActions: {
+			textTransform: "capitalize",
 			maxWidth: maxContentWidth,
 			margin: "auto"
 		},
 		drawerPaper: {
 			width: drawerWidth,
 			// height: '110vh',
-			backgroundColor: theme.palette.background.darkerPaper
+			backgroundColor: theme.palette.sideNav.background.darkerPaper
 		},
 		content: {
 			flexGrow: 1,

@@ -12,8 +12,7 @@ import {
 } from "@material-ui/core"
 import clsx from "clsx"
 import Anchor from "./Anchor"
-import logo from "./../resources/staking-logo.svg"
-import logoLight from "./../resources/logo-light-theme.svg"
+import logo from "./../resources/adex_staking.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
 import packageJson from "./../../package.json"
@@ -21,15 +20,11 @@ import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import MigrationBtn from "./MigrationBtn"
-import {
-	HomeSharp as HomeIcon,
-	DashboardSharp as DashboardIcon
-} from "@material-ui/icons"
-import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
-import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
-import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
+import { HomeSharp as HomeIcon } from "@material-ui/icons"
+import { ReactComponent as StakingIcon } from "./../resources/staked-ic.svg"
+import { ReactComponent as GiftIcon } from "./../resources/gift-orange-ic.svg"
 import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
-import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
+import { ReactComponent as DashboardIcon } from "./../resources/dashboard-ic.svg"
 import { useTranslation } from "react-i18next"
 // import { alpha } from "@material-ui/core/styles/colorManipulator"
 import { MultiThemeContext } from "../MultiThemeProvider"
@@ -37,15 +32,15 @@ import { MultiThemeContext } from "../MultiThemeProvider"
 const RRListItem = WithRouterLink(ListItem)
 
 const useStyles = makeStyles(theme => {
-	const activeColor = theme.palette.text.primary
-	const activeBgColor = theme.palette.background.active
+	const activeColor = theme.palette.sideNav.text.primary
+	const activeBgColor = theme.palette.sideNav.background.active
 
 	return {
 		sntPadding: {
 			paddingTop: 0
 		},
 		navListRoot: {
-			color: theme.palette.text.secondary,
+			color: theme.palette.sideNav.text.secondary,
 			display: "flex",
 			flexDirection: "column",
 			justifyContent: "space-between"
@@ -68,13 +63,16 @@ const useStyles = makeStyles(theme => {
 			padding: 10,
 			paddingLeft: 16,
 			borderTopWidth: 1,
-			borderTopColor: theme.palette.divider,
+			borderTopColor: theme.palette.sideNav.divider,
 			borderTopStyle: "solid"
 		},
 		listItem: {
-			color: theme.palette.text.primary,
+			width: "90%",
+			margin: "0 auto",
+			borderRadius: "10px",
+			color: theme.palette.sideNav.text.primary,
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.primary // alpha(theme.palette.text.main, 0.69)
+				color: theme.palette.sideNav.text.primary // alpha(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
@@ -95,9 +93,9 @@ const useStyles = makeStyles(theme => {
 			}
 		},
 		adxLink: {
-			color: theme.palette.text.hint,
+			color: theme.palette.sideNav.text.hint,
 			"&:hover": {
-				color: theme.palette.text.secondary
+				color: theme.palette.sideNav.text.secondary
 			}
 		},
 		sideSwitch: {
@@ -121,7 +119,7 @@ const useStyles = makeStyles(theme => {
 			textTransform: "uppercase"
 		},
 		loading: {
-			backgroundColor: alpha(theme.palette.background.darkerPaper, 0.2)
+			backgroundColor: alpha(theme.palette.sideNav.background.darkerPaper, 0.2)
 		},
 		noUserData: {
 			opacity: 0.23
@@ -163,11 +161,7 @@ function SideNav({
 								flexDirection="row"
 								alignItems="flex-start"
 							>
-								<img
-									height="69px"
-									src={themeType === "dark" ? logo : logoLight}
-									alt="adex-staking-logo"
-								></img>
+								<img height="69px" src={logo} alt="adex-staking-logo"></img>
 							</Box>
 						</ListItem>
 
@@ -193,7 +187,7 @@ function SideNav({
 									)}
 								</Box>
 							</ListItem>
-							<Divider />
+							<Divider color="red" />
 
 							{updatingStats && (
 								<Box
@@ -207,7 +201,7 @@ function SideNav({
 									fontSize="h1.fontSize"
 									textAlign="center"
 								>
-									<CircularProgress size="100px" />
+									<CircularProgress color="" size="100px" />
 								</Box>
 							)}
 
@@ -300,7 +294,7 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={t("common.farm")} />
 						</RRListItem> */}
-						<RRListItem
+						{/* <RRListItem
 							id="side-nav-link-stats"
 							button
 							to={{ pathname: "/stats" }}
@@ -314,7 +308,7 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.validatorStats")} />
-						</RRListItem>
+						</RRListItem> */}
 						{/* <RRListItem
 							id="side-nav-link-gasless"
 							button
@@ -332,7 +326,7 @@ function SideNav({
 						</RRListItem> */}
 					</List>
 				</Box>
-				<Box>
+				{/* <Box>
 					<RRListItem
 						id="side-nav-link-staking-landing-page"
 						button
@@ -401,7 +395,7 @@ function SideNav({
 							</div>
 						</Box>
 					</ListItem>
-				</Box>
+				</Box> */}
 			</Box>
 		</Box>
 	)
