@@ -57,6 +57,10 @@ const getStakingPool = ({
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
 	disableActionsMsg,
+	depositsMsg,
+	withdrawsMsg,
+	leaveMsg,
+	rageLeaveMsg,
 	hasExternalStakingTokenTransfers,
 	hasInsufficentBalanceForUnbondCommitments
 }) => {
@@ -321,7 +325,7 @@ const getStakingPool = ({
 				btnType="icon"
 				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
-				tooltipTitle={disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg ? disabledDepositsMsg : depositsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
@@ -331,7 +335,7 @@ const getStakingPool = ({
 				icon={<UrlIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disableActionsMsg}
+				tooltipTitle={disableActionsMsg ? disableActionsMsg : leaveMsg}
 				actionType={DEPOSIT_ACTION_TYPES.unbondCommitment}
 			/>,
 			<DepositsDialog
@@ -340,7 +344,9 @@ const getStakingPool = ({
 				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={
+					disabledWithdrawsMsg ? disabledWithdrawsMsg : withdrawsMsg
+				}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 			/>,
 			<DepositsDialog
@@ -349,7 +355,7 @@ const getStakingPool = ({
 				icon={<LeaveIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disableActionsMsg}
+				tooltipTitle={disableActionsMsg ? disableActionsMsg : rageLeaveMsg}
 				actionType={DEPOSIT_ACTION_TYPES.rageLeave}
 			/>
 		]
@@ -362,6 +368,8 @@ const getLoyaltyPoolDeposit = ({
 	stats,
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
+	depositsMsg,
+	withdrawsMsg,
 	hasExternalStakingTokenTransfers
 }) => {
 	const { loyaltyPoolStats } = stats
@@ -434,7 +442,7 @@ const getLoyaltyPoolDeposit = ({
 				btnType="icon"
 				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
-				tooltipTitle={disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg ? disabledDepositsMsg : depositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
@@ -444,7 +452,9 @@ const getLoyaltyPoolDeposit = ({
 				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={
+					disabledWithdrawsMsg ? disabledWithdrawsMsg : withdrawsMsg
+				}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 			/>
 		]
@@ -501,12 +511,17 @@ export default function Deposits() {
 		? t("common.loadingData")
 		: ""
 
+	const leaveMsg = t("eventTypes.leave")
+	const rageLeaveMsg = t("eventTypes.rageLeave")
+
 	// TODO: UPDATE if more deposit pools
 	const disableDepositsMsg =
 		disableActionsMsg ||
 		(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
 			? t("deposits.depositsLimitReached")
 			: "")
+
+	const depositsMsg = t("common.deposit")
 
 	useEffect(() => {
 		const {
@@ -527,6 +542,7 @@ export default function Deposits() {
 			// 		'Pool deposits limit reached' : ''
 			// 	)
 			const disabledWithdrawsMsg = disableActionsMsg
+			const withdrawsMsg = t("eventTypes.withdraw")
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
 				classes,
@@ -534,6 +550,8 @@ export default function Deposits() {
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg,
+				depositsMsg: depositsMsg,
+				withdrawsMsg: withdrawsMsg,
 				hasExternalStakingTokenTransfers: hasExternalStakingTokenTransfersLP
 			})
 			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
@@ -548,6 +566,8 @@ export default function Deposits() {
 					? t("deposits.unbondToWithdraw")
 					: "")
 
+			const withdrawsMsg = t("eventTypes.withdraw")
+
 			const stakingPoolDeposit = getStakingPool({
 				classes,
 				t,
@@ -555,6 +575,10 @@ export default function Deposits() {
 				disableActionsMsg,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg,
+				depositsMsg: depositsMsg,
+				withdrawsMsg: withdrawsMsg,
+				leaveMsg: leaveMsg,
+				rageLeaveMsg: rageLeaveMsg,
 				hasExternalStakingTokenTransfers,
 				hasInsufficentBalanceForUnbondCommitments
 			})

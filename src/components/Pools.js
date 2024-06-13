@@ -59,7 +59,7 @@ const Pools = () => {
 	const loyaltyPoolAPY = loyaltyPoolStats.currentAPY * 100
 
 	return (
-		<Box>
+		<Box p={3}>
 			<SectionHeader title={t("common.pools")} />
 			<Box mt={4}>
 				<Box
@@ -211,7 +211,7 @@ const Pools = () => {
 											className={classes.learnMore}
 											align="left"
 											variant="body1"
-											color="textInfo"
+											color="secondary"
 										>
 											<Anchor
 												target="_blank"

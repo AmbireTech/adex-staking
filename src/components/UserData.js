@@ -22,7 +22,7 @@ export default function UserData({ stats, prices }) {
 
 	return (
 		<Box width={1}>
-			<Box mb={1.5}>
+			<Box mb={4}>
 				{StatsCard({
 					size: "large",
 					loaded: stats.loaded,

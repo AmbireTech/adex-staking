@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => {
 		listItem: {
 			width: "90%",
 			margin: "0 auto",
-			borderRadius: "10px",
+			borderRadius: "5px",
 			color: theme.palette.sideNav.text.primary,
 			"& .MuiListItemIcon-root": {
 				color: theme.palette.sideNav.text.primary // alpha(theme.palette.text.main, 0.69)
@@ -142,6 +142,7 @@ function SideNav({
 	const classes = useStyles()
 	const location = useLocation()
 	const path = location.pathname
+	const contentPadding = 1
 
 	return (
 		<Box
@@ -151,12 +152,13 @@ function SideNav({
 			justifyContent="space-between"
 			flexGrow="1"
 		>
-			<Box>
+			<Box px={contentPadding}>
 				<Box>
 					<Box>
 						<ListItem>
 							<Box
-								mb={1}
+								mb={4}
+								mt={2}
 								display="flex"
 								flexDirection="row"
 								alignItems="flex-start"
@@ -187,7 +189,6 @@ function SideNav({
 									)}
 								</Box>
 							</ListItem>
-							<Divider color="red" />
 
 							{updatingStats && (
 								<Box
@@ -226,12 +227,15 @@ function SideNav({
 					</Box>
 				</Box>
 			</Box>
-
+			<Box mt={3} mb={4}>
+				<Divider />
+			</Box>
 			<Box
 				display="flex"
 				flexDirection="column"
 				justifyContent="space-between"
 				flex="1"
+				px={contentPadding}
 			>
 				<Box>
 					<List>
@@ -243,7 +247,7 @@ function SideNav({
 								[classes.active]: path === "/"
 							})}
 						>
-							<ListItemIcon color="inherit">
+							<ListItemIcon>
 								<DashboardIcon />
 							</ListItemIcon>
 							<ListItemText primary={t("common.pools")} />
@@ -257,8 +261,8 @@ function SideNav({
 								[classes.active]: path === "/stakings"
 							})}
 						>
-							<ListItemIcon color="inherit">
-								<SvgIcon color="inherit">
+							<ListItemIcon>
+								<SvgIcon>
 									<StakingIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>

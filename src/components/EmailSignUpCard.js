@@ -101,10 +101,7 @@ export default function EmailSignUp(props) {
 					/>
 					<Box width={1} mt={2}>
 						<CustomTextField
-							id={"email-signup-email-input"}
 							label={t("email.enterYourEmail")}
-							variant="filled"
-							color="secondary"
 							value={email}
 							// onBlur={e =>
 							// 	setErrors({ ...errors, email: !validateEmail(e.target.value) })
@@ -112,7 +109,6 @@ export default function EmailSignUp(props) {
 							onChange={e => setEmail(e.target.value)}
 							helperText={errorMessage}
 							error={errorMessage}
-							fullWidth
 						/>
 					</Box>
 					{/* <Box mt={1} width={1}>

@@ -242,7 +242,9 @@ const commonTheme = createTheme({
 			}
 		},
 		MuiDivider: {
-			backgroundColor: "red"
+			root: {
+				backgroundColor: paletteCommon.sideNav.divider
+			}
 		},
 		MuiAlert: {
 			root: {

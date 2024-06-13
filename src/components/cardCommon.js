@@ -24,7 +24,7 @@ const ExtraLabel = ({ label = "" }) =>
 export function Info({ title }) {
 	return (
 		<Tooltip title={<ExtraLabel label={title} />}>
-			<InfoIcon fontSize="inherit" />
+			<InfoIcon fontSize="18px" />
 		</Tooltip>
 	)
 }
@@ -121,6 +121,7 @@ export function CardRow({
 	isAmountText,
 	multilineLinesAmounts,
 	decimalOpacity,
+	decimalFontSize,
 	...restBox
 }) {
 	return (
@@ -130,6 +131,7 @@ export function CardRow({
 					color={color}
 					fontWeight={fontWeight}
 					fontSize={fontSize}
+					decimalFontSize={decimalFontSize}
 					display="flex"
 					flexDirection="row"
 					alignItems="center"
@@ -140,7 +142,7 @@ export function CardRow({
 					{isAmountText ? (
 						<AmountText
 							text={text}
-							fontSize={fontSize}
+							fontSize={!!decimalFontSize ? decimalFontSize : fontSize}
 							multiline={multilineLinesAmounts}
 							decimalOpacity={decimalOpacity}
 						/>

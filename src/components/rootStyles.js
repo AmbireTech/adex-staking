@@ -1,6 +1,6 @@
 import { alpha } from "@material-ui/core/styles/colorManipulator"
 
-const drawerWidth = 269
+const drawerWidth = 347
 const maxContentWidth = 1420
 
 export const styles = theme => {

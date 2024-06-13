@@ -12,7 +12,6 @@ import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
 import StakingPoolTxnsHistory from "./StakingPoolTxnsHistory"
-import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 
 const Stakings = () => {
@@ -30,13 +29,19 @@ const Stakings = () => {
 		backgroundColor: "transparent",
 		border: `1px solid ${theme.palette.text.secondaryLight}`,
 		borderRadius: "10px",
-		boxShadow: "none"
+		boxShadow: "none",
+		"& .MuiAccordionDetails-root": {
+			paddingTop: 0
+		},
+		"& .MuiAccordionSummary-content": {
+			margin: 0
+		}
 	}))
 
 	return (
 		<Box>
 			<Box mt={2} mb={10}>
-				<Box color="text.main">
+				<Box color="text.secondaryLight">
 					<Typography variant="h5" gutterBottom>
 						{t("common.staked")}
 					</Typography>
@@ -53,7 +58,7 @@ const Stakings = () => {
 				</Box>
 			</Box>
 			<Box mt={2} mb={10}>
-				<Box color="text.main">
+				<Box color="text.secondaryLight">
 					<Typography variant="h5" gutterBottom>
 						{t("common.deposits")}
 					</Typography>
@@ -62,17 +67,17 @@ const Stakings = () => {
 					<Deposits />
 				</Box>
 			</Box>
-			<Box mt={2}>
+			<Box mt={0}>
 				<StyledAccordion square>
 					<AccordionSummary
 						expandIcon={<ExpandMore />}
 						aria-controls="panel1a-content"
 						id="panel1a-header"
 					>
-						<Typography>{t("deposits.txnsHistory")}</Typography>
+						<Typography m={0}>{t("deposits.txnsHistory")}</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
-						<Box mt={0} width={1}>
+						<Box width={1}>
 							{StakingPoolTxnsHistory({
 								stats
 							})}

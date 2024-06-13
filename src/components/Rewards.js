@@ -154,6 +154,30 @@ export default function Rewards() {
 			})
 
 			setRewards([
+				{
+					id: 1,
+					name: "Reward 1",
+					amount: 100,
+					currency: "",
+					outstandingReward: 50,
+					currentAPY: 0.05
+				},
+				{
+					id: 2,
+					name: "Reward 2",
+					amount: 200,
+					currency: "",
+					outstandingReward: 0,
+					currentAPY: 0.07
+				},
+				{
+					id: 3,
+					name: "Reward 3",
+					amount: 150,
+					currency: "",
+					outstandingReward: 60,
+					currentAPY: 0.06
+				},
 				// loPoReward,
 				...rewards
 			])
@@ -169,6 +193,13 @@ export default function Rewards() {
 		const newSelected = { ...selected }
 		newSelected[id] = value
 
+		const totalAmountSelected = getTotalSelectedRewards(rewards, newSelected)
+
+		setTotalAmountsSelected(totalAmountSelected)
+		setSelected(newSelected)
+	}
+
+	const massSelectChange = newSelected => {
 		const totalAmountSelected = getTotalSelectedRewards(rewards, newSelected)
 
 		setTotalAmountsSelected(totalAmountSelected)
@@ -202,7 +233,7 @@ export default function Rewards() {
 						disabled={false}
 						// disabled={reward.outstandingReward.isZero()}
 						checked={!!selected[reward.id]}
-						onChange={ev => onSelectChange(reward.id, !!ev.target.checked)}
+						onChange={ev => onSelectChange(reward.id, ev.target.checked)}
 						inputProps={{ "aria-label": "primary checkbox" }}
 					/>
 				</StyledTableCell>
@@ -274,7 +305,7 @@ export default function Rewards() {
 
 	return (
 		<Box mt={2}>
-			<Box m={1} color="text.main">
+			<Box m={1} mb={3} color="text.secondaryLight">
 				<Typography variant="h5" gutterBottom>
 					{t("common.rewards")}
 				</Typography>
@@ -282,7 +313,8 @@ export default function Rewards() {
 			<Box display="flex" flexDirection="row">
 				<Box
 					m={1}
-					p={2}
+					py={5}
+					px={4}
 					bgcolor="background.paper"
 					boxShadow={25}
 					display="flex"
@@ -306,7 +338,7 @@ export default function Rewards() {
 				</Box>
 
 				<Box m={1} p={2} bgcolor="background.paper" boxShadow={25}>
-					<Box m={1}>
+					<Box m={1} py={5} px={4}>
 						{StatsCard({
 							loaded,
 							title: t("rewards.unclaimed"),
@@ -316,10 +348,7 @@ export default function Rewards() {
 						})}
 					</Box>
 				</Box>
-			</Box>
-
-			<Box maxWidth="56rem">
-				<Box
+				{/* <Box
 					p={2}
 					display="flex"
 					flexDirection="row"
@@ -333,19 +362,33 @@ export default function Rewards() {
 							</Fragment>
 						)}
 					</Box>
-				</Box>
+				</Box> */}
+			</Box>
+
+			<Box maxWidth="56rem">
 				<Box p={2}>
 					<CustomTable aria-label="Rewards table" xs={12}>
 						<StyledTableHead>
 							<TableRow>
 								<StyledTableCell>
-									{/* <Checkbox
-										disabled={false}
+									<Checkbox
+										disabled={!rewards.length}
 										// disabled={reward.outstandingReward.isZero()}
-										checked={!!selected[reward.id]}
-										onChange={ev => onSelectChange(reward.id, !!ev.target.checked)}
+										checked={
+											rewards.length &&
+											rewards.length ===
+												Object.values(selected).filter(key => key).length
+										}
+										onChange={() => {
+											const value =
+												Object.values(selected).filter(key => key).length === 0
+											const newSelected = Object.fromEntries(
+												rewards.map(reward => [reward.id, value])
+											)
+											massSelectChange(newSelected)
+										}}
 										inputProps={{ "aria-label": "primary checkbox" }}
-									/> */}
+									/>
 								</StyledTableCell>
 								<StyledTableCell>{t("rewards.name")}</StyledTableCell>
 								<StyledTableCell>{t("rewards.total")}</StyledTableCell>

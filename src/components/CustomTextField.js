@@ -5,7 +5,7 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		display: "flex",
 		"& .MuiOutlinedInput-root": {
-			backgroundColor: theme.palette.background.default,
+			backgroundColor: theme.palette.background.darkerPaper,
 			borderRadius: "5px",
 			"& fieldset": {
 				borderColor: "transparent"
@@ -18,24 +18,22 @@ const useStyles = makeStyles(theme => ({
 			}
 		},
 		"& .MuiInputBase-input": {
-			color: theme.palette.text.secondary,
-			fontSize: "16px",
-			padding: "10px 14px"
-		},
-		"& .MuiInputLabel-root": {
+			fontSize: "18px",
+			padding: "10px 14px",
 			color: theme.palette.text.secondary
 		}
 	}
 }))
 
-const CustomTextField = () => {
+const CustomTextField = ({ label, ...rest }) => {
 	const classes = useStyles()
 
 	return (
 		<TextField
+			{...rest}
 			className={classes.root}
 			variant="outlined"
-			placeholder="Enter your e-mail"
+			placeholder={label}
 			InputLabelProps={{ shrink: false }} // Hide the label when placeholder is present
 		/>
 	)

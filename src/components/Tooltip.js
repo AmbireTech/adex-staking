@@ -1,6 +1,11 @@
 import React from "react"
 import { Tooltip } from "@material-ui/core"
 
+/**
+ *
+ * @param {import("@material-ui/core").TooltipProps} param0
+ * @returns {}
+ */
 const CommonTooltip = ({ children, ...props }) => (
 	<Tooltip
 		leaveTouchDelay={16900}

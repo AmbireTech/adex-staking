@@ -32,8 +32,9 @@ const SectionHeader = ({ title, actions }) => {
 			justifyContent="space-between"
 			alignItems="center"
 			flexWrap="wrap"
+			ml={1.5}
 		>
-			<Box color="text.main" mb={3}>
+			<Box color="text.secondaryLight" mb={3}>
 				<Typography variant="h4" style={{ wordBreak: "break-word" }}>
 					{title}
 				</Typography>

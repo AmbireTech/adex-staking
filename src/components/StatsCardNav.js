@@ -24,7 +24,7 @@ export default function StatsCard({
 				<CardRow
 					color="sideNav.text.main"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 18 : 15}
+					fontSize={size === "large" ? 20 : 15}
 					text={title}
 					isAmountText
 					infoText={titleInfo}
@@ -40,6 +40,7 @@ export default function StatsCard({
 					fontSize={size === "large" ? 21 : 17}
 					text={subtitle}
 					isAmountText
+					decimalFontSize={size === "large" ? 30 : 20}
 					multilineLinesAmounts={multilineLinesAmounts}
 					infoText={subtitleInfo}
 					justify={justify}
@@ -51,7 +52,7 @@ export default function StatsCard({
 				<CardRow
 					color="sideNav.special.contrastText"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 18 : 15}
+					fontSize={size === "large" ? 20 : 15}
 					text={extra}
 					isAmountText
 					infoText={extraInfo}
@@ -64,7 +65,7 @@ export default function StatsCard({
 				<CardRow
 					color="special.primary"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
-					fontSize={size === "large" ? 18 : 15}
+					fontSize={size === "large" ? 20 : 15}
 					text={moreExtra}
 					isAmountText
 					infoText={moreExtraInfo}

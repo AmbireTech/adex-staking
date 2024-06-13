@@ -295,7 +295,7 @@ export default function PoolCard({
 
 			<Box classes={{ root: classes.iconBox }}>
 				{icon || null}
-				{(!!loading || true) && (
+				{!!loading && (
 					<CircularProgress classes={{ root: classes.loading }} size={69} />
 				)}
 			</Box>
