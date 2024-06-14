@@ -313,7 +313,7 @@ export default function Rewards() {
 			<Box display="flex" flexDirection="row">
 				<Box
 					m={1}
-					py={5}
+					py={3}
 					px={4}
 					bgcolor="background.paper"
 					boxShadow={25}
@@ -330,7 +330,7 @@ export default function Rewards() {
 						{StatsCard({
 							loaded,
 							title: t("rewards.total"),
-							subtitle: totalRewardsLabel,
+							subtitleLarge: totalRewardsLabel,
 							extra: getUSDFormatted(totalRewardsInUsd),
 							multilineLinesAmounts: true
 						})}
@@ -338,7 +338,7 @@ export default function Rewards() {
 				</Box>
 
 				<Box m={1} p={2} bgcolor="background.paper" boxShadow={25}>
-					<Box m={1} py={5} px={4}>
+					<Box m={1} py={3} px={4}>
 						{StatsCard({
 							loaded,
 							title: t("rewards.unclaimed"),

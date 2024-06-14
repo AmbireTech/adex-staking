@@ -102,6 +102,7 @@ export default function Bonds({ stats }) {
 										? t("bonds.unbond")
 										: t("bonds.requestMigrate")
 								}
+								btnType="outline"
 								bond={bond}
 								poolLabel={poolLabel}
 								created={created}
