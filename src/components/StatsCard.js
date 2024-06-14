@@ -8,6 +8,7 @@ export default function StatsCard({
 	title,
 	titleInfo,
 	subtitle,
+	subtitleLarge,
 	subtitleInfo,
 	extra,
 	extraInfo,
@@ -33,6 +34,18 @@ export default function StatsCard({
 			)}
 
 			{subtitle && (
+				<CardRow
+					color="text.secondaryLight"
+					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
+					fontSize={size === "large" ? 21 : 17}
+					text={subtitle}
+					isAmountText
+					multilineLinesAmounts={multilineLinesAmounts}
+					infoText={subtitleInfo}
+					justify={justify}
+				/>
+			)}
+			{subtitleLarge && (
 				<CardRow
 					color="text.secondaryLight"
 					fontWeight={size === "large" ? "fontWeightBold" : "fontWeightRegular"}
