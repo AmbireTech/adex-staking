@@ -1,6 +1,6 @@
 import { alpha } from "@material-ui/core/styles/colorManipulator"
 
-const drawerWidth = 269
+const drawerWidth = 347
 const maxContentWidth = 1420
 
 export const styles = theme => {
@@ -50,13 +50,14 @@ export const styles = theme => {
 			}
 		},
 		toolbarActions: {
+			textTransform: "capitalize",
 			maxWidth: maxContentWidth,
 			margin: "auto"
 		},
 		drawerPaper: {
 			width: drawerWidth,
 			// height: '110vh',
-			backgroundColor: theme.palette.background.darkerPaper
+			backgroundColor: theme.palette.sideNav.background.darkerPaper
 		},
 		content: {
 			flexGrow: 1,

@@ -4,14 +4,14 @@ import {
 	Typography,
 	Accordion,
 	AccordionSummary,
-	AccordionDetails
+	AccordionDetails,
+	styled
 } from "@material-ui/core"
 import { ExpandMore } from "@material-ui/icons"
 import AppContext from "../AppContext"
 import Bonds from "./Bonds"
 import Deposits from "./Deposits"
 import StakingPoolTxnsHistory from "./StakingPoolTxnsHistory"
-import SectionHeader from "./SectionHeader"
 import { useTranslation } from "react-i18next"
 
 const Stakings = () => {
@@ -25,58 +25,65 @@ const Stakings = () => {
 		onRebond
 	} = useContext(AppContext)
 
+	const StyledAccordion = styled(Accordion)(({ theme }) => ({
+		backgroundColor: "transparent",
+		border: `1px solid ${theme.palette.text.secondaryLight}`,
+		borderRadius: "10px",
+		boxShadow: "none",
+		"& .MuiAccordionDetails-root": {
+			paddingTop: 0
+		},
+		"& .MuiAccordionSummary-content": {
+			margin: 0
+		}
+	}))
+
 	return (
 		<Box>
-			<SectionHeader title={t("common.staked")} />
-			<Box mt={2}>
-				<Box color="text.main">
+			<Box mt={2} mb={10}>
+				<Box color="text.secondaryLight">
 					<Typography variant="h5" gutterBottom>
-						{t("common.bonds")}
+						{t("common.staked")}
 					</Typography>
 				</Box>
-				<Box mt={2} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box p={3}>
-						{Bonds({
-							stats,
-							onRequestUnbond: setToUnbond,
-							onUnbond,
-							onMigrationFinalize,
-							onClaimRewards,
-							onRebond
-						})}
-					</Box>
+				<Box mt={5}>
+					{Bonds({
+						stats,
+						onRequestUnbond: setToUnbond,
+						onUnbond,
+						onMigrationFinalize,
+						onClaimRewards,
+						onRebond
+					})}
 				</Box>
 			</Box>
-			<Box mt={2}>
-				<Box color="text.main">
+			<Box mt={2} mb={10}>
+				<Box color="text.secondaryLight">
 					<Typography variant="h5" gutterBottom>
 						{t("common.deposits")}
 					</Typography>
 				</Box>
-
-				<Box mt={3} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box p={3}>
-						<Deposits />
-					</Box>
+				<Box mt={5}>
+					<Deposits />
 				</Box>
 			</Box>
-			<Box mt={2}>
-				<Accordion square>
+			<Box mt={0}>
+				<StyledAccordion square>
 					<AccordionSummary
 						expandIcon={<ExpandMore />}
 						aria-controls="panel1a-content"
 						id="panel1a-header"
 					>
-						<Typography>{t("deposits.txnsHistory")}</Typography>
+						<Typography m={0}>{t("deposits.txnsHistory")}</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
-						<Box mt={2} bgcolor="background.darkerPaper" width={1}>
+						<Box width={1}>
 							{StakingPoolTxnsHistory({
 								stats
 							})}
 						</Box>
 					</AccordionDetails>
-				</Accordion>
+				</StyledAccordion>
 			</Box>
 		</Box>
 	)

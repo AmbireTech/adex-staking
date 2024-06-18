@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => {
 			backgroundColor: theme.palette.overlay
 		},
 		loading: {
+			color: theme.palette.secondary.main,
 			position: "absolute",
 			width: "100%",
 			height: "100%",
@@ -124,7 +125,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="special.main"
+						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={20}
 						text={totalStakedADX}
@@ -134,7 +135,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="text.primary"
+						color="special.contrastText"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
 						text={totalStakedUSD}
@@ -145,7 +146,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="text.primary"
+						color="text.main"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
 						text={t("pools.currentAPYLabel")}
@@ -154,7 +155,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="special.main"
+						color="text.main"
 						fontWeight={"fontWeightBold"}
 						fontSize={20}
 						text={currentAPY}
@@ -164,7 +165,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="text.main"
+						color="text.secondaryLight"
 						fontWeight={"fontWeightBold"}
 						fontSize={14}
 						text={t("pools.weeklyYield", { yield: weeklyYield })}
@@ -174,7 +175,7 @@ export default function PoolCard({
 					/>
 
 					<CardRow
-						color="text.main"
+						color="text.secondaryLight"
 						fontWeight={"fontWeightRegular"}
 						fontSize={14}
 						text={lockupPeriodTitle}
@@ -295,11 +296,7 @@ export default function PoolCard({
 			<Box classes={{ root: classes.iconBox }}>
 				{icon || null}
 				{!!loading && (
-					<CircularProgress
-						classes={{ root: classes.loading }}
-						size={69}
-						color="secondary"
-					/>
+					<CircularProgress classes={{ root: classes.loading }} size={69} />
 				)}
 			</Box>
 		</Box>

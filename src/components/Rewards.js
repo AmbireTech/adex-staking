@@ -1,11 +1,7 @@
-import React, { Fragment, useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import {
 	TableRow,
-	TableCell,
 	Box,
-	Table,
-	TableContainer,
-	TableHead,
 	TableBody,
 	Typography,
 	Checkbox,
@@ -38,6 +34,8 @@ import {
 	useTranslation
 	// Trans
 } from "react-i18next"
+import CustomTable, { StyledTableCell, StyledTableHead } from "./CustomTable"
+import CustomButton from "./CustomButton"
 
 const RRButton = WithRouterLink(Button)
 
@@ -177,6 +175,13 @@ export default function Rewards() {
 		setSelected(newSelected)
 	}
 
+	const massSelectChange = newSelected => {
+		const totalAmountSelected = getTotalSelectedRewards(rewards, newSelected)
+
+		setTotalAmountsSelected(totalAmountSelected)
+		setSelected(newSelected)
+	}
+
 	const onClaim = async () => {
 		setSelected({})
 		setTotalAmountsSelected({})
@@ -199,26 +204,27 @@ export default function Rewards() {
 	const renderRewardRow = (reward, selected) => {
 		return (
 			<TableRow key={reward.id}>
-				<TableCell>
+				<StyledTableCell>
 					<Checkbox
-						disabled={reward.outstandingReward.isZero()}
+						disabled={false}
+						// disabled={reward.outstandingReward.isZero()}
 						checked={!!selected[reward.id]}
-						onChange={ev => onSelectChange(reward.id, !!ev.target.checked)}
+						onChange={ev => onSelectChange(reward.id, ev.target.checked)}
 						inputProps={{ "aria-label": "primary checkbox" }}
 					/>
-				</TableCell>
-				<TableCell>
+				</StyledTableCell>
+				<StyledTableCell>
 					<Box>{reward.name}</Box>
-				</TableCell>
-				<TableCell align="right">
+				</StyledTableCell>
+				<StyledTableCell>
 					<AmountText
 						text={`${formatAmountPretty(reward.amount, reward.currency)} ${
 							reward.currency
 						}`}
 						fontSize={17}
 					/>
-				</TableCell>
-				<TableCell align="right">
+				</StyledTableCell>
+				<StyledTableCell>
 					<AmountText
 						text={`${formatAmountPretty(
 							reward.outstandingReward,
@@ -226,10 +232,10 @@ export default function Rewards() {
 						)} ${reward.currency}`}
 						fontSize={17}
 					/>
-				</TableCell>
-				<TableCell align="right">{`${(reward.currentAPY * 100).toFixed(
+				</StyledTableCell>
+				<StyledTableCell>{`${(reward.currentAPY * 100).toFixed(
 					2
-				)} %`}</TableCell>
+				)} %`}</StyledTableCell>
 			</TableRow>
 		)
 	}
@@ -239,7 +245,7 @@ export default function Rewards() {
 
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>
+				<StyledTableCell>
 					{PoolIcon && (
 						<Box mr={1}>
 							<Box
@@ -251,31 +257,31 @@ export default function Rewards() {
 							</Box>
 						</Box>
 					)}
-				</TableCell>
-				<TableCell>
+				</StyledTableCell>
+				<StyledTableCell>
 					<Box>{t(deposit.label)}</Box>
-				</TableCell>
-				<TableCell align="right">
+				</StyledTableCell>
+				<StyledTableCell>
 					<AmountText
 						text={`${formatAmountPretty(deposit.totalRewards, "ADX")} ADX`}
 						fontSize={17}
 					/>
-				</TableCell>
-				<TableCell align="right">
+				</StyledTableCell>
+				<StyledTableCell>
 					<RRButton to={{ pathname: "/stakings" }}>
 						{t("rewards.seeDetailsBtn")}
 					</RRButton>
-				</TableCell>
-				<TableCell align="right">{`${(deposit.currentAPY * 100).toFixed(
+				</StyledTableCell>
+				<StyledTableCell>{`${(deposit.currentAPY * 100).toFixed(
 					2
-				)} %`}</TableCell>
+				)} %`}</StyledTableCell>
 			</TableRow>
 		)
 	}
 
 	return (
 		<Box mt={2}>
-			<Box m={1} color="text.main">
+			<Box m={1} mb={3} color="text.secondaryLight">
 				<Typography variant="h5" gutterBottom>
 					{t("common.rewards")}
 				</Typography>
@@ -283,14 +289,15 @@ export default function Rewards() {
 			<Box display="flex" flexDirection="row">
 				<Box
 					m={1}
-					p={2}
-					bgcolor="background.darkerPaper"
+					py={3}
+					px={4}
+					bgcolor="background.paper"
 					boxShadow={25}
 					display="flex"
 					flexDirection="row"
 					alignItems="center"
 				>
-					<Box m={1} fontSize={55}>
+					<Box m={1} mr={3} fontSize={35}>
 						<SvgIcon fontSize="inherit" color="primary">
 							<GiftIcon width="100%" height="100%" />
 						</SvgIcon>
@@ -299,15 +306,15 @@ export default function Rewards() {
 						{StatsCard({
 							loaded,
 							title: t("rewards.total"),
-							subtitle: totalRewardsLabel,
+							subtitleLarge: totalRewardsLabel,
 							extra: getUSDFormatted(totalRewardsInUsd),
 							multilineLinesAmounts: true
 						})}
 					</Box>
 				</Box>
 
-				<Box m={1} p={2} bgcolor="background.darkerPaper" boxShadow={25}>
-					<Box m={1}>
+				<Box m={1} p={2} bgcolor="background.paper" boxShadow={25}>
+					<Box m={1} py={3} px={4}>
 						{StatsCard({
 							loaded,
 							title: t("rewards.unclaimed"),
@@ -317,10 +324,7 @@ export default function Rewards() {
 						})}
 					</Box>
 				</Box>
-			</Box>
-
-			<Box m={1} bgcolor="background.darkerPaper" boxShadow={25}>
-				<Box
+				{/* <Box
 					p={2}
 					display="flex"
 					flexDirection="row"
@@ -334,61 +338,64 @@ export default function Rewards() {
 							</Fragment>
 						)}
 					</Box>
-					<Box display="flex" flexDirection="row">
-						<Box m={1}>
-							<Tooltip title={disableActionsMsg}>
-								<Box display="inline-block">
-									<Button
-										id="btn-rewards-page-claim"
-										variant="contained"
-										color="primary"
-										onClick={() => setClaimOpen(true)}
-										disabled={!!disableActionsMsg}
-									>
-										{t("common.claim")}
-									</Button>
-								</Box>
-							</Tooltip>
-						</Box>
-					</Box>
-				</Box>
+				</Box> */}
+			</Box>
+
+			<Box maxWidth="56rem">
 				<Box p={2}>
-					<TableContainer xs={12}>
-						<Table aria-label="Rewards table">
-							<TableHead>
-								<TableRow>
-									<TableCell></TableCell>
-									<TableCell>{t("rewards.name")}</TableCell>
-									<TableCell align="right">{t("rewards.total")}</TableCell>
-									<TableCell align="right">{t("rewards.unclaimed")}</TableCell>
-									<TableCell align="right">{t("common.currentAPY")}</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{tomStakingV5PoolStats.totalRewards &&
-									!tomStakingV5PoolStats.totalRewards.isZero() &&
-									renderDepositRewardsRow({
-										deposit: {
-											totalRewards: tomStakingV5PoolStats.totalRewards,
-											currentAPY: tomStakingV5PoolStats.currentAPY,
-											poolId: "adex-staking-pool",
-											label: "common.tomStakingPool"
+					<CustomTable aria-label="Rewards table" xs={12}>
+						<StyledTableHead>
+							<TableRow>
+								<StyledTableCell>
+									<Checkbox
+										disabled={!rewards.length}
+										// disabled={reward.outstandingReward.isZero()}
+										checked={
+											rewards.length &&
+											rewards.length ===
+												Object.values(selected).filter(key => key).length
 										}
-									})}
-								{loyaltyPoolStats.totalRewards &&
-									!loyaltyPoolStats.totalRewards.isZero() &&
-									renderDepositRewardsRow({
-										deposit: {
-											totalRewards: loyaltyPoolStats.totalRewards,
-											currentAPY: loyaltyPoolStats.currentAPY,
-											poolId: "adex-loyalty-pool",
-											label: "common.loPo"
-										}
-									})}
-								{[...(rewards || [])].map(r => renderRewardRow(r, selected))}
-							</TableBody>
-						</Table>
-					</TableContainer>
+										onChange={() => {
+											const value =
+												Object.values(selected).filter(key => key).length === 0
+											const newSelected = Object.fromEntries(
+												rewards.map(reward => [reward.id, value])
+											)
+											massSelectChange(newSelected)
+										}}
+										inputProps={{ "aria-label": "primary checkbox" }}
+									/>
+								</StyledTableCell>
+								<StyledTableCell>{t("rewards.name")}</StyledTableCell>
+								<StyledTableCell>{t("rewards.total")}</StyledTableCell>
+								<StyledTableCell>{t("rewards.unclaimed")}</StyledTableCell>
+								<StyledTableCell>{t("common.currentAPY")}</StyledTableCell>
+							</TableRow>
+						</StyledTableHead>
+						<TableBody>
+							{tomStakingV5PoolStats.totalRewards &&
+								!tomStakingV5PoolStats.totalRewards.isZero() &&
+								renderDepositRewardsRow({
+									deposit: {
+										totalRewards: tomStakingV5PoolStats.totalRewards,
+										currentAPY: tomStakingV5PoolStats.currentAPY,
+										poolId: "adex-staking-pool",
+										label: "common.tomStakingPool"
+									}
+								})}
+							{loyaltyPoolStats.totalRewards &&
+								!loyaltyPoolStats.totalRewards.isZero() &&
+								renderDepositRewardsRow({
+									deposit: {
+										totalRewards: loyaltyPoolStats.totalRewards,
+										currentAPY: loyaltyPoolStats.currentAPY,
+										poolId: "adex-loyalty-pool",
+										label: "common.loPo"
+									}
+								})}
+							{[...(rewards || [])].map(r => renderRewardRow(r, selected))}
+						</TableBody>
+					</CustomTable>
 
 					{(!stats.loaded || !rewards.length) && (
 						<Box mt={2}>
@@ -397,6 +404,23 @@ export default function Rewards() {
 							</Alert>
 						</Box>
 					)}
+				</Box>
+
+				<Box display="flex" flexDirection="row" justifyContent="flex-end">
+					<Box m={1}>
+						<Tooltip title={disableActionsMsg}>
+							<Box display="inline-block">
+								<CustomButton
+									id="btn-rewards-page-claim"
+									btnType="outline"
+									onClick={() => setClaimOpen(true)}
+									disabled={!!disableActionsMsg}
+								>
+									{t("common.claim")}
+								</CustomButton>
+							</Box>
+						</Tooltip>
+					</Box>
 				</Box>
 
 				{ConfirmationDialog({

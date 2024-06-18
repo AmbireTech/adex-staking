@@ -33,8 +33,9 @@ export default function LangSelect() {
 				aria-controls="lang-select-menu"
 				aria-haspopup="true"
 				onClick={handleClick}
+				style={{ textTransform: "capitalize" }}
 			>
-				{(locales[language] || {}).label || "English"}
+				{(locales[language] || {}).value || "en"}
 			</Button>
 			<Menu
 				id="lang-select-menu"

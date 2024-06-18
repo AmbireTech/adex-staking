@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React from "react" // { useContext }
 import {
 	List,
 	ListItem,
@@ -11,41 +11,36 @@ import {
 	alpha
 } from "@material-ui/core"
 import clsx from "clsx"
-import Anchor from "./Anchor"
-import logo from "./../resources/staking-logo.svg"
-import logoLight from "./../resources/logo-light-theme.svg"
+// import Anchor from "./Anchor"
+import logo from "./../resources/adex_staking.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
-import packageJson from "./../../package.json"
-import { ADDR_ADX } from "./../helpers/constants"
+// import packageJson from "./../../package.json"
+// import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import MigrationBtn from "./MigrationBtn"
-import {
-	HomeSharp as HomeIcon,
-	DashboardSharp as DashboardIcon
-} from "@material-ui/icons"
-import { ReactComponent as StakingIcon } from "./../resources/link-ic.svg"
-import { ReactComponent as GaslessIcon } from "./../resources/gasless-ic.svg"
-import { ReactComponent as GiftIcon } from "./../resources/gift-ic.svg"
-import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
-import { ReactComponent as FarmIcon } from "./../resources/farm-icon.svg"
+// import { HomeSharp as HomeIcon } from "@material-ui/icons"
+import { ReactComponent as StakingIcon } from "./../resources/staked-ic.svg"
+import { ReactComponent as GiftIcon } from "./../resources/gift-orange-ic.svg"
+// import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
+import { ReactComponent as DashboardIcon } from "./../resources/dashboard-ic.svg"
 import { useTranslation } from "react-i18next"
 // import { alpha } from "@material-ui/core/styles/colorManipulator"
-import { MultiThemeContext } from "../MultiThemeProvider"
+// import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
 
 const useStyles = makeStyles(theme => {
-	const activeColor = theme.palette.text.primary
-	const activeBgColor = theme.palette.background.active
+	const activeColor = theme.palette.sideNav.text.primary
+	const activeBgColor = theme.palette.sideNav.background.active
 
 	return {
 		sntPadding: {
 			paddingTop: 0
 		},
 		navListRoot: {
-			color: theme.palette.text.secondary,
+			color: theme.palette.sideNav.text.secondary,
 			display: "flex",
 			flexDirection: "column",
 			justifyContent: "space-between"
@@ -68,13 +63,16 @@ const useStyles = makeStyles(theme => {
 			padding: 10,
 			paddingLeft: 16,
 			borderTopWidth: 1,
-			borderTopColor: theme.palette.divider,
+			borderTopColor: theme.palette.sideNav.divider,
 			borderTopStyle: "solid"
 		},
 		listItem: {
-			color: theme.palette.text.primary,
+			width: "90%",
+			margin: "0 auto",
+			borderRadius: "5px",
+			color: theme.palette.sideNav.text.primary,
 			"& .MuiListItemIcon-root": {
-				color: theme.palette.text.primary // alpha(theme.palette.text.main, 0.69)
+				color: theme.palette.sideNav.text.primary // alpha(theme.palette.text.main, 0.69)
 			}
 		},
 		active: {
@@ -95,9 +93,9 @@ const useStyles = makeStyles(theme => {
 			}
 		},
 		adxLink: {
-			color: theme.palette.text.hint,
+			color: theme.palette.sideNav.text.hint,
 			"&:hover": {
-				color: theme.palette.text.secondary
+				color: theme.palette.sideNav.text.secondary
 			}
 		},
 		sideSwitch: {
@@ -121,7 +119,7 @@ const useStyles = makeStyles(theme => {
 			textTransform: "uppercase"
 		},
 		loading: {
-			backgroundColor: alpha(theme.palette.background.darkerPaper, 0.2)
+			backgroundColor: alpha(theme.palette.sideNav.background.darkerPaper, 0.2)
 		},
 		noUserData: {
 			opacity: 0.23
@@ -139,11 +137,12 @@ function SideNav({
 	updatingStats,
 	chosenWalletType
 }) {
-	const { themeType } = useContext(MultiThemeContext)
+	// const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()
 	const path = location.pathname
+	const contentPadding = 1
 
 	return (
 		<Box
@@ -153,21 +152,18 @@ function SideNav({
 			justifyContent="space-between"
 			flexGrow="1"
 		>
-			<Box>
+			<Box px={contentPadding}>
 				<Box>
 					<Box>
 						<ListItem>
 							<Box
-								mb={1}
+								mb={4}
+								mt={2}
 								display="flex"
 								flexDirection="row"
 								alignItems="flex-start"
 							>
-								<img
-									height="69px"
-									src={themeType === "dark" ? logo : logoLight}
-									alt="adex-staking-logo"
-								></img>
+								<img height="69px" src={logo} alt="adex-staking-logo"></img>
 							</Box>
 						</ListItem>
 
@@ -193,7 +189,6 @@ function SideNav({
 									)}
 								</Box>
 							</ListItem>
-							<Divider />
 
 							{updatingStats && (
 								<Box
@@ -207,7 +202,7 @@ function SideNav({
 									fontSize="h1.fontSize"
 									textAlign="center"
 								>
-									<CircularProgress size="100px" />
+									<CircularProgress color="" size="100px" />
 								</Box>
 							)}
 
@@ -232,12 +227,15 @@ function SideNav({
 					</Box>
 				</Box>
 			</Box>
-
+			<Box mt={3} mb={4}>
+				<Divider />
+			</Box>
 			<Box
 				display="flex"
 				flexDirection="column"
 				justifyContent="space-between"
 				flex="1"
+				px={contentPadding}
 			>
 				<Box>
 					<List>
@@ -249,7 +247,7 @@ function SideNav({
 								[classes.active]: path === "/"
 							})}
 						>
-							<ListItemIcon color="inherit">
+							<ListItemIcon>
 								<DashboardIcon />
 							</ListItemIcon>
 							<ListItemText primary={t("common.pools")} />
@@ -263,8 +261,8 @@ function SideNav({
 								[classes.active]: path === "/stakings"
 							})}
 						>
-							<ListItemIcon color="inherit">
-								<SvgIcon color="inherit">
+							<ListItemIcon>
+								<SvgIcon>
 									<StakingIcon width="100%" height="100%" />
 								</SvgIcon>
 							</ListItemIcon>
@@ -300,7 +298,7 @@ function SideNav({
 							</ListItemIcon>
 							<ListItemText primary={t("common.farm")} />
 						</RRListItem> */}
-						<RRListItem
+						{/* <RRListItem
 							id="side-nav-link-stats"
 							button
 							to={{ pathname: "/stats" }}
@@ -314,7 +312,7 @@ function SideNav({
 								</SvgIcon>
 							</ListItemIcon>
 							<ListItemText primary={t("common.validatorStats")} />
-						</RRListItem>
+						</RRListItem> */}
 						{/* <RRListItem
 							id="side-nav-link-gasless"
 							button
@@ -332,7 +330,7 @@ function SideNav({
 						</RRListItem> */}
 					</List>
 				</Box>
-				<Box>
+				{/* <Box>
 					<RRListItem
 						id="side-nav-link-staking-landing-page"
 						button
@@ -401,7 +399,7 @@ function SideNav({
 							</div>
 						</Box>
 					</ListItem>
-				</Box>
+				</Box> */}
 			</Box>
 		</Box>
 	)

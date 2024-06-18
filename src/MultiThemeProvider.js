@@ -14,11 +14,12 @@ const THEMES = {
 export const MultiThemeContext = React.createContext()
 
 const MultiThemeProvider = ({ children }) => {
-	const [themeType, setThemeType] = useState("dark")
-	const [theme, setTheme] = useState(darkTheme)
+	const [themeType, setThemeType] = useState("light")
+	const [theme, setTheme] = useState(lightTheme)
 
 	useEffect(() => {
-		const lastTheme = loadFromLocalStorage("themeType") || "dark"
+		// const lastTheme = loadFromLocalStorage("themeType") || "light"
+		const lastTheme = "light" //hard-coded for now as dark theme is unused
 		setThemeType(lastTheme)
 		setTheme(THEMES[lastTheme])
 	}, [])

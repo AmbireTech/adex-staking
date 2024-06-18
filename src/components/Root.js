@@ -14,9 +14,9 @@ import {
 import { Alert as MuiAlert, AlertTitle } from "@material-ui/lab"
 import ChooseWallet from "./ChooseWallet"
 import Stakings from "./Stakings"
-import Gasless from "./Gasless"
+// import Gasless from "./Gasless"
 import Rewards from "./Rewards"
-import Farm from "./Farm"
+// import Farm from "./Farm"
 import Stats from "./Stats"
 import Pools from "./Pools"
 import StakeNowPopup from "./StakeNowPopup"
@@ -45,6 +45,7 @@ import { createNewBond } from "../actions"
 import { ShtarvolinkiSnack } from "./../Snack"
 import clsx from "clsx"
 import { useTranslation, Trans } from "react-i18next"
+import CustomButton from "./CustomButton"
 
 function Alert(props) {
 	return <MuiAlert variant="filled" {...props} />
@@ -346,13 +347,13 @@ export default function Root() {
 								<Alert
 									severity="info"
 									action={
-										<Button
+										<CustomButton
 											variant="contained"
-											color="secondary"
+											radius={false}
 											onClick={onIdleDialogAction}
 										>
 											{t("messages.continueSession")}
-										</Button>
+										</CustomButton>
 									}
 								>
 									{t("messages.useIdleTitle", {

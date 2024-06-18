@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react"
 import { Box, Typography, Button } from "@material-ui/core"
-import StatsCard from "./StatsCard"
+import StatsCard from "./StatsCardNav"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { useTranslation } from "react-i18next"
-import { BigNumber } from "ethers"
+// import { BigNumber } from "ethers"
 import ConfirmationDialog from "./ConfirmationDialog"
 import AppContext from "../AppContext"
 import { ZERO } from "./../helpers/constants"
@@ -22,7 +22,7 @@ export default function UserData({ stats, prices }) {
 
 	return (
 		<Box width={1}>
-			<Box mb={1.5}>
+			<Box mb={4}>
 				{StatsCard({
 					size: "large",
 					loaded: stats.loaded,
@@ -31,19 +31,19 @@ export default function UserData({ stats, prices }) {
 						? formatADXPretty(stats.totalBalanceADX) + " ADX"
 						: "",
 
-					extra: getADXInUSDFormatted(prices, stats.totalBalanceADX),
+					extra: getADXInUSDFormatted(prices, stats.totalBalanceADX)
 					/*actions: (<Button
 							size="small"
 							variant="contained"
 							color="secondary"
 							disabled={true}
 						>upgrade</Button>)*/
-					extraInfo: t("userData.adxPrice", {
-						priceUSD: getADXInUSDFormatted(
-							prices,
-							BigNumber.from((1e18).toString())
-						)
-					})
+					// extraInfo: t("userData.adxPrice", {
+					// 	priceUSD: getADXInUSDFormatted(
+					// 		prices,
+					// 		BigNumber.from((1e18).toString())
+					// 	)
+					// })
 				})}
 			</Box>
 
@@ -71,8 +71,8 @@ export default function UserData({ stats, prices }) {
 					],
 					subtitle: stats.userBalance
 						? formatADXPretty(stats.userBalance) + " ADX"
-						: "",
-					extra: getADXInUSDFormatted(prices, stats.userBalance)
+						: ""
+					// extra: getADXInUSDFormatted(prices, stats.userBalance)
 				})}
 			</Box>
 
@@ -108,14 +108,23 @@ export default function UserData({ stats, prices }) {
 						t("userData.activeDepositsInfoUnlocked", {
 							amount: formatADXPretty(stats.totalUnlockedDeposits),
 							currency: "ADX"
-						}),
-						t("userData.activeDepositsInfoUnclaimed", {
-							amount: formatADXPretty(stats.tomRewardADX),
-							currency: "ADX"
 						})
+						// t("userData.activeDepositsInfoUnclaimed", {
+						// 	amount: formatADXPretty(stats.tomRewardADX),
+						// 	currency: "ADX"
+						// })
 					],
-					subtitle: formatADXPretty(stats.totalStaked) + " ADX",
-					extra: getADXInUSDFormatted(prices, stats.totalStaked)
+					subtitle: formatADXPretty(stats.totalStaked) + " ADX"
+					// extra: getADXInUSDFormatted(prices, stats.totalStaked)
+				})}
+			</Box>
+
+			<Box mb={1.5}>
+				{StatsCard({
+					loaded: stats.loaded,
+					title: t("userData.unclaimed"),
+					subtitle: formatADXPretty(stats.tomRewardADX) + " ADX"
+					// extra: getADXInUSDFormatted(prices, stats.totalStaked)
 				})}
 			</Box>
 

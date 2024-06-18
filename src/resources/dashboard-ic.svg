@@ -1,6 +1,14 @@
-<svg id="Group_1545" data-name="Group 1545" xmlns="http://www.w3.org/2000/svg" width="20.121" height="18.645" viewBox="0 0 20.121 18.645">
-  <rect id="Rectangle_719" data-name="Rectangle 719" width="9.132" height="6.435" transform="translate(10.989 0)" >
-  <rect id="Rectangle_720" data-name="Rectangle 720" width="9.132" height="10.381" transform="translate(10.989 8.264)" />
-  <rect id="Rectangle_721" data-name="Rectangle 721" width="9.132" height="9.658" transform="translate(0 0)" />
-  <rect id="Rectangle_722" data-name="Rectangle 722" width="9.132" height="7.204" transform="translate(0 11.442)" />
+<svg xmlns="http://www.w3.org/2000/svg" width="21.5" height="21.5" viewBox="0 0 21.5 21.5">
+  <g id="Dashboard_icon" data-name="Dashboard icon" transform="translate(-18.25 -212.25)">
+    <g id="Style_Linear" data-name="Style=Linear" transform="translate(-3 191)">
+      <g id="vuesax_linear_element-3" data-name="vuesax/linear/element-3" transform="translate(22 22)">
+        <g id="element-3">
+          <path id="Vector" d="M42,28.52V23.98c0-1.41-.64-1.98-2.23-1.98H35.73c-1.59,0-2.23.57-2.23,1.98v4.53c0,1.42.64,1.98,2.23,1.98h4.04C41.36,30.5,42,29.93,42,28.52Z" transform="translate(-22 -22)" fill="none" stroke="#ff6a42" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+          <path id="Vector_2" d="M42,39.77V35.73c0-1.59-.64-2.23-2.23-2.23H35.73c-1.59,0-2.23.64-2.23,2.23v4.04c0,1.59.64,2.23,2.23,2.23h4.04C41.36,42,42,41.36,42,39.77Z" transform="translate(-22 -22)" fill="none" stroke="#ff6a42" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+          <path id="Vector_3" d="M30.5,28.52V23.98c0-1.41-.64-1.98-2.23-1.98H24.23c-1.59,0-2.23.57-2.23,1.98v4.53c0,1.42.64,1.98,2.23,1.98h4.04C29.86,30.5,30.5,29.93,30.5,28.52Z" transform="translate(-22 -22)" fill="none" stroke="#ff6a42" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+          <path id="Vector_4" d="M30.5,39.77V35.73c0-1.59-.64-2.23-2.23-2.23H24.23c-1.59,0-2.23.64-2.23,2.23v4.04c0,1.59.64,2.23,2.23,2.23h4.04C29.86,42,30.5,41.36,30.5,39.77Z" transform="translate(-22 -22)" fill="none" stroke="#ff6a42" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        </g>
+      </g>
+    </g>
+  </g>
 </svg>

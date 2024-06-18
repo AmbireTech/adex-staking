@@ -1,16 +1,11 @@
 import React, { Fragment, useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import {
-	TableRow,
-	TableCell,
-	Box,
-	Table,
-	TableContainer,
-	TableHead,
-	TableBody,
-	SvgIcon
-} from "@material-ui/core"
+import { Box, TableBody, SvgIcon, TableRow } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
+import { ReactComponent as DepositIcon } from "./../resources/deposit-ic.svg"
+import { ReactComponent as WithdrawIcon } from "./../resources/withdraw-ic.svg"
+import { ReactComponent as UrlIcon } from "./../resources/url.svg"
+import { ReactComponent as LeaveIcon } from "./../resources/leave-ic.svg"
 import { InfoOutlined } from "@material-ui/icons"
 import { DEPOSIT_POOLS, iconByPoolId, ZERO } from "../helpers/constants"
 import { formatADXPretty } from "../helpers/formatting"
@@ -22,6 +17,7 @@ import { DEPOSIT_ACTION_TYPES } from "../actions"
 import Tooltip from "./Tooltip"
 
 import { useTranslation } from "react-i18next"
+import CustomTable, { StyledTableCell, StyledTableHead } from "./CustomTable"
 
 const DepositsDialog = WithDialog(DepositForm)
 
@@ -49,8 +45,7 @@ const useStyles = makeStyles(theme => {
 			display: "flex",
 			flexDirection: "row",
 			alignItems: "center",
-			gap: theme.spacing(1),
-			justifyContent: "flex-end"
+			gap: theme.spacing(1)
 		}
 	}
 })
@@ -62,6 +57,10 @@ const getStakingPool = ({
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
 	disableActionsMsg,
+	depositsMsg,
+	withdrawsMsg,
+	leaveMsg,
+	rageLeaveMsg,
 	hasExternalStakingTokenTransfers,
 	hasInsufficentBalanceForUnbondCommitments
 }) => {
@@ -136,44 +135,57 @@ const getStakingPool = ({
 				</Box>
 			</Tooltip>
 		),
-		depositsADXTotal: (
-			<Tooltip
-				title={
-					<Box>
-						{!tomStakingV5PoolStats.depositsADXTotal.isZero() && (
-							<Box>
-								Deposits:{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.depositsADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() && (
-							<Box>
-								Transfers in: ~
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesInTransfersAdxValue
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp;(
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesInTransfers
-									)} ${"ADX-STAKING"} `}
-									fontSize={17}
-								/>
-								)
-							</Box>
-						)}
+		depositsADXTotal:
+			!tomStakingV5PoolStats.depositsADXTotal.isZero() ||
+			!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() ? (
+				<Tooltip
+					title={
+						<Box>
+							{!tomStakingV5PoolStats.depositsADXTotal.isZero() && (
+								<Box>
+									Deposits:{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.depositsADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() && (
+								<Box>
+									Transfers in: ~
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesInTransfersAdxValue
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp;(
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesInTransfers
+										)} ${"ADX-STAKING"} `}
+										fontSize={17}
+									/>
+									)
+								</Box>
+							)}
+						</Box>
+					}
+				>
+					<Box className={classes.cellItem}>
+						<AmountText
+							text={`${formatADXPretty(
+								tomStakingV5PoolStats.totalInAdxValue
+							)} ${"ADX"}`}
+							fontSize={17}
+						/>
+						<InfoOutlined className={classes.info} />
 					</Box>
-				}
-			>
+				</Tooltip>
+			) : (
 				<Box className={classes.cellItem}>
 					<AmountText
 						text={`${formatADXPretty(
@@ -181,10 +193,8 @@ const getStakingPool = ({
 						)} ${"ADX"}`}
 						fontSize={17}
 					/>
-					<InfoOutlined className={classes.info} />
 				</Box>
-			</Tooltip>
-		),
+			),
 		pendingToUnlockTotalADX: (
 			<Box>
 				<AmountText
@@ -215,65 +225,82 @@ const getStakingPool = ({
 					)}
 			</Box>
 		),
-		withdrawsADXTotal: (
-			<Tooltip
-				title={
-					<Box>
-						{!tomStakingV5PoolStats.withdrawsADXTotal.isZero() && (
-							<Box>
-								Withdraws:{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.withdrawsADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() && (
-							<Box>
-								Transfers out: ~
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesOutTransfersAdxValue
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp;(
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesOutTransfers
-									)} ${"ADX-STAKING"} `}
-									fontSize={17}
-								/>
-								)
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() && (
-							<Box>
-								Reage leaves:
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp; Withdrawn{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp; Received{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.rageLeavesReceivedADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
+		withdrawsADXTotal:
+			!tomStakingV5PoolStats.withdrawsADXTotal.isZero() ||
+			!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() ||
+			!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() ? (
+				<Tooltip
+					title={
+						<Box>
+							{!tomStakingV5PoolStats.withdrawsADXTotal.isZero() && (
+								<Box>
+									Withdraws:{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.withdrawsADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() && (
+								<Box>
+									Transfers out: ~
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesOutTransfersAdxValue
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp;(
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesOutTransfers
+										)} ${"ADX-STAKING"} `}
+										fontSize={17}
+									/>
+									)
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() && (
+								<Box>
+									Reage leaves:
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp; Withdrawn{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp; Received{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.rageLeavesReceivedADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+						</Box>
+					}
+				>
+					<Box className={classes.cellItem}>
+						<AmountText
+							text={`${formatADXPretty(
+								tomStakingV5PoolStats.totalOutAdxValue
+							)} ${"ADX"} `}
+							fontSize={17}
+						/>
+						<InfoOutlined className={classes.info} />
+						{/* {hasExternalStakingTokenTransfers && (
+						<span className={classes.info}>{" *"}</span>
+					)} */}
 					</Box>
-				}
-			>
+				</Tooltip>
+			) : (
 				<Box className={classes.cellItem}>
 					<AmountText
 						text={`${formatADXPretty(
@@ -281,13 +308,11 @@ const getStakingPool = ({
 						)} ${"ADX"} `}
 						fontSize={17}
 					/>
-					<InfoOutlined className={classes.info} />
 					{/* {hasExternalStakingTokenTransfers && (
-						<span className={classes.info}>{" *"}</span>
-					)} */}
+			<span className={classes.info}>{" *"}</span>
+		)} */}
 				</Box>
-			</Tooltip>
-		),
+			),
 		readyToWithdrawTotalADX: (
 			<Box className={classes.cellItem}>
 				<AmountText
@@ -322,57 +347,41 @@ const getStakingPool = ({
 			<DepositsDialog
 				id="staking-pool-tom-deposit-form"
 				title={t("deposits.depositTo", { pool: t("common.tomStakingPool") })}
-				btnLabel={t("common.deposit")}
-				color="secondary"
 				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
-				tooltipTitle={disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg ? disabledDepositsMsg : depositsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
 				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-leave-form"
-				title={t("deposits.unbondCommitmentFrom", {
-					pool: t("common.tomStakingPool")
-				})}
-				btnLabel={t("common.unbond")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<UrlIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disableActionsMsg}
+				tooltipTitle={disableActionsMsg ? disableActionsMsg : leaveMsg}
 				actionType={DEPOSIT_ACTION_TYPES.unbondCommitment}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-withdraw-form"
-				title={t("deposits.withdrawFrom", { pool: t("common.tomStakingPool") })}
-				btnLabel={t("common.withdraw")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={
+					disabledWithdrawsMsg ? disabledWithdrawsMsg : withdrawsMsg
+				}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 			/>,
 			<DepositsDialog
 				id="staking-pool-tom-rage-leave-form"
-				title={t("deposits.rageLeaveFrom", {
-					pool: t("common.tomStakingPool")
-				})}
-				btnLabel={t("deposits.rageLeave")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<LeaveIcon />}
 				disabled={!!disableActionsMsg}
 				depositPool={DEPOSIT_POOLS[1].id}
-				tooltipTitle={disableActionsMsg}
+				tooltipTitle={disableActionsMsg ? disableActionsMsg : rageLeaveMsg}
 				actionType={DEPOSIT_ACTION_TYPES.rageLeave}
 			/>
 		]
@@ -385,6 +394,8 @@ const getLoyaltyPoolDeposit = ({
 	stats,
 	disabledDepositsMsg,
 	disabledWithdrawsMsg,
+	depositsMsg,
+	withdrawsMsg,
 	hasExternalStakingTokenTransfers
 }) => {
 	const { loyaltyPoolStats } = stats
@@ -454,28 +465,22 @@ const getLoyaltyPoolDeposit = ({
 		actions: [
 			<DepositsDialog
 				id="loyalty-pool-deposit-form"
-				title={t("deposits.depositTo", { pool: t("common.loPo") })}
-				btnLabel={t("common.deposit")}
-				color="secondary"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<DepositIcon />}
 				disabled={!!disabledDepositsMsg}
-				tooltipTitle={disabledDepositsMsg}
+				tooltipTitle={disabledDepositsMsg ? disabledDepositsMsg : depositsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
 				actionType={DEPOSIT_ACTION_TYPES.deposit}
 			/>,
 			<DepositsDialog
 				id="loyalty-pool-withdraw-form"
-				title={t("deposits.withdrawFrom", { pool: t("common.loPo") })}
-				btnLabel={t("common.withdraw")}
-				color="default"
-				size="small"
-				variant="contained"
-				fullWidth
+				btnType="icon"
+				icon={<WithdrawIcon />}
 				disabled={!!disabledWithdrawsMsg}
 				depositPool={DEPOSIT_POOLS[0].id}
-				tooltipTitle={disabledWithdrawsMsg}
+				tooltipTitle={
+					disabledWithdrawsMsg ? disabledWithdrawsMsg : withdrawsMsg
+				}
 				actionType={DEPOSIT_ACTION_TYPES.withdraw}
 			/>
 		]
@@ -532,12 +537,17 @@ export default function Deposits() {
 		? t("common.loadingData")
 		: ""
 
+	const leaveMsg = t("eventTypes.leave")
+	const rageLeaveMsg = t("eventTypes.rageLeave")
+
 	// TODO: UPDATE if more deposit pools
 	const disableDepositsMsg =
 		disableActionsMsg ||
 		(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit)
 			? t("deposits.depositsLimitReached")
 			: "")
+
+	const depositsMsg = t("common.deposit")
 
 	useEffect(() => {
 		const {
@@ -558,6 +568,7 @@ export default function Deposits() {
 			// 		'Pool deposits limit reached' : ''
 			// 	)
 			const disabledWithdrawsMsg = disableActionsMsg
+			const withdrawsMsg = t("eventTypes.withdraw")
 
 			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
 				classes,
@@ -565,6 +576,8 @@ export default function Deposits() {
 				stats,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg,
+				depositsMsg: depositsMsg,
+				withdrawsMsg: withdrawsMsg,
 				hasExternalStakingTokenTransfers: hasExternalStakingTokenTransfersLP
 			})
 			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
@@ -579,6 +592,8 @@ export default function Deposits() {
 					? t("deposits.unbondToWithdraw")
 					: "")
 
+			const withdrawsMsg = t("eventTypes.withdraw")
+
 			const stakingPoolDeposit = getStakingPool({
 				classes,
 				t,
@@ -586,6 +601,10 @@ export default function Deposits() {
 				disableActionsMsg,
 				disabledDepositsMsg: disableDepositsMsg,
 				disabledWithdrawsMsg,
+				depositsMsg: depositsMsg,
+				withdrawsMsg: withdrawsMsg,
+				leaveMsg: leaveMsg,
+				rageLeaveMsg: rageLeaveMsg,
 				hasExternalStakingTokenTransfers,
 				hasInsufficentBalanceForUnbondCommitments
 			})
@@ -602,7 +621,7 @@ export default function Deposits() {
 		const PoolIcon = iconByPoolId(deposit)
 		return (
 			<TableRow key={deposit.poolId}>
-				<TableCell>
+				<StyledTableCell>
 					<Box
 						display="flex"
 						flexDirection="row"
@@ -620,22 +639,22 @@ export default function Deposits() {
 						)}
 						<Box>{deposit.label}</Box>
 					</Box>
-				</TableCell>
-				<TableCell align="right">{`${(deposit.currentAPY * 100).toFixed(
+				</StyledTableCell>
+				<StyledTableCell>{`${(deposit.currentAPY * 100).toFixed(
 					2
-				)} % `}</TableCell>
-				<TableCell align="right">{deposit.balance}</TableCell>
-				<TableCell align="right">{deposit.allTimeReward}</TableCell>
-				<TableCell align="right">{deposit.depositsADXTotal}</TableCell>
-				<TableCell align="right">{deposit.withdrawsADXTotal}</TableCell>
-				<TableCell align="right">{deposit.pendingToUnlockTotalADX}</TableCell>
-				<TableCell align="right">{deposit.readyToWithdrawTotalADX}</TableCell>
-				<TableCell align="center">
+				)} % `}</StyledTableCell>
+				<StyledTableCell>{deposit.balance}</StyledTableCell>
+				<StyledTableCell>{deposit.allTimeReward}</StyledTableCell>
+				<StyledTableCell>{deposit.depositsADXTotal}</StyledTableCell>
+				<StyledTableCell>{deposit.withdrawsADXTotal}</StyledTableCell>
+				<StyledTableCell>{deposit.pendingToUnlockTotalADX}</StyledTableCell>
+				<StyledTableCell>{deposit.readyToWithdrawTotalADX}</StyledTableCell>
+				<StyledTableCell>
 					<Box
 						display="flex"
-						flexDirection="column"
+						flexDirection="row"
 						alignItems="stretch"
-						justifyContent="center"
+						justifyContent="flex-start"
 					>
 						{deposit.actions.map((action, index) => (
 							<Box key={index} my={0.25}>
@@ -643,7 +662,7 @@ export default function Deposits() {
 							</Box>
 						))}
 					</Box>
-				</TableCell>
+				</StyledTableCell>
 			</TableRow>
 		)
 	}
@@ -662,36 +681,26 @@ export default function Deposits() {
 					tooltipTitle={disableDepositsMsg}
 				/>
 			</Box> */}
-			<Box mb={2}>
-				<TableContainer xs={12}>
-					<Table aria-label="Bonds table">
-						<TableHead>
-							<TableRow>
-								<TableCell>{t("common.pool")}</TableCell>
-								<TableCell>{t("common.APY")}</TableCell>
-								<TableCell align="right">{t("common.balance")}</TableCell>
-								<TableCell align="right">
-									{t("deposits.allTimeRewards")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.depositsADXTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.withdrawsADXTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.pendingToUnlockTotal")}
-								</TableCell>
-								<TableCell align="right">
-									{t("deposits.readyToWithdrawTotal")}
-								</TableCell>
-								<TableCell align="right">{t("common.actions")}</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
-					</Table>
-				</TableContainer>
-			</Box>
+			<CustomTable>
+				<StyledTableHead>
+					<TableRow>
+						<StyledTableCell>{t("common.pool")}</StyledTableCell>
+						<StyledTableCell>{t("common.APY")}</StyledTableCell>
+						<StyledTableCell>{t("common.balance")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.allTimeRewards")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.depositsADXTotal")}</StyledTableCell>
+						<StyledTableCell>{t("deposits.withdrawsADXTotal")}</StyledTableCell>
+						<StyledTableCell>
+							{t("deposits.pendingToUnlockTotal")}
+						</StyledTableCell>
+						<StyledTableCell>
+							{t("deposits.readyToWithdrawTotal")}
+						</StyledTableCell>
+						<StyledTableCell>{t("common.actions")}</StyledTableCell>
+					</TableRow>
+				</StyledTableHead>
+				<TableBody>{[...(deposits || [])].map(renderDepositRow)}</TableBody>
+			</CustomTable>
 			{hasExternalStakingTokenTransfers && (
 				<Box mb={1}>
 					<Alert variant="filled" severity="info">
