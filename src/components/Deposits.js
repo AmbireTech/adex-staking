@@ -135,44 +135,57 @@ const getStakingPool = ({
 				</Box>
 			</Tooltip>
 		),
-		depositsADXTotal: (
-			<Tooltip
-				title={
-					<Box>
-						{!tomStakingV5PoolStats.depositsADXTotal.isZero() && (
-							<Box>
-								Deposits:{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.depositsADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() && (
-							<Box>
-								Transfers in: ~
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesInTransfersAdxValue
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp;(
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesInTransfers
-									)} ${"ADX-STAKING"} `}
-									fontSize={17}
-								/>
-								)
-							</Box>
-						)}
+		depositsADXTotal:
+			!tomStakingV5PoolStats.depositsADXTotal.isZero() ||
+			!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() ? (
+				<Tooltip
+					title={
+						<Box>
+							{!tomStakingV5PoolStats.depositsADXTotal.isZero() && (
+								<Box>
+									Deposits:{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.depositsADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.totalSharesInTransfersAdxValue.isZero() && (
+								<Box>
+									Transfers in: ~
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesInTransfersAdxValue
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp;(
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesInTransfers
+										)} ${"ADX-STAKING"} `}
+										fontSize={17}
+									/>
+									)
+								</Box>
+							)}
+						</Box>
+					}
+				>
+					<Box className={classes.cellItem}>
+						<AmountText
+							text={`${formatADXPretty(
+								tomStakingV5PoolStats.totalInAdxValue
+							)} ${"ADX"}`}
+							fontSize={17}
+						/>
+						<InfoOutlined className={classes.info} />
 					</Box>
-				}
-			>
+				</Tooltip>
+			) : (
 				<Box className={classes.cellItem}>
 					<AmountText
 						text={`${formatADXPretty(
@@ -180,10 +193,8 @@ const getStakingPool = ({
 						)} ${"ADX"}`}
 						fontSize={17}
 					/>
-					<InfoOutlined className={classes.info} />
 				</Box>
-			</Tooltip>
-		),
+			),
 		pendingToUnlockTotalADX: (
 			<Box>
 				<AmountText
@@ -214,65 +225,82 @@ const getStakingPool = ({
 					)}
 			</Box>
 		),
-		withdrawsADXTotal: (
-			<Tooltip
-				title={
-					<Box>
-						{!tomStakingV5PoolStats.withdrawsADXTotal.isZero() && (
-							<Box>
-								Withdraws:{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.withdrawsADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() && (
-							<Box>
-								Transfers out: ~
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesOutTransfersAdxValue
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp;(
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.totalSharesOutTransfers
-									)} ${"ADX-STAKING"} `}
-									fontSize={17}
-								/>
-								)
-							</Box>
-						)}
-						{!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() && (
-							<Box>
-								Reage leaves:
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp; Withdrawn{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-								<br />
-								&nbsp;&nbsp;&nbsp;&nbsp; Received{" "}
-								<AmountText
-									text={`${formatADXPretty(
-										tomStakingV5PoolStats.rageLeavesReceivedADXTotal
-									)} ${"ADX"} `}
-									fontSize={17}
-								/>
-							</Box>
-						)}
+		withdrawsADXTotal:
+			!tomStakingV5PoolStats.withdrawsADXTotal.isZero() ||
+			!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() ||
+			!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() ? (
+				<Tooltip
+					title={
+						<Box>
+							{!tomStakingV5PoolStats.withdrawsADXTotal.isZero() && (
+								<Box>
+									Withdraws:{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.withdrawsADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.totalSharesOutTransfersAdxValue.isZero() && (
+								<Box>
+									Transfers out: ~
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesOutTransfersAdxValue
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp;(
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.totalSharesOutTransfers
+										)} ${"ADX-STAKING"} `}
+										fontSize={17}
+									/>
+									)
+								</Box>
+							)}
+							{!tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal.isZero() && (
+								<Box>
+									Reage leaves:
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp; Withdrawn{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.rageLeavesWithdrawnADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+									<br />
+									&nbsp;&nbsp;&nbsp;&nbsp; Received{" "}
+									<AmountText
+										text={`${formatADXPretty(
+											tomStakingV5PoolStats.rageLeavesReceivedADXTotal
+										)} ${"ADX"} `}
+										fontSize={17}
+									/>
+								</Box>
+							)}
+						</Box>
+					}
+				>
+					<Box className={classes.cellItem}>
+						<AmountText
+							text={`${formatADXPretty(
+								tomStakingV5PoolStats.totalOutAdxValue
+							)} ${"ADX"} `}
+							fontSize={17}
+						/>
+						<InfoOutlined className={classes.info} />
+						{/* {hasExternalStakingTokenTransfers && (
+						<span className={classes.info}>{" *"}</span>
+					)} */}
 					</Box>
-				}
-			>
+				</Tooltip>
+			) : (
 				<Box className={classes.cellItem}>
 					<AmountText
 						text={`${formatADXPretty(
@@ -280,13 +308,11 @@ const getStakingPool = ({
 						)} ${"ADX"} `}
 						fontSize={17}
 					/>
-					<InfoOutlined className={classes.info} />
 					{/* {hasExternalStakingTokenTransfers && (
-						<span className={classes.info}>{" *"}</span>
-					)} */}
+			<span className={classes.info}>{" *"}</span>
+		)} */}
 				</Box>
-			</Tooltip>
-		),
+			),
 		readyToWithdrawTotalADX: (
 			<Box className={classes.cellItem}>
 				<AmountText
