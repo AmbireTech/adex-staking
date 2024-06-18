@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React from "react" // { useContext }
 import {
 	List,
 	ListItem,
@@ -11,23 +11,23 @@ import {
 	alpha
 } from "@material-ui/core"
 import clsx from "clsx"
-import Anchor from "./Anchor"
+// import Anchor from "./Anchor"
 import logo from "./../resources/adex_staking.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
-import packageJson from "./../../package.json"
-import { ADDR_ADX } from "./../helpers/constants"
+// import packageJson from "./../../package.json"
+// import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import MigrationBtn from "./MigrationBtn"
-import { HomeSharp as HomeIcon } from "@material-ui/icons"
+// import { HomeSharp as HomeIcon } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/staked-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-orange-ic.svg"
-import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
+// import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
 import { ReactComponent as DashboardIcon } from "./../resources/dashboard-ic.svg"
 import { useTranslation } from "react-i18next"
 // import { alpha } from "@material-ui/core/styles/colorManipulator"
-import { MultiThemeContext } from "../MultiThemeProvider"
+// import { MultiThemeContext } from "../MultiThemeProvider"
 
 const RRListItem = WithRouterLink(ListItem)
 
@@ -137,7 +137,7 @@ function SideNav({
 	updatingStats,
 	chosenWalletType
 }) {
-	const { themeType } = useContext(MultiThemeContext)
+	// const { themeType } = useContext(MultiThemeContext)
 	const { t } = useTranslation()
 	const classes = useStyles()
 	const location = useLocation()

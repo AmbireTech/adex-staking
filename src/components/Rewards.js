@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import {
 	TableRow,
 	Box,
@@ -154,30 +154,6 @@ export default function Rewards() {
 			})
 
 			setRewards([
-				{
-					id: 1,
-					name: "Reward 1",
-					amount: 100,
-					currency: "",
-					outstandingReward: 50,
-					currentAPY: 0.05
-				},
-				{
-					id: 2,
-					name: "Reward 2",
-					amount: 200,
-					currency: "",
-					outstandingReward: 0,
-					currentAPY: 0.07
-				},
-				{
-					id: 3,
-					name: "Reward 3",
-					amount: 150,
-					currency: "",
-					outstandingReward: 60,
-					currentAPY: 0.06
-				},
 				// loPoReward,
 				...rewards
 			])

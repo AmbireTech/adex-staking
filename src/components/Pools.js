@@ -10,7 +10,7 @@ import {
 import PoolCard from "./PoolCard"
 import { formatADXPretty, getADXInUSDFormatted } from "../helpers/formatting"
 import { ReactComponent as TomIcon } from "./../resources/tom-ic.svg"
-import { ReactComponent as JerryIcon } from "./../resources/jerry-ic.svg"
+// import { ReactComponent as JerryIcon } from "./../resources/jerry-ic.svg"
 import { ReactComponent as LoyaltyIcon } from "./../resources/loyalty-ic.svg"
 import { ReactComponent as StarsIcon } from "./../resources/stars-ic.svg"
 // import { ReactComponent as StarsIcon } from "./../resources/stars-ic.svg"
