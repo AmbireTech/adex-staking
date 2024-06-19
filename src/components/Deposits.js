@@ -537,7 +537,7 @@ export default function Deposits() {
 		? t("common.loadingData")
 		: ""
 
-	const leaveMsg = t("eventTypes.leave")
+	const leaveMsg = t("common.unbond")
 	const rageLeaveMsg = t("eventTypes.rageLeave")
 
 	// TODO: UPDATE if more deposit pools
@@ -552,8 +552,8 @@ export default function Deposits() {
 	useEffect(() => {
 		const {
 			loyaltyPoolStats,
-			tomStakingV5PoolStats,
-			connectedWalletAddress
+			tomStakingV5PoolStats
+			// connectedWalletAddress
 		} = stats
 		// if (connectedWalletAddress !== account) {
 		// 	setDeposits([])
