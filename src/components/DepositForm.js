@@ -18,7 +18,6 @@ import {
 import { DEPOSIT_POOLS, STAKING_RULES_URL, ZERO } from "../helpers/constants"
 import {
 	Grid,
-	TextField,
 	Typography,
 	Button,
 	FormControl,
@@ -36,8 +35,10 @@ import { useTranslation, Trans } from "react-i18next"
 import StatsCard from "./StatsCard"
 import { Alert } from "@material-ui/lab"
 import { BigNumber } from "ethers"
-import { ExternalAnchor } from "./Anchor"
+import Anchor, { ExternalAnchor } from "./Anchor"
 import { AmountText } from "./cardCommon"
+import CustomTextField from "./CustomTextField"
+import CustomButton from "./CustomButton"
 
 export default function DepositForm({
 	depositPool,
@@ -154,9 +155,9 @@ export default function DepositForm({
 					currency: "ADX"
 				}}
 				components={{
-					amount: <AmountText fontSize={21}></AmountText>,
+					amount: <AmountText></AmountText>,
 					e1: (
-						<ExternalAnchor
+						<Anchor
 							id="new-deposit-form-adex-network-tos"
 							target="_blank"
 							href="https://www.adex.network/tos/"
@@ -375,12 +376,47 @@ export default function DepositForm({
 					</Grid>
 				) : (
 					<Grid item xs={12}>
-						<TextField
+						<Grid container spacing={2} justify="space-between">
+							<Grid item>{t("common.labelADXAmount")} *</Grid>
+							<Grid item>
+								{actionType === DEPOSIT_ACTION_TYPES.rageLeave &&
+									maxAmountAvailableForRage.lt(maxAmount) && (
+										<Button
+											size="small"
+											id={`new-${actionType}-form-available-only-amount-btn`}
+											onClick={() => {
+												onAmountChange(formatADX(maxAmountAvailableForRage))
+											}}
+										>
+											{t("common.maxAmountBtnRageOver", {
+												amount: formatADXPretty(maxAmountAvailableForRage),
+												currency: "ADX"
+											})}
+										</Button>
+									)}
+								<Button
+									fullWidth
+									size="small"
+									id={`new-${actionType}-form-max-amount-btn`}
+									onClick={() => {
+										onAmountChange(formatADX(maxAmount))
+									}}
+								>
+									{t("common.maxAmountBtn", {
+										amount: formatADXPretty(maxAmount),
+										currency: "ADX"
+									})}
+								</Button>
+							</Grid>
+						</Grid>
+						<CustomTextField
+							disabled={!confirmed}
 							fullWidth
 							id={`new-${actionType}-form-amount-field`}
 							required
 							label={t("common.labelADXAmount")}
 							type="text"
+							variant="outlined"
 							value={actionAmount}
 							error={dirtyInputs && amountErr}
 							onChange={ev => {
@@ -391,37 +427,6 @@ export default function DepositForm({
 								amountErrVals
 							)}
 						/>
-						<Box mt={1}>
-							{actionType === DEPOSIT_ACTION_TYPES.rageLeave &&
-								maxAmountAvailableForRage.lt(maxAmount) && (
-									<Button
-										fullWidth
-										size="small"
-										id={`new-${actionType}-form-available-only-amount-btn`}
-										onClick={() => {
-											onAmountChange(formatADX(maxAmountAvailableForRage))
-										}}
-									>
-										{t("common.maxAmountBtnRageOver", {
-											amount: formatADXPretty(maxAmountAvailableForRage),
-											currency: "ADX"
-										})}
-									</Button>
-								)}
-							<Button
-								fullWidth
-								size="small"
-								id={`new-${actionType}-form-max-amount-btn`}
-								onClick={() => {
-									onAmountChange(formatADX(maxAmount))
-								}}
-							>
-								{t("common.maxAmountBtn", {
-									amount: formatADXPretty(maxAmount),
-									currency: "ADX"
-								})}
-							</Button>
-						</Box>
 						{/* 
 						maxAmountAvailableForRage */}
 					</Grid>
@@ -515,13 +520,6 @@ export default function DepositForm({
 												apy: (poolStats.currentAPY * 100).toFixed(2),
 												sign: "%"
 											}}
-											components={{
-												farmer: (
-													<span role="img" aria-label="farmer">
-														🌾
-													</span>
-												)
-											}}
 										/>
 									</Typography>
 								</Grid>
@@ -559,7 +557,7 @@ export default function DepositForm({
 				<Grid item xs={12}>
 					<Tooltip title={t(amountErrText || selectErrText || "")}>
 						<FormControl style={{ display: "flex" }}>
-							<Button
+							<CustomButton
 								id={`new-${actionType}-stake-btn-${toIdAttributeString(
 									activePool ? activePool.poolId || actionType : "-not-selected"
 								)}`}
@@ -567,12 +565,14 @@ export default function DepositForm({
 								disabled={
 									!confirmed || !!amountErr || !activePool || !!selectErr
 								}
+								disabledWithOpacity
 								color="primary"
+								btnType="primary"
 								variant="contained"
 								onClick={onAction}
 							>
 								{getActionBtnText()}
-							</Button>
+							</CustomButton>
 						</FormControl>
 					</Tooltip>
 				</Grid>

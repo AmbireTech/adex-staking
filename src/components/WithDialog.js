@@ -12,7 +12,7 @@ import {
 	Typography
 } from "@material-ui/core"
 import clsx from "clsx"
-import { withStyles } from "@material-ui/core/styles"
+// import { withStyles } from "@material-ui/core/styles"
 import CancelIcon from "@material-ui/icons/Cancel"
 import Tooltip from "./Tooltip"
 import CustomButton from "./CustomButton"
@@ -65,20 +65,18 @@ export const styles = theme => {
 	}
 }
 
-const textBtn = ({ label, className, classes, style, onClick, ...rest }) => {
-	return (
-		<span
-			className={clsx(classes.textBtn, className)}
-			style={style}
-			onClick={onClick}
-		>
-			{" "}
-			{label}{" "}
-		</span>
-	)
-}
+// const textBtn = ({ label, className, classes, style, onClick, ...rest }) => (
+// 	<span
+// 		className={clsx(classes.textBtn, className)}
+// 		style={style}
+// 		onClick={onClick}
+// 	>
+// 		{" "}
+// 		{label}{" "}
+// 	</span>
+// )
 
-const TextBtn = withStyles(styles)(textBtn)
+// const TextBtn = withStyles(styles)(textBtn)
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />

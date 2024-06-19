@@ -119,7 +119,7 @@
     "bondExplanationMsg_plural": " 이 테이블은 상태, 금액 및 현재 APY 등의 정보 및 검증인 풀 (예치금)에 있는 모든 개별 ADX 잔액을 보여줍니다. 액션 버튼을 사용하여 {{count}} 일 락업 기간이 지난 후 잠금 해제를 요청하고 ADX를 인출할 수 있습니다.",
     "confirmationLabel": "나는 적어도 {{unbondDays}} 일 동안 나의 ADX를 잠그는 것을 이해하였으며 <e1> 이용약관 </e1> 그리고 <e2> </e2>  스테이킹 조건을 숙지하였습니다. ",
     "createBond": "예치금 생성하기",
-    "currentYield": "<farmer>🌾</farmer>  현재 연간 수익률 {{apy}} {{sign}} <farmer>🌾</farmer>",
+    "currentYield": "현재 연간 수익률 {{apy}} {{sign}}",
     "stakeADX": "ADX 스테이킹하기",
     "stakeNewAccIdentityBalance": " 지금은 {{amount}} {{currency}}를 스테이킹할 수 있습니다. 이것은 여러분의 가스없는 주소의 잔액입니다.",
     "alreadyUnbonded": "이미 해제되었습니다",

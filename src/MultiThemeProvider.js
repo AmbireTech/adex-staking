@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { MuiThemeProvider } from "@material-ui/core/styles"
 import { darkTheme, lightTheme } from "./themeMUi"
 import {
-	loadFromLocalStorage,
+	// loadFromLocalStorage,
 	saveToLocalStorage
 } from "./helpers/localStorage"
 
