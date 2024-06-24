@@ -14,7 +14,7 @@ import { FarmProvider } from "./FarmProvider"
 import "./App.css"
 import { WALLET_CONNECT } from "./helpers/constants"
 
-const App = () => {
+const AppBase = () => {
 	const appHooks = useApp()
 	const validatorStatsHooks = useValidatorStats()
 
@@ -39,15 +39,17 @@ function getLibrary(provider) {
 
 const Web3ReactProviderWalletConnect = createWeb3ReactRoot(WALLET_CONNECT)
 
-export default () => (
+const App = () => (
 	<MultiThemeProvider>
 		<CssBaseline />
 		<Suspense fallback={<Loading />}>
 			<Web3ReactProvider getLibrary={getLibrary}>
 				<Web3ReactProviderWalletConnect getLibrary={getLibrary}>
-					<App />
+					<AppBase />
 				</Web3ReactProviderWalletConnect>
 			</Web3ReactProvider>
 		</Suspense>
 	</MultiThemeProvider>
 )
+
+export default App
