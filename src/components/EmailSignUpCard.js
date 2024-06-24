@@ -100,6 +100,7 @@ export default function EmailSignUp(props) {
 						<CustomTextField
 							label={t("email.enterYourEmail")}
 							value={email}
+							variant="filled"
 							// onBlur={e =>
 							// 	setErrors({ ...errors, email: !validateEmail(e.target.value) })
 							// }

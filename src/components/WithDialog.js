@@ -88,7 +88,7 @@ export default function WithDialogHoc(Decorated) {
 	function WithDialog(props) {
 		const {
 			id,
-			disableBackdropClick = false,
+			// disableBackdropClick = false,
 			forwardedRef,
 			iconButton,
 			textButton,
@@ -179,9 +179,9 @@ export default function WithDialogHoc(Decorated) {
 						}}
 					>
 						<Typography variant="h4">{title}</Typography>
-						<IconButton onClick={handleToggle} size="small">
+						{/* <IconButton onClick={handleToggle} size="small">
 							<CancelIcon />
-						</IconButton>
+						</IconButton> */}
 					</DialogTitle>
 					<DialogContent classes={{ root: classes.content }}>
 						<Decorated ref={forwardedRef} {...rest} closeDialog={closeDialog} />
