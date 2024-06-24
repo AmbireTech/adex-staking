@@ -142,6 +142,7 @@ export default function useApp() {
 
 	useEffect(() => {
 		setChosenWalletType({ ...chosenWalletType, library })
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [library])
 
 	useEffect(() => {
@@ -149,6 +150,7 @@ export default function useApp() {
 		if (name) {
 			onWalletTypeSelect(name)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -292,27 +294,32 @@ export default function useApp() {
 	)
 
 	const onRequestUnbond = useCallback(
-		wrapDoingTxns(onUnbondOrRequest.bind(null, false, chosenWalletType)),
+		() => wrapDoingTxns(onUnbondOrRequest.bind(null, false, chosenWalletType)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[chosenWalletType]
 	)
 
 	const onUnbond = useCallback(
-		wrapDoingTxns(onUnbondOrRequest.bind(null, true, chosenWalletType)),
+		() => wrapDoingTxns(onUnbondOrRequest.bind(null, true, chosenWalletType)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[chosenWalletType]
 	)
 
 	const onMigrationFinalize = useCallback(
-		wrapDoingTxns(onMigrationToV5Finalize.bind(null, chosenWalletType)),
+		() => wrapDoingTxns(onMigrationToV5Finalize.bind(null, chosenWalletType)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[chosenWalletType]
 	)
 
 	const onRebond = useCallback(
-		wrapDoingTxns(reBond.bind(null, chosenWalletType)),
+		() => wrapDoingTxns(reBond.bind(null, chosenWalletType)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[ChooseWallet]
 	)
 
 	const onClaimRewards = useCallback(
-		wrapDoingTxns(claimRewards.bind(null, chosenWalletType)),
+		() => wrapDoingTxns(claimRewards.bind(null, chosenWalletType)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[chosenWalletType]
 	)
 
@@ -386,6 +393,7 @@ export default function useApp() {
 		}
 
 		onChange()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
@@ -402,6 +410,7 @@ export default function useApp() {
 		}
 
 		updateWallet()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chosenWalletTypeName])
 
 	return {
