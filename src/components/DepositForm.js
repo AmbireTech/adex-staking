@@ -376,7 +376,12 @@ export default function DepositForm({
 					</Grid>
 				) : (
 					<Grid item xs={12}>
-						<Grid container spacing={2} justify="space-between">
+						<Grid
+							container
+							spacing={2}
+							alignItems="center"
+							justifyContent="space-between"
+						>
 							<Grid item>{t("common.labelADXAmount")} *</Grid>
 							<Grid item>
 								{actionType === DEPOSIT_ACTION_TYPES.rageLeave &&
