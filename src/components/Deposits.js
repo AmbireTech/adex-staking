@@ -561,27 +561,6 @@ export default function Deposits() {
 		// }
 
 		let loadedDeposits = [...deposits]
-		if (loyaltyPoolStats.loaded) {
-			// const disabledDepositsMsg = !chosenWalletType.name ?
-			// 	'Connect wallet' :
-			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
-			// 		'Pool deposits limit reached' : ''
-			// 	)
-			const disabledWithdrawsMsg = disableActionsMsg
-			const withdrawsMsg = t("eventTypes.withdraw")
-
-			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
-				classes,
-				t,
-				stats,
-				disabledDepositsMsg: disableDepositsMsg,
-				disabledWithdrawsMsg,
-				depositsMsg: depositsMsg,
-				withdrawsMsg: withdrawsMsg,
-				hasExternalStakingTokenTransfers: hasExternalStakingTokenTransfersLP
-			})
-			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
-		}
 
 		if (tomStakingV5PoolStats.loaded) {
 			const disableDepositsMsg = disableActionsMsg
@@ -610,6 +589,28 @@ export default function Deposits() {
 			})
 
 			loadedDeposits = updateDeposits(loadedDeposits, stakingPoolDeposit)
+		}
+
+		if (loyaltyPoolStats.loaded) {
+			// const disabledDepositsMsg = !chosenWalletType.name ?
+			// 	'Connect wallet' :
+			// 	(loyaltyPoolStats.poolTotalStaked.gte(loyaltyPoolStats.poolDepositsLimit) ?
+			// 		'Pool deposits limit reached' : ''
+			// 	)
+			const disabledWithdrawsMsg = disableActionsMsg
+			const withdrawsMsg = t("eventTypes.withdraw")
+
+			const loyaltyPoolDeposit = getLoyaltyPoolDeposit({
+				classes,
+				t,
+				stats,
+				disabledDepositsMsg: disableDepositsMsg,
+				disabledWithdrawsMsg,
+				depositsMsg: depositsMsg,
+				withdrawsMsg: withdrawsMsg,
+				hasExternalStakingTokenTransfers: hasExternalStakingTokenTransfersLP
+			})
+			loadedDeposits = updateDeposits(loadedDeposits, loyaltyPoolDeposit)
 		}
 
 		setDeposits(loadedDeposits)
