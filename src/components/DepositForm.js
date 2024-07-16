@@ -570,7 +570,6 @@ export default function DepositForm({
 								disabled={
 									!confirmed || !!amountErr || !activePool || !!selectErr
 								}
-								disabledWithOpacity
 								color="primary"
 								btnType="primary"
 								variant="contained"

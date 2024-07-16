@@ -348,7 +348,7 @@ export default function Root() {
 									severity="info"
 									action={
 										<CustomButton
-											variant="contained"
+											btnType="primary"
 											radius={false}
 											onClick={onIdleDialogAction}
 										>
