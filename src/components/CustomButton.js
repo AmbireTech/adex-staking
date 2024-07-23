@@ -1,4 +1,4 @@
-import { ButtonBase, makeStyles } from "@material-ui/core"
+import { Button, makeStyles } from "@material-ui/core"
 import clsx from "clsx"
 import { alpha } from "@material-ui/core/styles"
 
@@ -16,7 +16,7 @@ const CustomButton = ({
 	...rest
 }) => {
 	const useStyles = makeStyles(theme => {
-		const getDisabledBgColor = bgColor => alpha(bgColor, 0.5)
+		const getColorWithOpacity = bgColor => alpha(bgColor, 0.5)
 		return {
 			common: {
 				padding: "0 20px",
@@ -25,11 +25,16 @@ const CustomButton = ({
 				borderRadius: radius ? "20px" : "",
 				minWidth: "40px",
 				width: w || "auto",
-				height: h || "40px"
+				height: h || "40px",
+				[theme.breakpoints.down("sm")]: {
+					lineHeight: "1",
+					padding: "5px 20px"
+				}
 			},
 			disabled: {
 				cursor: "default",
 				pointerEvents: "none",
+				BorderColor: "#f3f3f3",
 				boxShadow: "none",
 				color: theme.palette.primary.contrastText
 			},
@@ -37,14 +42,22 @@ const CustomButton = ({
 				background: theme.palette.button.primary,
 				color: theme.palette.primary.contrastText,
 				"&$disabled": {
-					background: getDisabledBgColor(theme.palette.button.primary)
+					background: getColorWithOpacity(theme.palette.button.primary),
+					color: theme.palette.primary.contrastText
+				},
+				"&:hover": {
+					background: getColorWithOpacity(theme.palette.button.primary)
 				}
 			},
 			secondary: {
 				background: theme.palette.button.secondary,
 				color: theme.palette.primary.contrastText,
 				"&$disabled": {
-					background: getDisabledBgColor(theme.palette.button.secondary)
+					background: getColorWithOpacity(theme.palette.button.secondary),
+					color: theme.palette.primary.contrastText
+				},
+				"&:hover": {
+					background: getColorWithOpacity(theme.palette.button.secondary)
 				}
 			},
 			outline: {
@@ -52,25 +65,33 @@ const CustomButton = ({
 				border: `2px solid ${theme.palette.button.secondary}`,
 				fontWeight: "500",
 				"&$disabled": {
-					background: getDisabledBgColor(theme.palette.button.secondary)
+					background: "#d1d1d160",
+					borderColor: "#b1b1b160"
+				},
+				"&:hover": {
+					background: getColorWithOpacity("#ccc")
 				}
 			},
 			icon: {
-				padding: 0
+				padding: 0,
+				"&$disabled": {
+					background: "#d1d1d160"
+				}
 			}
 		}
 	})
 
 	const classes = useStyles()
 	return (
-		<ButtonBase
+		<Button
 			{...rest}
+			disabled={disabled}
 			className={clsx(classes.common, classes[btnType], {
 				[classes.disabled]: disabled
 			})}
 		>
 			{children}
-		</ButtonBase>
+		</Button>
 	)
 }
 

@@ -11,16 +11,16 @@ import {
 	alpha
 } from "@material-ui/core"
 import clsx from "clsx"
-// import Anchor from "./Anchor"
+import Anchor from "./Anchor"
 import logo from "./../resources/adex_staking.svg"
 import { makeStyles } from "@material-ui/core/styles"
 import { useLocation } from "react-router-dom"
-// import packageJson from "./../../package.json"
-// import { ADDR_ADX } from "./../helpers/constants"
+import packageJson from "./../../package.json"
+import { ADDR_ADX } from "./../helpers/constants"
 import WithRouterLink from "./WithRouterLink"
 import UserData from "./UserData"
 import MigrationBtn from "./MigrationBtn"
-// import { HomeSharp as HomeIcon } from "@material-ui/icons"
+import { HomeSharp as HomeIcon } from "@material-ui/icons"
 import { ReactComponent as StakingIcon } from "./../resources/staked-ic.svg"
 import { ReactComponent as GiftIcon } from "./../resources/gift-orange-ic.svg"
 // import { ReactComponent as StatsIcon } from "./../resources/stats-ic.svg"
@@ -330,8 +330,8 @@ function SideNav({
 						</RRListItem> */}
 					</List>
 				</Box>
-				{/* <Box>
-					<RRListItem
+				<Box>
+					{/* <RRListItem
 						id="side-nav-link-staking-landing-page"
 						button
 						className={clsx(classes.listItem)}
@@ -350,8 +350,8 @@ function SideNav({
 						</ListItemIcon>
 						<ListItemText primary={t("Home page")} />
 					</RRListItem>
-					<Divider />
-					<ListItem>
+					<Divider /> */}
+					<ListItem className={classes.listItem}>
 						<Box>
 							<div>
 								<small>
@@ -399,7 +399,7 @@ function SideNav({
 							</div>
 						</Box>
 					</ListItem>
-				</Box> */}
+				</Box>
 			</Box>
 		</Box>
 	)

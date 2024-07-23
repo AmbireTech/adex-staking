@@ -145,8 +145,12 @@ const Pools = () => {
 							})
 						]}
 						loading={!loyaltyPoolStats.loaded}
-						disabled={!canStake}
-						disabledInfo={t("pools.connectWalletToDeposit")}
+						disabled
+						disabledInfo={
+							!canStake
+								? t("pools.connectWalletToDeposit")
+								: t("pools.loyaltyPoolDisabledInfo")
+						}
 						lockupPeriodTitle={t("common.unbondPeriod")}
 						lockupPeriodInfo={t("common.noUnbondPeriod")}
 						lockupPeriod={t("common.noUnbondPeriod")}
@@ -170,9 +174,9 @@ const Pools = () => {
 								title={t("common.addNewDeposit")}
 								btnLabel={t("common.deposit")}
 								color="secondary"
+								disabled
 								size="large"
 								variant="contained"
-								disabled={!canStake}
 								depositPool={LOYALTY_POOL.id}
 								actionType={DEPOSIT_ACTION_TYPES.deposit}
 							/>
