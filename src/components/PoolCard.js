@@ -260,7 +260,10 @@ export default function PoolCard({
 						</Box>
 					)}
 
-					<Tooltip title={disabled ? disabledInfo : ""}>
+					<Tooltip
+						style={{ alignSelf: "flex-end" }}
+						title={disabled ? disabledInfo : ""}
+					>
 						<div>
 							{actionBtn || (
 								<Button

@@ -102,7 +102,7 @@ const Pools = () => {
 						lockupPeriod={t("pools.unbondPeriodDay", {
 							count: TOM_V5_POOL.lockupPeriod
 						})}
-						statsPath={`/stats?validator=${t(TOM_V5_POOL.label)}`}
+						// statsPath={`/stats?validator=${t(TOM_V5_POOL.label)}`}
 						actionBtn={
 							<DepositsDialog
 								id="staking-pool-tom-deposit-form-card"

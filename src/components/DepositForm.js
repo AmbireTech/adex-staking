@@ -415,12 +415,11 @@ export default function DepositForm({
 							</Grid>
 						</Grid>
 						<CustomTextField
-							disabled={!confirmed}
 							fullWidth
 							id={`new-${actionType}-form-amount-field`}
 							required
 							label={t("common.labelADXAmount")}
-							type="text"
+							type="number"
 							variant="outlined"
 							value={actionAmount}
 							error={dirtyInputs && amountErr}
