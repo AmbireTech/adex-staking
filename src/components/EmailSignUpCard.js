@@ -153,7 +153,12 @@ export default function EmailSignUp(props) {
 								</FormGroup>
 							</FormControl>
 						</Box> */}
-					<Box width={1} mt={3} display="flex" justifyContent="center">
+					<Box
+						m="auto 0 10px 0"
+						width={1}
+						display="flex"
+						justifyContent="center"
+					>
 						<CustomButton
 							btnType="outline"
 							type="submit"
