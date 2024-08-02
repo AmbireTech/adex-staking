@@ -286,7 +286,7 @@ export default function Rewards() {
 					{t("common.rewards")}
 				</Typography>
 			</Box>
-			<Box display="flex" flexDirection="row">
+			{/* <Box display="flex" flexDirection="row">
 				<Box
 					m={1}
 					py={3}
@@ -339,7 +339,7 @@ export default function Rewards() {
 						)}
 					</Box>
 				</Box> */}
-			</Box>
+			{/* </Box> */}
 
 			<Box maxWidth="56rem">
 				<Box p={2}>
