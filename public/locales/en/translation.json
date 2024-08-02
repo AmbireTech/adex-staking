@@ -337,7 +337,7 @@
 	},
 	"popups": {
 		"congratulations": "Congratulations!",
-		"proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards",
+		"proudOwnerOfADX": "You are the proud owner of the ADX token. You can stake them right away to receive rewards",
 		"migrationAlert": " Migration Alert",
 		"migrationAlertInfoMigrate": "You have Tom staking pool bond ready to be migrated!",
 		"migrationAlertInfoMigrate_plural": "You have Tom staking pool bonds ready to be migrated!",
