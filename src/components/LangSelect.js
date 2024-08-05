@@ -1,6 +1,7 @@
 import React from "react"
-import { Button, Menu, MenuItem } from "@material-ui/core"
+import { Button, Menu, MenuItem, SvgIcon } from "@material-ui/core"
 import { useTranslation } from "react-i18next"
+import { ReactComponent as GlobeIcon } from "./../resources/globe_icon.svg"
 
 const locales = {
 	en: {
@@ -35,6 +36,9 @@ export default function LangSelect() {
 				onClick={handleClick}
 				style={{ textTransform: "capitalize" }}
 			>
+				<SvgIcon style={{ marginRight: "5px", opacity: 0.8 }}>
+					<GlobeIcon />
+				</SvgIcon>
 				{(locales[language] || {}).value || "en"}
 			</Button>
 			<Menu

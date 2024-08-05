@@ -114,7 +114,7 @@ export default function PoolCard({
 					</SvgIcon>
 				</Box>
 			) : (
-				<Box>
+				<Box display="flex" flexDirection="column" height="100%">
 					<CardRow
 						color="text.main"
 						fontWeight={"fontWeightRegular"}
@@ -261,7 +261,7 @@ export default function PoolCard({
 					)}
 
 					<Tooltip title={disabled ? disabledInfo : ""}>
-						<div>
+						<div style={{ margin: "auto 0 10px 0" }}>
 							{actionBtn || (
 								<Button
 									id={`stake-pool-${id}`}

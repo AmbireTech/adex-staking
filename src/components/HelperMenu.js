@@ -73,6 +73,14 @@ export const Help = () => {
 				>
 					<MenuItem onClick={closeHelpMenu}>{t("help.whereToBuy")}</MenuItem>
 				</Link>
+				<Link
+					id="help-menu-external-link-adex-contact-us"
+					color="inherit"
+					href="https://help.adex.network/hc/en-us/requests/new"
+					target="_blank"
+				>
+					<MenuItem onClick={closeHelpMenu}>{t("help.contactUs")}</MenuItem>
+				</Link>
 			</Menu>
 		</>
 	)
