@@ -50,7 +50,7 @@
 		"created": "Created",
 		"status": "Status",
 		"seeOnEtherscan": "See on Etherscan",
-		"tos": "Terms of service",
+		"tos": "Terms and conditions",
 		"labelADXAmount": "ADX amount",
 		"poolWithName": "Pool: {{name}}",
 		"currentAPY": "Current APY",
@@ -72,7 +72,7 @@
 		"NA": "N/A",
 		"tomStakingPool": "Tom Staking Pool",
 		"from": "From",
-		"tomV5": "Tom",
+		"tomV5": "Tom Pool",
 		"jerryV5": "Jerry",
 		"APY": "APY",
 		"withdrawLegacy": "WIthdraw from legacy identity"
@@ -217,7 +217,7 @@
 		"migrationStakePendingRewards": "Stake pending rewards. (<strong> <amount>{{amount}} {{currency}}</amount> </strong>). [Uses more gas]",
 		"stakeWalletBalance": "Stake wallet balance. (<strong> <amount>{{amount}} {{currency}}</amount> </strong>). [Uses more gas]",
 		"migrateNow": "Migrate now",
-		"tosNotConfirmed": "Confirm terms of service",
+		"tosNotConfirmed": "Confirm terms and conditions",
 		"unbond": "Unbond",
 		"unbondNow": "Unbond now",
 		"bondInfo": "<box>Bond amount: <strong> <amount> {{amount}} {{currency}} </amount> </strong> </box> <box>Pool: {{pool}}</box> <box> Created: {{created}} </box> <box> Migration bonus: <strong> <amount> {{migrationBonus}} {{migrationBonusCurrency}} </amount> </strong></box>",
@@ -323,7 +323,8 @@
 		"userGuide": "User Guide",
 		"sourceCode": "Source Code",
 		"audits": "Audits",
-		"whereToBuy": "Where to buy ADX"
+		"whereToBuy": "Where to buy ADX",
+		"contactUs": "Contact us"
 	},
 	"legacy": {
 		"p1": "The ADX token completed a <external> successful upgrade </external> to a new smart contract. You are currently holding <strong> {{amount}} </strong> legacy ADX",
@@ -336,7 +337,7 @@
 	},
 	"popups": {
 		"congratulations": "Congratulations!",
-		"proudOwnerOfADX": "You are the proud owner of the new ADX token. You can stake them right away to receive rewards",
+		"proudOwnerOfADX": "You are the proud owner of the ADX token. You can stake them right away to receive rewards",
 		"migrationAlert": " Migration Alert",
 		"migrationAlertInfoMigrate": "You have Tom staking pool bond ready to be migrated!",
 		"migrationAlertInfoMigrate_plural": "You have Tom staking pool bonds ready to be migrated!",
