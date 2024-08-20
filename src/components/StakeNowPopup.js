@@ -101,11 +101,11 @@ const StakeNowPopup = () => {
 
 	useEffect(() => {
 		if (!legacySwapInPrg && !legacySwapOpen) {
-			const hasADX = userBalance.gt(ZERO)
+			const hasADX = !userBalance.gt(ZERO)
 			const lastPopUP = loadFromLocalStorage(`stake-popup-last-pop-${account}`)
 			const showSinceLast = !lastPopUP || Date.now() - lastPopUP > HIDE_FOR
 
-			if (hasADX && showSinceLast) {
+			if (hasADX && showSinceLast && account) {
 				setOpen(true)
 				saveToLocalStorage(Date.now(), `stake-popup-last-pop-${account}`)
 			}

@@ -382,7 +382,6 @@ export default function Root() {
 							</Box>
 						</Fade>
 					</Modal>
-					<StakeNowPopup />
 					<MigrateNowPopup />
 				</div>
 			</main>
