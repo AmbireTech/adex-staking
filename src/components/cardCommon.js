@@ -24,7 +24,7 @@ const ExtraLabel = ({ label = "" }) =>
 export function Info({ title }) {
 	return (
 		<Tooltip title={<ExtraLabel label={title} />}>
-			<InfoIcon fontSize="18px" />
+			<InfoIcon fontSize="medium" />
 		</Tooltip>
 	)
 }
