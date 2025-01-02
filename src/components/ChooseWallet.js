@@ -30,7 +30,7 @@ export default function ChooseWallet({
 				{t("dialogs.selectWallet")}
 			</DialogTitle>
 			<List>
-				{Wallets.map(({ icon, name = "", extraLabel }) => (
+				{Wallets.map(({ icon, icons, name = "", extraLabel }) => (
 					<ListItem
 						id={`connect-wallet-select-${toIdAttributeString(name)}`}
 						disabled={disableNonBrowserWallets && name !== METAMASK}
@@ -38,8 +38,19 @@ export default function ChooseWallet({
 						onClick={() => handleListItemClick(name)}
 						key={name}
 					>
-						<ListItemIcon>
-							<Avatar src={icon} />
+						<ListItemIcon style={{ paddingLeft: 20 }}>
+							{(icons || [icon]).map((icn, i) => (
+								<Avatar
+									variant="circle"
+									key={i}
+									src={icn}
+									style={{
+										marginLeft: -25,
+										backgroundColor: "white",
+										border: "1px solid rgb(157 176 238)"
+									}}
+								/>
+							))}
 						</ListItemIcon>
 						<ListItemText
 							primary={t("dialogs.connectWith", {

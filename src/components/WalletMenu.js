@@ -78,7 +78,8 @@ export const Wallet = () => {
 		setAnchorEl(null)
 	}
 
-	const { icon } = Wallets.find(x => x.name === chosenWalletType.name) || {}
+	const { icon, icons } =
+		Wallets.find(x => x.name === chosenWalletType.name) || {}
 
 	useEffect(() => {
 		async function getMeta() {
@@ -143,9 +144,33 @@ export const Wallet = () => {
 								aria-haspopup="true"
 								aria-expanded={open ? "true" : undefined}
 								icon={
-									icon || peerMeta?.icons ? (
-										<Avatar src={peerMeta?.icons ? peerMeta.icons[0] : icon} />
-									) : null
+									<Box
+										sx={{
+											display: "flex",
+											flexDirection: "row",
+											alignItems: "center",
+											paddingLeft: 2
+										}}
+									>
+										{[...(icons || [icon || peerMeta?.icons?.[0]])].map(
+											(icn, i) => (
+												<Avatar
+													variant="circle"
+													key={i}
+													src={icn}
+													style={{
+														marginLeft: -25,
+														backgroundColor: "white",
+														border: "1px solid rgb(157 176 238)"
+													}}
+												/>
+											)
+										)}
+									</Box>
+
+									// icon || peerMeta?.icons ? (
+									// 	<Avatar src={peerMeta?.icons ? peerMeta.icons[0] : icon} />
+									// ) : null
 								}
 								label={
 									<Box display="flex" flexDirection="row" alignItems="center">

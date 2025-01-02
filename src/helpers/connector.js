@@ -56,13 +56,12 @@ export const walletconnect = new WalletConnectConnector({
 	pollingInterval: POLLING_INTERVAL
 })
 
-// console.log({ pid: process.env.WC_PROJECT_ID })
-
 export const walletconnect2 = new WC2Connector({
 	rpcMap: { 1: REACT_APP_RPC_URL },
 	supportedChainIds: [1],
 	defaultChainId: 1,
-	projectId: "b923303221f8a34de5fcb09f8b528903",
+	projectId:
+		process.env.REACT_APP_WC_PROJECT_ID || "b923303221f8a34de5fcb09f8b528903",
 	pollingInterval: POLLING_INTERVAL,
 	showQrModal: true
 })
