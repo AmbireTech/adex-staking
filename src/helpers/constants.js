@@ -1,7 +1,8 @@
 import { BigNumber, utils } from "ethers"
 import walletconnectLogo from "../walletconnect-logo.svg"
 import metamaskLogo from "../metamask-fox.svg"
-import trezorLogo from "../trezor.svg"
+import ambireLogo from "../resources/ambire-logo.svg"
+// import trezorLogo from "../trezor.svg"
 // import ledgerLogo from "../ledger.png"
 
 import { ReactComponent as BalancerIcon } from "./../resources/balancer-bal-logo.svg"
@@ -164,7 +165,7 @@ export const iconByPoolId = ({ poolId, id }) => {
 	}
 }
 
-export const METAMASK = "Metamask"
+export const METAMASK = "Browser wallet"
 export const WALLET_CONNECT = "WalletConnect"
 export const TREZOR = "Trezor"
 export const LEDGER = "Ledger"
@@ -172,7 +173,8 @@ export const LEDGER = "Ledger"
 export const Wallets = [
 	{
 		name: METAMASK,
-		icon: metamaskLogo
+		icon: metamaskLogo,
+		icons: [metamaskLogo, ambireLogo]
 	},
 	{
 		name: WALLET_CONNECT,
@@ -183,14 +185,14 @@ export const Wallets = [
 				wallets: "Trust Wallet"
 			}
 		}
-	},
-	{
-		name: TREZOR,
-		icon: trezorLogo,
-		extraLabel: {
-			message: "dialogs.trezorDefaultAddressOnly"
-		}
 	}
+	// {
+	// 	name: TREZOR,
+	// 	icon: trezorLogo,
+	// 	extraLabel: {
+	// 		message: "dialogs.trezorDefaultAddressOnly"
+	// 	}
+	// }
 	// {
 	// 	name: LEDGER,
 	// 	icon: ledgerLogo
