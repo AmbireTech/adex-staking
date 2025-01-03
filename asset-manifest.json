@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.0a9a3ed9.css",
-    "main.js": "/static/js/main.17e44980.js",
+    "main.js": "/static/js/main.3da73875.js",
     "static/js/895.c321996c.chunk.js": "/static/js/895.c321996c.chunk.js",
     "static/js/155.ba7f7d05.chunk.js": "/static/js/155.ba7f7d05.chunk.js",
     "static/js/171.9c7140f3.chunk.js": "/static/js/171.9c7140f3.chunk.js",
@@ -14,6 +14,7 @@
     "static/media/tom-ic.svg": "/static/media/tom-ic.ead3492170ecabb3a0f0f4f268121d3b.svg",
     "static/media/mail-awards.svg": "/static/media/mail-awards.6b55170223ca289099a37de5c2639d97.svg",
     "static/media/coming-soon-ic.svg": "/static/media/coming-soon-ic.f2c9d90a53e6429dfcf9aeb33e3c1a9a.svg",
+    "static/media/ambire-logo.svg": "/static/media/ambire-logo.92dadc4292f71fe361154f665a2374a4.svg",
     "static/media/staking-logo.svg": "/static/media/staking-logo.21667c7e4019b957419eed64d8e95e36.svg",
     "static/media/logo-light-theme.svg": "/static/media/logo-light-theme.5f1bbb9a678123b2d08667742c591e3f.svg",
     "static/media/uniswap-uni-logo.svg": "/static/media/uniswap-uni-logo.9926de98d27951ef18be1c12a5f9dff0.svg",
@@ -37,14 +38,13 @@
     "static/media/eth-logo.svg": "/static/media/eth-logo.6ed0ea41fa24212880f966f62f464d23.svg",
     "static/media/leave-ic.svg": "/static/media/leave-ic.4df057e3e5c6c108bd6e01d199fb987a.svg",
     "static/media/balancer-bal-logo.svg": "/static/media/balancer-bal-logo.228c66875372f5e3042b87eb6ac72867.svg",
-    "static/media/trezor.svg": "/static/media/trezor.472fec0c475c4354ace6aa2989c47b04.svg",
     "static/media/url.svg": "/static/media/url.5a5d63ef2614ca679b9f3592705cbfcd.svg",
     "static/media/info.svg": "/static/media/info.fe3466678d1a10a8839f86746eba3708.svg",
     "static/media/stats-ic.svg": "/static/media/stats-ic.f59b96c781c0e3cfc02bc23b1dcfd1fc.svg",
     "static/media/chain-link-logo.svg": "/static/media/chain-link-logo.fed269c702d271ea2fa608bcf6c8e154.svg",
     "static/media/getFetch.cjs": "/static/media/getFetch.40f37ddea2378391108f.cjs",
     "main.0a9a3ed9.css.map": "/static/css/main.0a9a3ed9.css.map",
-    "main.17e44980.js.map": "/static/js/main.17e44980.js.map",
+    "main.3da73875.js.map": "/static/js/main.3da73875.js.map",
     "155.ba7f7d05.chunk.js.map": "/static/js/155.ba7f7d05.chunk.js.map",
     "171.9c7140f3.chunk.js.map": "/static/js/171.9c7140f3.chunk.js.map",
     "400.b5068637.chunk.js.map": "/static/js/400.b5068637.chunk.js.map",
@@ -52,6 +52,6 @@
   },
   "entrypoints": [
     "static/css/main.0a9a3ed9.css",
-    "static/js/main.17e44980.js"
+    "static/js/main.3da73875.js"
   ]
 }
