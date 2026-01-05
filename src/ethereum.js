@@ -33,7 +33,8 @@ export function getWalletConnectPeerMeta(signer) {
 
 export function isAmbireWallet(signer) {
 	const peerMeta = getWalletConnectPeerMeta(signer)
-	const isAmbire = peerMeta?.name === "Ambire Wallet"
+	const isAmbire =
+		peerMeta?.name === "Ambire Wallet" || signer?.provider?.provider?.isAmbire
 
 	return isAmbire
 }
