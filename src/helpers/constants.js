@@ -214,7 +214,7 @@ export const REACT_APP_RPC_URL = useTestnet
 	? "https://goerli.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
 	: //: "https://morning-wild-water.quiknode.pro/66011d2c6bdebc583cade5365086c8304c13366c/"
 	  //   "https://mainnet.infura.io/v3/3d22938fd7dd41b7af4197752f83e8a1"
-	  "https://eth-mainnet.alchemyapi.io/v2/ZxuaPQ9OfTqfnwJM4VTNGxgP4gMQDH07"
+	  "https://eth-mainnet.g.alchemy.com/v2/ZxuaPQ9OfTqfnwJM4VTNGxgP4gMQDH07"
 
 export const ADEX_RELAYER_HOST = useTestnet
 	? // ? "https://goerli-relayer.adex.network"
